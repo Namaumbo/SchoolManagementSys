@@ -15,12 +15,14 @@
     <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
 
     <!-- Scripts -->
+    @viteReactRefresh
+    @viteReactRefresh
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
     
 </head>
 <body>
-    <div id="app">
+    <div id="SchoolApp">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
