@@ -79,8 +79,8 @@
             @yield('content')
         </main>
     </div>
-    <script src="{{asset('assets/js/bootstrap.bundle.js')}}"></script>
-    <script src="{{asset('assets/js/jquery-3.6.1.js')}}"></script>
+    <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('assets/js/jquery-3.6.1.min.js')}}"></script>
     @livewireStyles
 </body>
 </html>
