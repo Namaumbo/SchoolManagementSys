@@ -17,10 +17,10 @@ return new class extends Migration
             $table->increments('id');
             $table->string('firstname');
             $table->string('surname');
+            $table->string('username');
             $table->string('village');
             $table->string('t/a');
             $table->string('class');
-         
             $table->string('district');
             $table->timestamps();
             $table->string('location');
