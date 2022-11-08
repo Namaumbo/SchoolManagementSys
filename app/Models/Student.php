@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
-    protected $table=' Students';
+    protected $table='users';
     public $timestamps = true;
     protected $fillale=[
         'id',
@@ -16,7 +16,7 @@ class Student extends Model
         'surname',
         'username',
         'village',
-        't/a',
+        'traditional_authority',
         'class',
         'location',
     ];

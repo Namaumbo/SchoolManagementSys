@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\Students\StudentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/dashboard', [App\Http\Controllers\Admin\AdminController::class, 'index'])->name('home');
 
-Route::post('/register-student',  [App\Http\Controllers\Admin\Students\StudentController::class, 'register'])->name('home');
+Route::post('/register-student',  [StudentController::class, 'register'])->name('home');
+Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
