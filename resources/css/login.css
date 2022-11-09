@@ -1,0 +1,18 @@
+.main{
+   width: 900px;
+    margin: auto;
+    display: flex;
+}
+.login-pic{
+    width: 500px;
+    margin-top: 10em;
+    margin-left: 2em;
+    padding-left: 1em;
+    border-left: 2px solid black;
+}
+.vitals{
+    padding-top:10em
+}
+.trial{
+    color: yellow;
+}

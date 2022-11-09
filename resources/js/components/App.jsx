@@ -1,11 +1,11 @@
 import React from 'react';
-import Example from './Example';
+import Login from "@/components/Login";
 
 function App() {
     return (
 
             <div >
-              Welcome react
+            <Login/>
             </div>
     );
 }
