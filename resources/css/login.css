@@ -2,17 +2,22 @@
    width: 900px;
     margin: auto;
     display: flex;
+    padding:0.5em;
+
 }
 .login-pic{
     width: 500px;
-    margin-top: 10em;
     margin-left: 2em;
     padding-left: 1em;
     border-left: 2px solid black;
+    border-radius: .2em ;
 }
 .vitals{
-    padding-top:10em
+    /*padding-top:10em*/
 }
 .trial{
     color: yellow;
+}
+.main1{
+    margin: 7em;
 }
