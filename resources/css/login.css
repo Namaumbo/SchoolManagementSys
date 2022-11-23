@@ -9,8 +9,9 @@
     width: 500px;
     margin-left: 2em;
     padding-left: 1em;
-    border-left: 2px solid black;
-    border-radius: .2em ;
+    border-left: 1px solid black;
+    border-top-right-radius: .3em ;
+    border-bottom-right-radius: .3em ;
 }
 .vitals{
     /*padding-top:10em*/

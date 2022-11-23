@@ -5,8 +5,7 @@ import {Button} from "react-bootstrap";
 
 
 export default function Login() {
-
-
+    
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
 
@@ -15,7 +14,7 @@ export default function Login() {
         setMessage("")
         setTimeout(() => {
             setLoading(true)
-            setMessage("Oops wrong credetials")
+            setMessage("Oops wrong cridetials")
         }, 2000)
     }
 
