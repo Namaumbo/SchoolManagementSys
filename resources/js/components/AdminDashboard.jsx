@@ -10,7 +10,7 @@ import {Button} from "react-bootstrap";
 
 export default function AdminDashboard() {
     return <>
-        <div>
+        <div className="container" style={{maxWidth:"70%"}}>
             <div className="user">
                 <UserInfo/>
             </div>
@@ -21,28 +21,31 @@ export default function AdminDashboard() {
                             <div className="row">
                                 <div className="col">
                                     <div className="card">
-                                        <div className="card-header bg-transparent border-success">Members Available
+                                        <div className="card-header bg-transparent border-success">
+                                            <span className="heading">Members Available</span>
                                         </div>
                                         <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h1>28/29</h1></span>
+                                            <span><h4>28/29</h4></span>
                                        <span><img src={teachers} alt="users" className="usersCard"/></span>
                                         </span>
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="card">
-                                        <div className="card-header bg-transparent border-success">Total Students</div>
+                                        <div className="card-header bg-transparent border-success">
+                                            <span className="heading">Members Available</span></div>
                                         <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h1>356</h1></span>
+                                            <span><h4>356</h4></span>
                                        <span><img src={students} alt="users" className="usersCard"/></span>
                                         </span>
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="card">
-                                        <div className="card-header bg-transparent border-success">Members Absent</div>
+                                        <div className="card-header bg-transparent border-success">
+                                            <span className="heading">Members Absent</span></div>
                                         <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h1>3/29</h1></span>
+                                            <span><h4>3/29</h4></span>
                                        <span><img src={absentUser} alt="users" className="usersCard"/></span>
                                         </span>
                                     </div>
@@ -50,9 +53,11 @@ export default function AdminDashboard() {
                                 <div className="col">
 
                                     <div className="card">
-                                        <div className="card-header bg-transparent border-success">Staff available</div>
+                                        <div className="card-header bg-transparent border-success">
+                                            <span className="heading">staff available</span>
+                                        </div>
                                         <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h1>8/10</h1></span>
+                                            <span><h4>8/10</h4></span>
                                        <span><img src={users} alt="users" className="usersCard"/></span>
                                         </span>
                                     </div>
@@ -72,133 +77,60 @@ export default function AdminDashboard() {
                     <Button>show All</Button>
                 </div>
                 </div>
+
+
+
+            </div>
+            <div className="container text-center">
                 <div className="row">
-                    <div className="col-3">
-                            <div className="card" style={{padding:"8px"}} >
-                                <div style={{display:"flex",justifyContent:"space-around"}}>
-                                    <div>
-                                        <img src={teacher} width="30px" height="30px" alt="teacher"/>
-                                    </div>
-                                    <div >
-                                        <p className="card-text"><>Mr Campbell</></p>
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
                     <div className="col-9">
-                        <div className="card" style={{backgroundColor:"#e8ecfe"}}>
-                            <div className="container text-center" style={{padding:"10px"}}>
-                                <div className="row">
-                                    <div className="col">
-                                        <b>7:10am - 8:20am</b>
-                                    </div>
-                                    <div className="col">
-                                        <>Mathematics</>
-                                    </div>
-                                    <div className="col">
-                                        <b style={{color:"#918ced"}}>Form 3A</b>
-
-                                    </div>
-                                </div>
-                            </div>
+                        <div >
+                            <table className="table table-bordered">
+                                <thead className="table-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Role</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td className="heading">Mark</td>
+                                    <td className="heading">Otto</td>
+                                    <td><h7><span className="badge text-bg-info">Teacher</span></h7></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td className="heading">Jacob</td>
+                                    <td className="heading">Thornton</td>
+                                    <td><h7><span className="badge text-bg-info">Admin</span></h7></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td className="heading" >Rabbina</td>
+                                    <td  className="heading">banda</td>
+                                    <td ><h7><span className="badge text-bg-info" >Head teacher</span></h7></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">4</th>
+                                    <td className="heading" >Chimutu</td>
+                                    <td  className="heading">Harry</td>
+                                    <td ><h7><span className="badge text-bg-info" >Teacher</span></h7></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td className="heading" >Gift</td>
+                                    <td  className="heading">Henry</td>
+                                    <td ><h7><span className="badge text-bg-info" >Teacher</span></h7></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-3">
-                        <div className="card" style={{padding:"8px"}} >
-                            <div style={{display:"flex",justifyContent:"space-around"}}>
-                                <div>
-                                    <img src={teacher} width="30px" height="30px" alt="teacher"/>
-                                </div>
-                                <div >
-                                    <p className="card-text"><>Mr Effort</></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-9">
-                        <div className="card" style={{backgroundColor:"#e8ecfe"}}>
-                            <div className="container text-center" style={{padding:"10px"}}>
-                                <div className="row">
-                                    <div className="col">
-                                        <b>7:10am - 8:20am</b>
-                                    </div>
-                                    <div className="col">
-                                        <>Chichewa</>
-                                    </div>
-                                    <div className="col">
-                                        <b style={{color:"#918ced"}}>Form 3A</b>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-3">
-                        <div className="card" style={{padding:"8px"}} >
-                            <div style={{display:"flex",justifyContent:"space-around"}}>
-                                <div>
-                                    <img src={teacher} width="30px" height="30px" alt="teacher"/>
-                                </div>
-                                <div >
-                                    <p className="card-text"><>Mr Champ</></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-9">
-                        <div className="card" style={{backgroundColor:"#e8ecfe"}}>
-                            <div className="container text-center" style={{padding:"10px"}}>
-                                <div className="row">
-                                    <div className="col">
-                                        <b>7:10am - 8:20am</b>
-                                    </div>
-                                    <div className="col">
-                                        <>Agriculture</>
-                                    </div>
-                                    <div className="col">
-                                        <b style={{color:"#918ced"}}>Form 3A</b>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-3">
-                        <div className="card" style={{padding:"8px"}} >
-                            <div style={{display:"flex",justifyContent:"space-around"}}>
-                                <div>
-                                    <img src={teacher} width="30px" height="30px" alt="teacher"/>
-                                </div>
-                                <div >
-                                    <p className="card-text"><>Mr Bell</></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-9">
-                        <div className="card" style={{backgroundColor:"#e8ecfe"}}>
-                            <div className="container text-center" style={{padding:"10px"}}>
-                                <div className="row">
-                                    <div className="col">
-                                        <b>7:10am - 8:20am</b>
-                                    </div>
-                                    <div className="col">
-                                        <>French</>
-                                    </div>
-                                    <div className="col">
-                                        <b style={{color:"#918ced"}}>Form 3A</b>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+dfgdf
                     </div>
                 </div>
             </div>

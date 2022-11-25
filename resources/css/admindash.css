@@ -1,15 +1,24 @@
-.wrapper{
+.wrapper {
 
 }
-.user{
+
+.user {
     margin-left: 8em;
     margin-bottom: 2em;
 }
 
-.usersCard{
-    width: 60px;
+.heading {
+    align-items: center;
+    font-size: 14px;
 }
-.headings{
+
+.usersCard {
+    width: 40px;
+}
+.tablecss{
+   max-width: 74%;
+}
+.headings {
     margin-right: 4em;
 
 }

@@ -5,7 +5,7 @@ import {Button} from "react-bootstrap";
 
 
 export default function Login() {
-    
+
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
 
@@ -17,7 +17,6 @@ export default function Login() {
             setMessage("Oops wrong cridetials")
         }, 2000)
     }
-
 
     return <>
 
