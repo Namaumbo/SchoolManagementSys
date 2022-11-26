@@ -5,7 +5,7 @@ import users from "../../Assets/users.png"
 import absentUser from "../../Assets/absentUser.png"
 import students from "../../Assets/students.png"
 import teachers from "../../Assets/staffTeachs.png"
-import teacher from "../../Assets/teacher.png"
+
 import {Button} from "react-bootstrap";
 import  {
 UilClipboardAlt,
@@ -16,7 +16,7 @@ UilClipboardAlt,
 
 export default function AdminDashboard() {
     return <>
-        <div className="container" style={{maxWidth:"70%"}}>
+        <div  style={{maxWidth:"70%"}}>
             <div className="user">
                 <UserInfo/>
             </div>

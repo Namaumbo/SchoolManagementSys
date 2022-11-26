@@ -1,32 +1,45 @@
 import React from 'react';
 import "../../css/app.css"
-import {BrowserRouter,Routes,Route } from "react-router-dom"
-import Login from "@/components/Login";;
-import AdminDashboard from "@/components/AdminDashboard";
-import Sidebar from "@/components/global/SideBar";
+import {BrowserRouter, Outlet, Route, Routes} from "react-router-dom"
 import Home from "@/components/Home";
-
+import Classes from "@/components/Pages/Classes";
+import Logs from "@/components/Pages/Logs";
+import Messages from "@/components/Pages/Messages";
+import Profile from "@/components/Pages/Profile";
+import Team from "@/components/Pages/Team";
+import SchoolPerformance from "@/components/Pages/SchoolPerformance";
+import Users from "@/components/Pages/Users";
+import ClassesPerformance from "@/components/Pages/ClassPerformance";
+import AdminDashboard from "@/components/AdminDashboard";
 
 function App() {
     return (
-
-        // <BrowserRouter>
-        //     <Routes>
-        //         <Route path="/" element={<App/>}>
-        //          <Route path=""/>
-        //
-        //         </Route>
-        //     </Routes>
-        // </BrowserRouter>
-            //
-            <div className="index">
-                <div className="inner">
-                    {/*<Sidebar/>*/}
-                    <Home/>
-                    {/*<AdminDashboard />*/}
-                </div>
-            {/*<Login/>*/}
-            </div>
+<>
+        <BrowserRouter>
+            <Routes>
+                <Route  path="/" element={<Home/>}>
+                    <Route path="/dashboard" element={<AdminDashboard/>}/>
+                    <Route path="/classes" element={<Classes/>}/>
+                    <Route path="/logs" element={<Logs/>}/>
+                    <Route path="/profile" element={<Profile/>}/>
+                    <Route path="/team" element={<Team/>}/>
+                    <Route path="/performance" element={<SchoolPerformance/>}/>
+                    <Route path="/users" element={<Users/>}/>
+                    <Route path="/class-Performance" element={<ClassesPerformance/>}/>
+                    <Route path="/messages" element={<Messages/>}/>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+</>
+    //
+        // <div className="index">
+        //     <div className="inner">
+        //         {/*<Sidebar/>*/}
+        //         <Home/>
+        //         {/*<AdminDashboard />*/}
+        //     </div>
+        // {/*<Login/>*/}
+        // </div>
     );
 }
 
