@@ -2,15 +2,14 @@ body{
 
 }
 .index{
-    background: linear-gradient(
-    106.37deg,
-    #e3f4fd 29.34%,
-    #fdfdff 51.55%,
-    #ffffff 90.85%
-    );
+    background-color: #f6f7fb;
     height: 100vh;
 
  }
+
+*{
+    font-family: 'Nunito',sans-serif;
+}
 .inner{
     /*display: grid;*/
     display: flex;
