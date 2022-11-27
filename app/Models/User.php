@@ -17,6 +17,7 @@ class User extends Authenticatable
     public $timestamps = true;
     protected $fillale=[
         'id',
+        'email',
         'firstname',
         'surname',
         'username',
@@ -24,5 +25,15 @@ class User extends Authenticatable
         'traditional_authority',
         'class',
         'location',
+        'class',
+        'district',
+        'role',
+        
     ];
+
+
+
+
 }
+
+

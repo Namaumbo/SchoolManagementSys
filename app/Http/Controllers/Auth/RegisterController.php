@@ -47,10 +47,10 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $user)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+        return Validator::make($user, [
+            'firstname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -64,10 +64,46 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try{
+            $user=new User;
+            $user->email=$request->email;
+
+            $user->firstname=$request->firstname;
+
+            $user->surname=$request->surname;
+            $user->username=$request->username;
+            $user->password =Hash::make($request->password);
+            $user->village=$request->village;
+            $user->traditional_authority=$request->traditional_authority;
+            $user->location=$request->location;
+            $user->class=$request->class;
+            $user->role=$request->role;
+            $user->created_at=carbon::now();
+            $user->updated_at=carbon::now();
+             $user->save();
+             return response()->json([
+                'message'=>'Student saved successfully',
+                'student'=>$student,
+                'status'=>200,
+    
+             ]);
+    
+    
+           }catch(\Exception $e){
+    
+            return response()->json([
+                'message'=>'Student not saved',
+                'student'=>$student,
+                'status'=>201,
+                '4'=>$e,
+    
+             ]);
+               
+           }
+    
+    
+    
+        
+    
     }
 }
