@@ -19,7 +19,7 @@ const SideBar  =  () =>{
         <div className="center">
             <ul>
                 <p className="title">MAIN</p>
-               <Link to="dashboard"> <li><Dashboard className="icon"/>
+               <Link to="/"> <li><Dashboard className="icon"/>
                     <span>Dashboard</span></li>
                </Link>
                 <p className="title">USER</p>

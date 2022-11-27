@@ -5,16 +5,45 @@ import users from "../../Assets/users.png"
 import absentUser from "../../Assets/absentUser.png"
 import students from "../../Assets/students.png"
 import teachers from "../../Assets/staffTeachs.png"
+import { DataGrid } from '@mui/x-data-grid';
 
 import {Button} from "react-bootstrap";
-import  {
-UilClipboardAlt,
-    UilLockAlt,
-    UilAndroid
-
-} from "@iconscout/react-unicons"
+import DatePicker from "@/components/DatePicker";
 
 export default function AdminDashboard() {
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 50 },
+        { field: 'firstName', headerName: 'First name', width: 130 },
+        { field: 'lastName', headerName: 'Last name', width: 130 },
+        {
+            field: 'Sex',
+            headerName: 'Sex',
+            type: 'String',
+            width: 10,
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            type: 'String',
+            width: 130
+        }
+        ,{
+        field: 'role',
+         headerName: 'Role',
+         width: 100
+        }
+    ];
+    const rows = [
+        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35,Sex:'M' },
+        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42,Sex:'M' },
+        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45, Sex:'F' },
+        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16, Sex:'F' },
+        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: 31,Sex:'M' },
+        { id: 6, lastName: 'Melisandre', firstName: null, age:33,Sex:'M' },
+        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44,Sex:'F' },
+        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36,Sex:'F' },
+        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65,Sex:'M',role:<b>dsf</b>},
+    ];
     return <>
         <div  style={{maxWidth:"70%"}}>
             <div className="user">
@@ -22,10 +51,9 @@ export default function AdminDashboard() {
             </div>
             <div className="container text-center">
                 <div className="row">
-                    <div className="col-12">
-                        <div className="wrapper">
-                            <div className="row">
-                                <div className="col">
+                    <div className="col">
+                            <div style={{display:"flex"}}>
+                                <div className="col-4">
                                     <div className="card">
                                         <div className="card-header bg-transparent border-success">
                                             <span className="heading">Members Available</span>
@@ -36,7 +64,7 @@ export default function AdminDashboard() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col">
+                                <div className="col-4">
                                     <div className="card">
                                         <div className="card-header bg-transparent border-success">
                                             <span className="heading">Students Available</span></div>
@@ -46,7 +74,7 @@ export default function AdminDashboard() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col">
+                                <div className="col-4">
                                     <div className="card">
                                         <div className="card-header bg-transparent border-success">
                                             <span className="heading">Members Absent</span></div>
@@ -56,8 +84,7 @@ export default function AdminDashboard() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col">
-
+                                <div className="col-4">
                                     <div className="card">
                                         <div className="card-header bg-transparent border-success">
                                             <span className="heading">staff available</span>
@@ -69,85 +96,35 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="container text-center" style={{marginTop:"2em"}}>
+            <div className="container text-center" style={{marginTop:"5px"}}>
                 <div  style={{display:"flex",justifyContent:"space-between"}}>
                     <span className="headings">
                     <b>Team</b>
                 </span>
-                <div style={{marginBottom:".4em"}}>
-                    <Button>show All</Button>
-                </div>
                 </div>
             </div>
             <div className="container text-center">
-                <div className="row">
-                    <div className="col-9">
-                        <div >
-                            <table className="table table-bordered">
-                                <thead className="table-dark">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Full Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Role</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td className="heading">Mark Otto</td>
-                                    <td className="heading">otto@gmail.com</td>
-                                    <td><h7><span className="badge text-bg-info"><UilClipboardAlt size="15px"/>Teacher</span></h7></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td className="heading">Jacob Thornton</td>
-                                    <td className="heading">Thornton@gmail.com</td>
-                                    <td><h7><span className="badge text-bg-info"><UilLockAlt size="15px"/>Admin</span></h7></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td className="heading" >Rabbina banda</td>
-                                    <td  className="heading">banda@gmail.com</td>
-                                    <td ><h7><span className="badge text-bg-info" >Head teacher</span></h7></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">4</th>
-                                    <td className="heading" >Chimutu Harry </td>
-                                    <td  className="heading">Harry@gmail.com</td>
-                                    <td ><h7><span className="badge text-bg-info" ><UilClipboardAlt size="15px"/>Teacher</span></h7></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">5</th>
-                                    <td className="heading" >Gift Henry</td>
-                                    <td  className="heading">Henry@gmail.com</td>
-                                    <td ><h7><span className="badge text-bg-info" ><UilClipboardAlt size="15px"/>Teacher</span></h7></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                <div style={{display:"flex",justifyContent:"space-between"}}>
+                    <div className="col-11">
+                        <div style={{ height: 300, width: '100%' }}>
+                            <DataGrid
+                                rows={rows}
+                                columns={columns}
+                                pageSize={5}
+                                rowsPerPageOptions={[5]}
+                                checkboxSelection
+                            />
                         </div>
                     </div>
-                    <div className="col-3">
-                        <table className="table table-bordered">
-                            <thead className="table-dark">
-                            <tr >
-                                <th scope="col"  >#</th>
-                                <th scope="col">Full Name</th>
-                                <th scope="col">Number</th>
-                            </tr>
-                            </thead>
-                            <tr>
-                                <th scope="col">1</th>
-                                <th scope="col">Aout</th>
-                                <th scope="col">0992827312</th>
-                            </tr>
+                    <div className="col-5">
+                        <div className="card">
+                            <DatePicker/>
+                        </div>
 
-                        </table>
                     </div>
                 </div>
             </div>
