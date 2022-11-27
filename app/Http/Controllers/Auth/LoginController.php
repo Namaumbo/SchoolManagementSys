@@ -29,11 +29,16 @@ class LoginController extends Controller
      */
     //protected $redirectTo = RouteServiceProvider::HOME;
     protected function authenticated(){
-     if(Auth::user()->role_as=='1'){
+     if(Auth::user()->role=='admin'){
         return redirect('admin/dashboard')->with('status','Welcome to Dashboard');
+     } else if(Auth::user()->role=='HeadDepartment'){
+        return redirect('/HeadDepartment/dashboard')->with('status','Logged in as Head of Department');
+     } else if(Auth::user()->role=="Formteacher"){
+        return redirect('/Formteacher/dashboard')->with('status','Logged in as the form teacher');
      } else{
-        return redirect('/home')->with('status','Logged in Successfully');
-     }  
+        return redirect('/teacher/dashboard')->with('status','Logged in as the teacher');
+
+     }
     }
 
     /**

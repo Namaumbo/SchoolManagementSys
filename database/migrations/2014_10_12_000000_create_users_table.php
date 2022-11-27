@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('location');
             $table->string('class');
             $table->string('district');
+            $table->string('role');
             $table->rememberToken();
             $table->timestamps();
         });
