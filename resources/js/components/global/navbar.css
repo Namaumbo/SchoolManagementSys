@@ -6,6 +6,8 @@
     align-items: center;
     font-size: 14px;
     color: #555;
+    background-color: #1a202c;
+
 }
 
 .wrapper {
@@ -21,4 +23,5 @@
 
 .item {
     padding-left: 10px;
+    color: white;
 }

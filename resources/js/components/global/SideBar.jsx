@@ -19,11 +19,12 @@ const SideBar  =  () =>{
         <div className="center">
             <ul>
                 <p className="title">MAIN</p>
+                <hr />
                <Link to="/"> <li><Dashboard className="icon"/>
                     <span>Dashboard</span></li>
                </Link>
                 <p className="title">USER</p>
-
+<hr />
                 <Link to="team">
                     <li><Team className="icon"/><span>Team</span></li>
                 </Link>
@@ -38,6 +39,7 @@ const SideBar  =  () =>{
                     <li><Note className="icon"/><span>Logs</span></li>
                 </Link>
              <p className="title">SCHOOL FAIR</p>
+                <hr />
                <Link to="classes">
                    <li><Apartment className="icon"/><span>Classes</span></li>
 

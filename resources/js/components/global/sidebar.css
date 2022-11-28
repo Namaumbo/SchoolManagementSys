@@ -1,14 +1,14 @@
 
 .sidebar {
-    border-right: 1px solid rgb(194, 189, 189);;
+    border-right: 1px solid rgba(233, 236, 255, 0.39);;
     min-height: 100vh;
-
+    background-color: #1a202c;
+    max-width: 100%;
 }
 
 .center {
     padding-left: 10px
 }
-
 .center ul {
     list-style: none;
     margin: 0;
@@ -39,9 +39,7 @@ hr {
     color: #999;
     margin-top: 15px;
     margin-bottom: 5px;
-
 }
-
 li {
     display: flex;
     align-items: center;
@@ -50,7 +48,11 @@ li {
 }
 
 li:hover {
-    background-color: #ece8ff;
+    background-color: rgba(65, 61, 103, 0.71);
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+    color: white;
+
 }
 
 .icon {
