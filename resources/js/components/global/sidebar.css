@@ -4,6 +4,7 @@
     min-height: 100vh;
     background-color: #1a202c;
     max-width: 100%;
+    position: fixed;
 }
 
 .center {
@@ -56,8 +57,8 @@ li:hover {
 }
 
 .icon {
-    font-size: 18px;
-    color: #7451f8;
+
+    color: #c2bdbd;
 }
 
 span {

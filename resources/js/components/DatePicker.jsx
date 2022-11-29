@@ -12,7 +12,7 @@ const isWeekend = (date) => {
 };
 
 export default function DatePicker() {
-    const [value, setValue] = React.useState(dayjs('2022-04-07'));
+    const [value, setValue] = React.useState(dayjs(Date.now()));
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
