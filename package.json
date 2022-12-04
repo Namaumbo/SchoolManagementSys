@@ -24,12 +24,17 @@
         "@iconscout/react-unicons": "^1.1.6",
         "@mui/icons-material": "^5.10.15",
         "@mui/material": "^5.10.15",
+        "@mui/x-data-grid": "^5.17.14",
+        "@mui/x-date-pickers": "^5.0.9",
+        "chart.js": "^4.0.1",
+        "dayjs": "^1.11.6",
         "framer-motion": "^7.6.12",
         "install": "^0.13.0",
         "jquery": "^3.6.1",
         "npm": "^9.1.2",
         "npm-watch": "^0.11.0",
         "react-bootstrap": "^2.6.0",
+        "react-circular-progressbar": "^2.1.0",
         "react-pro-sidebar": "^1.0.0-alpha.7",
         "react-router-dom": "^6.4.3"
     }

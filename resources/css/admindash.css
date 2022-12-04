@@ -1,13 +1,28 @@
 
-
 .heading {
     align-items: center;
     font-size: 14px;
 }
+
 .usersCard {
     width: 40px;
 }
-.tablecss{
-   max-width: 34%;
+
+.cards {
+    margin-right: 0.5em;
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(143, 143, 143, 0.47);
+    height: 100px;
+    border-radius: 10px;
 }
 
+.cards:hover {
+    box-shadow: 2px 4px 10px 1px rgba(59, 59, 59, 0.47);
+}
+
+.graph {
+    width: 230px;
+    height: 230px;
+    /*display: flex;*/
+    /*justify-content:space-around;*/
+}

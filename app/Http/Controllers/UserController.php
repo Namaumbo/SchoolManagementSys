@@ -1,27 +1,48 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Http\Controllers\Controller;
-
 use App\Models\User;
-
-use Psy\Util\Json;
-Use Carbon\Carbon;
-
+use Validator;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
+
 {
-    //Adding Students to the Database
-
-    public function register(Request $request): JsonResponse
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
+        return User::all();
+    }
 
-      $user = User::where('username', $request->input('username'))->first();
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $user = User::where('email', $request->input('email'))->first();
         //Username represents an ID for the student
         if ($user) {
             return response()->json(
-                ['message' => 'user already exists', 'User' => $student],
+                ['message' => 'user already exists', 'User' => $user],
                 Response::HTTP_CONFLICT
             );
         }
@@ -29,18 +50,19 @@ class UserController extends Controller
         $user=new User;
         $user->firstname=$request->firstname;
         $user->surname=$request->surname;
-        $user->username=$request->username;
+        $user->email=$request->email;
         $user->password =Hash::make($request->password);
+        $user->class=$request->class;
         $user->village=$request->village;
         $user->traditional_authority=$request->traditional_authority;
-        $user->location=$request->location;
-        $user->class=$request->class;
+        $user->district=$request->district;
+        $user->Role_as=$request->Role_as;
         $user->created_at=carbon::now();
         $user->updated_at=carbon::now();
          $user->save();
          return response()->json([
             'message'=>'Student saved successfully',
-            'student'=>$student,
+            'User'=>$user,
             'status'=>200,
 
          ]);
@@ -50,43 +72,97 @@ class UserController extends Controller
 
         return response()->json([
             'message'=>'Student not saved',
-            'student'=>$student,
+            'User'=>$user,
             'status'=>201,
             '4'=>$e,
 
          ]);
            
        }
-
-
-
     }
-    public function login(Request $request): JsonResponse
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        $user = User::make($request->all(), ["username" => "required|string", "password" => "required"]);
-        if ($user->fails()) {
-            return response()->json(
-                [
-                "message" => "System fail to load " . Auth::user()->firstname,
-                "status" => "ok",
-                ]
-            );
-        }
-        //        finding user name
-        if (!Auth::attempt($request->only("username", "password"))) {
-            return response()->json(["The credentials are wrong"], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-        $token = Auth::user()->createToken('Token')->plainTextToken;
-        $cookie = cookie('jwt', $token, 30 * 1);
-        return response()->json(
-            [
-                "message" => "System successfully logged " . Auth::user()->firstname,
-                "status" => "ok",
-                "access_token" => $token,
-                "token_type" => "bearer",
-                "user " => Auth::user()
-            ],
-            Response::HTTP_OK
-        )->withCookie($cookie);
+        return User::find($id);
     }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        if(User::where('id',$id)->exists()){
+           $user=User::find($id);
+           $user->firstname=$request->firstname;
+           $user->surname=$request->surname;
+           $user->email=$request->email;
+           $user->password =Hash::make($request->password);
+           $user->class=$request->class;
+           $user->village=$request->village;
+           $user->traditional_authority=$request->traditional_authority;
+           $user->district=$request->district;
+           $user->Role_as=$request->Role_as;
+           $user->created_at=carbon::now();
+           $user->updated_at=carbon::now();
+            $user->save();
+            return response()->json([
+                'message'=>'Student is updated successfully'
+        
+            ],400);
+        }else{
+            return response()->json([
+                'message'=>'No student found with that information '
+        
+
+            ],401);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        if(User::where('id',$id)->exists()){
+            $user=User::find($id);
+            $user->delete();
+            return response()->json([
+                'message'=>'Student is deleted successfully'
+     
+            ],404);
+
+
+ }else{
+            return response()->json([
+                'message'=>'No student found with that information ',
+           
+            ]);
+            }
+
+}
 }

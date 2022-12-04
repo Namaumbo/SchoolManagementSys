@@ -2,16 +2,18 @@
 .navbar {
     height: 47px;
     border-bottom: 1px solid rgb(231, 228, 228);
-    display: flex;
     align-items: center;
     font-size: 14px;
     color: #555;
+    background-color: #1a202c;
+
+    /*position: fixed;*/
 }
 
 .wrapper {
     display: flex;
-    justify-content: space-between;
     width: 100%;
+    justify-content: space-between;
 }
 
 .items {
@@ -21,4 +23,5 @@
 
 .item {
     padding-left: 10px;
+    color: white;
 }
