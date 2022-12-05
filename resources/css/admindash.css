@@ -23,6 +23,9 @@
 .graph {
     width: 230px;
     height: 230px;
+    padding: 10px;
+    border-left: 2px solid #dcdcdc;
+
     /*display: flex;*/
     /*justify-content:space-around;*/
 }
