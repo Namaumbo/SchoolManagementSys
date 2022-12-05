@@ -172,19 +172,19 @@ export default function AdminDashboard() {
                         </div>
                         <hr/>
                         <div className="col-11">
-                                <div className="container text-center">
-                                    <div className="row">
-                                        <div className="col-sm-5 col-md-6">
-                                            <div className="graph">
+                            <div className="container text-center">
+                                <div className="row">
+                                    <div className="col-sm-5 col-md-6">
+                                        <div className="graph">
                                             <Chart student="Male" percentages="56"/>
-                                            </div>
                                         </div>
-                                        <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
-                                            <div className="graph">
+                                    </div>
+                                    <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
+                                        <div className="graph">
                                             <Chart
-                                            student="Females" percentages="44"/>
-                                            </div>
+                                                student="Females" percentages="44"/>
                                         </div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -194,8 +194,16 @@ export default function AdminDashboard() {
                         <div className="card">
                             <DatePicker/>
                         </div>
-                        <div>
-                            <TotalAvatars/>
+                        <span className="headings">
+                    <b>Employees</b>
+                </span>
+                        <div className="card">
+
+                            <div className="people">
+
+                                <TotalAvatars/>
+                            </div>
+
                         </div>
                     </div>
                 </div>
