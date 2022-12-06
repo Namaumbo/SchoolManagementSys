@@ -2,27 +2,28 @@ import React, {useState} from "react";
 import "../../css/login.css"
 import loginjpg from "../../Assets/login.jpg"
 import {Button} from "react-bootstrap";
+import App from "@/components/App";
 
 
 export default function Login() {
 
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
+    const [login, setLogin] = useState(false);
 
-    function login() {
+    function loginFnc() {
         setLoading(false)
         setMessage("")
         setTimeout(() => {
             setLoading(true)
-            setMessage("Oops wrong cridetials")
+           setLogin(true)
         }, 2000)
     }
 
     return <>
-
-        <div className="main1">
+        { login ? <>
+            <div className="main1">
             <div className="main">
-
                 <div className="vitals">
                     <form className="row g-3">
                         <h2>Welcome,</h2>
@@ -34,7 +35,7 @@ export default function Login() {
                             <label htmlFor="validationDefault03" className="form-label">Password</label>
                             <input type="password" className="form-control" id="validationDefault03" required/>
                         </div>
-                        <Button variant="primary" onClick={login}>{loading ? <span>Login</span> :
+                        <Button variant="primary" onClick={loginFnc}>{loading ? <span>Login</span> :
                             <span className="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"/>}</Button>
                         <div className="col-md-6">
                             <span style={{color: "red"}}>{message}</span>
@@ -49,7 +50,6 @@ export default function Login() {
                 </div>
 
             </div>
-        </div>
-
+        </div></> : <><App/></>}
     </>
 }
