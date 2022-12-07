@@ -1,0 +1,11 @@
+.cardInfo{
+
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(185, 185, 185, 0.47);
+    height: 110px;
+}
+.addBtn{
+display: flex;
+    margin-top:1em ;
+    margin-bottom:1em ;
+}

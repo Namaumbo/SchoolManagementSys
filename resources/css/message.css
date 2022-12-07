@@ -1,0 +1,27 @@
+.inputText{
+    height: 5em;
+    position:fixed;
+    width:50em;
+    bottom:0;
+    margin-left: 23em;
+    margin-right: auto;
+    border-radius: 5px;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: space-between;
+}
+.sendBtn{
+    position: absolute;
+    right:    0;
+    bottom:   0;
+padding: 20px;
+}
+.textFieldIn{
+    width: 45em;
+}
+.textField{
+padding: 1em;
+}
+.userStack{
+    border-right:1px solid black;
+}

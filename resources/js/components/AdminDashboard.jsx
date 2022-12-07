@@ -8,6 +8,7 @@ import teachers from "../../Assets/staffTeachs.png"
 import {DataGrid} from '@mui/x-data-grid';
 import DatePicker from "@/components/DatePicker";
 import Chart from "@/components/Chart";
+import TotalAvatars from "@/components/People";
 
 export default function AdminDashboard() {
     const columns = [
@@ -164,22 +165,26 @@ export default function AdminDashboard() {
                                 checkboxSelection
                             />
                         </div>
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <span className="headings">
+                    <b>Statistics</b>
+                </span>
+                        </div>
+                        <hr/>
                         <div className="col-11">
-
-                                <div className="container text-center">
-
-                                    <div className="row">
-                                        <div className="col-sm-5 col-md-6">
-                                            <div className="graph">
+                            <div className="container text-center">
+                                <div className="row">
+                                    <div className="col-sm-5 col-md-6">
+                                        <div className="graph">
                                             <Chart student="Male" percentages="56"/>
-                                            </div>
                                         </div>
-                                        <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
-                                            <div className="graph">
+                                    </div>
+                                    <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
+                                        <div className="graph">
                                             <Chart
-                                            student="Females" percentages="44"/>
-                                            </div>
+                                                student="Females" percentages="44"/>
                                         </div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -188,6 +193,17 @@ export default function AdminDashboard() {
                     <div className="col-5">
                         <div className="card">
                             <DatePicker/>
+                        </div>
+                        <span className="headings">
+                    <b>Employees</b>
+                </span>
+                        <div className="card">
+
+                            <div className="people">
+
+                                <TotalAvatars/>
+                            </div>
+
                         </div>
                     </div>
                 </div>
