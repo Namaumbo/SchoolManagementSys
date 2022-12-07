@@ -3,7 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Models\Department;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\DepartmentResource;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -16,6 +19,8 @@ use App\Http\Controllers\UserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//All users routes
 
 Route::get('/users', function() {
     return UserResource::collection(User::all());
@@ -32,7 +37,24 @@ Route::post('/register-user',[UserController::class,'store']);
 
 
 Route::put('/user/{id}', [UserController::class,'update']);
-Route::delete('/user/{id}', [UserController::class,'destory']);
+Route::delete('/user/{id}', [UserController::class,'destroy']);
+
+
+
+//Departments routes
+Route::get('/departments', function() {
+    return DepartmentResource::collection(Department::all());
+});
+
+
+Route::get('/department/{id}', function($id)
+ {
+    return new DepartmentResource(Department::findorFail($id));
+});
+
+Route::post('/register-department',[DepartmentController::class,'store']);
+Route::put('/department/{id}', [DepartmentController::class,'update']);
+Route::delete('/department/{id}', [DepartmentController::class,'destroy']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
