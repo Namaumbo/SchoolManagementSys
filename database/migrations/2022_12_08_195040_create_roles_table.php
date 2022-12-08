@@ -13,20 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('DepartmentName');
-            $table->string('HeadOfDepartment');
+        Schema::create('roles', function (Blueprint $table) {
             $table->integer('user_id')->unsigned();
-
+            $table->string('RoleName');
             $table->timestamps();
 
+
             $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('CASCADE');
-
-
+            ->references('id')
+            ->on('users')
+            ->onDelete('CASCADE');
         });
     }
 
@@ -37,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('roles');
     }
 };

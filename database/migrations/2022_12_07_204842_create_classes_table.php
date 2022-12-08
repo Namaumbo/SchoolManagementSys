@@ -13,10 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('subjects', function (Blueprint $table) {
-          $table->SubjectId();
-          $table->string('SubjectName');
-          $table->timestamps();
+        Schema::create('classes', function (Blueprint $table) {
+            $table->integer('user_id')->unsigned();
+            $table->string('className');
+            $table->timestamps();
+
+            $table->foreign('user_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('CASCADE');
+      
+
+
+       
+
+        
         });
     }
 
@@ -27,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('classes');
     }
 };

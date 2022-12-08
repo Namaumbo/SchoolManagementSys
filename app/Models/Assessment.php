@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Assessment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'DepartmentName',
-        'HeadOfDepartment',
+        'assessmentName',
+        'score',
         'created_at',
         'updated_at'
       
     ];
 
-   public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function subjects(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(subjects::class);
     }
 }

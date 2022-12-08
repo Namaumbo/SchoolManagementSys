@@ -3,11 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Models\Subject;
+
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\SubjectResource;
 
 use App\Http\Resources\UserResource;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\SubjectController;
 
 use App\Http\Controllers\UserController;
 
@@ -53,6 +57,26 @@ Route::post('/register-department',[DepartmentController::class,'store']);
 
 Route::put('/department/{id}', [DepartmentController::class,'update']);
 Route::delete('/department/{id}', [DepartmentController::class,'destroy']);
+
+
+//Subjects Routes
+
+Route::get('/subjects', function() {
+    return SubjectResource::collection(Subject::all());
+});
+
+Route::get('/subject/{id}', function($id)
+ {
+    return new SubjectResource(Subject::findorFail($id));
+});
+
+Route::post('/register-subject',[SubjectController::class,'store']);
+
+
+Route::put('/subject/{id}', [SubjectController::class,'update']);
+Route::delete('/subject/{id}', [SubjectController::class,'destroy']);
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

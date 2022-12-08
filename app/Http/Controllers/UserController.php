@@ -56,7 +56,6 @@ class UserController extends Controller
         $user->village=$request->village;
         $user->traditional_authority=$request->traditional_authority;
         $user->district=$request->district;
-        $user->Role_as=$request->Role_as;
         $user->created_at=carbon::now();
         $user->updated_at=carbon::now();
          $user->save();
@@ -123,7 +122,6 @@ class UserController extends Controller
            $user->village=$request->village;
            $user->traditional_authority=$request->traditional_authority;
            $user->district=$request->district;
-           $user->Role_as=$request->Role_as;
            $user->created_at=carbon::now();
            $user->updated_at=carbon::now();
             $user->save();
