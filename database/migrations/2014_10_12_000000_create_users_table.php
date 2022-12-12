@@ -24,13 +24,10 @@ return new class extends Migration
             $table->string('traditional_authority');
             $table->string('district');
             $table->string('class');
-
+            $table->string('role');
+            $table->char('sex');
             $table->rememberToken();
             $table->timestamps();
-
-      
-
-
 
         });
     }
