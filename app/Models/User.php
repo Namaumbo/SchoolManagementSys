@@ -8,9 +8,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property mixed|string $password
+ * @property mixed $surname
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    public mixed $village;
+    public mixed $traditional_authority;
+    public mixed $class;
+    public mixed $district;
+    /**
+     * @var \Carbon\Carbon|mixed
+     */
+    public mixed $created_at;
+    /**
+     * @var \Carbon\Carbon|mixed
+     */
+    public mixed $updated_at;
+    public mixed $email;
 
     /**
      * The attributes that are mass assignable.

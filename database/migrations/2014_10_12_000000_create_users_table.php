@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
+<<<<<<< HEAD
 
             $table->rememberToken();
             $table->timestamps();
@@ -31,6 +32,14 @@ return new class extends Migration
       
 
 
+=======
+            $table->string('class');
+            $table->string('role');
+            $table->char('sex');
+            $table->rememberToken();
+            $table->timestamps();
+
+>>>>>>> 1310ea3ababbda6a1159e9cb6478427a692df741
         });
     }
 
