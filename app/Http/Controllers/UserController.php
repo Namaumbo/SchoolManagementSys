@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
-
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 class UserController extends Controller
 {
     /**
@@ -67,11 +69,14 @@ class UserController extends Controller
             'message'=>'Student saved successfully',
             'User'=>$user,
             'status'=>200,
+            
+        ]);
+       }
+        
 
-         ]);
+            
 
-
-       }catch(\Exception $e){
+       catch(\Exception $e){
 
         return response()->json([
             'message'=>'Student not saved',
@@ -161,4 +166,13 @@ class UserController extends Controller
             }
 
     }
+
+
+    /**
+     * @param Request $request
+     * @param $user
+     * @return void
+     */
+    
 }
+
