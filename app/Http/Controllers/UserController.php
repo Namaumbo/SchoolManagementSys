@@ -12,7 +12,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
-
 class UserController extends Controller
 
 {
@@ -52,40 +51,25 @@ class UserController extends Controller
                 ResponseAlias::HTTP_CONFLICT
             );
         }
-<<<<<<< HEAD
-       try{
-        $user=new User;
-        $user->title=$request->title;
-        $user->firstname=$request->firstname;
-        $user->surname=$request->surname;
-        $user->email=$request->email;
-        $user->password =Hash::make($request->password);
-        $user->village=$request->village;
-        $user->traditional_authority=$request->traditional_authority;
-        $user->district=$request->district;
-        $user->created_at=carbon::now();
-        $user->updated_at=carbon::now();
-         $user->save();
-         return response()->json([
-            'message'=>'Student saved successfully',
-            'User'=>$user,
-            'status'=>200,
 
-         ]);
+        try {
+            $user = new User;
+            $this->extracted1($request, $user);
+            return response()->json([
+                'message' => 'Student saved successfully',
+                'User' => $user,
+                'status' => 200,
 
+            ]);
+        } catch (\Exception $e) {
 
-       }catch(\Exception $e){
-
-        return response()->json([
-            'message'=>'Student not saved',
-            'User'=>$user,
-            'status'=>201,
-            '4'=>$e,
-
-         ]);
-           
-       }
-=======
+//        return response()->json([
+//            'message'=>'Student not saved',
+//            'User'=>$user,
+//            'status'=>201,
+//            '4'=>$e,
+//         ]);
+        }
         try {
             $user = new User;
             $this->extracted($request, $user);
@@ -103,6 +87,7 @@ class UserController extends Controller
             ]);
         }
     }
+
     /**
      * @param Request $request
      * @param $user
@@ -121,8 +106,8 @@ class UserController extends Controller
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
->>>>>>> 1310ea3ababbda6a1159e9cb6478427a692df741
     }
+
     /**
      * Display the specified resource.
      *
@@ -133,6 +118,7 @@ class UserController extends Controller
     {
         return User::find($id);
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -153,32 +139,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-<<<<<<< HEAD
-        if(User::where('id',$id)->exists()){
-           $user=User::find($id);
-           $user->title=$request->title;
-           $user->firstname=$request->firstname;
-           $user->surname=$request->surname;
-           $user->email=$request->email;
-           $user->password =Hash::make($request->password);
-           $user->village=$request->village;
-           $user->traditional_authority=$request->traditional_authority;
-           $user->district=$request->district;
-           $user->created_at=carbon::now();
-           $user->updated_at=carbon::now();
-            $user->save();
-=======
         if (User::where('id', $id)->exists()) {
             $user = User::find($id);
-            $this->extracted($request, $user);
->>>>>>> 1310ea3ababbda6a1159e9cb6478427a692df741
-            return response()->json([
-                'message' => 'Student is updated successfully'
-            ], 400);
-        } else {
-            return response()->json([
-                'message' => 'No student found with that information '
-            ], 401);
+            $this->extracted1($request, $user);
+            if (User::where('id', $id)->exists()) {
+                $user = User::find($id);
+                $this->extracted($request, $user);
+                return response()->json([
+                    'message' => 'Student is updated successfully'
+                ], 400);
+            } else {
+                return response()->json([
+                    'message' => 'No student found with that information '
+                ], 401);
+            }
         }
     }
 
@@ -201,5 +175,26 @@ class UserController extends Controller
                 'message' => 'No student found with that information ',
             ]);
         }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $user
+     * @return void
+     */
+    public function extracted1(Request $request, $user): void
+    {
+        $user->title = $request->title;
+        $user->firstname = $request->firstname;
+        $user->surname = $request->surname;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->village = $request->village;
+        $user->traditional_authority = $request->traditional_authority;
+        $user->district = $request->district;
+        $user->created_at = carbon::now();
+        $user->updated_at = carbon::now();
+        $user->save();
     }
 }
