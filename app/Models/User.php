@@ -16,38 +16,18 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public mixed $village;
-    public mixed $traditional_authority;
-    public mixed $class;
-    public mixed $district;
-    /**
-     * @var \Carbon\Carbon|mixed
-     */
-    public mixed $created_at;
-    /**
-     * @var \Carbon\Carbon|mixed
-     */
-    public mixed $updated_at;
-    public mixed $email;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+ 
     protected $fillable = [
         'title',
         'firstname',
         'surname',
-        'email',
-        'password',
-        'village',
-        'traditional_authority',
-        'district',
-        'created_at',
-        'updated_at'
-      
-     
+        "email",
+        "password",
+        "sex",
+        "village",
+        "traditional_authority",
+        "district"
+
     ];
 
     /**

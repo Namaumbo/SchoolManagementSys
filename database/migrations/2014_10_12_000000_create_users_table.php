@@ -19,27 +19,21 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('surname');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('sex');
             $table->string('password');
             $table->string('village');
             $table->string('traditional_authority');
-            $table->string('district');
-<<<<<<< HEAD
-
             $table->rememberToken();
             $table->timestamps();
 
       
 
 
-=======
-            $table->string('class');
-            $table->string('role');
-            $table->char('sex');
-            $table->rememberToken();
-            $table->timestamps();
 
->>>>>>> 1310ea3ababbda6a1159e9cb6478427a692df741
+        
+        
+
+
         });
     }
 
