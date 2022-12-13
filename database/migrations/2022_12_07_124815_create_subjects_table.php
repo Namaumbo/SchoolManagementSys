@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->integer('department_id')->unsigned();
 
             $table->string('SubjectName');
             $table->string('PeriodsPerWeek');
@@ -26,7 +27,14 @@ return new class extends Migration
             ->on('users')
             ->onDelete('CASCADE');
 
+            $table->foreign('department_id')
+            ->references('id')
+            ->on('departments')
+            ->onDelete('CASCADE');
+
         });
+
+
     } 
 
     /**

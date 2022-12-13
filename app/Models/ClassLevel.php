@@ -17,20 +17,5 @@ class ClassLevel extends Model
         'created_at',
         'updated_at'
     ];
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
-    }
-    public function assessment(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(assessment::class);
-    }
-    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(subject::class);
-    }
-    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(role::class);
-    }
+
 }

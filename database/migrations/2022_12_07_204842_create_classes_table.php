@@ -14,7 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('classes', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->integer('subject_id')->unsigned();
+
             $table->string('className');
             $table->timestamps();
 
@@ -22,7 +25,13 @@ return new class extends Migration
             ->references('id')
             ->on('users')
             ->onDelete('CASCADE');
-      
+
+            $table->foreign('subject_id')
+            ->references('id')
+            ->on('subjects')
+            ->onDelete('CASCADE');
+
+          
 
 
        

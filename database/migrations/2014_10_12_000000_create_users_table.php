@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('title');
             $table->string('firstname');
             $table->string('surname');
             $table->string('email')->unique();
@@ -23,13 +24,11 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
-            $table->string('class');
 
             $table->rememberToken();
             $table->timestamps();
 
       
-
 
 
         });

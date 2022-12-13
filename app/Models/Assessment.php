@@ -17,8 +17,5 @@ class Assessment extends Model
       
     ];
 
-    public function subjects(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(subjects::class);
-    }
+ 
 }

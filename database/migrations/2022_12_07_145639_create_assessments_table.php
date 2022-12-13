@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('assessments', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->integer('subject_id')->unsigned();
             $table->integer('user_id')->unsigned();
 

@@ -48,11 +48,11 @@ class UserController extends Controller
         }
        try{
         $user=new User;
+        $user->title=$request->title;
         $user->firstname=$request->firstname;
         $user->surname=$request->surname;
         $user->email=$request->email;
         $user->password =Hash::make($request->password);
-        $user->class=$request->class;
         $user->village=$request->village;
         $user->traditional_authority=$request->traditional_authority;
         $user->district=$request->district;
@@ -114,11 +114,11 @@ class UserController extends Controller
     {
         if(User::where('id',$id)->exists()){
            $user=User::find($id);
+           $user->title=$request->title;
            $user->firstname=$request->firstname;
            $user->surname=$request->surname;
            $user->email=$request->email;
            $user->password =Hash::make($request->password);
-           $user->class=$request->class;
            $user->village=$request->village;
            $user->traditional_authority=$request->traditional_authority;
            $user->district=$request->district;
