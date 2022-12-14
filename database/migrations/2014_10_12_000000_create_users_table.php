@@ -20,9 +20,13 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             $table->string('sex');
+            $table->integer('class_id')->unsigned();
+            $table->integer('role_id')->unsigned();
+            $table->integer('department_id')->unsigned();
             $table->string('password');
             $table->string('village');
             $table->string('traditional_authority');
+            $table->string('district');
             $table->rememberToken();
             $table->timestamps();
 
