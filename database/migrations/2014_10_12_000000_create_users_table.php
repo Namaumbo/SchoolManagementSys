@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('village');
             $table->string('district');
             $table->string('traditional_authority');
-            $table->string('district');
             $table->rememberToken();
             $table->timestamps();
 
