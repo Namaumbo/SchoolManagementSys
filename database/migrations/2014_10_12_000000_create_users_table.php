@@ -25,17 +25,18 @@ return new class extends Migration
             $table->integer('department_id')->unsigned();
             $table->string('password');
             $table->string('village');
+            $table->string('district');
             $table->string('traditional_authority');
             $table->string('district');
             $table->rememberToken();
             $table->timestamps();
 
-      
 
 
 
-        
-        
+
+
+
 
 
         });
