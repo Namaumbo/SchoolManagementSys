@@ -11,12 +11,14 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property mixed|string $password
  * @property mixed $surname
+ * @method static find(int $id)
+ * @method static where(string $string, int $id)
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
- 
+
     protected $fillable = [
         'title',
         'firstname',
@@ -49,5 +51,5 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    
+
 }

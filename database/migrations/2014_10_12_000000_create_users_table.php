@@ -22,16 +22,17 @@ return new class extends Migration
             $table->string('sex');
             $table->string('password');
             $table->string('village');
+            $table->string('district');
             $table->string('traditional_authority');
             $table->rememberToken();
             $table->timestamps();
 
-      
 
 
 
-        
-        
+
+
+
 
 
         });
