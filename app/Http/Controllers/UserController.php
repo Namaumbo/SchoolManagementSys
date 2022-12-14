@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,38 +14,12 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return Collection
      */
-    public function index()
+    public function index(): Collection
     {
         return User::all();
-
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create(Request $request, $user)
-    {
-
-        $user->title = $request->title;
-        $user->firstname = $request->firstname;
-        $user->surname = $request->surname;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->sex = $request->sex;
-        $user->village = $request->village;
-        $user->traditional_authority = $request->traditional_authority;
-        $user->district = $request->district;
-
-        $user->created_at = carbon::now();
-        $user->updated_at = carbon::now();
-        $user->save();
-
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -71,41 +45,33 @@ class UserController extends Controller
                 'status' => 200,
             ]);
         } catch (\Exception $e) {
-
             return response()->json([
                 'message' => 'Student not saved',
                 'User' => $user,
                 'status' => 400,
                 '4' => $e,
-
             ]);
-
         }
     }
-
     /**
      * Display the specified resource.
      *
      * @param int $id
      * @return Response
      */
-    public function show($id): Response
+    public function show(int $id): Response
     {
-
         return User::find($id);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return Response
      */
-    public function edit($id): Response
+    public function edit(int $id)
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -113,11 +79,11 @@ class UserController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {
             $user = User::find($id);
-            $this->create($request, $user);
+            $this->userDetailsCommon($request, $user);
             return response()->json([
                 'message' => 'Student is updated successfully'
             ], 400);
@@ -133,21 +99,39 @@ class UserController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {
             $user = User::find($id);
             $user->delete();
             return response()->json([
                 'message' => 'Student is deleted successfully'
-
             ], 404);
-
         } else {
             return response()->json([
                 'message' => 'No  Student found with that information ',
             ]);
         }
+    }
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return void
+     */
+    public function userDetailsCommon(Request $request, $user): void
+    {
+        $user->title = $request->title;
+        $user->firstname = $request->firstname;
+        $user->surname = $request->surname;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->sex = $request->sex;
+        $user->village = $request->village;
+        $user->traditional_authority = $request->traditional_authority;
+        $user->district = $request->district;
+        $user->created_at = carbon::now();
+        $user->updated_at = carbon::now();
+        $user->save();
     }
     /**
      * @param Request $request

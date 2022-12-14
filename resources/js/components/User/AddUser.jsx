@@ -76,27 +76,27 @@ export default function AddUser() {
                     Modal title
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                    <TextField  label="Title" id="fullWidth7" />
+                    <TextField fullWidth label="Title" id="fullWidth7" />
                     <br />
                     <span>First Name</span>
                     <TextField fullWidth label="First Name" id="fullWidth1" style={{width:"34em"}}/>
                     <br />
-                    <span>First Name</span>
+                    <span>Last Name</span>
                     <TextField fullWidth label="Last Name" id="fullWidth2" style={{width:"34em"}} />
                     <br />
-                    <span>First Name</span>
+                    <span>Email</span>
                     <TextField fullWidth label="Email" id="fullWidth3" style={{width:"34em"}}/>
                     <br />
-                    <span>First Name</span>
+                    <span>District</span>
                     <TextField fullWidth label="District" id="fullWidth4" style={{width:"34em"}}/>
                     <br />
-                    <span>First Name</span>
+                    <span>Village</span>
                     <TextField fullWidth label="Village" id="fullWidth5" style={{width:"34em"}}/>
                     <br />
-                    <span>First Name</span>
+                    <span>Traditional Authority</span>
                     <TextField fullWidth label="Traditional Authority" id="fullWidth6" style={{width:"34em"}}/>
                     <br />
-                    <span>First Name</span>
+                    <span>Sex</span>
                     <TextField fullWidth label="Sex" id="fullWidth" style={{width:"34em"}}/>
 
                 </DialogContent>
