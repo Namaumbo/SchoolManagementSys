@@ -9,7 +9,6 @@ class Subject extends Model
 {
     use HasFactory;
 
-    public mixed $SubjectName;
     protected $fillable = [
         'SubjectName',
         'PeriodsPerWeek',

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\fs;
+use App\Models\Assessment;
 use Illuminate\Http\Request;
 
 class AssessmentController extends Controller

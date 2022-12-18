@@ -13,23 +13,26 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('subjects', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('department_id')->unsigned();
-            $table->string('SubjectName');
-            $table->string('PeriodsPerWeek');
-            $table->timestamps();
-    
+        Schema::table('users', function (Blueprint $table) {
+        
+            $table->foreign('class_id')
+            ->references('id')
+            ->on('classes')
+            ->onDelete('CASCADE');
 
+            
+            $table->foreign('role_id')
+            ->references('id')
+            ->on('roles')
+            ->onDelete('CASCADE');
+
+            
             $table->foreign('department_id')
             ->references('id')
             ->on('departments')
             ->onDelete('CASCADE');
-
         });
-
-
-    } 
+    }
 
     /**
      * Reverse the migrations.
@@ -38,6 +41,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subjects');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };
