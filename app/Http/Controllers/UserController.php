@@ -38,7 +38,7 @@ class UserController extends Controller
         }
         try {
             $user = new User;
-            $this->create($request, $user);
+            $this->userDetailsCommon($request, $user);
             return response()->json([
                 'message' => 'Student saved successfully',
                 'User' => $user,

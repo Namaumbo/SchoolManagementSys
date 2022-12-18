@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "../../css/admindash.css"
 import UserInfo from "@/components/UserInfo";
 import users from "../../Assets/users.png"
@@ -9,8 +9,23 @@ import {DataGrid} from '@mui/x-data-grid';
 import DatePicker from "@/components/DatePicker";
 import Chart from "@/components/Chart";
 import TotalAvatars from "@/components/People";
+import {Navigate} from "react-router-dom";
+import {userState} from "./User/userState"
+import {useRecoilState} from "recoil";
+
 
 export default function AdminDashboard() {
+
+    const [authenticated, setAuthenticated] = useState(false);
+    const [loggediInStatus] = useRecoilState(userState)
+
+    // useEffect(() => {
+    //     const loggedInUser = localStorage.getItem("authenticated");
+    //         setAuthenticated(true)
+    // }, []);
+
+
+
     const columns = [
         {field: 'id', headerName: 'ID', width: 50},
         {field: 'firstName', headerName: 'First name', width: 130},
@@ -84,130 +99,153 @@ export default function AdminDashboard() {
         },
         {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65, Sex: 'M', email: "roxi@gmail.com,", role: "teacher"},
     ];
-    return <>
-        <div style={{maxWidth: "70%"}}>
-            <div className="user">
-                <UserInfo/>
+
+    if (authenticated) {
+        return (
+            <div>
+                {userState}
+                <p>Welcome to your Dashboard</p>
             </div>
-            <div className="container text-center">
-                <div className="row">
-                    <div className="col">
-                        <div style={{display: "flex"}}>
-                            <div className="col-4">
-                                <div className="cards">
-                                    <div className="card-header bg-transparent border-success">
-                                        <span className="heading">Members Available</span>
-                                        <hr/>
-                                    </div>
-                                    <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h4>3/{rows.length} </h4></span>
+        );
+    } else {
+        return <Navigate replace to="/login" />;
 
-                                       <span><img src={teachers} alt="users" className="usersCard"/></span>
-                                        </span>
-                                </div>
-                            </div>
-                            <div className="col-4">
-                                <div className="cards">
-                                    <div className="card-header bg-transparent border-success">
-
-                                        <span className="heading">Students Available</span></div>
-                                    <hr/>
-                                    <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h4>356</h4></span>
-                                       <span><img src={students} alt="users" className="usersCard"/></span>
-                                        </span>
-                                </div>
-                            </div>
-                            <div className="col-4">
-                                <div className="cards">
-                                    <div className="card-header bg-transparent border-success">
-                                        <span className="heading">Members Absent</span></div>
-                                    <hr/>
-                                    <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h4>3/29</h4></span>
-                                       <span><img src={absentUser} alt="users" className="usersCard"/></span>
-                                        </span>
-                                </div>
-                            </div>
-                            <div className="col-4" style={{marginRight: "0.5em"}}>
-                                <div className="cards">
-                                    <div className="card-header bg-transparent border-success">
-                                        <span className="heading">staff available</span>
-                                        <hr/>
-                                    </div>
-                                    <span style={{display: "flex", justifyContent: "space-around"}}>
-                                            <span><h4>8/10</h4></span>
-                                       <span><img src={users} alt="users" className="usersCard"/></span>
-                                        </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container text-center" style={{marginTop: "5px"}}>
-                <div style={{display: "flex", justifyContent: "space-between"}}>
-                    <span className="headings">
-                    <b>Team</b>
-                </span>
-                </div>
-            </div>
-            <div className="container text-center">
-                <div style={{display: "flex", justifyContent: "space-between"}}>
-                    <div className="col-11">
-                        <div style={{height: 300, width: '100%'}}>
-                            <DataGrid
-                                rows={rows}
-                                columns={columns}
-                                pageSize={5}
-                                rowsPerPageOptions={[6]}
-                                checkboxSelection
-                            />
-                        </div>
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                    <span className="headings">
-                    <b>Statistics</b>
-                </span>
-                        </div>
-                        <hr/>
-                        <div className="col-11">
-                            <div className="container text-center">
-                                <div className="row">
-                                    <div className="col-sm-5 col-md-6">
-                                        <div className="graph">
-                                            <Chart student="Male" percentages="56"/>
-                                        </div>
-                                    </div>
-                                    <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">
-                                        <div className="graph">
-                                            <Chart
-                                                student="Females" percentages="44"/>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-5">
-                        <div className="card">
-                            <DatePicker/>
-                        </div>
-                        <span className="headings">
-                    <b>Employees</b>
-                </span>
-                        <div className="card">
-
-                            <div className="people">
-
-                                <TotalAvatars/>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </>
+    }
+    // return <>
+    //     <>{console.log(authenticated)}</>
+    //     {/*{*/}
+    //
+    //     {/*    authenticated ?*/}
+    //     {/*        <>*/}
+    //     {/*            <Navigate replace to="/aa"/>;*/}
+    //     {/*        </>*/}
+    //     {/*        :*/}
+    //     {/*        <>*/}
+    //     {/*            <div style={{maxWidth: "70%"}}>*/}
+    //     {/*                <div className="user">*/}
+    //     {/*                    <UserInfo/>*/}
+    //     {/*                </div>*/}
+    //     {/*                <div className="container text-center">*/}
+    //     {/*                    <div className="row">*/}
+    //     {/*                        <div className="col">*/}
+    //     {/*                            <div style={{display: "flex"}}>*/}
+    //     {/*                                <div className="col-4">*/}
+    //     {/*                                    <div className="cards">*/}
+    //     {/*                                        <div className="card-header bg-transparent border-success">*/}
+    //     {/*                                            <span className="heading">Members Available</span>*/}
+    //     {/*                                            <hr/>*/}
+    //     {/*                                        </div>*/}
+    //     {/*                                        <span style={{display: "flex", justifyContent: "space-around"}}>*/}
+    //     {/*                                    <span><h4>3/{rows.length} </h4></span>*/}
+    //
+    //     {/*                               <span><img src={teachers} alt="users" className="usersCard"/></span>*/}
+    //     {/*                                </span>*/}
+    //     {/*                                    </div>*/}
+    //     {/*                                </div>*/}
+    //     {/*                                <div className="col-4">*/}
+    //     {/*                                    <div className="cards">*/}
+    //     {/*                                        <div className="card-header bg-transparent border-success">*/}
+    //
+    //     {/*                                            <span className="heading">Students Available</span></div>*/}
+    //     {/*                                        <hr/>*/}
+    //     {/*                                        <span style={{display: "flex", justifyContent: "space-around"}}>*/}
+    //     {/*                                    <span><h4>356</h4></span>*/}
+    //     {/*                               <span><img src={students} alt="users" className="usersCard"/></span>*/}
+    //     {/*                                </span>*/}
+    //     {/*                                    </div>*/}
+    //     {/*                                </div>*/}
+    //     {/*                                <div className="col-4">*/}
+    //     {/*                                    <div className="cards">*/}
+    //     {/*                                        <div className="card-header bg-transparent border-success">*/}
+    //     {/*                                            <span className="heading">Members Absent</span></div>*/}
+    //     {/*                                        <hr/>*/}
+    //     {/*                                        <span style={{display: "flex", justifyContent: "space-around"}}>*/}
+    //     {/*                                    <span><h4>3/29</h4></span>*/}
+    //     {/*                               <span><img src={absentUser} alt="users" className="usersCard"/></span>*/}
+    //     {/*                                </span>*/}
+    //     {/*                                    </div>*/}
+    //     {/*                                </div>*/}
+    //     {/*                                <div className="col-4" style={{marginRight: "0.5em"}}>*/}
+    //     {/*                                    <div className="cards">*/}
+    //     {/*                                        <div className="card-header bg-transparent border-success">*/}
+    //     {/*                                            <span className="heading">staff available</span>*/}
+    //     {/*                                            <hr/>*/}
+    //     {/*                                        </div>*/}
+    //     {/*                                        <span style={{display: "flex", justifyContent: "space-around"}}>*/}
+    //     {/*                                    <span><h4>8/10</h4></span>*/}
+    //     {/*                               <span><img src={users} alt="users" className="usersCard"/></span>*/}
+    //     {/*                                </span>*/}
+    //     {/*                                    </div>*/}
+    //     {/*                                </div>*/}
+    //     {/*                            </div>*/}
+    //     {/*                        </div>*/}
+    //     {/*                    </div>*/}
+    //     {/*                </div>*/}
+    //
+    //     {/*                <div className="container text-center" style={{marginTop: "5px"}}>*/}
+    //     {/*                    <div style={{display: "flex", justifyContent: "space-between"}}>*/}
+    //     {/*            <span className="headings">*/}
+    //     {/*            <b>Team</b>*/}
+    //     {/*        </span>*/}
+    //     {/*                    </div>*/}
+    //     {/*                </div>*/}
+    //     {/*                <div className="container text-center">*/}
+    //     {/*                    <div style={{display: "flex", justifyContent: "space-between"}}>*/}
+    //     {/*                        <div className="col-11">*/}
+    //     {/*                            <div style={{height: 300, width: '100%'}}>*/}
+    //     {/*                                <DataGrid*/}
+    //     {/*                                    rows={rows}*/}
+    //     {/*                                    columns={columns}*/}
+    //     {/*                                    pageSize={5}*/}
+    //     {/*                                    rowsPerPageOptions={[6]}*/}
+    //     {/*                                    checkboxSelection*/}
+    //     {/*                                />*/}
+    //     {/*                            </div>*/}
+    //     {/*                            <div style={{display: "flex", justifyContent: "space-between"}}>*/}
+    //     {/*            <span className="headings">*/}
+    //     {/*            <b>Statistics</b>*/}
+    //     {/*        </span>*/}
+    //     {/*                            </div>*/}
+    //     {/*                            <hr/>*/}
+    //     {/*                            <div className="col-11">*/}
+    //     {/*                                <div className="container text-center">*/}
+    //     {/*                                    <div className="row">*/}
+    //     {/*                                        <div className="col-sm-5 col-md-6">*/}
+    //     {/*                                            <div className="graph">*/}
+    //     {/*                                                <Chart student="Male" percentages="56"/>*/}
+    //     {/*                                            </div>*/}
+    //     {/*                                        </div>*/}
+    //     {/*                                        <div className="col-sm-5 offset-sm-2 col-md-6 offset-md-0">*/}
+    //     {/*                                            <div className="graph">*/}
+    //     {/*                                                <Chart*/}
+    //     {/*                                                    student="Females" percentages="44"/>*/}
+    //     {/*                                            </div>*/}
+    //     {/*                                        </div>*/}
+    //
+    //     {/*                                    </div>*/}
+    //     {/*                                </div>*/}
+    //     {/*                            </div>*/}
+    //     {/*                        </div>*/}
+    //     {/*                        <div className="col-5">*/}
+    //     {/*                            <div className="card">*/}
+    //     {/*                                <DatePicker/>*/}
+    //     {/*                            </div>*/}
+    //     {/*                            <span className="headings">*/}
+    //     {/*            <b>Employees</b>*/}
+    //     {/*        </span>*/}
+    //     {/*                            <div className="card">*/}
+    //
+    //     {/*                                <div className="people">*/}
+    //
+    //     {/*                                    <TotalAvatars/>*/}
+    //     {/*                                </div>*/}
+    //
+    //     {/*                            </div>*/}
+    //     {/*                        </div>*/}
+    //     {/*                    </div>*/}
+    //     {/*                </div>*/}
+    //     {/*            </div>*/}
+    {/*    /!*        </>*!/*/}
+    {/*    /!*}*!/*/}
+    {/*</>*/}
 }
