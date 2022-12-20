@@ -12,34 +12,35 @@ import Users from "@/components/Pages/Admin/Users";
 import ClassesPerformance from "@/components/Pages/Admin/ClassPerformance";
 import AdminDashboard from "@/components/AdminDashboard";
 import Login from "@/components/Login";
+import {useRecoilState} from "recoil";
+import {userState} from "@/components/User/userState";
+
+
 
 function App() {
     return (
         <>
-                <BrowserRouter>
-                    <Routes>
-                {/*//        <Route path="/" element={<Home/>}>*/}
-                {/*        <Route index element={<Home/>}/>*/}
-                        <Route  index  element={<Login/>}/>
-                        <Route path={"/dashboard"} element={<AdminDashboard/>}/>
 
-                {/*//             <Route path="/" element={<AdminDashboard/>}/>*/}
-                {/*//             <Route path="/classes" element={<Classes/>}/>*/}
-                {/*//             <Route path="/logs" element={<Logs/>}/>*/}
-                {/*            <Route path="/profile" element={<Profile/>}/>*/}
-                {/*            <Route path="/team" element={<Team/>}/>*/}
-                {/*            <Route path="/performance" element={<SchoolPerformance/>}/>*/}
-                {/*            <Route path="/users" element={<Users/>}/>*/}
-                {/*            <Route path="/class-Performance" element={<ClassesPerformance/>}/>*/}
-                {/*            <Route path="/messages" element={<Messages/>}/>*/}
-                {/*        </Route>*/}
-                    </Routes>
-                </BrowserRouter>
+            <BrowserRouter>
+                <Routes>
+                    <Route exact path="/" element={<Login/>}/>
+                    <Route path="/" element={<Home/>}>
+                        <Route path="/dashboard" element={<AdminDashboard/>}/>
+                        <Route path="/classes" element={<Classes/>}/>
+                        <Route path="/logs" element={<Logs/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
+                        <Route path="/team" element={<Team/>}/>
+                        <Route path="/performance" element={<SchoolPerformance/>}/>
+                        <Route path="/users" element={<Users/>}/>
+                        <Route path="/class-Performance" element={<ClassesPerformance/>}/>
+                        <Route path="/messages" element={<Messages/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
             {/*<Users/>*/}
 
             {/*<Login/>*/}
         </>
-
     );
 }
 

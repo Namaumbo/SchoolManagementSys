@@ -1,23 +1,22 @@
 import React, {useState} from "react";
 import "../../css/login.css"
-import loginjpg from "../../Assets/login.jpg"
+import loginjpg from "../../assets/login.jpg"
 import {Button} from "react-bootstrap";
 import {useNavigate} from 'react-router-dom'
 import {  useRecoilState } from "recoil";
 import {userState} from './User/userState'
 
-
-
 export default function Login() {
+
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     const [login, setLogin] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [authenticated, setAuthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated") || false));
+    const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
     const users = [{username: "name", password: "password"}];
-    const [loginStatus , setLoginStatus] = useRecoilState(userState)
+    const [{loggedIn,role} , setLoginStatus] = useRecoilState(userState)
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -29,9 +28,8 @@ export default function Login() {
         }, 2000)
         const account = users.find((user) => user.username === username);
         if (account && account.password === password) {
-            // setAuthenticated(true)
-            setLoginStatus('true')
-            localStorage.setItem("authenticated", loginStatus);
+            setLoginStatus({loggedIn: true,role: 'h-teacher'})
+            localStorage.setItem("authenticated", true);
             navigate("/dashboard");
         }
 

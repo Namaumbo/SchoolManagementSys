@@ -1,31 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import "../../css/admindash.css"
-import UserInfo from "@/components/UserInfo";
-import users from "../../Assets/users.png"
-import absentUser from "../../Assets/absentUser.png"
-import students from "../../Assets/students.png"
-import teachers from "../../Assets/staffTeachs.png"
-import {DataGrid} from '@mui/x-data-grid';
-import DatePicker from "@/components/DatePicker";
-import Chart from "@/components/Chart";
-import TotalAvatars from "@/components/People";
 import {Navigate} from "react-router-dom";
 import {userState} from "./User/userState"
 import {useRecoilState} from "recoil";
 
 
 export default function AdminDashboard() {
-
-    const [authenticated, setAuthenticated] = useState(false);
-    const [loggediInStatus] = useRecoilState(userState)
-
-    // useEffect(() => {
-    //     const loggedInUser = localStorage.getItem("authenticated");
-    //         setAuthenticated(true)
-    // }, []);
-
-
-
+    const [{loggedIn, role}] = useRecoilState(userState)
     const columns = [
         {field: 'id', headerName: 'ID', width: 50},
         {field: 'firstName', headerName: 'First name', width: 130},
@@ -100,16 +81,27 @@ export default function AdminDashboard() {
         {id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65, Sex: 'M', email: "roxi@gmail.com,", role: "teacher"},
     ];
 
-    if (authenticated) {
+    if (loggedIn && role === 'admin') {
         return (
             <div>
-                {userState}
-                <p>Welcome to your Dashboard</p>
+                <p>Welcome to your Dashboard Administrator </p>
+            </div>
+        );
+
+    } else if (loggedIn && role === 'h-teacher') {
+        return (
+            <div>
+                <p>Welcome to your Dashboard Head Teacher </p>
+            </div>
+        );
+    } else if (loggedIn && role === 'teacher') {
+        return (
+            <div>
+                <p>Welcome to your Dashboard Teacher </p>
             </div>
         );
     } else {
-        return <Navigate replace to="/login" />;
-
+        return <Navigate replace to="/login"/>;
     }
     // return <>
     //     <>{console.log(authenticated)}</>
@@ -245,7 +237,10 @@ export default function AdminDashboard() {
     //     {/*                    </div>*/}
     //     {/*                </div>*/}
     //     {/*            </div>*/}
-    {/*    /!*        </>*!/*/}
-    {/*    /!*}*!/*/}
-    {/*</>*/}
+    {/*    /!*        </>*!/*/
+    }
+    {/*    /!*}*!/*/
+    }
+    {/*</>*/
+    }
 }

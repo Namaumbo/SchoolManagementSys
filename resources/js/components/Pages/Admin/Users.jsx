@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import "../../../../css/users.css"
 import Paper from '@mui/material/Paper';
-import pic1 from '../../../../Assets/photo-1628563694622-5a76957fd09c.jpg'
+import pic1 from '../../../../assets/photo-1628563694622-5a76957fd09c.jpg'
 import Avatar from '@mui/material/Avatar';
 import {Button} from "@mui/material";
 import Grid from '@mui/material/Grid'
