@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "../../css/login.css"
 import loginjpg from "../../assets/login.jpg"
 import {Button} from "react-bootstrap";
@@ -16,7 +16,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
     const users = [{username: "name", password: "password"}];
-    const [{loggedIn,role} , setLoginStatus] = useRecoilState(userState)
+    let [{loggedIn,role,usersList} , setLoginStatus] = useRecoilState(userState)
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -28,14 +28,11 @@ export default function Login() {
         }, 2000)
         const account = users.find((user) => user.username === username);
         if (account && account.password === password) {
-            setLoginStatus({loggedIn: true,role: 'h-teacher'})
+            setLoginStatus({loggedIn: true,role: 'admin'})
             localStorage.setItem("authenticated", true);
             navigate("/dashboard");
         }
-
     };
-
-
     return <>
         <div className="main1">
             <div className="main">

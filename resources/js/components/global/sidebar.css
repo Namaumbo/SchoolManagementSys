@@ -1,12 +1,11 @@
 
 .sidebar {
-    border-right: 1px solid rgba(233, 236, 255, 0.39);;
-    min-height: 100vh;
+    border-right: 1px solid rgba(233, 236, 255, 0.39);
+    height: 100vh;
     background-color: #1a202c;
-    max-width: 100%;
+    width: 15%;
     position: fixed;
 }
-
 .center {
     padding-left: 10px
 }
@@ -53,16 +52,14 @@ li:hover {
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
     color: white;
-
 }
 
 .icon {
-
     color: #c2bdbd;
 }
-
 span {
-    font-size: 13px;
+
+    font-size: 15px;
     font-weight: 600;
     color: #888;
     margin-left: 10px;

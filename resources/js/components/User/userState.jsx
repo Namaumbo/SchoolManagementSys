@@ -4,6 +4,7 @@ export const userState = atom({
     key: "loginStatus",
     default:{
         loggedIn:"",
-        role:""
+        role:"",
+        usersList: []
     },
 })

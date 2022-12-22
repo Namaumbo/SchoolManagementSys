@@ -7,20 +7,15 @@ import {Button} from "@mui/material";
 import Grid from '@mui/material/Grid'
 import {ListAltOutlined, Security} from "@mui/icons-material";
 import AddUser from "@/components/User/AddUser";
-
+import {useRecoilState} from "recoil";
+import {userState} from "@/components/User/userState";
+import {userDetails} from "@/components/recoil_states/userdetails";
 
 function Users() {
+    const [{loggedIn,role,usersList}, setUsersList] = useRecoilState(userState)
+    const [userInfo , setUserInfo] = useRecoilState(userDetails)
 
-    const [usersList, setUsersList] = useState([])
 
-    useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/users').then(res => {
-            setUsersList(res.data)
-        }).catch(err => {
-            console.error(err)
-        })
-
-    }, ["http://127.0.0.1:8000/api/users"])
     return <>
 
         <div className="container text-center">
@@ -36,7 +31,7 @@ function Users() {
             <div className="row">
                 <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 16}}>
                     {
-                        usersList.map(user => {
+                        userInfo.map(user => {
                             const firstName = user.firstname;
                             const firstLetter = firstName[0].toUpperCase()
                             const lastName =user.surname
