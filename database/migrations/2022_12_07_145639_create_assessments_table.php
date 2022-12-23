@@ -17,7 +17,6 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('subject_id')->unsigned();
             $table->integer('user_id')->unsigned();
-
             $table->string('score');
             $table->timestamps();
             $table->foreign('subject_id')

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
-import pic1 from "../../Assets/Cool-profile-picture-Discord.jpg"
-import pic2 from "../../Assets/photo-1628563694622-5a76957fd09c.jpg"
+import pic1 from "../../assets/Cool-profile-picture-Discord.jpg"
+import pic2 from "../../assets/photo-1628563694622-5a76957fd09c.jpg"
 export default function TotalAvatars() {
     return (
         <AvatarGroup total={24}>

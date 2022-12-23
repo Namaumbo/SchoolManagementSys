@@ -9,7 +9,7 @@ const Home = () => {
         <div className="home">
             <SideBar/>
             <div className="innerHome">
-                <div style={{marginLeft: "10.6em"}}>
+                <div style={{marginLeft: "12.6em"}}>
                     <Navbar/>
                     <Outlet/>
                 </div>

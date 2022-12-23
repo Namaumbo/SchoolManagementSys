@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -124,7 +127,7 @@ class UserController extends Controller
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
         $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password =Hash::make($request->input('password'));
         $user->sex = $request->sex;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
@@ -138,5 +141,37 @@ class UserController extends Controller
      * @param $user
      * @return void
      */
+
+     public function login(Request $request): JsonResponse
+     {
+         $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
+         if ($validator->fails()) {
+             return response()->json(
+                 [
+                     "status" => Response::HTTP_INTERNAL_SERVER_ERROR,
+                     "validation_error" => $validator->errors()
+                 ]
+             );
+         }
+         //        finding user name
+         if (!Auth::attempt($request->only("email", "password","role_id"))) {
+             return response()->json(["wrong credentials"], Response::HTTP_UNPROCESSABLE_ENTITY);
+         }
+         $token = Auth::user()->createToken('Token')->plainTextToken;
+         $cookie = cookie('jwt', $token, 30 * 1);
+         return response()->json(
+             [
+                 "message" => "System successfully logged " . Auth::user()->first_name,
+                 "status" => "ok",
+                 "access_token" => $token,
+                 "token_type" => "bearer",
+                 "user " => Auth::user()
+             ],
+             Response::HTTP_OK
+         )->withCookie($cookie);
+     }
+
+
+
 }
 

@@ -67,7 +67,7 @@ class AssessmentController extends Controller
      * @param  \App\Models\fs  $fs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, fs $fs)
+    public function update(Request $request, Assessment $fs)
     {
         //
     }
@@ -75,10 +75,10 @@ class AssessmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\fs  $fs
+     * @param  \App\Models\Assessment  $fs
      * @return \Illuminate\Http\Response
      */
-    public function destroy(fs $fs)
+    public function destroy(Assessment $fs)
     {
         //
     }
