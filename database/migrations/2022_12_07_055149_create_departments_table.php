@@ -16,8 +16,14 @@ return new class extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->increments('id');
             $table->string('DepartmentName');
-            $table->string('HeadOfDepartment');
+            $table->integer('HeadOfDepartment')->unsigned()->nullable();
             $table->timestamps();
+
+
+               $table->foreign('HeadOfDepartment')
+            ->references('id')
+            ->on('users')
+            ->onDelete('CASCADE');
 
         });
     }

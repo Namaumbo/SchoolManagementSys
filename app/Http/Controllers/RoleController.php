@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Carbon\Carbon;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class RoleController extends Controller
 {
@@ -12,9 +15,9 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Collection
     {
-        //
+        return Role::all();
     }
 
     /**
@@ -22,9 +25,12 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $role)
     {
-        //
+        $role->role_name = $request->role_name;
+        $role->created_at = carbon::now();
+        $role->updated_at = carbon::now();
+        $role->save();
     }
 
     /**
@@ -33,10 +39,30 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request){
+    $role = Role::where('role_name', $request->input('role_name'))->first();
+    if ($role) {
+        return response()->json(
+            ['message' => 'The role was arleady created', 'role_name' => $role],
+        );
     }
+    try {
+        $role = new Role;
+        $this->create($request, $role);
+        return response()->json([
+            'message' => 'Role created successfully',
+            'Role' => $role,
+            'status' => 200,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Role not saved',
+            'Role' => $role,
+            'status' => 400,
+            '4' => $e,
+        ]);
+    }
+}
 
     /**
      * Display the specified resource.
@@ -67,9 +93,19 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request, int $id)
     {
-        //
+        if (Role::where('id', $id)->exists()) {
+            $role = Role::find($id);
+            $this->create($request, $role);
+            return response()->json([
+                'message' => 'The role is updated successfully'
+            ], 400);
+        } else {
+            return response()->json([
+                'message' => 'No such Role found in the database '
+            ], 401);
+        }
     }
 
     /**
@@ -78,8 +114,19 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
+    public function destroy($id)
     {
-        //
+        if (Role::where('id', $id)->exists()) {
+            $role =Role::find($id);
+            $role->delete();
+            return response()->json([
+                'message' => 'The role is deleted successfully'
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'No  role found in the database ',
+            ]);
+        }
+    
     }
 }

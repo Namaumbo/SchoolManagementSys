@@ -4,16 +4,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Models\Subject;
+use App\Models\Role;
 
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\SubjectResource;
-
+use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubjectController;
-
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +79,21 @@ Route::put('/subject/{id}', [SubjectController::class,'update']);
 Route::delete('/subject/{id}', [SubjectController::class,'destroy']);
 
 
+//roles api
+Route::get('/roles', function() {
+    return RoleResource::collection(Role::all());
+});
+
+
+Route::get('/role/{id}', function($id)
+ {
+    return new RoleResource(Role::findorFail($id));
+});
+
+Route::post('/create-role',[RoleController::class,'store']);
+Route::put('/role/{id}', [RoleController::class,'update']);
+
+Route::delete('/role/{id}', [RoleController::class,'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
