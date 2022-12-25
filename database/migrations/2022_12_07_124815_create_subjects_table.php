@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('department_id')->unsigned();
-            $table->string('SubjectName');
+            $table->integer('department_id')->unsigned()->nullable();
+            $table->string('subject_name');
             $table->string('PeriodsPerWeek');
             $table->timestamps();
     

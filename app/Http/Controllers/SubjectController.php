@@ -1,107 +1,89 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Subject;
 use Carbon\Carbon;
-use Exception;
+use App\Models\Subject;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Validator;
 
 class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Collection
+     * @return \Illuminate\Http\Response
      */
-    public function index(): Collection
+    public function index():Collection
     {
         return Subject::all();
-
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
-    public function create(): Response
+    public function create(Request $request, $subject)
     {
-        //
+        $subject->subject_name = $request->subject_name;
+        $subject->PeriodsPerWeek = $request->PeriodsPerWeek;
+
+        $subject->created_at = carbon::now();
+        $subject->updated_at = carbon::now();
+        $subject->save();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): JsonResponse
-    {
-
-        //adding subjects to the database
-        $subject = Subject::where('SubjectName', $request->input('SubjectName'))->first();
-        //Username represents an ID for the student
-        if ($subject) {
-            return response()->json(
-                ['message' => 'Subject already exists', 'SubjectName' => $subject],
-
-            );
-        }
-        try {
-            $subject = new Subject;
-            $subject->SubjectName = $request->SubjectName;
-            $subject->PeriodsPerWeek = $request->PeriodsPerWeek;
-            $subject->created_at = carbon::now();
-            $subject->updated_at = carbon::now();
-            $subject->save();
-            return response()->json([
-                'message' => 'Subject saved successfully',
-                'Subject' => $subject,
-                'status' => 200,
-
-            ]);
-
-
-        } catch (Exception $e) {
-
-            return response()->json([
-                'message' => 'Subject not saved',
-                'Subject' => $subject,
-                'status' => 201,
-                '4' => $e,
-
-            ]);
-
-
-        }
-
+    public function store(Request $request){
+    $subject =  Subject::where('subject_name', $request->input('subject_name'))->first();
+    if ($subject) {
+        return response()->json(
+            ['message' => 'The Subect was arleady created', 'subject_name' => $subject],
+        );
     }
+    try {
+        $subject = new Subject;
+        $this->create($request, $subject);
+        return response()->json([
+            'message' => 'Subject created successfully',
+            'Subject' => $subject,
+            'status' => 200,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Subject not saved',
+            'Subject' => $subject,
+            'status' => 400,
+            '4' => $e,
+        ]);
+    }
+}
 
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     * @return Response
+     * @param  \App\Models\Subject  $role
+     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Subject $subject)
     {
-
-        return Subject::find($id);
-
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     * @return Response
+     * @param  \App\Models\Role  $role
+     * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Subject $subject)
     {
         //
     }
@@ -109,56 +91,44 @@ class SubjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param int $id
-     * @return Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Role  $role
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         if (Subject::where('id', $id)->exists()) {
             $subject = Subject::find($id);
-            $subject->SubjectName = $request->SubjectName;
-            $subject->PeriodsPerWeek = $request->PeriodsPerWeek;
-            $subject->created_at = carbon::now();
-            $subject->updated_at = carbon::now();
-            $subject->save();
+            $this->create($request, $subject);
             return response()->json([
-                'message' => 'Subject is updated successfully'
-
+                'message' => 'The Subject is updated successfully'
             ], 400);
         } else {
             return response()->json([
-                'message' => 'No Subject found with that information '
-
-
+                'message' => 'No such Subject found in the database '
             ], 401);
         }
-
     }
-
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     * @return Response
+     * @param  \App\Models\Role  $role
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         if (Subject::where('id', $id)->exists()) {
-            $subject = Subject::find($id);
+            $subject =Subject::find($id);
             $subject->delete();
             return response()->json([
-                'message' => 'Subject is deleted successfully'
-
+                'message' => 'The role is deleted successfully'
             ], 404);
-
-
         } else {
             return response()->json([
-                'message' => 'No Subject found with that information ',
-
+                'message' => 'No  role found in the database ',
             ]);
         }
+    
     }
 }

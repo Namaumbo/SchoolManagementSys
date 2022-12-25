@@ -10,7 +10,7 @@ class Subject extends Model
     use HasFactory;
 
     protected $fillable = [
-        'SubjectName',
+        'subject_name',
         'PeriodsPerWeek',
         'created_at',
         'updated_at'

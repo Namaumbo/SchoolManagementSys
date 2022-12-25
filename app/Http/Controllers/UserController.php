@@ -153,7 +153,7 @@ class UserController extends Controller
              );
          }
          //        finding user name
-         if (!Auth::attempt($request->only("email", "password","role_id"))) {
+         if (!Auth::attempt($request->only("email", "password"))) {
              return response()->json(["wrong credentials"], Response::HTTP_UNPROCESSABLE_ENTITY);
          }
          $token = Auth::user()->createToken('Token')->plainTextToken;
