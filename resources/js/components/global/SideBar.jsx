@@ -5,12 +5,19 @@ import User from '@mui/icons-material/people'
 import Team from '@mui/icons-material/groups'
 import Apartment from '@mui/icons-material/apartment'
 import {Logout, Note, QuestionAnswer, Timeline, TrendingUp} from "@mui/icons-material";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import {userState} from "@/components/User/userState";
 
 const SideBar = () => {
-    const [{loggedIn, role}] = useRecoilState(userState)
+    let [{loggedIn, role},setUser] = useRecoilState(userState)
+    const navigate = useNavigate()
+
+    function logOut() {
+       setUser(loggedIn="",role="")
+        navigate('/login')
+    }
+
     if (role === 'admin') {
         return (
             <div className="sidebar">
@@ -51,10 +58,10 @@ const SideBar = () => {
 
                         <Link to="class-performance">
                             <li><TrendingUp className="icon" fontSize="small"/><span>Class Performance</span></li>
-
                         </Link><p className="title">END</p>
-                        <li><Logout className="icon" fontSize="small"/><span>Log out </span></li>
-
+                        <Link to='login'>
+                            <li><Logout className="icon" fontSize="small" onClick={logOut}/><span>Log out </span></li>
+                        </Link>
                     </ul>
                 </div>
                 <div className="bottom">color ops</div>
@@ -99,8 +106,9 @@ const SideBar = () => {
                         <Link to="student-performance">
                             <li><TrendingUp className="icon" fontSize="small"/><span>Student Performance</span></li>
                         </Link><p className="title">END</p>
-                        <li><Logout className="icon" fontSize="small"/><span>Log out </span></li>
-                    </ul>
+                        <Link to='login'>
+                            <li><Logout className="icon" fontSize="small"/><span>Log out </span></li>
+                        </Link>                    </ul>
                 </div>
                 <div className="bottom">color ops</div>
             </div>
@@ -143,7 +151,9 @@ const SideBar = () => {
                         <Link to="class-performance">
                             <li><TrendingUp className="icon" fontSize="small"/><span>Class Performance</span></li>
                         </Link><p className="title">END</p>
-                        <li><Logout className="icon" fontSize="small"/><span>Log out </span></li>
+                        <Link to='login'>
+                            <li><Logout className="icon" fontSize="small"/><span>Log out </span></li>
+                        </Link>
                     </ul>
                 </div>
                 <div className="bottom">color ops</div>

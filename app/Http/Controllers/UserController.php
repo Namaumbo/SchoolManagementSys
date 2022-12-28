@@ -115,13 +115,16 @@ class UserController extends Controller
             ]);
         }
     }
+
     /**
      * Show the form for creating a new resource.
      *
+     * @param $user
      * @return void
      */
     public function userDetailsCommon(Request $request, $user): void
     {
+
         $user->title = $request->title;
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
@@ -135,10 +138,10 @@ class UserController extends Controller
         $user->updated_at = carbon::now();
         $user->save();
     }
+
     /**
      * @param Request $request
-     * @param $user
-     * @return void
+     * @return JsonResponse
      */
 
      public function login(Request $request): JsonResponse
@@ -147,14 +150,14 @@ class UserController extends Controller
          if ($validator->fails()) {
              return response()->json(
                  [
-                     "status" => Response::HTTP_INTERNAL_SERVER_ERROR,
+                     "status" => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
                      "validation_error" => $validator->errors()
                  ]
              );
          }
-         //        finding user name
+         //        finding userName
          if (!Auth::attempt($request->only("email", "password"))) {
-             return response()->json(["wrong credentials"], Response::HTTP_UNPROCESSABLE_ENTITY);
+             return response()->json(["wrong credentials"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
          }
          $token = Auth::user()->createToken('Token')->plainTextToken;
          $cookie = cookie('jwt', $token, 30 * 1);
@@ -166,11 +169,8 @@ class UserController extends Controller
                  "token_type" => "bearer",
                  "user " => Auth::user()
              ],
-             Response::HTTP_OK
+             ResponseAlias::HTTP_OK
          )->withCookie($cookie);
      }
-
-
-
 }
 

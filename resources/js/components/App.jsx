@@ -50,7 +50,9 @@ let [ userInfo , setUserInfo] = useRecoilState(userDetails)
                         <Route path="/performance" element={<SchoolPerformance/>}/>
                         <Route path="/users" element={<Users/>}/>
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
-                        <Route path="/messages" element={<Messages/>}/>
+                        <Route path="/messages" element={<Messages/>}
+                        />
+
 
                         {/*//students and H-teacher*/}
 
