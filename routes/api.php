@@ -5,12 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Models\Subject;
 use App\Models\Role;
+use App\Models\Level;
 
 use App\Models\Department;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ClassLevelResource;
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubjectController;
@@ -97,6 +99,10 @@ Route::put('/role/{id}', [RoleController::class,'update']);
 
 Route::delete('/role/{id}', [RoleController::class,'destroy']);
 
+//classLevels Routes
+Route::get('/classes', function() {
+    return ClassLevelResource::collection(Level::all());
+});
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
