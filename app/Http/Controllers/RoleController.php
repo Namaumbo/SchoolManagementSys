@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\User;
+
 use Illuminate\Http\JsonResponse;
+
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Collection;
 
 class RoleController extends Controller
 {
@@ -15,9 +22,9 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index():Collection
+    public function index(): AnonymousResourceCollection
     {
-        return Role::all();
+        return RoleResource::collection(Role::all());
     }
 
     /**
@@ -70,9 +77,21 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
+    public function UserToRoles(Request $request, int $id): JsonResponse|EntityNotFoundException
     {
-        //
+        $user = User::where('id', $id)->first();
+        if ($user) {
+            try {
+                $role = Role::where('role_name', $request->input('role_name'))->first();
+                if ($role) {
+                    $user->roles()->syncWithoutDetaching($role);
+                    return response()->json(['message' => 'Role added to User']);
+                }
+            } catch (EntityNotFoundException $entityNotFoundException)
+             {
+                return $entityNotFoundException;
+            }
+        }
     }
 
     /**

@@ -23,7 +23,7 @@ export default function AdminDashboard() {
         {field: 'surname', headerName: 'Last name', width: 130},
         {field: 'Sex', headerName: 'Sex', type: 'String', width: 10},
         {field: 'email',headerName: 'Email',type: 'String',width: 180},
-        {field: 'role', headerName: 'Role', width: 100}
+        {field: 'role_name', headerName: 'Role', width: 100}
     ];
     const rows = userInfo;
 

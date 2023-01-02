@@ -12,10 +12,13 @@ class ClassLevel extends Model
     
     protected $fillable = [
         'className',
-        'classMonitor',
-        'classteacher',
+        'subject_id',
+
         'created_at',
         'updated_at'
     ];
-
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

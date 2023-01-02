@@ -17,7 +17,7 @@ return new class extends Migration
         
             $table->foreign('class_id')
             ->references('id')
-            ->on('classes')
+            ->on('levels')
             ->onDelete('CASCADE');
 
             

@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Role;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserResource;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +28,7 @@ class UserController extends Controller
     public function index(): Collection
     {
         return User::all();
+        
     }
     /**
      * Store a newly created resource in storage.
@@ -70,10 +77,7 @@ class UserController extends Controller
      *
      * @param int $id
      */
-    public function edit(int $id)
-    {
-        //
-    }
+
     /**
      * Update the specified resource in storage.
      *

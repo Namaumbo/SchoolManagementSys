@@ -40,6 +40,8 @@ Route::get('/user/{id}', function($id)
 
 
 Route::post('/register-user',[UserController::class,'store']);
+Route::post('/register-user/{id}', [RoleController::class, 'UserToRoles']);
+
 Route::post('/login', [UserController::class, 'login']);
 
 Route::put('/user/{id}', [UserController::class,'update']);
