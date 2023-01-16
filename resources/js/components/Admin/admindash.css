@@ -31,7 +31,17 @@
     /*display: flex;*/
     /*justify-content:space-around;*/
 }
-
+.profile-holder{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid black;
+    object-fit: cover;
+    background-color: #0f5132;
+    color: white;
+    font-weight: bold;
+    font-size: 17px;
+}
 .people{
     padding:2em
 }

@@ -1,9 +1,9 @@
 
 .sidebar {
     border-right: 1px solid rgba(233, 236, 255, 0.39);
-    height: 100vh;
     background-color: #262b38;
-    overflow-y:scroll;
+    /*overflow-y:scroll;*/
+    height: 100vh;
     position:relative;
 }
 .center {
