@@ -22,4 +22,10 @@ class Subject extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function levels(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Level::class);
+    }
+    
 }

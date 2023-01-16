@@ -15,10 +15,9 @@ class ClassLevelResource extends JsonResource
     public function toArray($request)
     {
         return [
-
-            'ClassName' => $this->className,
-            'subject_id' => $this->subject_id,
-
+            
+            'subjects' => SubjectResource::collection($this->subjects),
+            'className' => $this->className,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
