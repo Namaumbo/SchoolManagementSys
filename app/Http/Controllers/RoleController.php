@@ -77,22 +77,8 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function UserToRoles(Request $request, int $id): JsonResponse|EntityNotFoundException
-    {
-        $user = User::where('id', $id)->first();
-        if ($user) {
-            try {
-                $role = Role::where('role_name', $request->input('role_name'))->first();
-                if ($role) {
-                    $user->roles()->syncWithoutDetaching($role);
-                    return response()->json(['message' => 'Role added to User']);
-                }
-            } catch (EntityNotFoundException $entityNotFoundException)
-             {
-                return $entityNotFoundException;
-            }
-        }
-    }
+
+    
 
     /**
      * Show the form for editing the specified resource.

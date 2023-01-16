@@ -49,13 +49,13 @@ class UserController extends Controller
             $user = new User;
             $this->userDetailsCommon($request, $user);
             return response()->json([
-                'message' => 'Student saved successfully',
+                'message' => 'User saved successfully',
                 'User' => $user,
                 'status' => 200,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Student not saved',
+                'message' => 'User not saved',
                 'User' => $user,
                 'status' => 400,
                 '4' => $e,
@@ -91,11 +91,11 @@ class UserController extends Controller
             $user = User::find($id);
             $this->userDetailsCommon($request, $user);
             return response()->json([
-                'message' => 'Student is updated successfully'
+                'message' => 'User is updated successfully'
             ], 400);
         } else {
             return response()->json([
-                'message' => 'No Student found with that information '
+                'message' => 'No User found with that information '
             ], 401);
         }
     }
@@ -111,11 +111,11 @@ class UserController extends Controller
             $user = User::find($id);
             $user->delete();
             return response()->json([
-                'message' => 'Student is deleted successfully'
+                'message' => 'The User is deleted successfully'
             ], 404);
         } else {
             return response()->json([
-                'message' => 'No  Student found with that information ',
+                'message' => 'No  User found with that information ',
             ]);
         }
     }
@@ -138,6 +138,7 @@ class UserController extends Controller
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
+        $user->role_id = $request->role_id;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
@@ -176,5 +177,35 @@ class UserController extends Controller
              ResponseAlias::HTTP_OK
          )->withCookie($cookie);
      }
+
+     public function UserToRoles(Request $request, int $id)
+     {
+         $user = User::all();
+         if ($user) {
+            $role = Role::where('id', $user->role_id)->get();
+            $user->roles()->attach($role);
+            return $user;
+
+         }
+      
+        } 
+        
+     public function search(Request $request,$key): JsonResponse{
+            $user= User::query()
+            ->where('firstname','LIKE',"%$key%")
+            ->orWhere('surname', 'LIKE', "%$key%")
+            ->orWhere('sex', 'LIKE', "%$key%")
+            ->orWhere('email', 'LIKE', "%$key%")
+            ->orWhere('district', 'LIKE', "%$key%")
+            ->orWhere('village', 'LIKE', "%$key%")
+            ->get();
+            return response()->json([
+                'User' => $user,
+                'status' => 200,
+            ]);
+
+       
+    
+}
 }
 
