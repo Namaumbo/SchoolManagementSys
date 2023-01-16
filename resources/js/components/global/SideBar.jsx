@@ -14,7 +14,8 @@ const SideBar = () => {
     const navigate = useNavigate()
 
     function logOut() {
-       setUser(loggedIn="",role="")
+        setUser(loggedIn="",role="")
+        window.location.reload(true)
         navigate('/login')
     }
 
@@ -29,39 +30,41 @@ const SideBar = () => {
                     <ul>
                         <p className="title">MAIN</p>
                         <hr/>
-                        <Link to="/dashboard">
+                        <Link to="/dashboard" className='link'>
                             <li><Dashboard className="icon" fontSize="small"/>
                                 <span>Dashboard</span></li>
                         </Link>
                         <p className="title">USER</p>
                         <hr/>
-                        <Link to="team">
+                        <Link to="team" className='link'>
                             <li><Team className="icon" fontSize="small"/><span>Team</span></li>
                         </Link>
-                        <Link to="users">
+                        <Link to="users" className='link'>
                             <li><User className="icon" fontSize="small"/><span> Users</span></li>
                         </Link>
-                        <Link to="messages">
+                        <Link to="messages" className='link'>
                             <li><QuestionAnswer className="icon" fontSize="small"/><span>Messages</span></li>
                         </Link>
-                        <Link to="logs">
-                            <li><Note className="icon" fontSize="small"/><span>Logs</span></li>
+                        <Link to="logs" className='link'>
+                            <li className='link'><Note className="icon" fontSize="small"/><span>Logs</span></li>
                         </Link>
                         <p className="title">SCHOOL FAIR</p>
                         <hr/>
-                        <Link to="classes">
+                        <Link to="classes" className='link'>
                             <li><Apartment className="icon" fontSize="small"/><span>Classes</span></li>
                         </Link>
-                        <Link to="performance">
+                        <Link to="performance" className='link'>
                             <li><Timeline className="icon" fontSize="small"/><span>School Performance</span></li>
                         </Link>
 
-                        <Link to="class-performance">
+                        <Link to="class-performance" className='link'>
                             <li><TrendingUp className="icon" fontSize="small"/><span>Class Performance</span></li>
-                        </Link><p className="title">END</p>
-                        <Link to='login'>
-                            <li><Logout className="icon" fontSize="small" onClick={logOut}/><span>Log out </span></li>
                         </Link>
+                        <p className="title" >END</p>
+                         <div>
+                             <li><Logout className="icon" fontSize="small" onClick={logOut}/><span>Log out </span></li>
+
+                         </div>
                     </ul>
                 </div>
                 <div className="bottom">color ops</div>
@@ -80,16 +83,16 @@ const SideBar = () => {
                     <ul>
                         <p className="title">MAIN</p>
                         <hr/>
-                        <Link to="/dashboard">
+                        <Link to="/dashboard" className='link'>
                             <li><Dashboard className="icon" fontSize="small"/>
                                 <span>Dashboard</span></li>
                         </Link>
                         <p className="title">CLASSES</p>
                         <hr/>
-                        <Link to="students">
+                        <Link to="students" className='link'>
                             <li><Team className="icon" fontSize="small"/><span>Students</span></li>
                         </Link>
-                        <Link to="students-info">
+                        <Link to="students-info" className='link'>
                             <li><User className="icon" fontSize="small"/><span>Students' Info </span></li>
                         </Link>
                         <Link to="logs">
@@ -97,13 +100,13 @@ const SideBar = () => {
                         </Link>
                         <p className="title">CLASS FAIR</p>
                         <hr/>
-                        <Link to="classes">
+                        <Link to="classes" className='link'>
                             <li><Apartment className="icon" fontSize="small"/><span>Classes</span></li>
                         </Link>
-                        <Link to="department-performance">
+                        <Link to="department-performance" className='link'>
                             <li><Timeline className="icon" fontSize="small"/><span>Department Performance</span></li>
                         </Link>
-                        <Link to="student-performance">
+                        <Link to="student-performance" className='link'>
                             <li><TrendingUp className="icon" fontSize="small"/><span>Student Performance</span></li>
                         </Link><p className="title">END</p>
                         <Link to='login'>
@@ -157,7 +160,6 @@ const SideBar = () => {
                     </ul>
                 </div>
                 <div className="bottom">color ops</div>
-
             </div>
         )
     }

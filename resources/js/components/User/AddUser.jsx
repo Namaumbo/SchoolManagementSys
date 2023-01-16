@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useCallback, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import {styled} from '@mui/material/styles';
@@ -54,6 +54,10 @@ BootstrapDialogTitle.propTypes = {
     onClose: PropTypes.func.isRequired,
 };
 
+// useEffect(()=>{
+//
+// },[])
+
 export default function AddUser(initialValues = {}) {
     const [open, setOpen] = React.useState(false);
     const [inputs, setInputs] = useState(initialValues);
@@ -70,9 +74,12 @@ export default function AddUser(initialValues = {}) {
     const handleClose = () => {
         setSent(!sent)
         setTimeout(()=>{
-        axios.post('http://127.0.0.1:8000/api/register-user', inputs)
+        axios.post(
+            'http://127.0.0.1:8000/api/register-user',
+            inputs)
             .then( r => {
                 if(r.data.status === 200) {
+                    // window.location.reload(true)
                     setSent(sent)
                 }
                 }

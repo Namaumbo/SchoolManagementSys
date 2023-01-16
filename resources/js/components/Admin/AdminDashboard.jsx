@@ -1,14 +1,14 @@
 import React, {useEffect} from "react";
-import "../../css/admindash.css"
-import {userState} from "./User/userState"
+import "../../../css/admindash.css"
+import {userState} from "../User/userState"
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {useRecoilState} from "recoil";
 import TotalAvatars from "@/components/People";
-import teachers from '../../assets/teacher.png'
+import teachers from '../../../assets/teacher.png'
 import UserInfo from "@/components/UserInfo";
-import users from '../../assets/users.png'
-import students from '../../assets/students.png'
-import absentUser from '../../assets/absentUser.png'
+import users from '../../../assets/users.png'
+import students from '../../../assets/students.png'
+import absentUser from '../../../assets/absentUser.png'
 import DatePicker from "@/components/DatePicker";
 import {DataGrid} from "@mui/x-data-grid";
 import {Navigate} from "react-router-dom";

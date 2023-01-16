@@ -3,18 +3,16 @@
     border-right: 1px solid rgba(233, 236, 255, 0.39);
     height: 100vh;
     background-color: #262b38;
-    width: 15%;
-    position: fixed;
+    overflow-y:scroll;
+    position:relative;
 }
 .center {
     padding-left: 10px
 }
 .center ul {
-    list-style: none;
     margin: 0;
     padding: 0;
 }
-
 .top {
     height: 30px;
     display: flex;
@@ -37,14 +35,15 @@ hr {
     font-size: 10px;
     font-weight: bold;
     color: #999;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    /*margin-top: 20px;*/
+    /*margin-bottom: px;*/
 }
 li {
     display: flex;
     align-items: center;
     padding: 5px;
-    cursor: pointer
+    cursor: pointer;
+    margin-top:10px
 }
 
 li:hover {
@@ -52,15 +51,17 @@ li:hover {
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
     color: white;
-}
 
+}.link{
+    text-decoration: none;
+}
 .icon {
     color: #c2bdbd;
 }
 span {
-
     font-size: 15px;
     font-weight: 600;
     color: #888;
     margin-left: 10px;
+
 }

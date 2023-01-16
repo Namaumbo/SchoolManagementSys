@@ -7,11 +7,19 @@ import {Outlet} from "react-router-dom";
 const Home = () => {
     return (
         <div className="home">
-            <SideBar/>
-            <div className="innerHome">
-                <div style={{marginLeft: "12.6em"}}>
                     <Navbar/>
-                    <Outlet/>
+            <div className="innerHome">
+                <div className='content-wrapper'>
+                    <div className='sideBar'>
+                        <SideBar/>
+                    </div>
+                    <div className='outlet'>
+                        <Outlet/>
+                    </div>
+                    <div className='rightBar'>
+                        Right bar
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -10,7 +10,7 @@ import {
 export const SidebarData = [
   {
     icon: UilEstate,
-    heading: "Dashboard",
+    heading: "Admin",
   },
   {
     icon: UilClipboardAlt,

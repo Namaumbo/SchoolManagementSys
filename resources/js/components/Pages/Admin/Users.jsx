@@ -14,8 +14,6 @@ import {userDetails} from "@/components/recoil_states/userdetails";
 function Users() {
     const [{loggedIn,role,usersList}, setUsersList] = useRecoilState(userState)
     const [userInfo , setUserInfo] = useRecoilState(userDetails)
-
-
     return <>
 
         <div className="container text-center">
@@ -57,10 +55,7 @@ function Users() {
                             )
                         })
                     }
-
                 </Grid>
-
-
             </div>
             <span> </span>
 
