@@ -7,7 +7,7 @@ import {Outlet} from "react-router-dom";
 const Home = () => {
     return (
         <div className="home">
-                    <Navbar/>
+                    {/*<Navbar/>*/}
             <div className="innerHome">
                 <div className='content-wrapper'>
                     <div className='sideBar'>
@@ -16,9 +16,9 @@ const Home = () => {
                     <div className='outlet'>
                         <Outlet/>
                     </div>
-                    <div className='rightBar'>
-                        Right bar
-                    </div>
+                    {/*<div className='rightBar'>*/}
+                    {/*    Right bar*/}
+                    {/*</div>*/}
 
                 </div>
             </div>

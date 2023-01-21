@@ -3,33 +3,64 @@
     align-items: center;
     padding-bottom: 10px;
     font-size: 18px;
-
+    color: #4a625a;
+}
+.heading{
+    color : white;
+    font-size: 20px;
+}
+.numbers{
+    font-size: 30px;
+    color:white;
 }
 
 .usersCard {
     width: 40px;
 }
+.conWrapper{
+    background-color: #488A99;
+    margin: 13px;
+    border-radius: 3px;
+    border: 2px solid #488A99;
+}
 
-.cards {
-    margin-right: 0.5em;
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(143, 143, 143, 0.47);
+.containerTabs{
+display: flex;
+justify-content: space-around;
+padding: 10px 10px ;
+}
+.card {
+    -webkit-box-shadow: 0 2px 12px 0 rgba(43,43,43,0.44);
+    box-shadow: 0 2px 12px 0 rgba(43,43,43,0.44);
+    border-radius: 2px;
+    width: 190px;
     height: 100px;
-    border-radius: 10px;
+    background-color: rgba(75, 148, 161, 0.74);
+    color: white;
 }
 
 .cards:hover {
     box-shadow: 2px 4px 10px 1px rgba(59, 59, 59, 0.47);
 }
-
+.sub-Heading{
+    color: white;
+    font-size: 14px;
+}
+.money{
+    color:lawngreen;
+    font-size: 20px;
+}
+.revenue{
+    padding-top: 2em;
+    padding-bottom: 1em;
+    display: flex;
+    justify-content: space-around;
+}
 .graph {
     width: 230px;
     height: 230px;
     padding: 10px;
     border-left: 2px solid #dcdcdc;
-
-    /*display: flex;*/
-    /*justify-content:space-around;*/
 }
 .profile-holder{
     width: 32px;
@@ -46,5 +77,16 @@
     padding:2em
 }
 .user{
-    margin-right: 10em;
+    margin-right: 20px;
 }
+.schoolGraphs{
+    display: flex;
+}
+.tableUser{
+    flex:3;
+    border: 1px solid white;
+}
+.chart{
+    flex:2;
+}
+

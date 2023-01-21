@@ -29,6 +29,7 @@ export default function Login() {
 
         axios.post('http://localhost:8000/api/login', user).then(res => {
             if (res.data.status === 'ok') {
+                console.log(res)
                 setLoginStatus({loggedIn: true, role: 'admin'})
                 navigate("/dashboard");
             }
