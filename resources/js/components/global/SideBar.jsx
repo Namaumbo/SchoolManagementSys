@@ -1,6 +1,18 @@
 import "./sidebar.css";
 import React from "react"
-import {Bookmark, Event, Group, Home, School, VideoCallRounded, Wifi, Work} from "@mui/icons-material";
+import {
+    Apartment,
+    Dashboard,
+    Group,
+    Logout,
+    Money,
+    Note,
+    Person,
+    QuestionAnswer,
+    School,
+    Timeline
+} from "@mui/icons-material";
+import {Link} from 'react-router-dom'
 
 const SideBar = () => {
     // let [{loggedIn, role},setUser] = useRecoilState(userState)
@@ -16,46 +28,67 @@ const SideBar = () => {
     return (
         <div className="sideBarItems">
             <ul className="sideBarList">
-                <li className="itemList"><Home/><span>Home</span>
+                <Link to="/dashboard" className='link'>
+                    <li className="itemList"><Dashboard/><span className='sideBarItemText'>Home</span>
+                    </li>
+                </Link>
+
+                <Link to="team" className='link'>
+                    <li className="itemList"><Group/><span className="sideBarItemText">Team</span>
+                    </li>
+                </Link>
+
+                <Link to="users" className='link'>
+                    <li className="itemList"><Person/><span className="sideBarItemText">User</span>
+                    </li>
+                </Link>
+
+                <Link to="logs" className='link'>
+                <li className="itemList"><Note/><span className="sideBarItemText">Logs</span>
                 </li>
-                <li className="itemList"><Wifi/><span className="sideBarItemText">Feeds</span>
+                </Link>
+
+
+                <Link to="messages" className='link'>
+                <li className="itemList"><QuestionAnswer/><span className="sideBarItemText">Messages</span>
                 </li>
-                <li className="itemList"><VideoCallRounded/><span className="sideBarItemText">Videos</span>
+                </Link>
+
+                <Link to="classes" className='link'>
+                <li className="itemList"><Apartment/><span className="sideBarItemText">Classes</span>
                 </li>
-                <li className="itemList"><Group/><span className="sideBarItemText">Groups</span>
+                </Link>
+
+                <Link to="performance" className='link'>
+                <li className="itemList"><Timeline/><span className="sideBarItemText">Performance</span>
                 </li>
-                <li className="itemList"><Bookmark/><span className="sideBarItemText">Bookmarks</span>
+                </Link>
+
+                <Link to="Fees-balance" className='link'>
+                <li className="itemList"><Money/><span className="sideBarItemText">Fees balances </span>
                 </li>
-                <li className="itemList"><Work/><span className="sideBarItemText">Jobs</span>
+                </Link>
+
+                <Link to="Subjects" className='link'>
+                <li className="itemList"><School/><span className="sideBarItemText">Subjects </span>
                 </li>
-                <li className="itemList"><Event/><span className="sideBarItemText">Events</span>
-                </li><li className="itemList"><School/><span className="sideBarItemText">Courses</span>
-                </li>
+                </Link>
+
+
+                <div className='sidebardown'>
+                    <hr/>
+                    <li className="profile-holder">
+                        <h5 style={{marginRight:'10px'}}>D</h5><span>Daelo</span>
+                    </li>
+                    <Link to="logout" className='link'>
+                    <li className="logOut"><Logout/><span className="sideBarItemText">Log Out </span>
+                    </li>
+                    </Link>
+                </div>
             </ul>
         </div>
 
-        // <div className="sidebar">
-        //     <div className="top">
-        //         <span className="logo">Admin</span>
-        //     </div>
-        //     <hr/>
-        //     <div className="center">
-        //         <ul>
-        //             <p className="title">MAIN</p>
-        //             <hr/>
-        //             <Link to="/dashboard" className='link'>
-        //                 <li><Dashboard className="icon" fontSize="small"/>
-        //                     <span>Dashboard</span></li>
-        //             </Link>
-        //             <p className="title">USER</p>
-        //             <hr/>
-        //             <Link to="team" className='link'>
-        //                 <li><Team className="icon" fontSize="small"/><span>Team</span></li>
-        //             </Link>
-        //             <Link to="users" className='link'>
-        //                 <li><User className="icon" fontSize="small"/><span> Users</span></li>
-        //             </Link>
-        //             <Link to="messages" className='link'>
+        //
         //                 <li><QuestionAnswer className="icon" fontSize="small"/><span>Messages</span></li>
         //             </Link>
         //             <Link to="logs" className='link'>
@@ -96,8 +129,8 @@ const SideBar = () => {
     //                     <p className="title">MAIN</p>
     //                     <hr/>
     //                     <Link to="/dashboard" className='link'>
-    //                         <li><Dashboard className="icon" fontSize="small"/>
-    //                             <span>Dashboard</span></li>
+    //                         <li><HeadTeacherDashboard className="icon" fontSize="small"/>
+    //                             <span>HeadTeacherDashboard</span></li>
     //                     </Link>
     //                     <p className="title">CLASSES</p>
     //                     <hr/>
@@ -141,8 +174,8 @@ const SideBar = () => {
     //                     <p className="title">MAIN</p>
     //                     <hr/>
     //                     <Link to="/dashboard">
-    //                         <li><Dashboard className="icon" fontSize="small"/>
-    //                             <span>Dashboard</span></li>
+    //                         <li><HeadTeacherDashboard className="icon" fontSize="small"/>
+    //                             <span>HeadTeacherDashboard</span></li>
     //                     </Link>
     //                     <p className="title">CLASSES</p>
     //                     <hr/>
