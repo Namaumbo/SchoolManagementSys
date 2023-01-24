@@ -127,7 +127,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className='chart'>
                                 <h3>Chart</h3>
-                                {/*<div><Chart student="Male" percentages="56"/></div>*/}
+                                <div><Chart student="Male" percentages="56"/></div>
                             </div>
                         </div>
                     </section>
@@ -135,11 +135,14 @@ export default function AdminDashboard() {
 
                 <div className='scores'>
                     <div className='scoresNumber'>
-                        <h4>Average scores in %</h4>
+                        <h4 className='heading' style={{color:'black',textAlign:'center'}}>Average scores in %</h4>
+                        <h4 className='subHeading'>English</h4>
                         <div className='chartItem'><Chart/></div>
-
+                        <span></span>
+                        <h4 className='subHeading'>Mathematics</h4>
                         <div className='chartItem'><Chart/></div>
-
+                        <span></span>
+                        <h4 className='subHeading'>Biology</h4>
                         <div className='chartItem'><Chart/></div>
                         </div>
                 </div>

@@ -6,9 +6,8 @@
    display: flex;
 }
 .sideBar{
-    flex: 1.3;
+    flex: 1.1;
     background-color: white;
-    margin-right: 20px;
 }
 
 .outlet{
