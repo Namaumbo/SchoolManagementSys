@@ -40,31 +40,32 @@ export default function Index (){
 
     return(
         <>
-             <HashRouter>
-                 <Routes>
-                     <Route exact path="/" element={<Login/>}/>
-                     <Route path='/login' element={<Login/>}/>
-                     <Route path="/" element={<Home/>}>
-                         <Route path="/dashboard" element={<AdminDashboard/>}/>
-                         <Route path="/classes" element={<Classes/>}/>
-                         <Route path="/logs" element={<Logs/>}/>
-                         <Route path="/profile" element={<Profile/>}/>
-                         <Route path="/team" element={<Team/>}/>
-                        <Route path="/performance" element={<SchoolPerformance/>}/>
-                        <Route exact path="/users" element={<Users/>}/>
-                        <Route path="/class-Performance" element={<ClassesPerformance/>}/>
-                        <Route path="/messages" element={<Messages/>}
-                        />
+             {/*<HashRouter>*/}
+                 {/*<Routes>*/}
+                 {/*    <Route exact path="/" element={<Login/>}/>*/}
+                 {/*    <Route path='/login' element={<Login/>}/>*/}
+                 {/*    <Route path="/" element={<Home/>}>*/}
+                        {/* <Route path="/dashboard" element={<AdminDashboard/>}/>*/}
+                        {/* <Route path="/classes" element={<Classes/>}/>*/}
+                        {/* <Route path="/logs" element={<Logs/>}/>*/}
+                        {/* <Route path="/profile" element={<Profile/>}/>*/}
+                        {/* <Route path="/team" element={<Team/>}/>*/}
+                        {/*<Route path="/performance" element={<SchoolPerformance/>}/>*/}
+                        {/*<Route exact path="/users" element={<Users/>}/>*/}
+                        {/*<Route path="/class-Performance" element={<ClassesPerformance/>}/>*/}
+                        {/*<Route path="/messages" element={<Messages/>}*/}
+                        {/*/>*/}
                         {/*//students and H-teacher*/}
-                        <Route path="/students" element={<Students/>}/>
-                        <Route path='/students-info' element={<StudentsInfo/>}/>
-                        <Route path='/department-performance' element={<Department/>}/>
-                        <Route path='student-performance' element={<StudentPerformance/>}/>
+                        {/*<Route path="/students" element={<Students/>}/>*/}
+                        {/*<Route path='/students-info' element={<StudentsInfo/>}/>*/}
+                        {/*<Route path='/department-performance' element={<Department/>}/>*/}
+                        {/*<Route path='student-performance' element={<StudentPerformance/>}/>*/}
                         {/*students and teacher*/}
-                    </Route>
-                </Routes>
-            </HashRouter>
-            {/*<AdminDashboard/>*/}
+                    {/*</Route>*/}
+                {/*// </Routes>*/}
+            {/*// </HashRouter>*/}
+             <AdminDashboard/>
+
             {/*<SideBar/>*/}
 
         </>

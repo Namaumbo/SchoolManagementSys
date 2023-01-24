@@ -12,6 +12,7 @@
 .numbers{
     font-size: 30px;
     color:white;
+    padding-right: 15px;
 }
 
 .usersCard {
@@ -51,7 +52,7 @@ padding: 10px 10px ;
     font-size: 20px;
 }
 .revenue{
-    padding-top: 2em;
+    padding-top: 10px;
     padding-bottom: 1em;
     display: flex;
     justify-content: space-around;
@@ -73,6 +74,15 @@ padding: 10px 10px ;
     font-weight: bold;
     font-size: 17px;
 }
+.outerWrapper{
+    display: flex;
+}
+.vitals{
+    flex: 4;
+}
+.scores{
+    flex:1;
+}
 .people{
     padding:2em
 }
@@ -84,9 +94,24 @@ padding: 10px 10px ;
 }
 .tableUser{
     flex:3;
-    border: 1px solid white;
+    margin-left:13px ;
 }
 .chart{
     flex:2;
+}
+.stats{
+    display: flex;
+    justify-content: space-between;
+}
+
+.scoresNumber{
+    -webkit-box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
+    box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
+    background-color: white;
+    border-radius: 2px;
+}
+.chartItem{
+    width: 250px;
+    height: 250px;
 }
 

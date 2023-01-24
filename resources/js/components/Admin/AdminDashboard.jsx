@@ -4,13 +4,12 @@ import {userState} from "../User/userState"
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {useRecoilState} from "recoil";
 import teachers from '../../../assets/teacher.png'
-import UserInfo from "@/components/UserInfo";
 import users from '../../../assets/users.png'
 import students from '../../../assets/students.png'
 import absentUser from '../../../assets/absentUser.png'
 import {DataGrid} from "@mui/x-data-grid";
-import {Button, ButtonGroup} from "@mui/material";
-import {Chart} from "chart.js";
+import {Card} from "@mui/material";
+import Chart from './Chart.jsx'
 
 
 export default function AdminDashboard() {
@@ -27,65 +26,68 @@ export default function AdminDashboard() {
     const rows = userInfo;
 
 
-    if (loggedIn && role === 'admin') {
+    // if (loggedIn && role === 'admin') {
 
-        return (
-            <>
-                <div>
+    return (
+        <>
+            <div className='outerWrapper'>
 
+                <div className='vitals'>
                     <div className='conWrapper'>
                         <div className="containerTabs">
                             <div className="card">
                                 <div>
                                     <span className="heading">Members Available</span>
                                 </div>
-                                <span>
-                            <span><h4 className='numbers'>3/{rows.length} </h4></span>
-                            <span>
+                                <span className='stats'>
+                                     <span>
                                 <img src={teachers} alt="users" className="usersCard"/>
                             </span>
+                            <span>
+                                <h4 className='numbers'>3/{rows.length} </h4></span>
                         </span>
                             </div>
                             <div className="card">
                                 <div>
                                     <span className="heading">Students Available</span></div>
-                                <span>
-                        <span><h4 className='numbers'>356</h4></span>
-                        <span>
+                                <span className='stats'>
+                                     <span>
                             <img src={students} alt="users" className="usersCard"/>
                         </span>
+                        <span><h4 className='numbers'>356</h4></span>
+
                     </span>
                             </div>
                             <div className="card">
                                 <div>
                                     <span className="heading">Members Absent</span></div>
-                                <span>
-                        <span><h4 className='numbers'>3/29</h4></span>
-                        <span>
+                                <span className='stats'>
+                                     <span>
                             <img src={absentUser} alt="users" className="usersCard"/>
                         </span>
+                        <span><h4 className='numbers'>3/29</h4></span>
+
                     </span>
                             </div>
                             <div className="card">
                                 <div>
                                     <span className="heading">staff available</span>
                                 </div>
-                                <span>
+                                <span className='stats'>
+                                    <span><img src={users} alt="users" className="usersCard"/></span>
                         <span><h4 className='numbers'>8/10</h4></span>
-                        <span><img src={users} alt="users" className="usersCard"/></span>
                     </span>
                             </div>
                             <div className="card">
                                 <div>
                                     <span className="heading">fees Balances</span>
                                 </div>
-                                <span>
+                                <span className='stats'>
+                                    <span><img src={users} alt="users" className="usersCard"/></span>
                         <span><h4 className='numbers'>8/10</h4></span>
-                        <span><img src={users} alt="users" className="usersCard"/></span>
                     </span>
                             </div>
                         </div>
-
                         {/*revenue*/}
                         <div className='revenue'>
                             <div>
@@ -101,31 +103,27 @@ export default function AdminDashboard() {
                                 <span className='money'>15%</span>
                             </div>
                         </div>
-
                     </div>
                     <br/>
-
-                    <div>
-                        <ButtonGroup variant="outlined" aria-label="outlined primary button group">
-                            <Button>SCHOOL</Button>
-                            <Button>STUDENTS</Button>
-                            <Button>STAFF</Button>
-                        </ButtonGroup>
-                    </div>
                     <section>
 
-                         <span className="headings">
-                             <b>TEAM</b>
-                         </span>
+
                         <div className='schoolGraphs'>
+
                             <div className='tableUser'>
-                                <DataGrid
-                                    rows={rows}
-                                    columns={columns}
-                                    pageSize={5}
-                                    rowsPerPageOptions={[6]}
-                                    checkboxSelection
-                                />
+                                <Card variant="outlined">
+
+                                    <h3 style={{fontSize: "15px", margin: '10px 0 10px 10px'}}>TEAM</h3>
+
+                                    <DataGrid
+                                        rows={rows}
+                                        columns={columns}
+                                        pageSize={5}
+                                        rowsPerPageOptions={[6]}
+                                        checkboxSelection
+                                    />
+                                </Card>
+
                             </div>
                             <div className='chart'>
                                 <h3>Chart</h3>
@@ -133,73 +131,30 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     </section>
-
-
-
-
-
-                    {/*//         <div className="col-5" style={{marginLeft: "10px"}}>*/}
-                    {/*//             <div className="card">*/}
-                    {/*//                 <DatePicker/>*/}
-                    {/*//             </div>*/}
-                    {/*//             <br/>*/}
-                    {/*//             <span className="headings">*/}
-                    {/*//                  <b>EMPLOYEES</b>*/}
-                    {/*//              </span>*/}
-                    {/*//             <br/>*/}
-                    {/*//             <div className="card">*/}
-                    {/*//                 <div className="people">*/}
-                    {/*//                     <ul>*/}
-                    {/*//*/}
-                    {/*//                         <li className="friends">*/}
-                    {/*//                             <div className='profile-holder'>*/}
-                    {/*//                                 A*/}
-                    {/*//                             </div>*/}
-                    {/*//                             <span className="avatarText">Sam Tinted</span>*/}
-                    {/*//                         </li>*/}
-                    {/*//                         <li className="friends">*/}
-                    {/*//                             <div className='profile-holder'>*/}
-                    {/*//                                 A*/}
-                    {/*//                             </div>*/}
-                    {/*//                             <span className="avatarText">Alex Yohah</span>*/}
-                    {/*//                         </li>*/}
-                    {/*//                         <li className="friends">*/}
-                    {/*//                             <div className='profile-holder'>*/}
-                    {/*//                                 A*/}
-                    {/*//                             </div>*/}
-                    {/*//                             <span className="avatarText">Enock Chokha</span>*/}
-                    {/*//                         </li>*/}
-                    {/*//                         <li className="friends">*/}
-                    {/*//                             <div className='profile-holder'>*/}
-                    {/*//                                 A*/}
-                    {/*//                             </div>*/}
-                    {/*//                             <span className="avatarText">Rabbina Chokha</span>*/}
-                    {/*//                         </li>*/}
-                    {/*//                         <li className="friends">*/}
-                    {/*//                             <div className='profile-holder'>*/}
-                    {/*//                                 A*/}
-                    {/*/!*                            </div>*!/*/}
-                    {/*/!*                            <span className="avatarText">Daelo Chokha</span>*!/*/}
-                    {/*/!*                        </li>*!/*/}
-                    {/*/!*                    </ul>*!/*/}
-                    {/*/!*                    <Button variant='outlined'>Show more</Button>*!/*/}
-                    {/*/!*                </div>*!/*/}
-                    {/*/!*            </div>*!/*/}
-                    {/*/!*        </div>*!/*/}
-                    {/*/!*    </div>*!/*/}
-                    {/*/!*</div>*!/*/}
                 </div>
-            </>
+
+                <div className='scores'>
+                    <div className='scoresNumber'>
+                        <h4>Average scores in %</h4>
+                        <div className='chartItem'><Chart/></div>
+
+                        <div className='chartItem'><Chart/></div>
+
+                        <div className='chartItem'><Chart/></div>
+                        </div>
+                </div>
+            </div>
+        </>
 
 
-        );
+    );
 
-        // else if (loggedIn && role === 'h-teacher') {
-        // }
-        // else if (loggedIn && role === 'teacher') {
-        ;
-        // } else {
-        //     // return <Navigate replace to="/login"/>;
-        // }
-    }
+    // else if (loggedIn && role === 'h-teacher') {
+    // }
+    // else if (loggedIn && role === 'teacher') {
+    ;
+    // } else {
+    //     // return <Navigate replace to="/login"/>;
+    // }
+    // }
 }

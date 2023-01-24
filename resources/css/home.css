@@ -8,8 +8,9 @@
 .sideBar{
     flex: 1.3;
     background-color: white;
-
+    margin-right: 20px;
 }
+
 .outlet{
     flex: 5;
     overflow-y:scroll;
