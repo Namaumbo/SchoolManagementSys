@@ -161,10 +161,18 @@ padding: 10px 10px ;
 
 }
 .table{
-    width: 600px;
+    width: 100%;
     -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
     box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
     background-color: white;
     border-radius: 2px;
+}
+.teamTable{
+    margin-left: 10px;
+    margin-Top: 10px;
 
+}
+.outVitals{
+    overflow-y: scroll;
+    max-height: 100vh;
 }

@@ -10,6 +10,7 @@ import absentUser from '../../../assets/absentUser.png'
 import {DataGrid} from "@mui/x-data-grid";
 import {Card} from "@mui/material";
 import Chart from './Chart.jsx'
+import {Female, Male, SecurityRounded} from "@mui/icons-material";
 
 
 export default function AdminDashboard() {
@@ -32,6 +33,7 @@ export default function AdminDashboard() {
         <>
             <div className='outerWrapper'>
 
+                <div className='outVitals'>
                 <div className='vitals'>
                     <div className='conWrapper'>
                         <div className="containerTabs">
@@ -104,12 +106,12 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     </div>
-                    <br/>
+                        <br/>
                     <div>
                         <div className='schoolGraphs'>
                             <div className='tableUser'>
                                 <div className='table' >
-                                    <h3 style={{fontSize: "15px", margin: '10px 0 10px 10px'}}>TEAM</h3>
+                                    <h3 style={{fontSize: "15px", margin: '10px 10px 10px 10px'}}>TEAM</h3>
                                     <DataGrid
                                         rows={rows}
                                         columns={columns}
@@ -128,39 +130,51 @@ export default function AdminDashboard() {
                             </div>
                         </div>
                     </div>
-                    <div>
+                </div>
+                    <div className='teamTable'>
                         <table className="table">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Id</th>
+                                <th scope="col">Full Name</th>
+                                <th scope="col">Sex</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Expertise</th>
+                                <th scope="col">District</th>
+                                <th scope="col">District</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
+                                <td>Horoka main</td>
+                                <td><Male fontSize='mini'/>Male</td>
+                                <td>Head Teacher</td>
+                                <td>Sciences</td>
+                                <td>Chilomoni</td>
                             </tr>
                             <tr>
                                 <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
+                                <td>Jacob Thornton</td>
+                                <td><Female fontSize='mini'/>Female</td>
+                                <td><SecurityRounded fontSize='mini'/>Administrator</td>
+                                <td>History</td>
+                                <td>Blantyre</td>
+
                             </tr>
                             <tr>
                                 <th scope="row">3</th>
-                                <td colSpan="2">Larry the Bird</td>
-                                <td>@twitter</td>
+                                <td>Enock Dzunga</td>
+                                <td><Male fontSize='mini'/>Male</td>
+                                <td>Teacher</td>
+                                <td>Sciences</td>
+                                <td>Chilomoni</td>
+
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
                 <div className='scores'>
                     <div className='scoresNumber'>
                         <h4 className='heading' style={{color: 'black', textAlign: 'center'}}>Average scores in %</h4>
