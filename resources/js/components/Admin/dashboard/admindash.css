@@ -1,4 +1,36 @@
+/*outer top*/
+.outerWrapper{
+    display: flex;
+    max-width: 100%;
+}
 
+/*//right hand corner*/
+.scores{
+    flex:1;
+    /*border: 2px solid grey;*/
+    max-width: 220px;
+    margin-left: 8px;
+    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
+    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
+}
+/*middle top*/
+.outVitals{
+    flex: 5;
+    overflow-y: scroll;
+    max-height: 100vh;
+}
+
+.conWrapper {
+
+    background-color: white;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 3px;
+    /*border: 2px solid red;*/
+    -webkit-box-shadow: 2px 9px -21px -11px rgba(0, 0, 0, 0.87);
+    box-shadow: 2px 9px 25px -25px rgba(0, 0, 0, 0.87);
+
+}
 .headings {
     align-items: center;
     padding-bottom: 10px;
@@ -18,15 +50,7 @@
 .usersCard {
     width: 40px;
 }
-.conWrapper{
-    background-color: white;
-    margin-left: 10px;
-    margin-top: 10px;
-    border-radius: 3px;
-    border: 2px solid white;
-    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
-}
+
 
 .containerTabs{
 display: flex;
@@ -41,8 +65,12 @@ padding: 10px 10px ;
     height: 80px;
     background-color: rgba(75, 148, 161, 0.74);
     color: white;
-}
 
+}
+.schoolGraphs{
+    /*border: 2px solid yellow;*/
+    margin-left: 10px;
+}
 .sub-Heading{
     color: black;
     font-weight: bold;
@@ -75,21 +103,17 @@ padding: 10px 10px ;
     font-weight: bold;
     font-size: 17px;
 }
-.outerWrapper{
 
-    display: flex;
 
-}
 .vitals{
     flex: 4;
-    overflow-y: scroll;
-    max-height: 100vh;
 }
-.scores{
-    flex:1;
-    margin-left: 8px;
-    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
+
+.scoresNumber{
+    -webkit-box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
+    box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
+    background-color: white;
+    border-radius: 2px;
 }
 .people{
     padding:2em
@@ -115,12 +139,7 @@ padding: 10px 10px ;
     justify-content: space-between;
 }
 
-.scoresNumber{
-    -webkit-box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
-    background-color: white;
-    border-radius: 2px;
-}
+
 .chartItem{
     width: 200px;
     height: 200px;
@@ -147,7 +166,7 @@ padding: 10px 10px ;
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: rgb(177, 175, 175);
+    background: #358860;
     border-radius: 10px;
 }
 
@@ -166,13 +185,12 @@ padding: 10px 10px ;
     box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
     background-color: white;
     border-radius: 2px;
+
 }
 .teamTable{
     margin-left: 10px;
     margin-Top: 10px;
-
-}
-.outVitals{
     overflow-y: scroll;
-    max-height: 100vh;
+    max-height: 200px;
+
 }

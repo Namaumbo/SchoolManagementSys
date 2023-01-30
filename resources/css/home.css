@@ -8,12 +8,14 @@
 .sideBar{
     flex: 1.1;
     background-color: white;
+    border: 2px solid black;
 }
 
 .outlet{
-    flex: 5;
+    flex: 4;
     overflow-y:scroll;
     position:relative;
     height: 100vh;
-}
+    border: 1px solid blue;
+ }
 

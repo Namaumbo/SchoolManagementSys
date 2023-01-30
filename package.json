@@ -5,6 +5,7 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@faker-js/faker": "^7.6.0",
         "@popperjs/core": "^2.10.2",
         "@vitejs/plugin-react": "^2.2.0",
         "axios": "^1.2.1",
@@ -28,6 +29,7 @@
         "@mui/x-date-pickers": "^5.0.9",
         "chart.js": "^4.2.0",
         "dayjs": "^1.11.6",
+        "faker": "^6.6.6",
         "framer-motion": "^7.6.12",
         "install": "^0.13.0",
         "jquery": "^3.6.1",
