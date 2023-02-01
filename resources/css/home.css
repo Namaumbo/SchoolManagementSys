@@ -1,21 +1,22 @@
 
-.innerHome{
+.innerHome {
     width: 100%;
 }
-.content-wrapper{
-   display: flex;
-}
-.sideBar{
-    flex: 1.1;
-    background-color: white;
-    border: 2px solid black;
+
+.content-wrapper {
+    display: flex;
 }
 
-.outlet{
+.sideBar {
+    flex: 1.1;
+    background-color: white;
+}
+
+.outlet {
     flex: 4;
-    overflow-y:scroll;
-    position:relative;
+    overflow-y: scroll;
+    position: relative;
     height: 100vh;
-    border: 1px solid blue;
- }
+
+}
 

@@ -27,15 +27,15 @@ export default function Index (){
 
     let [ userInfo , setUserInfo] = useRecoilState(userDetails)
 
-    // useEffect(() => {
-    //     axios.get('http://127.0.0.1:8000/api/users').then(res => {
-    //         setUserInfo(userInfo=res.data)
-    //         console.log(res.data
-    //         )
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
-    // }, 'http://127.0.0.1:8000/api/users')
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/users').then(res => {
+            setUserInfo(userInfo=res.data)
+            console.log(res.data
+            )
+        }).catch(err => {
+            console.error(err)
+        })
+    }, 'http://127.0.0.1:8000/api/users')
 
 
     return(
@@ -49,7 +49,7 @@ export default function Index (){
                          <Route path="/classes" element={<Classes/>}/>
                          <Route path="/logs" element={<Logs/>}/>
                          <Route path="/profile" element={<Profile/>}/>
-                         <Route path="/team" element={<Team/>}/>
+                         <Route path="/teachers" element={<Team/>}/>
                         <Route path="/performance" element={<SchoolPerformance/>}/>
                         <Route exact path="/users" element={<UserManagement/>}/>
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>

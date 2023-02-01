@@ -33,8 +33,8 @@ const SideBar = () => {
                     </li>
                 </Link>
 
-                <Link to="team" className='link'>
-                    <li className="itemList"><Group/><span className="sideBarItemText">Team</span>
+                <Link to="teachers" className='link'>
+                    <li className="itemList"><Group/><span className="sideBarItemText">Teachers</span>
                     </li>
                 </Link>
 

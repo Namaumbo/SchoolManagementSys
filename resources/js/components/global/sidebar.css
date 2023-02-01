@@ -27,10 +27,11 @@ li {
 }
 
 li:hover {
-    background-color: rgba(65, 61, 103, 0.71);
+    /*background-color: rgba(65, 61, 103, 0.71);*/
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
-    color: white;
+    text-decoration: underline;
+    color: black;
 
 }.link{
     text-decoration: none;
@@ -49,9 +50,7 @@ span {
 .sideBarItemText{
     font-weight: normal;
 }
-.sideBarItemText:hover{
-    color: white;
-}
+
 .sidebardown{
 position: absolute;
 bottom: 0;
