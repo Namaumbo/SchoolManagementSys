@@ -48,6 +48,8 @@ class UserController extends Controller
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
+            $this->UserToRoles($request, $user);
+
             return response()->json([
                 'message' => 'User saved successfully',
                 'User' => $user,
@@ -180,13 +182,17 @@ class UserController extends Controller
 
      public function UserToRoles(Request $request, int $id)
      {
-         $user = User::all();
-         if ($user) {
-            $role = Role::where('id', $user->role_id)->get();
-            $user->roles()->attach($role);
-            return $user;
-
-         }
+        $user = User::where('id', $id)->first();
+        if ($user) {
+            try {
+                $role = Role::where('id', $request->input('id'))->first();
+                if ($role) {
+                    $user->roles()->syncWithoutDetaching($role);
+                }
+            } catch (EntityNotFoundException $entityNotFoundException) {
+                return $entityNotFoundException;
+            }
+        }
       
         } 
         
