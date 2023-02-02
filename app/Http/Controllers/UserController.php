@@ -182,7 +182,7 @@ class UserController extends Controller
 
      public function UserToRoles(Request $request, int $id)
      {
-        $user = User::where('id', $id)->first();
+        $user = User::where('id',  $id)->first();
         if ($user) {
             try {
                 $role = Role::where('id', $request->input('id'))->first();
