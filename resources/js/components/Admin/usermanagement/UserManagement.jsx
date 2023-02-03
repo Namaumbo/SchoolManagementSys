@@ -9,15 +9,24 @@ import Chart from "@/components/Admin/utils/Chart";
 function UserManagement() {
     const [{loggedIn, role, usersList}, setUsersList] = useRecoilState(userState)
     const [userInfo, setUserInfo] = useRecoilState(userDetails)
-    const [loading, setLoading] = useState('');
+    const [loading, setLoading] = useState(true);
 
 
     function getToStorage(){
         const users = localStorage.setItem('users',userInfo)
+        setTimeout(()=>{
+            setLoading(false)
+        },2000)
     }
     getToStorage()
 
     return <>
+        {
+            loading?
+            <div className='container text-center' style={{marginTop: '25%'}}>
+             <span className='noUser'> loading...</span>
+            </div>
+            :
                 <div>
             {
                 userInfo ?
@@ -75,6 +84,7 @@ function UserManagement() {
             }
 
         </div>
+        }
     </>
 }
 
