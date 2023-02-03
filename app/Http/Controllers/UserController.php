@@ -28,7 +28,7 @@ class UserController extends Controller
     public function index(): Collection
     {
         return User::all();
-        
+
     }
     /**
      * Store a newly created resource in storage.
@@ -121,7 +121,6 @@ class UserController extends Controller
             ]);
         }
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -193,9 +192,9 @@ class UserController extends Controller
                 return $entityNotFoundException;
             }
         }
-      
-        } 
-        
+
+        }
+
      public function search(Request $request,$key): JsonResponse{
             $user= User::query()
             ->where('firstname','LIKE',"%$key%")
@@ -210,8 +209,8 @@ class UserController extends Controller
                 'status' => 200,
             ]);
 
-       
-    
+
+
 }
 }
 

@@ -1,0 +1,11 @@
+.noUser{
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.user-tb{
+    margin-top:2em;
+      margin-left: 2em;
+    display: flex;
+    justify-content: space-around;
+}

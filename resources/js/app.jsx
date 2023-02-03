@@ -27,14 +27,16 @@ export default function Index (){
 
     let [ userInfo , setUserInfo] = useRecoilState(userDetails)
 
-    useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/users').then(res => {
-            setUserInfo(userInfo=res.data)
-            console.log(res.data
-            )
-        }).catch(err => {
-            console.error(err)
-        })
+   useEffect(() => {
+       async function getUsers(){
+          await axios.get('http://127.0.0.1:8000/api/users').then(res => {
+               setUserInfo(userInfo=res.data)
+
+           }).catch(err => {
+               console.error(err)
+           })
+       }
+        getUsers().then(null)
     }, 'http://127.0.0.1:8000/api/users')
 
 
