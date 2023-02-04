@@ -175,7 +175,6 @@ export default function AdminDashboard() {
                                 <td>Teacher</td>
                                 <td>Sciences</td>
                                 <td>Chilomoni</td>
-
                             </tr>
                             </tbody>
                         </table>

@@ -1,94 +1,97 @@
 import React, {useState} from "react"
-import "../../../../css/users.css"
-import Paper from '@mui/material/Paper';
-import pic1 from '../../../../assets/photo-1628563694622-5a76957fd09c.jpg'
-import Avatar from '@mui/material/Avatar';
-import {Button} from "@mui/material";
-import Grid from '@mui/material/Grid'
-import {ListAltOutlined, Security} from "@mui/icons-material";
-import AddUser from "@/components/User/AddUser";
+import "./users.css"
 import {useRecoilState} from "recoil";
 import {userState} from "@/components/User/userState";
 import {userDetails} from "@/components/recoil_states/userdetails";
+import {Delete, Edit} from "@mui/icons-material";
+import Chart from "@/components/Admin/utils/Chart";
 
 function UserManagement() {
     const [{loggedIn, role, usersList}, setUsersList] = useRecoilState(userState)
     const [userInfo, setUserInfo] = useRecoilState(userDetails)
-    const [loading, setLoading] = useState('');
+    const [loading, setLoading] = useState(true);
+
+
+    function getToStorage() {
+        const users = localStorage.setItem('users', userInfo)
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000)
+    }
+
+    getToStorage()
+
     return <>
+        {
+            loading ?
+                <div className='container text-center' style={{marginTop: '25%'}}>
+                    <span className='noUser'> loading...</span>
+                </div>
+                :
+                <div>
+                    {
+                        userInfo ?
+                            <>
+                            <span className="list-title">List of Users</span>
+                            <div className='user-tb'>
+                                <table className="table table-hover" style={{width: '800px'}}>
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>District</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        userInfo.map(user => {
+                                            return <tr>
+                                                <td>{user.id}</td>
+                                                <td>{user.title}</td>
+                                                <td>{user.firstname}</td>
+                                                <td>{user.surname}</td>
+                                                <td>{user.email}</td>
+                                                <td>{user.district}</td>
+                                                <td><Delete style={{color: "red"}}/>{" "}<Edit
+                                                    style={{color: "green"}}/></td>
+                                            </tr>
 
-        <div className="container text-center">
-            <div className="addBtn">
-                <Button>
-                    <AddUser/>
-                </Button>
-                <Button size="small" variant="outlined" color="success">
-                    <ListAltOutlined/>Show Table
-                </Button>
-            </div>
-            <hr/>
-            <section>
-                <Paper elevation={2} style={{padding: "1em"}}>
-                    <div style={{display: "flex", justifyContent: "center"}}>
-                        <Avatar
-                            style={{width: "3em", height: "3em", alignItems: "center"}}
-                            src={pic1}/>
-                    </div>
-                    <div>
-                        <h4>Daelo. Namaumbo</h4>
-                    </div>
-                    <div>
-                        <h6>Administrator<Security/></h6>
-                    </div>
-                    <div>
-                        <Button variant="contained" size="small">Edit</Button>{" "}
-                        <Button variant="contained" size="small">View</Button>
-                    </div>
-                </Paper>
+                                        })
+                                    }
+                                    </tbody>
+                                </table>
+                                <div>
+                                    <div className='scoresNumber'>
+                                        <h4 className='heading' style={{color: 'black', textAlign: 'center'}}>Average
+                                            scores in %</h4>
+                                        <h4 className='subHeading'>English</h4>
+                                        <div className='chartItem'><Chart/></div>
+                                        <span></span>
+                                        <h4 className='subHeading'>Mathematics</h4>
+                                        <div className='chartItem'><Chart/></div>
+                                        <span></span>
+                                        <h4 className='subHeading'>Biology</h4>
+                                        <div className='chartItem'><Chart/></div>
+                                    </div>
+                                </div>
+                            </div>
+                            </>
+                            :
+                            <div className='container text-center' style={{marginTop: '25%'}}>
+                        <span className='noUser'>
+                       Oops! no users so far add Users
+                     </span>
+                            </div>
 
-            </section>
 
-            {/*{*/}
-            {/*    userInfo ?*/}
-            {/*        <span style={{fontSize: '20px'}}>*/}
-            {/*        Opps! no users so far add Users*/}
-            {/*    </span>*/}
-            {/*        :*/}
-            {/*        <div className="row">*/}
-            {/*            <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 16}}>*/}
-            {/*                {*/}
-            {/*                    userInfo.map(user => {*/}
-            {/*                        const firstName = user.firstname;*/}
-            {/*                        const firstLetter = firstName[0].toUpperCase()*/}
-            {/*                        const lastName = user.surname*/}
-            {/*                        return (*/}
-            {/*                            <Grid item xs={8} sm={4} md={4} key={user.id}>*/}
-            {/*                                <Paper elevation={2} style={{padding: "1em"}}>*/}
-            {/*                                    <div style={{display: "flex", justifyContent: "center"}}>*/}
-            {/*                                        <Avatar*/}
-            {/*                                            style={{width: "3em", height: "3em", alignItems: "center"}}*/}
-            {/*                                            src={pic1}/>*/}
-            {/*                                    </div>*/}
-            {/*                                    <div>*/}
-            {/*                                        <h4>{firstLetter}. {lastName}</h4>*/}
-            {/*                                    </div>*/}
-            {/*                                    <div>*/}
-            {/*                                        <h6>Administrator<Security/></h6>*/}
-            {/*                                    </div>*/}
-            {/*                                    <div>*/}
-            {/*                                        <Button variant="contained" size="small">Edit</Button>{" "}*/}
-            {/*                                        <Button variant="contained" size="small">View</Button>*/}
-            {/*                                    </div>*/}
-            {/*                                </Paper>*/}
-            {/*                            </Grid>*/}
-            {/*                        )*/}
-            {/*                    })*/}
-            {/*                }*/}
-            {/*            </Grid>*/}
-            {/*        </div>*/}
-            {/*}*/}
+                    }
 
-        </div>
+                </div>
+        }
     </>
 }
 

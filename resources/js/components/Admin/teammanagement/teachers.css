@@ -1,25 +1,30 @@
-.teacher{
+.teacher {
     font-weight: bolder;
 }
-.teacherInfo{
+
+.teacherInfo {
     width: 250px;
     height: 200px;
     background-color: white;
-    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
+    -webkit-box-shadow: 2px 9px -21px -11px rgba(0, 0, 0, 0.87);
+    box-shadow: 2px 9px 25px -25px rgba(0, 0, 0, 0.87);
 }
+
 .Image {
 
 }
-.insideWrapper{
+
+.insideWrapper {
     margin: auto;
 }
-.name{
+
+.name {
     font-weight: bolder;
     font-size: 20px;
     color: #0a58ca;
 }
-.profilePic{
+
+.profilePic {
     margin: auto;
     width: 70px;
     height: 70px;
@@ -27,97 +32,107 @@
     object-fit: cover;
     filter: maskFilter();
 }
-.upperActions{
+
+.upperActions {
     display: flex;
     justify-content: space-between;
 }
 
-.search{
+.search {
     width: 25%;
-    color:black;
+    color: black;
     background-color: white;
     border-radius: 30px;
     display: flex;
     align-items: center;
     /*padding: 10px;*/
 }
-.input{
+
+.input {
     /*outline: none;*/
     /*width: 90%;*/
     border: none;
 
 }
-.input:focus{
-    outline:none
+
+.input:focus {
+    outline: none
 }
-.addBtn{
+
+.addBtn {
     box-shadow: 0 15px 14px -8px #276873;
     background: #599bb3 linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
-    border-radius:9px;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-size:14px;
-    font-weight:normal;
-    padding:5px 8px;
-    text-decoration:none;
-    text-shadow:0 1px 0 #3d768a;
+    border-radius: 9px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 5px 8px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #3d768a;
     border: 1px solid #276873;
 }
-.addBtn:hover{
+
+.addBtn:hover {
     background: #408c99 linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
 }
-.addTeacherWrapper{
-    border: 1px solid #408c99 ;
+
+.addTeacherWrapper {
+    border: 1px solid #408c99;
     height: 80vh;
     margin-left: 20px;
     margin-right: 20px;
-    margin-top:10px;
- }
-.details{
+    margin-top: 10px;
+}
+
+.details {
     display: flex;
 }
-.title{
+
+.title {
     font-size: 16px;
     font-weight: bolder;
     background: #408c99 linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
     color: white;
     padding: 10px;
 }
-.personal{
+
+.personal {
     padding: 10px;
     margin-left: 20px;
 }
-.field{
-    width: 25em;
-    height: 2.4em;
-    border: 1px solid #408c99 ;
-    border-radius: 5px;
-}
-.organisation{
+.organisation {
     padding: 10px;
     margin-left: 20px;
 }
-.saveBtn{
+
+.saveBtn {
     margin-right: 20px;
     box-shadow: 0 9px 14px -7px #276873;
     background: #599bb3 linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
-    border-radius:25px;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-size:17px;
-    font-weight:bold;
-    padding:10px 32px;
-    text-decoration:none;
-    text-shadow:3px 4px 0 #3d768a;
-    border: 1px solid #599bb3 ;
+    border-radius: 25px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: normal;
+    padding: 5px 32px;
+    text-decoration: none;
+    text-shadow: 3px 4px 0 #3d768a;
+    border: 1px solid #599bb3;
 }
+
 .saveBtn:hover {
     background: #408c99 linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
 }
+
 .saveBtn:active {
-    position:relative;
-    top:1px;
+    position: relative;
+    top: 1px;
+}
+
+.form-control{
+    width: 400px;
 }
 

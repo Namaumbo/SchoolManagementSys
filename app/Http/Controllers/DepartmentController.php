@@ -47,8 +47,8 @@ class DepartmentController extends Controller
         }
        try{
         $department=new Department;
-        $department->DepartmentName=$request->DepartmentName;
-        $department->HeadOfDepartment=$request->HeadOfDepartment;
+        $department->departmentName=$request->departmentName;
+        $department->headOfDepartment=$request->headOfDepartment;
         $department->created_at=carbon::now();
         $department->updated_at=carbon::now();
         $department->save();
@@ -109,8 +109,8 @@ class DepartmentController extends Controller
     {
         if(Department::where('id',$id)->exists()){
             $department=Department::find($id);
-            $department->DepartmentName=$request->DepartmentName;
-            $department->HeadOfDepartment=$request->HeadOfDepartment;
+            $department->departmentName=$request->departmentName;
+            $department->headOfDepartment=$request->headOfDepartment;
             $department->created_at=carbon::now();
             $department->updated_at=carbon::now();
              $department->save();

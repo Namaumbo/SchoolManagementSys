@@ -1,0 +1,18 @@
+.noUser{
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.user-tb{
+    margin-top:1em;
+      margin-left: 5px;
+    display: flex;
+    justify-content: space-around;
+}
+.list-title{
+    margin-left:20px;
+    font-size: 24px;
+    font-weight: bolder;
+    color: black;
+
+}

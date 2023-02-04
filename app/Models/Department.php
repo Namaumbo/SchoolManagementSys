@@ -10,8 +10,8 @@ class Department extends Model
     use HasFactory;
 
     protected $fillable = [
-        'DepartmentName',
-        'HeadOfDepartment',
+        'departmentName',
+        'headOfDepartment',
         'created_at',
         'updated_at'
       

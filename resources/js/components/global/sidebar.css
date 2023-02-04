@@ -23,7 +23,8 @@ li {
     align-items: center;
     padding: 5px;
     cursor: pointer;
-    margin-top:10px
+    margin-top:10px;
+
 }
 
 li:hover {
@@ -31,24 +32,26 @@ li:hover {
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
     text-decoration: underline;
-    color: black;
+    color: #c2c7d0;
 
 }.link{
     text-decoration: none;
-    color: black;
+    color: #c2c7d0;
 }
 .icons {
-    color: black;
+    color: #c2c7d0;
 }
 
 span {
     font-size: 15px;
-    font-weight: 600;
+    /*font-weight: 600;*/
     color: #888;
     margin-left: 10px;
+    font-weight: bold
 }
 .sideBarItemText{
-    font-weight: normal;
+    font-size: 16px;
+    font-weight: 400;
 }
 
 .sidebardown{

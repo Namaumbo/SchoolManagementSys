@@ -15,10 +15,9 @@ class DepartmentResource extends JsonResource
     public function toArray($request)
     {
         return [
-        'DepartmentName' => $this->DepartmentName,
-        'HeadOfDepartment' => $this->HeadOfDepartment,
-        'created_at' => $this->created_at,
-        'updated_at' => $this->updated_at,
+        'departmentName' => $this->departmentName,
+        'headOfDepartment' => $this->headOfDepartment,
+     
     ];
 
 
