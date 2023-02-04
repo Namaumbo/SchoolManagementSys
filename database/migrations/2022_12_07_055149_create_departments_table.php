@@ -15,15 +15,12 @@ return new class extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('DepartmentName');
-            $table->integer('HeadOfDepartment')->unsigned()->nullable();
+            $table->string('departmentName');
+            $table->string('headOfDepartment');
             $table->timestamps();
 
 
-               $table->foreign('HeadOfDepartment')
-            ->references('id')
-            ->on('users')
-            ->onDelete('CASCADE');
+       
 
         });
     }
