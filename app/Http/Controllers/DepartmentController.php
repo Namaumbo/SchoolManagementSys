@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Department;
+use App\Http\Resources\DepartmentResource;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -13,9 +14,9 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getall()
     { 
-          return Department::all();
+        return DepartmentResource::collection(Department::all());
         
     }
 
@@ -84,7 +85,7 @@ class DepartmentController extends Controller
     public function show($id)
     {
         
-            return Department::find($id);
+        return new DepartmentResource(Department::findorFail($id));
     }
 
     /**

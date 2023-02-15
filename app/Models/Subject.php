@@ -12,9 +12,7 @@ class Subject extends Model
     protected $fillable = [
         'subject_name',
         'PeriodsPerWeek',
-        'created_at',
-        'updated_at'
-
+     
     ];
 
 
@@ -27,5 +25,13 @@ class Subject extends Model
     {
         return $this->belongsToMany(Level::class);
     }
-    
+
+       public function departments():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Department::class,
+            'subjects',
+            'id',
+            'department_id');
+    }
 }

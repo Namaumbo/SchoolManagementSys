@@ -13,7 +13,7 @@ class Assessment extends Model
         'firstAssessment',
         'secondAssessment',
         'endOfTermAssessment',
-        'score',
+        'AverageScore',
         'created_at',
         'updated_at'
       

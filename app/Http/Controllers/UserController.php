@@ -25,9 +25,9 @@ class UserController extends Controller
      *
      * @return Collection
      */
-    public function index(): Collection
+    public function index()
     {
-        return User::all();
+        return  UserResource::collection(User::all());
 
     }
     /**
@@ -48,7 +48,6 @@ class UserController extends Controller
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
-            $this->UserToRoles($request, $user);
 
             return response()->json([
                 'message' => 'User saved successfully',
@@ -70,9 +69,9 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show(int $id): Response
+    public function show(int $id)
     {
-        return User::find($id);
+        return new UserResource(User::findorFail($id));
     }
     /**
      * Show the form for editing the specified resource.
@@ -129,7 +128,8 @@ class UserController extends Controller
      */
     public function userDetailsCommon(Request $request, $user): void
     {
-
+        $role=new Role();
+        $role->role_name=Role::get('role_name');
         $user->title = $request->title;
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
@@ -143,6 +143,7 @@ class UserController extends Controller
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
+        $user->roles()->attach($role);
     }
 
     /**
@@ -193,6 +194,13 @@ class UserController extends Controller
             }
         }
 
+        }
+        public function logout(){
+            Auth::logout();
+            return response()->json([
+            'status'=>'success',
+            'message'=>'Successfully logged out',
+            ]);
         }
 
      public function search(Request $request,$key): JsonResponse{

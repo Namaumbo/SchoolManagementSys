@@ -19,7 +19,8 @@ class AssessmentController extends Controller
      */
     public function index():Collection
     {
-        return Assessment::all();
+        return AssessmentResource::collection(Assessment::all());
+        
     }
 
     /**
@@ -30,10 +31,10 @@ class AssessmentController extends Controller
     public function create(Request $request, $assessment)
     {
         $assessment->firstAssessment = $request->firstAssessment;
-        $assessment->SecondAssessment = $request->SecondAssessment;
-        $assessment->endofTermAssessment = $request->EndofTermAssessment;
-        $average_score=($assessment->firstAssessment+$assessment->SecondAssessment)*0.4+0.6*$assessment->EndofTermAssessment;
-        $assessment->$average_score=$request->average_score;
+        $assessment->secondAssessment = $request->secondAssessment;
+        $assessment->endofTermAssessment = $request->endofTermAssessment;
+        $average_Score=($assessment->firstAssessment+$assessment->secondAssessment)*0.4+0.6*$assessment->endofTermAssessment;
+        $assessment->$average_Score=$request->input($average_Score);
         $assessment->created_at = carbon::now();
         $assessment->updated_at = carbon::now();
        
@@ -51,7 +52,7 @@ class AssessmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-    $assessment =  Assessment::where('id', $request->input('score'))->first();
+    $assessment =  Assessment::where('id', $request->input('id'))->first();
     if ($assessment) {
         return response()->json(
             ['message' => 'An assessment is arleady added', 'subject_name' => $subject],

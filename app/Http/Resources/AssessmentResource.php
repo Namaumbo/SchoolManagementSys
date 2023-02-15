@@ -16,10 +16,11 @@ class AssessmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'firstname' => $this->firstname,
-            'surname' => $this->surname
-       
+            'firstAssessment' => $this->firstAssessment,
+            'secondAssessment' => $this->secondAssessment,
+            'endofTermAssessment' => $this->endOfTermAssessment,
+            'average_Score' => $this->average_Score
+
         ];
     }
 }
