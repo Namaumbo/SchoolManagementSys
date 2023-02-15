@@ -71,14 +71,6 @@ class User extends Authenticatable
             'department_id');
     }
 
-    public function ClassSubjectDetails():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            Level::class,
-            'users',
-            'id',
-            'class_id');
-    }
 
 
 }

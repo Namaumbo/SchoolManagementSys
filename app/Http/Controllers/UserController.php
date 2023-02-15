@@ -25,7 +25,7 @@ class UserController extends Controller
      *
      * @return Collection
      */
-    public function index()
+    public function getAll()
     {
         return  UserResource::collection(User::all());
 
@@ -128,8 +128,7 @@ class UserController extends Controller
      */
     public function userDetailsCommon(Request $request, $user): void
     {
-        $role=new Role();
-        $role->role_name=Role::get('role_name');
+        
         $user->title = $request->title;
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
@@ -140,10 +139,11 @@ class UserController extends Controller
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
         $user->role_id = $request->role_id;
+        $user->department_id = $request->department_id;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
-        $user->roles()->attach($role);
+      
     }
 
     /**
