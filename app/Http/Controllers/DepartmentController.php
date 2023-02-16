@@ -1,28 +1,31 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Department;
 
-use Illuminate\Http\Request;
+use App\Models\Department;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Collection
      */
-    public function index()
-    { 
-          return Department::all();
-        
+    public function index(): Collection
+    {
+        return Department::all();
+
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -32,8 +35,8 @@ class DepartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -45,55 +48,54 @@ class DepartmentController extends Controller
                 Response::HTTP_CONFLICT
             );
         }
-       try{
-        $department=new Department;
-        $department->departmentName=$request->departmentName;
-        $department->headOfDepartment=$request->headOfDepartment;
-        $department->created_at=carbon::now();
-        $department->updated_at=carbon::now();
-        $department->save();
-         return response()->json([
-            'message'=>'Department saved successfully',
-            'Department'=>$department,
-            'status'=>200,
+        try {
+            $department = new Department;
+            $department->departmentName = $request->departmentName;
+            $department->headOfDepartment = $request->headOfDepartment;
+            $department->created_at = carbon::now();
+            $department->updated_at = carbon::now();
+            $department->save();
+            return response()->json([
+                'message' => 'Department saved successfully',
+                'Department' => $department,
+                'status' => 200,
 
-         ]);
+            ]);
 
 
-       }catch(\Exception $e){
+        } catch (\Exception $e) {
 
-        return response()->json([
-            'message'=>'Department not saved',
-            'Department'=>$department,
-            'status'=>201,
-            '4'=>$e,
+            return response()->json([
+                'message' => 'Department not saved',
+                'Department' => $department,
+                'status' => 201,
+                '4' => $e,
 
-         ]);
-           
-       
-    }
+            ]);
+
+
+        }
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
     public function show($id)
     {
-        
-            return Department::find($id);
+        return Department::find($id);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
-    public function edit($id)
+    public function edit(int $id): Response
     {
         //
     }
@@ -101,56 +103,52 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
-        if(Department::where('id',$id)->exists()){
-            $department=Department::find($id);
-            $department->departmentName=$request->departmentName;
-            $department->headOfDepartment=$request->headOfDepartment;
-            $department->created_at=carbon::now();
-            $department->updated_at=carbon::now();
-             $department->save();
-             return response()->json([
-                 'message'=>'Department is updated successfully'
-         
-             ],400);
-         }else{
-             return response()->json([
-                 'message'=>'No Department found with that information '
-         
- 
-             ],401);
-         }
-     }
-    
+        if (Department::where('id', $id)->exists()) {
+            $department = Department::find($id);
+            $department->departmentName = $request->departmentName;
+            $department->headOfDepartment = $request->headOfDepartment;
+            $department->created_at = carbon::now();
+            $department->updated_at = carbon::now();
+            $department->save();
+            return response()->json([
+                'message' => 'Department is updated successfully'
+
+            ], 400);
+        } else {
+            return response()->json([
+                'message' => 'No Department found with that information '
+            ], 401);
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        if(Department::where('id',$id)->exists()){
-            $department=Department::find($id);
+        if (Department::where('id', $id)->exists()) {
+            $department = Department::find($id);
             $department->delete();
             return response()->json([
-                'message'=>'Department is deleted successfully'
-     
-            ],404);
+                'message' => 'Department is deleted successfully'
+            ], 404);
 
 
- }else{
+        } else {
             return response()->json([
-                'message'=>'No Department found with that information ',
-           
+                'message' => 'No Department found with that information ',
             ]);
-            }
+        }
 
     }
 }

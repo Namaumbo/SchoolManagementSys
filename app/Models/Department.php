@@ -9,12 +9,20 @@ class Department extends Model
 {
     use HasFactory;
 
+    public mixed $departmentName;
+    public mixed $headOfDepartment;
+    /**
+     * @var \Carbon\Carbon|mixed
+     */
+    public mixed $created_at;
+    public mixed $updated_at;
+
     protected $fillable = [
         'departmentName',
         'headOfDepartment',
         'created_at',
         'updated_at'
-      
+
     ];
 
    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
