@@ -12,16 +12,12 @@ class Level extends Model
     protected $fillable = [
         'className',
         'subject_id',
-        'created_at',
-        'updated_at'
+        'user_id',
+     
       
     ];
 
-    public function user():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            User::class);
-    }
+ 
     public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
@@ -30,4 +26,18 @@ class Level extends Model
             'id',
             'subject_id');
     }
+
+
+ 
+    public function users():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+                User::class,
+            'levels',
+            'id',
+            'user_id');
+    }
+
+ 
+
 }
