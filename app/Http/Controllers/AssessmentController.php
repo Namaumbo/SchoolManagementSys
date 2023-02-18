@@ -34,7 +34,7 @@ class AssessmentController extends Controller
         $assessment->secondAssessment = $request->secondAssessment;
         $assessment->endofTermAssessment = $request->endofTermAssessment;
         $average_Score=($assessment->firstAssessment+$assessment->secondAssessment)*0.4+0.6*$assessment->endofTermAssessment;
-        $assessment->$average_Score=$request->input($average_Score);
+        $assessment->$average_Score=$request->attach($average_Score);
         $assessment->created_at = carbon::now();
         $assessment->updated_at = carbon::now();
        

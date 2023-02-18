@@ -1,17 +1,30 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use App\Models\Subject;
+use App\Models\Role;
+use App\Models\Level;
+use App\Models\Assessment;
+use App\Models\Department;
+use App\Models\Message;
+
+use App\Http\Resources\DepartmentResource;
+use App\Http\Resources\SubjectResource;
+use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\ClassLevelResource;
+use App\Http\Resources\AssessmentResource;
+use App\Http\Resources\MessageResource;
+
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
-use App\Http\Resources\AssessmentResource;
-use App\Http\Resources\ClassLevelResource;
-use App\Http\Resources\RoleResource;
-use App\Models\Assessment;
-use App\Models\Level;
-use App\Models\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,11 +73,8 @@ Route::controller(DepartmentController::class)->group(function () {
 Route::controller(SubjectController::class)->group(function () {
 
     Route::get('/subjects', 'index');
-
     Route::get('/subject/{id}', 'show');
     Route::post('/register-subject', 'store');
-
-
     Route::put('/subject/{id}', 'update');
     Route::delete('/subject/{id}', 'destroy');
 
@@ -93,6 +103,7 @@ Route::controller(ClassController::class)->group(function () {
         return ClassLevelResource::collection(Level::all());
     });
 });
+
 Route::controller(ClassController::class)->group(function () {
 
 //Assessments
@@ -100,6 +111,28 @@ Route::controller(ClassController::class)->group(function () {
     Route::get('/assessments', function () {
         return AssessmentResource::collection(Assessment::all());
     });
+
+});
+Route::controller(AssessmentController::class)->group(function(){
+
+//Assessments
+
+Route::controller(AssessmentController::class)->group(function(){
+
+Route::post('/create-assessment','create');
+Route::get('/assessments', 'index' );
+});
+});
+
+//Messages
+Route::controller(MessageController::class)->group(function(){
+
+Route::get('/messages','getAllMessages');
+Route::post('/create-message','store');
+Route::put('/message/{id}','update');
+Route::delete('/message/{id}', 'destroy');
+
+
 });
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

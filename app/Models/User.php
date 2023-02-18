@@ -70,7 +70,18 @@ class User extends Authenticatable
             'id',
             'department_id');
     }
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 
 
-
+    public function levels():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Level::class,
+            'levels',
+            'id',
+            'user_id');
+    }
 }
