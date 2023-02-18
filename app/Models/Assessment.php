@@ -10,8 +10,10 @@ class Assessment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'assessmentName',
-        'score',
+        'firstAssessment',
+        'secondAssessment',
+        'endOfTermAssessment',
+        'AverageScore',
         'created_at',
         'updated_at'
       

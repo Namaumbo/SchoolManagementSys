@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('levels', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('subject_id')->unsigned();
-
+            $table->integer('user_id')->unsigned();
             $table->string('className');
             $table->timestamps();
 
@@ -24,12 +24,14 @@ return new class extends Migration
             ->references('id')
             ->on('subjects')
             ->onDelete('CASCADE');
-
+            
+            $table->foreign('user_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('CASCADE');
+                  
           
-
-
-       
-
+    
         
         });
     }
@@ -41,6 +43,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('classes');
+        Schema::dropIfExists('levels');
     }
 };

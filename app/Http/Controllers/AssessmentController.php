@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Subject;
+use App\Models\Assessment;
+
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +19,8 @@ class AssessmentController extends Controller
      */
     public function index():Collection
     {
-        return Assessment::all();
+        return AssessmentResource::collection(Assessment::all());
+        
     }
 
     /**
@@ -25,15 +28,21 @@ class AssessmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $subject)
+    public function create(Request $request, $assessment)
     {
         $assessment->firstAssessment = $request->firstAssessment;
-        $assessment->SecondAssessment = $request->SecondAssessment;
-        $assessment->EndofTermAssessment = $request->EndofTermAssessment;
-      
-        $subject->created_at = carbon::now();
-        $subject->updated_at = carbon::now();
-        $subject->save();
+        $assessment->secondAssessment = $request->secondAssessment;
+        $assessment->endofTermAssessment = $request->endofTermAssessment;
+        $average_Score=($assessment->firstAssessment+$assessment->secondAssessment)*0.4+0.6*$assessment->endofTermAssessment;
+        $assessment->$average_Score=$request->input($average_Score);
+        $assessment->created_at = carbon::now();
+        $assessment->updated_at = carbon::now();
+       
+        $assessment->save();
+
+
+     
+   
     }
 
     /**
@@ -43,24 +52,24 @@ class AssessmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-    $assessment =  Assessment::where('', $request->input('score'))->first();
+    $assessment =  Assessment::where('id', $request->input('id'))->first();
     if ($assessment) {
         return response()->json(
             ['message' => 'An assessment is arleady added', 'subject_name' => $subject],
         );
     }
     try {
-        $subject = new Subject;
-        $this->create($request, $subject);
+        $assessment = new Assessment;
+        $this->create($request, $assessment);
         return response()->json([
-            'message' => 'Subject created successfully',
-            'Subject' => $subject,
+            'message' => 'Assessment added successfully',
+            'Assessment' => $assessment,
             'status' => 200,
         ]);
     } catch (\Exception $e) {
         return response()->json([
-            'message' => 'Subject not saved',
-            'Subject' => $subject,
+            'message' => 'Assessment not saved',
+            'Assessment' => $assessment,
             'status' => 400,
             '4' => $e,
         ]);
@@ -73,7 +82,7 @@ class AssessmentController extends Controller
      * @param  \App\Models\Subject  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(Request $assessment)
     {
         //
     }
@@ -84,7 +93,7 @@ class AssessmentController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function edit(Subject $subject)
+    public function edit(Request $assessment)
     {
         //
     }
@@ -98,15 +107,15 @@ class AssessmentController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        if (Subject::where('id', $id)->exists()) {
-            $subject = Subject::find($id);
-            $this->create($request, $subject);
+        if (Assessment::where('id', $id)->exists()) {
+            $assessment = Assessment::find($id);
+            $this->create($request, $assessment);
             return response()->json([
-                'message' => 'The Subject is updated successfully'
+                'message' => 'The Assessment is updated successfully'
             ], 400);
         } else {
             return response()->json([
-                'message' => 'No such Subject found in the database '
+                'message' => 'No such Assessment found in the database '
             ], 401);
         }
     }
@@ -119,15 +128,15 @@ class AssessmentController extends Controller
      */
     public function destroy($id)
     {
-        if (Subject::where('id', $id)->exists()) {
-            $subject =Subject::find($id);
-            $subject->delete();
+        if (Assessment::where('id', $id)->exists()) {
+            $assessment =Assessment::find($id);
+            $assessment->delete();
             return response()->json([
-                'message' => 'The role is deleted successfully'
+                'message' => 'An assessment is deleted successfully'
             ], 404);
         } else {
             return response()->json([
-                'message' => 'No  role found in the database ',
+                'message' => 'No such assessment found in the database ',
             ]);
         }
     

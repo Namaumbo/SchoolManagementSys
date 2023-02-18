@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             $table->string('sex');
-            $table->integer('class_id')->unsigned()->nullable();
             $table->integer('role_id')->unsigned()->nullable();
             $table->integer('department_id')->unsigned()->nullable();
             $table->string('password');

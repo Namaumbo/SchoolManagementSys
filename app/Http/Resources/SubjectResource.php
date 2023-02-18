@@ -18,6 +18,7 @@ class SubjectResource extends JsonResource
             'id' => $this->id,
             'subject_name' => $this->subject_name,
             'PeriodsPerWeek' => $this->PeriodsPerWeek,
+            'departments' => DepartmentResource::collection($this->departments),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class DepartmentController extends Controller
 {
@@ -19,7 +21,12 @@ class DepartmentController extends Controller
     public function index(): Collection
     {
         return Department::all();
+    }
 
+    public function getAll()
+    {
+        return Department::all();
+//        return DepartmentResource::collection(Department::all());
     }
 
     /**
@@ -37,43 +44,39 @@ class DepartmentController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $department = Department::where('DepartmentName', $request->input('DepartmentName'))->first();
-        //Username represents an ID for the student
-        if ($department) {
-            return response()->json(
-                ['message' => 'Department already exists', 'DepartmentName' => $department],
-                Response::HTTP_CONFLICT
-            );
-        }
-        try {
-            $department = new Department;
-            $department->departmentName = $request->departmentName;
-            $department->headOfDepartment = $request->headOfDepartment;
-            $department->created_at = carbon::now();
-            $department->updated_at = carbon::now();
-            $department->save();
-            return response()->json([
-                'message' => 'Department saved successfully',
-                'Department' => $department,
-                'status' => 200,
 
-            ]);
+        $request->validate([
+            'departmentName' => 'required|max:255',
+        ]);
 
-
-        } catch (\Exception $e) {
-
-            return response()->json([
-                'message' => 'Department not saved',
-                'Department' => $department,
-                'status' => 201,
-                '4' => $e,
-
-            ]);
-
-
+        $departmentName = $request->input('departmentName');
+        if (Department::where('departmentName', $departmentName)->first()) {
+            return \response()->json(['message' => "department available", $departmentName],
+                ResponseAlias::HTTP_CONFLICT);
+        } else {
+            try {
+                $department = Department::create([
+                    'departmentName' => $request->input('departmentName'),
+                    'headOfDepartment' => $request->input('headOfDepartment'),
+                    'created_at' => carbon::now(),
+                    'updated_at' => carbon::now()
+                ]);
+                return response()->json([
+                    'message' => 'Department saved successfully',
+                    'Department' => $department,
+                    'status' => 201,
+                ],ResponseAlias::HTTP_CREATED);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'Department not saved',
+                    'error' => $e,
+                    'status' => 201,
+                ]);
+            }
         }
 
     }
@@ -82,22 +85,24 @@ class DepartmentController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Response
+     * @return DepartmentResource
      */
     public function show($id)
     {
-        return Department::find($id);
+//        return Department::find($id);
+
+        return new DepartmentResource(Department::findorFail($id));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return Response
+     * @return Response|null
      */
-    public function edit(int $id): Response
+    public function edit(int $id): ?Response
     {
-        //
+        return null;
     }
 
     /**
@@ -143,12 +148,10 @@ class DepartmentController extends Controller
                 'message' => 'Department is deleted successfully'
             ], 404);
 
-
         } else {
             return response()->json([
                 'message' => 'No Department found with that information ',
             ]);
         }
-
     }
 }

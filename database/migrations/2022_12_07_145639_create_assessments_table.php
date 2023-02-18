@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('subject_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->integer('subject_id')->unsigned()->nullable();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->integer('firstAssessment');
-            $table->integer('SecondAssessment');
-            $table->integer('EndofTermAssessment');
-            $table->integer('AverageScore');
+            $table->integer('secondAssessment');
+            $table->integer('endofTermAssessment');
+            $table->integer('average_Score')->nullable();
             $table->timestamps();
             $table->foreign('subject_id')
             ->references('id')

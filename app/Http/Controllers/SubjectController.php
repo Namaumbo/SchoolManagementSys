@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use App\Http\Resources\SubjectResource;
 
 class SubjectController extends Controller
 {
@@ -15,9 +16,9 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index():Collection
+    public function getAll()
     {
-        return Subject::all();
+        return SubjectResource::collection(Subject::all());
     }
 
     /**
@@ -72,9 +73,10 @@ class SubjectController extends Controller
      * @param  \App\Models\Subject  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Subject $subject)
+    public function show(int $id)
     {
-        //
+        return new SubjectResource(Subject::findorFail($id));
+
     }
 
     /**

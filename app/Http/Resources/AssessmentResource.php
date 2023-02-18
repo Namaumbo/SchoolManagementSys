@@ -14,6 +14,13 @@ class AssessmentResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'firstAssessment' => $this->firstAssessment,
+            'secondAssessment' => $this->secondAssessment,
+            'endofTermAssessment' => $this->endOfTermAssessment,
+            'average_Score' => $this->average_Score
+
+        ];
     }
 }
