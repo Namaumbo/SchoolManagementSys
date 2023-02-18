@@ -4,7 +4,8 @@ import {useRecoilState} from "recoil";
 import {userState} from "@/components/User/userState";
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {Delete, Edit} from "@mui/icons-material";
-import {Chart} from "react-chartjs-2";
+import Chart from '../utils/Chart.jsx'
+
 
 function UserManagement() {
     const [{loggedIn, role, usersList}, setUsersList] = useRecoilState(userState)
