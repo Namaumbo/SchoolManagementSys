@@ -43,8 +43,8 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request){
     $role = Role::where('role_name', $request->input('role_name'))->first();
@@ -78,7 +78,7 @@ class RoleController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -94,7 +94,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
@@ -132,6 +132,6 @@ class RoleController extends Controller
                 'message' => 'No  role found in the database ',
             ]);
         }
-    
+
     }
 }

@@ -21,6 +21,7 @@ import StudentPerformance from "@/components/Student/StudentPerformance";
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {userState} from "@/components/User/userState";
 import SideBar from "@/components/global/SideBar";
+import Mines from "@/components/global/Mine"
 import UserManagement from "@/components/Admin/usermanagement/UserManagement";
 
 export default function Index (){
@@ -29,30 +30,30 @@ export default function Index (){
         <>
              <HashRouter>
                  <Routes>
-                     <Route exact path="/" element={<Login/>}/>
-                     <Route path='/login' element={<Login/>}/>
-                     <Route path="/" element={<Home/>}>
-                         <Route path="/dashboard" element={<AdminDashboard/>}/>
+                      <Route exact path="/" element={<Login/>}/>
+                      <Route path='/login' element={<Login/>}/>
+                      <Route path="/" element={<Home/>}>
+                          <Route path="/dashboard" element={<AdminDashboard/>}/>
                          <Route path="/classes" element={<Classes/>}/>
                          <Route path="/logs" element={<Logs/>}/>
                          <Route path="/profile" element={<Profile/>}/>
-                         <Route path="/teachers" element={<Team/>}/>
-                        <Route path="/performance" element={<SchoolPerformance/>}/>
-                        <Route exact path="/users" element={<UserManagement/>}/>
-                        <Route path="/class-Performance" element={<ClassesPerformance/>}/>
-                        <Route path="/messages" element={<Messages/>}
-                        />
-                        //students and H-teacher
+                          <Route path="/teachers" element={<Team/>}/>
+                         <Route path="/performance" element={<SchoolPerformance/>}/>
+                         <Route exact path="/users" element={<UserManagement/>}/>
+                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
+                         <Route path="/messages" element={<Messages/>}
+                         />
+                         {/*//students and H-teacher*/}
                         <Route path="/students" element={<Students/>}/>
                         <Route path='/students-info' element={<StudentsInfo/>}/>
                         <Route path='/department-performance' element={<Department/>}/>
                         <Route path='student-performance' element={<StudentPerformance/>}/>
-                        students and teacher
+                        {/*students and teacher*/}
                     </Route>
                 </Routes>
              </HashRouter>
             {/* <AdminDashboard/>*/}
-
+            {/*<Mines />*/}
             {/*<SideBar/>*/}
 
         </>

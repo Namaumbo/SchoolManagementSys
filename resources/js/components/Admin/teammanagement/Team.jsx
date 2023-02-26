@@ -1,12 +1,30 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import './teachers.css'
 import {AddCircle, GpsFixed, Phone, Search} from "@mui/icons-material";
 import profile from '../../../../assets/profile.jpeg'
 
 
+
+
 const Team = () => {
 
-    const [newTeacher, setNewTeacher] = useState(false)
+    const [newTeacher, setNewTeacher] = useState(false);
+    const [departments , setDepartments] = useState([]);
+
+
+    useEffect(() => {
+        async function departments() {
+            await axios.get('http://127.0.0.1:8000/api/departments').then(res => {
+                setDepartments(res.data)
+                console.log(res.data)
+            }).catch(err => {
+                console.error(err)
+            })
+        }
+        departments().then(null)
+    }, ['http://127.0.0.1:8000/api/departments'])
+
+
 
 
     function AddTeacher() {
@@ -61,10 +79,14 @@ const Team = () => {
                                 <div className='input'>
                                     <label>Department</label><span style={{color: 'red'}}>*</span><br/>
                                     <select className='form-select'>
-                                        <option>Science</option>
-                                        <option>Language</option>
-                                        <option>History</option>
-                                        <option>Humanities</option>
+                                        {
+                                            departments.map(department => {
+                                                return(
+                                                    <option>{department.DepartmentName}</option>
+                                                )
+                                            })
+                                        }
+
                                     </select>
                                 </div>
                                 <div className='input'>
