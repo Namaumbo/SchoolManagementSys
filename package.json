@@ -38,6 +38,7 @@
         "react-bootstrap": "^2.6.0",
         "react-chartjs-2": "^5.2.0",
         "react-circular-progressbar": "^2.1.0",
+        "react-icons": "^4.8.0",
         "react-pro-sidebar": "^1.0.0-alpha.7",
         "react-router-dom": "^6.4.3",
         "recoil": "^0.7.6"

@@ -1,18 +1,18 @@
 import "./sidebar.css";
 import React from "react"
-import {
-    Apartment,
-    Dashboard,
-    Group,
-    Logout,
-    Money,
-    Note,
-    Person,
-    QuestionAnswer,
-    School,
-    Timeline
-} from "@mui/icons-material";
+import {Logout,} from "@mui/icons-material";
 import {Link} from 'react-router-dom'
+import {
+    BiBarChartAlt2,
+    BiDollar,
+    BiHomeAlt2,
+    BiMaleFemale,
+    BiMessageAltDetail,
+    BiMessageRounded,
+    BiUser
+} from "react-icons/bi";
+import {GoBook} from "react-icons/go";
+import {AiFillDashboard} from "react-icons/all";
 
 const SideBar = () => {
     // let [{loggedIn, role},setUser] = useRecoilState(userState)
@@ -27,70 +27,79 @@ const SideBar = () => {
     // if (role === 'admin') {
     return (
         <div className="sideBarItems">
+
             <ul className="sideBarList">
                 <Link to="/dashboard" className='link'>
-                    <li className="itemList"><Dashboard/><span className='sideBarItemText'>Home</span>
+                    <li className="itemList"><AiFillDashboard className='icon'/><span
+                        className='sideBarItemText'>Home</span>
                     </li>
                 </Link>
 
                 <Link to="teachers" className='link'>
-                    <li className="itemList"><Group/><span className="sideBarItemText">Teachers</span>
+                    <li className="itemList"><BiMaleFemale className='icon'/><span
+                        className="sideBarItemText">Teachers</span>
                     </li>
                 </Link>
 
                 <Link to="users" className='link'>
-                    <li className="itemList"><Person/><span className="sideBarItemText">User</span>
+                    <li className="itemList"><BiUser className='icon'/><span className="sideBarItemText">User</span>
                     </li>
                 </Link>
 
                 <Link to="logs" className='link'>
-                <li className="itemList"><Note/><span className="sideBarItemText">Logs</span>
-                </li>
+                    <li className="itemList"><BiMessageAltDetail className='icon'/><span
+                        className="sideBarItemText">Logs</span>
+                    </li>
                 </Link>
 
 
                 <Link to="messages" className='link'>
-                <li className="itemList"><QuestionAnswer/><span className="sideBarItemText">Messages</span>
-                </li>
+                    <li className="itemList"><BiMessageRounded className='icon'/><span
+                        className="sideBarItemText">Messages</span>
+                    </li>
                 </Link>
 
                 <Link to="classes" className='link'>
-                <li className="itemList"><Apartment/><span className="sideBarItemText">Classes</span>
-                </li>
+                    <li className="itemList"><BiHomeAlt2 className='icon'/><span
+                        className="sideBarItemText">Classes</span>
+                    </li>
                 </Link>
 
                 <Link to="performance" className='link'>
-                <li className="itemList"><Timeline/><span className="sideBarItemText">Performance</span>
-                </li>
+                    <li className="itemList"><BiBarChartAlt2 className='icon'/><span
+                        className="sideBarItemText">Performance</span>
+                    </li>
                 </Link>
 
                 <Link to="Fees-balance" className='link'>
-                <li className="itemList"><Money/><span className="sideBarItemText">Fees balances </span>
-                </li>
+                    <li className="itemList"><BiDollar className='icon'/><span
+                        className="sideBarItemText">Fees balances </span>
+                    </li>
                 </Link>
 
                 <Link to="Subjects" className='link'>
-                <li className="itemList"><School/><span className="sideBarItemText">Subjects </span>
-                </li>
+                    <li className="itemList"><GoBook className='icon'/><span
+                        className="sideBarItemText">Subjects </span>
+                    </li>
                 </Link>
 
 
                 <div className='sidebardown'>
                     <hr/>
                     <li className="profile-holder">
-                        <h5 style={{marginRight:'10px'}}>D</h5><span>Daelo</span>
+                        <h5 style={{marginRight: '10px'}}>D</h5><span>Daelo</span>
                     </li>
                     <Link to="logout" className='link'>
-                    <li className="logOut"><Logout/><span className="sideBarItemText">Log Out </span>
-                    </li>
+                        <li className="logOut"><Logout/><span className="sideBarItemText">Log Out </span>
+                        </li>
                     </Link>
                 </div>
             </ul>
         </div>
 
-        //
-        //                 <li><QuestionAnswer className="icon" fontSize="small"/><span>Messages</span></li>
-        //             </Link>
+
+        // <li><QuestionAnswer className="icon" fontSize="small"/><span>Messages</span></li>
+        // </Link>
         //             <Link to="logs" className='link'>
         //                 <li className='link'><Note className="icon" fontSize="small"/><span>Logs</span></li>
         //             </Link>

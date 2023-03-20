@@ -17,6 +17,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
         @vitereactrefresh
         @vite(['resources/css/app.css','resources/js/app.jsx'])
+
     </head>
     <body >
 <div id="app" style="background-color: #f1f1f1;font-family: 'Roboto',sans-serif;" >

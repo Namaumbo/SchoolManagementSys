@@ -2,14 +2,11 @@ import React, {useEffect, useState} from "react"
 import './teachers.css'
 import {AddCircle, GpsFixed, Phone, Search} from "@mui/icons-material";
 import profile from '../../../../assets/profile.jpeg'
-
-
-
-
 const Team = () => {
 
     const [newTeacher, setNewTeacher] = useState(false);
     const [departments , setDepartments] = useState([]);
+    const [roles,setRoles] = useState([]);
 
 
     useEffect(() => {
@@ -22,9 +19,25 @@ const Team = () => {
             })
         }
         departments().then(null)
+
+        async function roles() {
+            await axios.get('http://127.0.0.1:8000/api/roles').then(res => {
+                setRoles(res.data)
+                console.log(res.data)
+            }).catch(err => {
+                console.error(err)
+            })
+        }
+        // departments().then(null)
+        roles().then(null)
+
+
     }, ['http://127.0.0.1:8000/api/departments'])
 
 
+    function submit(){
+        alert("workign")
+    }
 
 
     function AddTeacher() {
@@ -101,9 +114,13 @@ const Team = () => {
                                 <div className='input'>
                                     <label><b>ROLE<span style={{color: 'red'}}>*</span></b></label><br/>
                                     <select className='form-select'>
-                                        <option>Administrator</option>
-                                        <option>Head Teacher</option>
-                                        <option>Teacher</option>
+                                        {
+                                            roles.map(role => {
+                                                return(
+                                                    <option>{role.role_name}</option>
+                                                )
+                                            })
+                                        }
                                     </select>
 
                                 </div>
@@ -111,7 +128,7 @@ const Team = () => {
                         </div>
                         <div className="sendBtn">
                             <button className='saveBtn'>Save as Draft</button>
-                            <button className='saveBtn'>SAVE</button>
+                            <button className='saveBtn' onClick={submit}>SAVE</button>
                         </div>
                     </div>
 

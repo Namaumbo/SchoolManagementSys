@@ -10,6 +10,7 @@ import absentUser from '../../../../assets/absentUser.png'
 import {DataGrid} from "@mui/x-data-grid";
 import Chart from '../utils/Chart.jsx'
 import {Female, Male, SecurityRounded} from "@mui/icons-material";
+import {FiHome} from "react-icons/all";
 
 
 export default function AdminDashboard() {
@@ -33,6 +34,9 @@ export default function AdminDashboard() {
             <div className='outerWrapper'>
                 <div className='outVitals'>
                 <div className='vitals'>
+                    <div className="heading-title">
+                        <FiHome/><h4>Dashboard-Home</h4>
+                    </div>
                     <div className='conWrapper'>
                         <div className="containerTabs">
                             <div className="card">
@@ -180,19 +184,19 @@ export default function AdminDashboard() {
                         </table>
                     </div>
                 </div>
-                <div className='scores'>
-                    <div className='scoresNumber'>
-                        <h4 className='heading' style={{color: 'black', textAlign: 'center'}}>Average scores in %</h4>
-                        <h4 className='subHeading'>English</h4>
-                        <div className='chartItem'><Chart/></div>
-                        <span></span>
-                        <h4 className='subHeading'>Mathematics</h4>
-                        <div className='chartItem'><Chart/></div>
-                        <span></span>
-                        <h4 className='subHeading'>Biology</h4>
-                        <div className='chartItem'><Chart/></div>
-                    </div>
-                </div>
+                {/*<div className='scores'>*/}
+                {/*    <div className='scoresNumber'>*/}
+                {/*        <h4 className='heading' style={{color: 'black', textAlign: 'center'}}>Average scores in %</h4>*/}
+                {/*        <h4 className='subHeading'>English</h4>*/}
+                {/*        <div className='chartItem'><Chart/></div>*/}
+                {/*        <span></span>*/}
+                {/*        <h4 className='subHeading'>Mathematics</h4>*/}
+                {/*        <div className='chartItem'><Chart/></div>*/}
+                {/*        <span></span>*/}
+                {/*        <h4 className='subHeading'>Biology</h4>*/}
+                {/*        <div className='chartItem'><Chart/></div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
             </div>
         </>

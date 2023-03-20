@@ -1,0 +1,32 @@
+
+.navbar-wrapper{
+    width:100%;
+    height: 50px;
+    background-color: #021b62;
+    color:white
+}
+.notification-icon{
+    color:white;
+}
+.profile-name{
+    color: white;
+}
+.user{
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+    align-items: center;
+}
+.notification{
+    margin-right:1em
+}
+.profile-vitals{
+    display: flex;
+    justify-content: space-between;
+    width: 230px;
+}
+.nav-items{
+    display: flex;
+    justify-content: space-between;
+    padding:.5em
+}
