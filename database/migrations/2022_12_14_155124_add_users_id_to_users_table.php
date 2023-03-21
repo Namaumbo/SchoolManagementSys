@@ -14,19 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-        
-       
-            
-            $table->foreign('role_id')
-            ->references('id')
-            ->on('roles')
-            ->onDelete('CASCADE');
 
-            
-            $table->foreign('department_id')
-            ->references('id')
-            ->on('departments')
-            ->onDelete('CASCADE');
+
+
+//            $table->foreign('role_id')
+//            ->references('id')
+//            ->on('roles')
+//            ->onDelete('CASCADE');
+//
+//
+//            $table->foreign('department_id')
+//            ->references('id')
+//            ->on('departments')
+//            ->onDelete('CASCADE');
 
         });
     }

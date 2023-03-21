@@ -22,10 +22,9 @@ class Department extends Model
     protected $fillable = [
         'departmentName',
         'headOfDepartment',
-        'created_at',
-        'updated_at'
 
     ];
+
 
    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

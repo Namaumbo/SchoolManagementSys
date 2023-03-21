@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static find(int $id)
  * @method static where(string $string, int $id)
  */
-class User extends Authenticatable
+class User extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = "users";
@@ -51,7 +52,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
- 
+
 
     public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

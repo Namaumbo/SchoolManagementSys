@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import './teachers.css'
 import {AddCircle, GpsFixed, Phone, Search} from "@mui/icons-material";
 import profile from '../../../../assets/profile.jpeg'
+import {FiHome, FiUsers} from "react-icons/fi";
 const Team = () => {
 
     const [newTeacher, setNewTeacher] = useState(false);
@@ -30,8 +31,6 @@ const Team = () => {
         }
         // departments().then(null)
         roles().then(null)
-
-
     }, ['http://127.0.0.1:8000/api/departments'])
 
 
@@ -95,7 +94,7 @@ const Team = () => {
                                         {
                                             departments.map(department => {
                                                 return(
-                                                    <option>{department.DepartmentName}</option>
+                                                    <option>{department.departmentName}</option>
                                                 )
                                             })
                                         }
@@ -140,7 +139,9 @@ const Team = () => {
 
     return <>
         <div>
-            <h3 className='teacher'>Teachers</h3>
+            <div className="heading-title">
+                <FiUsers/><h4>Teachers-panel</h4>
+            </div>
             {/*search and buttons*/}
             <div className="upperActions">
                 <div className="search">

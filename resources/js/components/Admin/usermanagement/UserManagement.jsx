@@ -5,6 +5,7 @@ import {userState} from "@/components/User/userState";
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {Delete, Edit} from "@mui/icons-material";
 import Chart from '../utils/Chart.jsx'
+import {FiHome, FiUsers} from "react-icons/all";
 
 
 function UserManagement() {
@@ -27,6 +28,9 @@ function UserManagement() {
     }, ['http://127.0.0.1:8000/api/users'])
 
     return <>
+        <div className="heading-title">
+            <FiUsers/><h4>Users-available</h4>
+        </div>
         {
             loading ?
                 <div className='container text-center' style={{marginTop: '25%'}}>
@@ -37,8 +41,7 @@ function UserManagement() {
                     {
                         userInfo ?
                             <>
-                                <span className="list-title">List of Users</span>
-                                <div className='user-tb'>
+                                                              <div className='user-tb'>
                                     <table className="table table-hover" style={{width: '800px'}}>
                                         <thead>
                                         <tr>
@@ -61,28 +64,14 @@ function UserManagement() {
                                                     <td>{user.surname}</td>
                                                     <td>{user.email}</td>
                                                     <td>{user.district}</td>
-                                                    <td><Delete style={{color: "red"}}/>{" "}<Edit
-                                                        style={{color: "green"}}/></td>
+                                                    <td><button>Delete</button></td>
                                                 </tr>
 
                                             })
                                         }
                                         </tbody>
                                     </table>
-                                    <div>
-                                        <div className='scoresNumber'>
-                                            <h4 className='heading' style={{color: 'black', textAlign: 'center'}}>Average
-                                                scores in %</h4>
-                                            <h4 className='subHeading'>English</h4>
-                                            <div className='chartItem'><Chart/></div>
-                                            <span></span>
-                                            <h4 className='subHeading'>Mathematics</h4>
-                                            <div className='chartItem'><git add Chart/></div>
-                                            <span></span>
-                                            <h4 className='subHeading'>Biology</h4>
-                                            <div className='chartItem'><Chart/></div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </>
                             :

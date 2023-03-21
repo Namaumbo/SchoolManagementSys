@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('subject_name');
             $table->string('PeriodsPerWeek');
             $table->timestamps();
-    
+
 
             $table->foreign('department_id')
             ->references('id')
@@ -29,7 +29,7 @@ return new class extends Migration
         });
 
 
-    } 
+    }
 
     /**
      * Reverse the migrations.

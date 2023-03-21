@@ -104,16 +104,6 @@ Route::controller(ClassController::class)->group(function () {
     });
 });
 
-Route::controller(ClassController::class)->group(function () {
-
-//Assessments
-    Route::post('/create-assessment', 'create');
-    Route::get('/assessments', function () {
-        return AssessmentResource::collection(Assessment::all());
-    });
-
-});
-Route::controller(AssessmentController::class)->group(function(){
 
 //Assessments
 
@@ -122,7 +112,7 @@ Route::controller(AssessmentController::class)->group(function(){
 Route::post('/create-assessment','create');
 Route::get('/assessments', 'index' );
 });
-});
+
 
 //Messages
 Route::controller(MessageController::class)->group(function(){

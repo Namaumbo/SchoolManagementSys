@@ -1,21 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Contracts\Queue\EntityNotFoundException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-
-use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserController extends Controller
@@ -23,11 +19,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Collection
+     * @return JsonResponse
      */
     public function getAll()
     {
-        return User::all();
+//        using the with function with the name of the function
+// u will be able to retrieve the user and his related deps
+
+        $user = User::with('departments')->get();
+        return \response()->json(['$users' => $user]);
+
 //        return  UserResource::collection(User::all());
 
     }
@@ -53,15 +54,14 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'User saved successfully',
                 'User' => $user,
-                'status' => 200,
-            ]);
+                'status' => 201,
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'User not saved',
-                'User' => $user,
-                'status' => 400,
+                'status' => 404,
                 '4' => $e,
-            ]);
+            ], 404);
         }
     }
     /**
