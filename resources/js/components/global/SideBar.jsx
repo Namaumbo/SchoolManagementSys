@@ -85,7 +85,7 @@ const SideBar = () => {
 
 
                 <div className='sidebardown'>
-                    <hr/>
+
                     <li className="profile-holder">
                         <h5 style={{marginRight: '10px'}}>D</h5><span>Daelo</span>
                     </li>

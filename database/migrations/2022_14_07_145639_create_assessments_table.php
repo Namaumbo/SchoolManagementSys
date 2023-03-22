@@ -13,26 +13,26 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('levels', function (Blueprint $table) {
+        Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('subject_id')->unsigned();
-            $table->integer('user_id')->unsigned();
-            $table->string('className');
-            $table->timestamps();
+            $table->integer('firstAssessment');
+            $table->integer('secondAssessment');
+            $table->integer('endOfTermAssessment');
+            $table->integer('average_Score')->nullable();
 
+            $table->integer('subject_id')->unsigned();
             $table->foreign('subject_id')
             ->references('id')
             ->on('subjects')
             ->onDelete('CASCADE');
-            
+
+            $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
             ->references('id')
             ->on('users')
             ->onDelete('CASCADE');
-                  
-          
-    
-        
+
+            $table->timestamps();
         });
     }
 
@@ -43,6 +43,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('levels');
+        Schema::dropIfExists('assessments');
     }
 };

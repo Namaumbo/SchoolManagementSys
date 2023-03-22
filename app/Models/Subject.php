@@ -12,7 +12,7 @@ class Subject extends Model
     protected $fillable = [
         'subject_name',
         'PeriodsPerWeek',
-     
+
     ];
 
 
@@ -31,7 +31,6 @@ class Subject extends Model
         return $this->belongsToMany(
             Department::class,
             'subjects',
-            'id',
-            'department_id');
+            'departmentName');
     }
 }

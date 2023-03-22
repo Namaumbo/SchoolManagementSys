@@ -16,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static find(int $id)
  * @method static where(string $string, int $id)
  */
-class User extends Model
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = "users";
@@ -68,8 +68,7 @@ class User extends Model
         return $this->belongsToMany(
             Department::class,
             'users',
-            'id',
-            'department_id');
+            'departmentName');
     }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {

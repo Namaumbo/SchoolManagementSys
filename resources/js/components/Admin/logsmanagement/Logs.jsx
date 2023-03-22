@@ -1,8 +1,14 @@
 import React from "react"
+import {FiBook } from "react-icons/all";
 
 const Logs = () =>{
     return<>
-        <h3>Logs</h3>
+        <div className='logs-wrapper'>
+            <div className="heading-title">
+                <FiBook/><h4>Logs-Panel</h4>
+            </div>
+        </div>
+
 
     </>
 }

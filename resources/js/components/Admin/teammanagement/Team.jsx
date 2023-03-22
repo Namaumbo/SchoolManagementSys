@@ -2,12 +2,13 @@ import React, {useEffect, useState} from "react"
 import './teachers.css'
 import {AddCircle, GpsFixed, Phone, Search} from "@mui/icons-material";
 import profile from '../../../../assets/profile.jpeg'
-import {FiHome, FiUsers} from "react-icons/fi";
+import {FiUsers} from "react-icons/fi";
+
 const Team = () => {
 
     const [newTeacher, setNewTeacher] = useState(false);
-    const [departments , setDepartments] = useState([]);
-    const [roles,setRoles] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [roles, setRoles] = useState([]);
 
 
     useEffect(() => {
@@ -35,12 +36,68 @@ const Team = () => {
 
 
     function submit(){
-        alert("workign")
-    }
 
+    }
 
     function AddTeacher() {
         setNewTeacher(true)
+        const [formValues, setFormValues] = useState({
+            firstname: '',
+            surname: '',
+            title: '',
+            village: '',
+            phoneNumber: '',
+            traditional_authority: '',
+            district: '',
+            email: '',
+            password: '',
+            departmentName: '',
+            sex: ''
+        });
+        const handleInputChange = event => {
+            const {name, value} = event.target;
+            setFormValues({...formValues, [name]: value});
+        };
+
+        const handleSelectChange = event => {
+            setFormValues({...formValues, departmentName: event.target.value, sex: event.target.value});
+        };
+
+        const handleSubmit = async event => {
+            event.preventDefault();
+            try {
+                const options = {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                 await axios.post('http://127.0.0.1:8000/api/register-user', formValues, options).then(res=>{
+                     if(res.status === 201){
+                         alert('for now alert is ok user saved')
+                         setFormValues({
+                             firstname: '',
+                             surname: '',
+                             title: '',
+                             village: '',
+                             phoneNumber: '',
+                             traditional_authority: '',
+                             district: '',
+                             email: '',
+                             password: '',
+                             departmentName: '',
+                             sex: ''
+                         })
+                     }
+                     }
+                 ).catch(err=>{
+                     alert(err)
+                 });
+
+            } catch (error) {
+                console.log(error)
+            }
+        };
+
         return (
             <>
                 <div className='addTeacherWrapper'>
@@ -52,49 +109,61 @@ const Team = () => {
                             <div className="personal">
                                 <div className='input'>
                                     <label>First Name</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.firstname}
+                                           onChange={handleInputChange} name="firstname"/>
                                 </div>
                                 <div className='input'>
                                     <label>Last Name</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.surname}
+                                           onChange={handleInputChange} name="surname"/>
                                 </div>
                                 <div className='input'>
                                     <label>Title</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.title}
+                                           onChange={handleInputChange} name="title"/>
                                 </div>
                                 <div className='input'>
                                     <label>village</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.village}
+                                           onChange={handleInputChange} name="village"/>
                                 </div>
                                 <div className='input'>
                                     <label>Phone number</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="tel" value={formValues.phoneNumber}
+                                           onChange={handleInputChange} name="phoneNumber"/>
                                 </div>
                                 <div className='input'>
                                     <label>Traditional Authority</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.traditional_authority}
+                                           onChange={handleInputChange} name="traditional_authority"/>
                                 </div>
                                 <div className='input'>
                                     <label>District</label><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="text" value={formValues.district}
+                                           onChange={handleInputChange} name="district"/>
                                 </div>
                             </div>
                             <div className="organisation">
                                 <div className='input'>
                                     <label>Email</label><span style={{color: 'red'}}>*</span><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="email" value={formValues.email}
+                                           onChange={handleInputChange} name="email"/>
                                 </div>
                                 <div className='input'>
                                     <label>Partial Password</label><span style={{color: 'red'}}>*</span><br/>
-                                    <input className='form-control'/>
+                                    <input className='form-control' type="password" value={formValues.password}
+                                           onChange={handleInputChange} name="password"/>
                                 </div>
                                 <div className='input'>
                                     <label>Department</label><span style={{color: 'red'}}>*</span><br/>
-                                    <select className='form-select'>
+                                    <select className='form-select' name="department" value={formValues.department}
+                                            onChange={handleSelectChange}>
+                                        <option value=""></option>
                                         {
                                             departments.map(department => {
-                                                return(
-                                                    <option>{department.departmentName}</option>
+                                                return (
+                                                    <option
+                                                        value={department.departmentName}>{department.departmentName}</option>
                                                 )
                                             })
                                         }
@@ -111,11 +180,19 @@ const Team = () => {
                                     </select>
                                 </div>
                                 <div className='input'>
+                                    <label>Sex</label><span style={{color: 'red'}}>*</span><br/>
+                                    <select className='form-select' value={formValues.sex}
+                                            onChange={handleSelectChange}>
+                                        <option value="male">Female</option>
+                                        <option value="female">Male</option>
+                                    </select>
+                                </div>
+                                <div className='input'>
                                     <label><b>ROLE<span style={{color: 'red'}}>*</span></b></label><br/>
                                     <select className='form-select'>
                                         {
                                             roles.map(role => {
-                                                return(
+                                                return (
                                                     <option>{role.role_name}</option>
                                                 )
                                             })
@@ -127,7 +204,7 @@ const Team = () => {
                         </div>
                         <div className="sendBtn">
                             <button className='saveBtn'>Save as Draft</button>
-                            <button className='saveBtn' onClick={submit}>SAVE</button>
+                            <button className='saveBtn' onClick={handleSubmit}>SAVE</button>
                         </div>
                     </div>
 

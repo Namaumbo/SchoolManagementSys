@@ -15,16 +15,18 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('department_id')->unsigned()->nullable();
+//            foreign
+            $table->string('departmentName',)->nullable();
+            $table->foreign('departmentName')
+                ->references('departmentName')
+                ->on('departments')
+                ->onDelete('NO ACTION')
+                ->onUpdate('CASCADE');
+
             $table->string('subject_name');
             $table->string('PeriodsPerWeek');
             $table->timestamps();
 
-
-            $table->foreign('department_id')
-            ->references('id')
-            ->on('departments')
-            ->onDelete('CASCADE');
 
         });
 

@@ -20,20 +20,22 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             $table->string('sex');
+//            foreing
             $table->integer('role_id')->unsigned()->nullable();
-            $table->integer('department_id')->unsigned()->nullable();
+
+            $table->string('departmentName',50)->nullable();
+            $table->foreign('departmentName')
+                ->references('departmentName')
+                ->on('departments')
+                ->onDelete('NO ACTION')
+                ->onUpdate('CASCADE');
+
             $table->string('password');
             $table->string('village');
             $table->string('district');
             $table->string('traditional_authority');
             $table->rememberToken();
             $table->timestamps();
-
-
-
-
-
-
 
 
 

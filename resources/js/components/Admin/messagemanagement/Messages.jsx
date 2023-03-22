@@ -4,10 +4,14 @@ import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import UserStack from "@/components/UserStack";
+import { FiMessageCircle} from "react-icons/fi";
 
 const Messages = () => {
     return <>
     <div className="wrappers">
+        <div className="heading-title">
+            <FiMessageCircle/><h4>Messaging-chats</h4>
+        </div>
         <div className="userStack">
             <UserStack/>
         </div>

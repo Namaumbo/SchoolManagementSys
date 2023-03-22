@@ -44,7 +44,7 @@ class UserController extends Controller
         //Username represents an ID for the student
         if ($user) {
             return response()->json(
-                ['message' => 'User already exists', 'email' => $user],
+                ['message' => 'User already exists', 'email' => $user], 409
             );
         }
         try {
@@ -140,7 +140,7 @@ class UserController extends Controller
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
         $user->role_id = $request->role_id;
-        $user->department_id = $request->department_id;
+        $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
