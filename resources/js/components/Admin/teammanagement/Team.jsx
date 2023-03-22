@@ -15,7 +15,6 @@ const Team = () => {
         async function departments() {
             await axios.get('http://127.0.0.1:8000/api/departments').then(res => {
                 setDepartments(res.data)
-                console.log(res.data)
             }).catch(err => {
                 console.error(err)
             })
@@ -25,22 +24,17 @@ const Team = () => {
         async function roles() {
             await axios.get('http://127.0.0.1:8000/api/roles').then(res => {
                 setRoles(res.data)
-                console.log(res.data)
+
             }).catch(err => {
                 console.error(err)
             })
         }
-        // departments().then(null)
         roles().then(null)
     }, ['http://127.0.0.1:8000/api/departments'])
 
 
-    function submit(){
-
-    }
-
     function AddTeacher() {
-        setNewTeacher(true)
+
         const [formValues, setFormValues] = useState({
             firstname: '',
             surname: '',
@@ -163,6 +157,7 @@ const Team = () => {
                                             departments.map(department => {
                                                 return (
                                                     <option
+                                                        key={department.departmentName}
                                                         value={department.departmentName}>{department.departmentName}</option>
                                                 )
                                             })
@@ -226,35 +221,33 @@ const Team = () => {
                     <input type='text' className='input' placeholder='Search Teachers'/>
                 </div>
                 <div className="buttons">
-                    <button className='addBtn' onClick={AddTeacher}><AddCircle/>New Teacher</button>
+                    <button className='addBtn' onClick={() => {
+                        setNewTeacher(true)
+                    }}><AddCircle/>New Teacher
+                    </button>
                 </div>
             </div>
             {
-                newTeacher ?
-
-                    <>
-                        <AddTeacher/>
-                    </>
-                    :
-                    <>
-                        <div className="teacherInfo">
-                            <div className='insideWrapper'>
-                                <div className="Image">
-                                    <img src={profile} className='profilePic'/>
-                                </div>
-                                <span className='name'>Tom Hanswell</span>
-                                <div className='expertise'>
-                                    Science
-                                </div>
-                                <div className="details">
-                                    <Phone/>
-                                    <GpsFixed/>
-                                </div>
+                newTeacher ? <><AddTeacher/></> : <>
+                    <div className="teacherInfo">
+                        <div className='insideWrapper'>
+                            <div className="Image">
+                                <img src={profile} className='profilePic'/>
+                            </div>
+                            <span className='name'>Tom Hanswell</span>
+                            <div className='expertise'>
+                                Science
+                            </div>
+                            <div className="details">
+                                <Phone/>
+                                <GpsFixed/>
                             </div>
                         </div>
+                    </div>
 
-                    </>
+                </>
             }
+
 
         </div>
     </>
