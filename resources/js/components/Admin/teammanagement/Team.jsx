@@ -54,6 +54,7 @@ const Team = () => {
         };
 
         const handleSelectChange = event => {
+            // its giving a bug
             setFormValues({...formValues, departmentName: event.target.value, sex: event.target.value});
         };
 
@@ -150,7 +151,7 @@ const Team = () => {
                                 </div>
                                 <div className='input'>
                                     <label>Department</label><span style={{color: 'red'}}>*</span><br/>
-                                    <select className='form-select' name="department" value={formValues.department}
+                                    <select className='form-select' name="department" value={formValues.departmentName}
                                             onChange={handleSelectChange}>
                                         <option value=""></option>
                                         {

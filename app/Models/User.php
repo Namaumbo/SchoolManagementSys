@@ -68,6 +68,8 @@ class User extends Authenticatable
         return $this->belongsToMany(
             Department::class,
             'users',
+            'departmentName',
+
             'departmentName');
     }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -41,11 +41,11 @@ justify-content: space-around;
 padding: 10px 10px ;
 }
 .card {
-    -webkit-box-shadow: 0 2px 12px 0 rgba(43,43,43,0.44);
-    box-shadow: 0 2px 12px 0 rgba(43,43,43,0.44);
+    -webkit-box-shadow: 0 2px 12px 0 rgba(43, 43, 43, 0.44);
+    box-shadow: 0 2px 12px 0 rgba(43, 43, 43, 0.44);
     border-radius: 2px;
-    width: 200px;
-    height: 90px;
+    width: 250px;
+    height: 100px;
     background-color: rgba(75, 148, 161, 0.74);
     color: white;
 
@@ -128,52 +128,59 @@ padding: 10px 10px ;
     height: 200px;
 }
 
-.subHeading{
+.subHeading {
     font-size: 14px;
     font-weight: bolder;
     text-align: center;
 }
-/*.scoresNumber{*/
-/*    overflow-y: scroll;*/
-/*    max-height: 100vh;*/
-/*}*/
-/*::-webkit-scrollbar {*/
-/*!*    width: 5px;*!*/
 
-/*!*}*!*/
+table {
+    border-collapse: collapse;
+    width: 100%;
+    height: 50px;
+}
 
-/*!*!* Track *!*!*/
-/*!*::-webkit-scrollbar-track {*!*/
-/*!*    background: #f1f1f1;*!*/
-/*!*}*!*/
+th, td {
+    text-align: left;
+    padding: 8px;
+}
 
-/* Handle */
-/*::-webkit-scrollbar-thumb {*/
-/*    background: #358860;*/
-/*    border-radius: 10px;*/
-/*}*/
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
 
-/*!* Handle on hover *!*/
-/*::-webkit-scrollbar-thumb:hover {*/
-/*    background: rgb(163, 163, 163);*/
-/*}*/
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
 .gender{
     width: 200px;
     height: 250px;
+}
+.table {
+    width: 98%;
+    -webkit-box-shadow: 2px 9px -21px -11px rgba(0, 0, 0, 0.87);
+    box-shadow: 2px 9px 25px -25px rgba(0, 0, 0, 0.87);
+    background-color: white;
+    border-radius: 5px;
+    height: 50vh;
+    overflow-y: scroll;
 
 }
-.table{
-    width: 100%;
-    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
-    background-color: white;
-    border-radius: 2px;
+.title-card{
+    padding-top :5px;
+    padding-left:6px;
+    font-size: 16px;
+    border-top: 3px solid #aaaaaa;
+    border-top-left-radius: 5px;
+    font-weight: bolder;
 
 }
 .teamTable{
     margin-left: 10px;
     margin-Top: 10px;
-    /*overflow-y: scroll;*/
     max-height: 200px;
 
 }

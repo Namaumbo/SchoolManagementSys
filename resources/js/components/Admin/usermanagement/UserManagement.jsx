@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react"
 import "./users.css"
 import {useRecoilState} from "recoil";
 import {userState} from "@/components/User/userState";
-import {userDetails} from "@/components/recoil_states/userdetails";
-import {Delete, Edit} from "@mui/icons-material";
+import {userDetails} from "../../recoil_states/userdetails";
 import Chart from '../utils/Chart.jsx'
 import {FiHome, FiUsers} from "react-icons/all";
 

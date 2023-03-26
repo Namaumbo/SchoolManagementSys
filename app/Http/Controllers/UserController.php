@@ -19,15 +19,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function getAll()
     {
 //        using the with function with the name of the function
 // u will be able to retrieve the user and his related deps
-
-        $user = User::with('departments')->get();
-        return \response()->json(['$users' => $user]);
+return User::all();
+//        $user = User::with('departments')->get();
+//        return \response()->json(['$users' => $user]);
 
 //        return  UserResource::collection(User::all());
 
