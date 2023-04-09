@@ -18,6 +18,14 @@ class Assessment extends Model
         'updated_at'
       
     ];
+    public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Subject::class,
+            'subjects',
+            'id',
+            'user_id');
+    }
 
  
 }

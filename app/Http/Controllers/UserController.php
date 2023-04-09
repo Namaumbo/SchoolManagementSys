@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Excel;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class UserController extends Controller
@@ -50,7 +51,7 @@ return User::all();
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
-
+            
             return response()->json([
                 'message' => 'User saved successfully',
                 'User' => $user,
@@ -70,6 +71,9 @@ return User::all();
      * @param int $id
      * @return Response
      */
+    public function exportIntoExcel(){
+        return Excel::download(new User,'users.xlsx');
+    }
     public function show(int $id)
     {
         return new UserResource(User::findorFail($id));
@@ -221,5 +225,17 @@ return User::all();
 
 
 }
+public function addition(){
+    $x=5;
+    $m=10;
+    $y=$x*$m;
+  
+    return response()->json([
+        'status'=>'success',
+        'message'=>'Successfully logged out',
+          'The value is'=>$y
+        ]);
+}
+
 }
 

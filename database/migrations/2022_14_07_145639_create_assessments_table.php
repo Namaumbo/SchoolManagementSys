@@ -18,15 +18,15 @@ return new class extends Migration
             $table->integer('firstAssessment');
             $table->integer('secondAssessment');
             $table->integer('endOfTermAssessment');
-            $table->integer('average_Score')->nullable();
+            $table->integer('averageScore')->nullable();
 
-            $table->integer('subject_id')->unsigned();
+            $table->integer('subject_id')->unsigned()->nullable();;
             $table->foreign('subject_id')
             ->references('id')
             ->on('subjects')
             ->onDelete('CASCADE');
 
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();;
             $table->foreign('user_id')
             ->references('id')
             ->on('users')

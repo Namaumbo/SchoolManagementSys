@@ -33,4 +33,9 @@ class Subject extends Model
             'subjects',
             'departmentName');
     }
+    public function assessments():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Assessment::class);
+    }
 }

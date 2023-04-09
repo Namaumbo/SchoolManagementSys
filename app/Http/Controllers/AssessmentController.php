@@ -19,8 +19,10 @@ class AssessmentController extends Controller
      */
     public function index():Collection
     {
-        return AssessmentResource::collection(Assessment::all());
-        
+      //
+      
+      return AssessmentResource::collection(Assessment::all());
+
     }
 
     /**
@@ -32,18 +34,20 @@ class AssessmentController extends Controller
     {
         $assessment->firstAssessment = $request->firstAssessment;
         $assessment->secondAssessment = $request->secondAssessment;
-        $assessment->endofTermAssessment = $request->endofTermAssessment;
-        $average_Score=($assessment->firstAssessment+$assessment->secondAssessment)*0.4+0.6*$assessment->endofTermAssessment;
-        $assessment->$average_Score=$request->attach($average_Score);
+        $assessment->endOfTermAssessment =round($request->endOfTermAssessment*0.6,0);
+        $assessment->averageScore=collect($assessment->firstAssessment,$assessment->secondAssessment)->avg()*0.4+$assessment->endOfTermAssessment;
+
         $assessment->created_at = carbon::now();
         $assessment->updated_at = carbon::now();
-       
-        $assessment->save();
+   
 
 
+ 
+            $assessment->save();
      
    
-    }
+    
+}
 
     /**
      * Store a newly created resource in storage.
@@ -82,10 +86,21 @@ class AssessmentController extends Controller
      * @param  \App\Models\Subject  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $assessment)
+    public function gradingScores(Request $assessment)
     {
-        //
-    }
+        $assessment=Assessment::where('user_id',$assessment->input('user_id'))->first();
+
+        if ($assessment) {
+            return response()->json(
+                [
+                    'Assessment' => $assessment, 
+            ],
+            );
+        }
+        
+      
+       
+       }
 
     /**
      * Show the form for editing the specified resource.
@@ -93,9 +108,11 @@ class AssessmentController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $assessment)
+    public function show(Request $assessment)
     {
-        //
+   
+            return new AssessmentResource(Assessment::findorFail($id));
+        
     }
 
     /**
