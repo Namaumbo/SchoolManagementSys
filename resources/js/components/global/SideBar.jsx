@@ -13,6 +13,7 @@ import {
 } from "react-icons/bi";
 import {GoBook} from "react-icons/go";
 import {AiFillDashboard} from "react-icons/all";
+import {FiUmbrella} from "react-icons/fi";
 
 const SideBar = () => {
     // let [{loggedIn, role},setUser] = useRecoilState(userState)
@@ -70,6 +71,11 @@ const SideBar = () => {
                         className="sideBarItemText">Performance</span>
                     </li>
                 </Link>
+                <Link to="department" className='link'>
+                    <li className="itemList"><FiUmbrella className='icon'/><span
+                        className="sideBarItemText">Department</span>
+                    </li>
+                </Link>
 
                 <Link to="Fees-balance" className='link'>
                     <li className="itemList"><BiDollar className='icon'/><span
@@ -86,11 +92,8 @@ const SideBar = () => {
 
                 <div className='sidebardown'>
 
-                    <li className="profile-holder">
-                        <h5 style={{marginRight: '10px'}}>D</h5><span>Daelo</span>
-                    </li>
                     <Link to="logout" className='link'>
-                        <li className="logOut"><Logout/><span className="sideBarItemText">Log Out </span>
+                        <li className="logOut"><Logout className='icon' fontSize="13p"/><span className="sideBarItemText">Log Out </span>
                         </li>
                     </Link>
                 </div>

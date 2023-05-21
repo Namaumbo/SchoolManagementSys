@@ -17,10 +17,8 @@ return new class extends Migration
 
             $table->string('departmentName')->primary();
             $table->string('headOfDepartment')->unique();
+            $table->text('description')->nullable(false);
             $table->timestamps();
-
-
-
 
         });
     }

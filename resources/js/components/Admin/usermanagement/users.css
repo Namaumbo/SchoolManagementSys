@@ -5,9 +5,15 @@
 
 .user-tb{
     margin-top:1em;
-      margin-left: 5px;
     display: flex;
     justify-content: space-around;
+    padding-bottom: 0.3em;
+
+
+}
+th{
+    color: rgb(163, 162, 162);
+    font-size: 13px;
 }
 .list-title{
     margin-left:20px;
@@ -15,4 +21,10 @@
     font-weight: bolder;
     color: black;
 
+}
+.edit-btn{
+    padding:2px;
+    border-radius: 2px;
+    border:1px solid green;
+    cursor: pointer;
 }

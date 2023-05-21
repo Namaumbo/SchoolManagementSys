@@ -8,6 +8,7 @@ import users from '../../../../assets/users.png'
 import students from '../../../../assets/students.png'
 import Chart from '../utils/Chart.jsx'
 import {FiHome} from "react-icons/all";
+import axios from "axios";
 
 
 export default function AdminDashboard() {
@@ -124,7 +125,8 @@ export default function AdminDashboard() {
                                     <table>
                                         <thead>
                                         <tr>
-                                            <th>FullName</th>
+                                            <th>Full name</th>
+                                            <th>sex</th>
                                             <th>Role</th>
                                             <th>Phone number</th>
                                         </tr>
@@ -136,7 +138,7 @@ export default function AdminDashboard() {
                                                     <>
                                                         <tr>
                                                             <td>{user.firstname} {user.surname}</td>
-
+                                                            <td>{user.sex}</td>
                                                             <td>{user.title}</td>
                                                             <td>{user.district}</td>
                                                         </tr>

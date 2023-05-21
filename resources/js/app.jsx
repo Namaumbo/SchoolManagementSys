@@ -1,4 +1,4 @@
-import './bootstrap'
+// import './bootstrap'
 import React, {useEffect} from "react";
 import ReactDOM from "react-dom/client";
 
@@ -16,7 +16,7 @@ import ClassesPerformance from "./components/Admin/classmanagement/ClassPerforma
 import Messages from "./components/Admin/messagemanagement/Messages";
 import Students from "./components/Student/Students";
 import StudentsInfo from "./components/Student/StudentsInfo";
-import Department from "./components/Student/Department";
+import Department from "./components/Admin/DepartmentManagement/Department";
 import StudentPerformance from "./components/Student/StudentPerformance";
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {userState} from "@/components/User/userState";
@@ -39,8 +39,9 @@ export default function Index (){
                         <Route path="/performance" element={<SchoolPerformance/>}/>
                         <Route exact path="/users" element={<UserManagement/>}/>
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
-                        <Route path="/messages" element={<Messages/>}
-                        />
+                        <Route path="/messages" element={<Messages/>}/>
+                        <Route path="/department" element={<Department/>}/>
+
                         {/*//students and H-teacher*/}
                         <Route path="/students" element={<Students/>}/>
                         <Route path='/students-info' element={<StudentsInfo/>}/>
@@ -50,6 +51,7 @@ export default function Index (){
                     </Route>
                 </Routes>
             </HashRouter>
+
             {/* <AdminDashboard/>*/}
             {/*<Mines />*/}
             {/*<SideBar/>*/}

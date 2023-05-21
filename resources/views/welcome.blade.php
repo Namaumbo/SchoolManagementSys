@@ -20,7 +20,7 @@
 
     </head>
     <body >
-<div id="app" style="background-color: #f1f1f1;font-family: 'Roboto',sans-serif;" >
+<div id="app" style="font-family: 'Roboto',sans-serif;" >
 
 </div>
     </body>
