@@ -39,15 +39,22 @@ use App\Http\Controllers\MessageController;
 
 
 //UserController Routes
+Route::post('/login', [UserController::class,'login']);
+Route::get('/exports', [UserController::class,'exportIntoExcel']);
 
+//The following are protected routes
+Route::middleware('auth:sanctum')->group(function () {
 
 Route::controller(UserController::class)->group(function () {
+
+    
+
     Route::get('/users', 'getAll');
+    Route::get('/add', 'addition');
 
     Route::post('/register-user', 'store');
     Route::post('/register-user/{id}', 'UserToRoles');
     Route::get('/user/{id}', 'show');
-    Route::post('/login', 'login');
 
     Route::put('/user/{id}', 'update');
     Route::delete('/user/{id}', 'destroy');
@@ -109,8 +116,12 @@ Route::controller(ClassController::class)->group(function () {
 
 Route::controller(AssessmentController::class)->group(function(){
 
-Route::post('/create-assessment','create');
+Route::post('/create-assessment','store');
+Route::get('/reportCard','gradingScores');
+
 Route::get('/assessments', 'index' );
+Route::get('/assessment/{id}', 'show');
+
 });
 
 
@@ -124,6 +135,5 @@ Route::delete('/message/{id}', 'destroy');
 
 
 });
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
 });

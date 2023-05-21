@@ -19,7 +19,7 @@ class AssessmentResource extends JsonResource
             'firstAssessment' => $this->firstAssessment,
             'secondAssessment' => $this->secondAssessment,
             'endofTermAssessment' => $this->endOfTermAssessment,
-            'average_Score' => $this->average_Score
+            'averageScore' => $this->averageScore
 
         ];
     }
