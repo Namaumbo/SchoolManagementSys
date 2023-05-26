@@ -20,7 +20,8 @@ export default function Login() {
     let [{ loggedIn, role, usersList }, setLoginStatus] =
         useRecoilState(userState);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+       
         e.preventDefault();
         setLoading(false);
         setMessage("");
@@ -28,11 +29,15 @@ export default function Login() {
             setLoading(true);
             setLogin(true);
         }, 2000);
-        axios
-            .post("http://localhost:8000/api/login", user)
+        
+    
+    
+       await axios.post("http://localhost:8000/api/login", user)
+
             .then((res) => {
+                
                 if (res.data.status === "ok") {
-                    console.log(res);
+                  localStorage.setItem('key',res.data.access_token)
                     setLoginStatus({ loggedIn: true, role: "admin" });
                     navigate("/dashboard");
                 }
@@ -41,6 +46,7 @@ export default function Login() {
     };
     return (
         <>
+      
             <div className="logoScn">
                 <img src={logo} className="logo" />
             </div>
@@ -74,7 +80,7 @@ export default function Login() {
                     />
                     <br />
                     <br />
-                    <button onClick={handleSubmit} className="loginBtn">
+                    <button className="loginBtn">
                         {loading ? (
                             <span className="login-text">Login</span>
                         ) : (

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -25,13 +26,13 @@ class UserController extends Controller
      */
     public function getAll()
     {
-//        using the with function with the name of the function
+        //        using the with function with the name of the function
 // u will be able to retrieve the user and his related deps
-return User::all();
-//        $user = User::with('departments')->get();
+        return User::all();
+        //        $user = User::with('departments')->get();
 //        return \response()->json(['$users' => $user]);
 
-//        return  UserResource::collection(User::all());
+        //        return  UserResource::collection(User::all());
 
     }
     /**
@@ -46,13 +47,14 @@ return User::all();
         //Username represents an ID for the student
         if ($user) {
             return response()->json(
-                ['message' => 'User already exists', 'email' => $user], 409
+                ['message' => 'User already exists', 'email' => $user],
+                409
             );
         }
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
-            
+
             return response()->json([
                 'message' => 'User saved successfully',
                 'User' => $user,
@@ -72,8 +74,9 @@ return User::all();
      * @param int $id
      * @return Response
      */
-    public function exportIntoExcel(){
-        return Excel::download(new User,'users.xlsx');
+    public function exportIntoExcel()
+    {
+        return Excel::download(new User, 'users.xlsx');
     }
     public function show(int $id)
     {
@@ -139,7 +142,7 @@ return User::all();
         $user->firstname = $request->firstname;
         $user->surname = $request->surname;
         $user->email = $request->email;
-        $user->password =Hash::make($request->input('password'));
+        $user->password = Hash::make($request->input('password'));
         $user->sex = $request->sex;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
@@ -157,38 +160,38 @@ return User::all();
      * @return JsonResponse
      */
 
-     public function login(Request $request): JsonResponse
-     {
-         $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
-         if ($validator->fails()) {
-             return response()->json(
-                 [
-                     "status" => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
-                     "validation_error" => $validator->errors()
-                 ]
-             );
-         }
-         //        finding userName
-         if (!Auth::attempt($request->only("email", "password"))) {
-             return response()->json(["wrong credentials"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
-         }
-         $token = Auth::user()->createToken('Token')->plainTextToken;
-         $cookie = cookie('jwt', $token, 30 * 1);
-         return response()->json(
-             [
-                 "message" => "System successfully logged " . Auth::user()->first_name,
-                 "status" => "ok",
-                 "access_token" => $token,
-                 "token_type" => "bearer",
-                 "user " => Auth::user()
-             ],
-             ResponseAlias::HTTP_OK
-         )->withCookie($cookie);
-     }
+    public function login(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    "status" => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
+                    "validation_error" => $validator->errors()
+                ]
+            );
+        }
+        //        finding userName
+        if (!Auth::attempt($request->only("email", "password"))) {
+            return response()->json(["wrong credentials"], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $token = Auth::user()->createToken('Token')->plainTextToken;
+        $cookie = cookie('jwt', $token, 30 * 1);
+        return response()->json(
+            [
+                "message" => "System successfully logged " . Auth::user()->first_name,
+                "status" => "ok",
+                "access_token" => $token,
+                "token_type" => "bearer",
+                "user " => Auth::user()
+            ],
+            ResponseAlias::HTTP_OK
+        )->withCookie($cookie);
+    }
 
-     public function UserToRoles(Request $request, int $id)
-     {
-        $user = User::where('id',  $id)->first();
+    public function UserToRoles(Request $request, int $id)
+    {
+        $user = User::where('id', $id)->first();
         if ($user) {
             try {
                 $role = Role::where('id', $request->input('id'))->first();
@@ -200,43 +203,45 @@ return User::all();
             }
         }
 
-        }
-        public function logout(){
-            Auth::logout();
-            return response()->json([
-            'status'=>'success',
-            'message'=>'Successfully logged out',
-            ]);
-        }
+    }
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully logged out',
+        ]);
+    }
 
-     public function search(Request $request,$key): JsonResponse{
-            $user= User::query()
-            ->where('firstname','LIKE',"%$key%")
+    public function search(Request $request, $key): JsonResponse
+    {
+        $user = User::query()
+            ->where('firstname', 'LIKE', "%$key%")
             ->orWhere('surname', 'LIKE', "%$key%")
             ->orWhere('sex', 'LIKE', "%$key%")
             ->orWhere('email', 'LIKE', "%$key%")
             ->orWhere('district', 'LIKE', "%$key%")
             ->orWhere('village', 'LIKE', "%$key%")
             ->get();
-            return response()->json([
-                'User' => $user,
-                'status' => 200,
-            ]);
-
-
-
-}
-public function addition(){
-    $x=5;
-    $m=10;
-    $y=$x*$m;
-  
-    return response()->json([
-        'status'=>'success',
-        'message'=>'Successfully logged out',
-          'The value is'=>$y
+        return response()->json([
+            'User' => $user,
+            'status' => 200,
         ]);
-}
+
+
+
+    }
+    public function addition()
+    {
+        $x = 5;
+        $m = 10;
+        $y = $x * $m;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Successfully logged out',
+            'The value is' => $y
+        ]);
+    }
 
 }
-
