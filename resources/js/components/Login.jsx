@@ -16,7 +16,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     // const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
-    const user = { email, password };
+    const user = { "_token":"{{csrf_token()}}",email, password };
     let [{ loggedIn, role, usersList }, setLoginStatus] =
         useRecoilState(userState);
 
@@ -42,7 +42,11 @@ export default function Login() {
                     navigate("/dashboard");
                 }
             })
-            .catch((error) => console.log(error));
+            .catch((error) =>{
+                if (error.response && error.response.status === 419) {
+                    console.log(error.response)
+                }    
+            });
     };
     return (
         <>
