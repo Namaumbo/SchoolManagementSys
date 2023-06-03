@@ -1,0 +1,8 @@
+.table-row:hover{
+    background-color: #d5eaf8;
+}
+td{
+    font-size: 14px;
+    color: #2f363a;
+    font-weight: bold;
+}
