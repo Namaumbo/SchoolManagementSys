@@ -47,6 +47,10 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getAll');
+        Route::get('/science', 'ScienceDepartment');
+        Route::get('/Humanity', 'HumanityDepartment');
+        Route::get('/Language', 'LanguageDepartment');
+
         Route::get('/add', 'addition');
         Route::post('/register-user', 'store');
         Route::post(

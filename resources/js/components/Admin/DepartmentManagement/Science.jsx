@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { userState } from "../../User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
 import { useRecoilState } from "recoil";
+import axios from "axios";
+
 export default function Science() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
@@ -18,7 +20,7 @@ export default function Science() {
                 Authorization: `Bearer ${accessKey}`,
             };
             await axios
-                .get("http://127.0.0.1:8000/api/users", { headers })
+                .get("http://127.0.0.1:8000/api/science", { headers })
                 .then((res) => {
                     setUserInfo(res.data);
                     setData(res.data);
@@ -29,7 +31,7 @@ export default function Science() {
         }
 
         getUsers().then(null);
-    }, ["http://127.0.0.1:8000/api/users"]);
+    }, ["http://127.0.0.1:8000/api/science"]);
 
 
   
@@ -39,16 +41,20 @@ export default function Science() {
         { accessorKey: 'firstname', header: 'Firstname',size: 150, },
         {accessorKey: 'surname',  header: 'Surname',  size: 200,},
         { accessorKey: 'email', header: 'Email',  size: 150,},
-        { accessorKey: 'role_name', header: 'Role', size: 150, },
-      ],
+        { accessorKey: 'district', header: 'District', size: 150, },
+        { accessorKey: 'village', header: 'Village', size: 150, },
+
+    ],
    
       [],
     );
     const rows = data;
+    
+
+  
     return <MaterialReactTable columns={columns}
     
-    data={data}
-    
+    data={userInfo}
     
      />;
   };
