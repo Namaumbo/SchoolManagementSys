@@ -17,6 +17,8 @@ import Messages from "./components/Admin/messagemanagement/Messages";
 import Students from "./components/Student/Students";
 import StudentsInfo from "./components/Student/StudentsInfo";
 import Department from "./components/Admin/DepartmentManagement/Department";
+import Science from "./components/Admin/DepartmentManagement/Science";
+
 import StudentPerformance from "./components/Student/StudentPerformance";
 import {userDetails} from "@/components/recoil_states/userdetails";
 import {userState} from "@/components/User/userState";
@@ -41,6 +43,7 @@ export default function Index (){
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<Department/>}/>
+                        <Route path="/science" element={<Science/>}/>
 
                         {/*//students and H-teacher*/}
                         <Route path="/students" element={<Students/>}/>

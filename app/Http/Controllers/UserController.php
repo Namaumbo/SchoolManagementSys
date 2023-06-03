@@ -26,9 +26,27 @@ class UserController extends Controller
      */
     public function getAll()
     {
+       return User::all();
+
+    }
+
+
+     public function HumanityDepartment()
+     {
+        return User::where('departmentName', 'Humanity')->get();
+ 
+     }
+
+     public function LanguageDepartment()
+     {
+        return User::where('departmentName', 'Language')->get();
+ 
+     }
+    public function ScienceDepartment()
+    {
         //        using the with function with the name of the function
 // u will be able to retrieve the user and his related deps
-        return User::all();
+      return User::where('departmentName', 'Science')->get();
         //        $user = User::with('departments')->get();
 //        return \response()->json(['$users' => $user]);
 
