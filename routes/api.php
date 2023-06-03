@@ -66,7 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'logout');
     });
     Route::controller(DepartmentController::class)->group(function () {
-        //DepartmentS Routes Route::get('/departments', 'getAll');
+        // DepartmentS Routes 
+        Route::get('/departments', 'getAll');
         Route::get('/department/{id}', 'show');
         Route::post(
             '/register-department',
@@ -74,7 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
         );
         Route::put('/department/{id}', 'update');
         Route::delete('/department/{id}', 'destroy');
-    }); //Subjects Routes
+    }); 
+    //Subjects Routes
     Route::controller(SubjectController::class)->group(function () {
         Route::get('/subjects', 'index');
         Route::get('/subject/{id}', 'show');
@@ -84,16 +86,16 @@ Route::middleware('auth:sanctum')->group(function () {
             'update'
         );
         Route::delete('/subject/{id}', 'destroy');
-    }); //roles api
+    }); 
+    //roles api
     Route::controller(RoleController::class)->group(function () {
-        Route::get('/roles', function () {
-            return RoleResource::collection(Role::all());
-        });
+       
+        // whats the use?
         Route::get('/role/{id}', function ($id) {
             return new
                 RoleResource(Role::findorFail($id));
         });
-        Route::post('/create-role', 'store');
+       
         Route::put('/role/{id}', 'update');
         Route::delete('/role/{id}', 'destroy');
     });
@@ -116,4 +118,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/message/{id}', 'update');
         Route::delete('/message/{id}', 'destroy');
     });
+});
+
+// Route::post('/create-role', 'store');
+Route::get('/roles', function () {
+    return RoleResource::collection(Role::all());
 });

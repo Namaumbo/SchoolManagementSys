@@ -5,11 +5,12 @@
 
 .content-wrapper {
     display: flex;
+    background-color: #f9fafc;
+  
 }
 
 .sideBar {
     flex: 1;
-    background-color: #f9fafc;
     border-right:1px solid #d4d4d4;
 }
 

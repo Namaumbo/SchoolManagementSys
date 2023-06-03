@@ -27,6 +27,16 @@ function UserManagement() {
                 <IconSection.FiUsers />
                 <h4>Users-available</h4>
             </div>
+            <div className="searchForm"> 
+                <form role="search">
+                    <input
+                        class="form-control me-2"
+                        type="search"
+                        placeholder="Search"
+                        aria-label="Search"
+                    />
+                </form>
+            </div>
             {loading ? (
                 <div
                     className="container text-center"
@@ -52,7 +62,6 @@ function UserManagement() {
                                             <th>District</th>
                                             <th>Actions</th>
                                         </tr>
-                                       
                                     </thead>
 
                                     <tbody>
@@ -69,15 +78,15 @@ function UserManagement() {
                                                             user.traditional_authority
                                                         }
                                                     </td>
-                                                    
+
                                                     <td>{user.email}</td>
                                                     <td>{user.district}</td>
                                                     <td>
-                                                        <button className="delete-btn">
+                                                        <button className="btn  btn-danger btn-sm">
                                                             <IconSection.AiFillDelete size="10px" />
                                                             Delete
                                                         </button>{" "}
-                                                        <button className="edit-btn">
+                                                        <button className="btn btn-primary btn-sm">
                                                             <IconSection.FiEdit
                                                                 size="10px"
                                                                 onClick={

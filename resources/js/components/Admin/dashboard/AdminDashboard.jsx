@@ -6,10 +6,10 @@ import { useRecoilState } from "recoil";
 import teachers from "../../../../assets/teacher.png";
 import users from "../../../../assets/users.png";
 import students from "../../../../assets/students.png";
-import Chart from "../utils/Chart.jsx";
+import { Chart } from "react-google-charts";
 import { FiHome } from "react-icons/all";
 import axios from "axios";
-import { Button,Card } from "@mui/material";
+import { Button, Card } from "@mui/material";
 
 export default function AdminDashboard() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
@@ -47,6 +47,17 @@ export default function AdminDashboard() {
     const rows = data;
 
     // if (loggedIn && role === 'admin') {
+
+    const datum = [
+        ["gender", "number of students"],
+        ["female", 32],
+        ["male", 34],
+       
+    ];
+
+    const options = {
+        title: "My Daily Activities",
+    };
 
     return (
         <>
@@ -156,66 +167,64 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                     <br />
-                    
-                    {/* <div> */}
-                    {/* <div className="schoolGraphs">
-                        
-                            
-
-                            </div>
-                        </div>
-                        <div className="chart">
-                            <h3>Chart</h3>
-                            <div className="gender">
-                                <Chart />
-                            </div>
-                        </div>
-                    </div> */}
-                    {/* </div> */}
 
                     <div className="content">
                         <div className="right">
-                            <Card variant='outlined'>
-                            <div className="table">
-                            <h2 className="title-card">Team</h2>
-                            <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Full name</th>
-                                            <th>sex</th>
-                                            <th>Role</th>
-                                            <th>Phone number</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.map((user) => {
-                                            return (
-                                                <>
-                                                    <tr>
-                                                        <td>
-                                                            {user.firstname}{" "}
-                                                            {user.surname}
-                                                        </td>
-                                                        <td>{user.sex}</td>
-                                                        <td>{user.title}</td>
-                                                        <td>{user.district}</td>
-                                                    </tr>
-                                                </>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                        
+                            <div className="card-wrapper">
+                                <div className="table">
+                                    <h2 className="title-card">Team</h2>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>First name</th>
+                                                <th>last name</th>
+                                                <th>sex</th>
+                                                <th>Role</th>
+                                                <th>Phone number</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.map((user) => {
+                                                return (
+                                                    <>
+                                                        <tr>
+                                                            <td>
+                                                                {user.firstname}{" "}
+                                                            </td>
+                                                            <td>
+                                                                {" "}
+                                                                {user.surname}
+                                                            </td>
+                                                            <td>{user.sex}</td>
+                                                            <td>
+                                                                {user.title}
+                                                            </td>
+                                                            <td>
+                                                                {user.district}
+                                                            </td>
+                                                        </tr>
+                                                    </>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-
-                            </Card>
                         </div>
                         <div className="left">
-                        <Card variant='outlined'>ok</Card>
+                            <div className="card-wrapper">
+                                <Chart
+                                className="cssa"
+                                    chartType="PieChart"
+                                    data={datum}
+                                    options={options}
+                                    width={"100%"}
+                                    height={"360px"}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-                
             </div>
         </>
     );

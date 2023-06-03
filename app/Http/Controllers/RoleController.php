@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Resources\RoleResource;
 use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
@@ -46,30 +48,31 @@ class RoleController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request){
-    $role = Role::where('role_name', $request->input('role_name'))->first();
-    if ($role) {
-        return response()->json(
-            ['message' => 'The role was arleady created', 'role_name' => $role],
-        );
+    public function store(Request $request)
+    {
+        $role = Role::where('role_name', $request->input('role_name'))->first();
+        if ($role) {
+            return response()->json(
+                ['message' => 'The role was arleady created', 'role_name' => $role],
+            );
+        }
+        try {
+            $role = new Role;
+            $this->create($request, $role);
+            return response()->json([
+                'message' => 'Role created successfully',
+                'Role' => $role,
+                'status' => 200,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Role not saved',
+                'Role' => $role,
+                'status' => 400,
+                '4' => $e,
+            ]);
+        }
     }
-    try {
-        $role = new Role;
-        $this->create($request, $role);
-        return response()->json([
-            'message' => 'Role created successfully',
-            'Role' => $role,
-            'status' => 200,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Role not saved',
-            'Role' => $role,
-            'status' => 400,
-            '4' => $e,
-        ]);
-    }
-}
 
     /**
      * Display the specified resource.
@@ -122,7 +125,7 @@ class RoleController extends Controller
     public function destroy($id)
     {
         if (Role::where('id', $id)->exists()) {
-            $role =Role::find($id);
+            $role = Role::find($id);
             $role->delete();
             return response()->json([
                 'message' => 'The role is deleted successfully'

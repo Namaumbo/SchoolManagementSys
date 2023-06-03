@@ -10,8 +10,8 @@
     box-shadow: 2px 9px 25px -25px rgba(0, 0, 0, 0.87);
 }
 
-.Image {
-
+.names{
+    display: flex;
 }
 
 .insideWrapper {
@@ -48,36 +48,21 @@
     /*padding: 10px;*/
 }
 
-.input {
-    /*outline: none;*/
-    /*width: 90%;*/
-    border: none;
-
+.form-control:nth-child(2){
+margin-left: 5px;
+}
+#ok{
+width: 470px;
+margin-right: 5px;
+}
+.location{
+    margin-top:15px;
+    display: flex;
 }
 
-.input:focus {
-    outline: none
+.gadgets{
+    margin-top:15px;
 }
-
-.addBtn {
-    box-shadow: 0 15px 14px -8px #276873;
-    background: #599bb3 linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
-    border-radius: 9px;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: normal;
-    padding: 5px 8px;
-    text-decoration: none;
-    text-shadow: 0 1px 0 #3d768a;
-    border: 1px solid #276873;
-}
-
-.addBtn:hover {
-    background: #408c99 linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
-}
-
 .addTeacherWrapper {
     border: 1px solid #408c99;
     height: 80vh;
@@ -85,7 +70,10 @@
     margin-right: 20px;
     margin-top: 10px;
 }
+#tA{
+    width: 465px;
 
+}
 .details {
     display: flex;
 }
