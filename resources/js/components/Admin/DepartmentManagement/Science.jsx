@@ -1,7 +1,7 @@
-import {FiHome, FiUmbrella} from "react-icons/fi";
-import './Science.css'
-import { MaterialReactTable } from 'material-react-table';
-import { useMemo } from 'react';
+import { FiHome, FiUmbrella } from "react-icons/fi";
+import "./Science.css";
+import { MaterialReactTable } from "material-react-table";
+import { useMemo } from "react";
 import React, { useEffect, useState } from "react";
 import { userState } from "../../User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
@@ -34,51 +34,62 @@ export default function Science() {
         getUsers().then(null);
     }, ["http://127.0.0.1:8000/api/science"]);
 
-
-  
     const columns = useMemo(
-      () => [
-        {accessorKey: 'title',  header: 'Title',size: 150, },
-        { accessorKey: 'firstname', header: 'Firstname',size: 150, },
-        {accessorKey: 'surname',  header: 'Surname',  size: 200,},
-        { accessorKey: 'email', header: 'Email',  size: 150,},
-        { accessorKey: 'district', header: 'District', size: 150, },
-        { accessorKey: 'village', header: 'Village', size: 150, },
+        () => [
+            { accessorKey: "title", header: "Title", size: 150 },
+            { accessorKey: "firstname", header: "Firstname", size: 150 },
+            { accessorKey: "surname", header: "Surname", size: 200 },
+            { accessorKey: "email", header: "Email", size: 150 },
+            { accessorKey: "district", header: "District", size: 150 },
+            { accessorKey: "village", header: "Village", size: 150 },
+        ],
 
-    ],
-   
-      [],
+        []
     );
     const rows = data;
-
 
     // tabs
     const panes = [
         {
-          menuItem: 'Depart Info',
-          render: () => <Tab.Pane>infotmatmion tab can even contain a component to render</Tab.Pane>,
+            menuItem: "Depart Info",
+            render: () => (
+                <Tab.Pane>
+                    infotmatmion tab can even contain a component to render
+                </Tab.Pane>
+            ),
         },
-        { menuItem: 'Teachers', render: () => <Tab.Pane>teachgers tab here u will have the table</Tab.Pane> },
-        { menuItem: 'Students', render: () => <Tab.Pane>students here you will have the table</Tab.Pane> },
-        { menuItem: 'another', render: () => <Tab.Pane>anyother tab informaiton here </Tab.Pane> },
+        {
+            menuItem: "Teachers",
+            render: () => (
+                <Tab.Pane>
+                    <MaterialReactTable columns={columns} data={userInfo} />
+                </Tab.Pane>
+            ),
+        },
+        {
+            menuItem: "Students",
+            render: () => (
+                <Tab.Pane>students here you will have the table</Tab.Pane>
+            ),
+        },
+        {
+            menuItem: "another",
+            render: () => <Tab.Pane>anyother tab informaiton here </Tab.Pane>,
+        },
+    ];
 
-      ]
-
-    return(
+    return (
         <>
-        <div className="heading-title">
-                    <FiUmbrella/><span style={{color:'white'}}>Science - Department</span>
-                </div>
-                <div className="tabs">
-                < Tab panes={panes} />
-
-                </div>
+            <div className="heading-title">
+                <FiUmbrella />
+                <span style={{ color: "white" }}>Science - Department</span>
+            </div>
+            <div className="tabs">
+                <Tab panes={panes} />
+            </div>
         </>
-        
+
         // <h1>Science</h1>
-        //  <MaterialReactTable columns={columns} data={userInfo} />
- 
-    
-)};
-
-
+        //
+    );
+}
