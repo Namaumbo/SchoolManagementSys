@@ -6,7 +6,7 @@ const Logs = () => {
     return <>
         <div className='logs-wrapper'>
             <div className="heading-title">
-                <FiBook/><h4>Logs-Panel</h4>
+                <FiBook/><span style={{color:'white'}}>Logs - Panel</span>
             </div>
             <div className="logs-content">
                 <table className="table-hover">

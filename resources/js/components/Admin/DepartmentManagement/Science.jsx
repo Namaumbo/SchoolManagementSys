@@ -1,4 +1,4 @@
-import {AiFillDelete, FiBook, FiDelete} from "react-icons/all";
+import {FiHome, FiUmbrella} from "react-icons/fi";
 import './Science.css'
 import { MaterialReactTable } from 'material-react-table';
 import { useMemo } from 'react';
@@ -7,6 +7,7 @@ import { userState } from "../../User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
 import { useRecoilState } from "recoil";
 import axios from "axios";
+import { Tab } from "semantic-ui-react";
 
 export default function Science() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
@@ -49,14 +50,35 @@ export default function Science() {
       [],
     );
     const rows = data;
-    
 
-  
-    return <MaterialReactTable columns={columns}
+
+    // tabs
+    const panes = [
+        {
+          menuItem: 'Depart Info',
+          render: () => <Tab.Pane>infotmatmion tab can even contain a component to render</Tab.Pane>,
+        },
+        { menuItem: 'Teachers', render: () => <Tab.Pane>teachgers tab here u will have the table</Tab.Pane> },
+        { menuItem: 'Students', render: () => <Tab.Pane>students here you will have the table</Tab.Pane> },
+        { menuItem: 'another', render: () => <Tab.Pane>anyother tab informaiton here </Tab.Pane> },
+
+      ]
+
+    return(
+        <>
+        <div className="heading-title">
+                    <FiUmbrella/><span style={{color:'white'}}>Science - Department</span>
+                </div>
+                <div className="tabs">
+                < Tab panes={panes} />
+
+                </div>
+        </>
+        
+        // <h1>Science</h1>
+        //  <MaterialReactTable columns={columns} data={userInfo} />
+ 
     
-    data={userInfo}
-    
-     />;
-  };
+)};
 
 

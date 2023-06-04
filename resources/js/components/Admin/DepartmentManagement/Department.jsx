@@ -8,7 +8,7 @@ export default function Department(){
         <>
             <div className="department-wrapper">
                 <div className="heading-title">
-                    <FiUmbrella/><h4>Department-Panel</h4>
+                    <FiUmbrella/><span style={{color:'white'}}>Department - Panel</span>
                 </div>
                 <div className="science-content">
                 <div className="conWrapper">
@@ -18,7 +18,7 @@ export default function Department(){
                                     <span className="heading">
                                         SCIENCES
                                     </span>
-                                    <Link to="/science" className="links nav-link
+                                    <Link to="/department/science" className="links nav-link
                                                     small-box-footer">More info
                                                     </Link>
                                 </div>

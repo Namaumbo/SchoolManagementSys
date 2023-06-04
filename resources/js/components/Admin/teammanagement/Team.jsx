@@ -194,7 +194,7 @@ const Team = () => {
             <div>
                 <div className="heading-title">
                     <FiUsers />
-                    <h4>Teachers-panel</h4>
+                    <span style={{color:'white'}}>Teachers - Panel</span>
                 </div>
                 {/*search and buttons*/}
                 <div className="upperActions">

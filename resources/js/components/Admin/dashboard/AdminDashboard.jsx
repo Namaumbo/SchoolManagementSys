@@ -65,7 +65,7 @@ export default function AdminDashboard() {
                 <div className="outVitals">
                     <div className="heading-title">
                         <FiHome />
-                        <h4>Dashboard-Home</h4>
+                        <span style={{color:'white'}}>Dashboard - Home</span>
                     </div>
                     <div className="conWrapper">
                         <div className="containerTabs">

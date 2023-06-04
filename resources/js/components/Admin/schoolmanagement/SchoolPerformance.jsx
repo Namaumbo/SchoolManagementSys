@@ -8,7 +8,7 @@ const SchoolPerformance= () =>{
 
         <div className="perfomance-wrapper">
             <div className="heading-title">
-                <FiHexagon/><h4>School perfomance</h4>
+                <FiHexagon/><span style={{color:'white'}}>School Performance </span>
             </div>
         </div>
 
