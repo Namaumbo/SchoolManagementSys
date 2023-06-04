@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getAll');
         Route::get('/science', 'ScienceDepartment');
+        Route::get('/Science-students', 'StudentsInScienceDepartment');
+
         Route::get('/Humanity', 'HumanityDepartment');
         Route::get('/Language', 'LanguageDepartment');
 

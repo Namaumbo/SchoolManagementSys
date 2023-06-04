@@ -14,6 +14,8 @@ import { Button, Card } from "@mui/material";
 export default function AdminDashboard() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
+    const [Student, setStudent] = useState([]);
+
     let [{ loggedIn, role }] = useRecoilState(userState);
     const accessKey = localStorage.getItem("key");
 
@@ -35,6 +37,11 @@ export default function AdminDashboard() {
 
         getUsers().then(null);
     }, ["http://127.0.0.1:8000/api/users"]);
+
+    async function getStudent() {
+
+    }
+    
 
     const columns = [
         { field: "id", headerName: "ID", width: 50 },

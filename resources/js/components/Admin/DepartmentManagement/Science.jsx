@@ -12,16 +12,20 @@ import { Tab } from "semantic-ui-react";
 export default function Science() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
+
+    let [StudentInfo, setStudentInfo] = useRecoilState(userDetails);
+    const [Student, setStudent] = useState([]);
+
     let [{ loggedIn, role }] = useRecoilState(userState);
     const accessKey = localStorage.getItem("key");
 
-    useEffect(() => {
-        async function getUsers() {
+    useEffect(async() => {
+      
             const headers = {
                 Authorization: `Bearer ${accessKey}`,
             };
             await axios
-                .get("http://127.0.0.1:8000/api/science", { headers })
+                .get("http://127.0.0.1:8000/api/Science-students", { headers })
                 .then((res) => {
                     setUserInfo(res.data);
                     setData(res.data);
@@ -29,10 +33,23 @@ export default function Science() {
                 .catch((err) => {
                     console.error(err);
                 });
-        }
+                useEffect(async() => {
+
+                    await axios
+                    .get("http://127.0.0.1:8000/api/Students-science", { headers })
+                    .then((res) => {
+                        setStudentInfo(res.Student);
+                        setStudent(res.Student);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+
+
+                })
 
         getUsers().then(null);
-    }, ["http://127.0.0.1:8000/api/science"]);
+    }, ["http://127.0.0.1:8000/api/Science-students"]);
 
     const columns = useMemo(
         () => [
@@ -69,7 +86,9 @@ export default function Science() {
         {
             menuItem: "Students",
             render: () => (
-                <Tab.Pane>students here you will have the table</Tab.Pane>
+                <Tab.Pane>
+                <MaterialReactTable columns={columns} Student={StudentInfo} />
+            </Tab.Pane>
             ),
         },
         {

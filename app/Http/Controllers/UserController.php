@@ -42,16 +42,18 @@ class UserController extends Controller
         return User::where('departmentName', 'Language')->get();
  
      }
-    public function ScienceDepartment()
+
+     public function ScienceDepartment()
+     {
+   
+       return User::where('departmentName', 'Science')->get();
+   
+     }
+    public function StudentsInScienceDepartment()
     {
-        //        using the with function with the name of the function
-// u will be able to retrieve the user and his related deps
-      return User::where('departmentName', 'Science')->get();
-        //        $user = User::with('departments')->get();
-//        return \response()->json(['$users' => $user]);
-
-        //        return  UserResource::collection(User::all());
-
+  
+      return User::where('departmentName', 'Science')->where('role_id','5')->get();
+  
     }
     /**
      * Store a newly created resource in storage.
