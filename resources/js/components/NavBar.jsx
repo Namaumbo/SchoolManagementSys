@@ -5,7 +5,7 @@ import { FiBell, FiUser } from "react-icons/fi";
 
 export default function NavBar() {
     return (
-        <div className="navbar-wrapper">git a
+        <div className="navbar-wrapper">
             <div className="nav-items">
                 <div className="logo">Secondary School</div>
                 <div className="profile-vitals">
