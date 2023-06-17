@@ -18,7 +18,6 @@
 
 .outlet {
     flex: 5;
-    overflow-y: scroll;
     position: relative;
     height: 100vh;
 }
