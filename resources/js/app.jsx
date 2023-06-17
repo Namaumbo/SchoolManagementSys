@@ -45,6 +45,7 @@ export default function Index (){
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<Department/>}/>
                         <Route path="/department/science" element={<Science/>}/>
+                        <Route path="/logout" element={<Login/>}/>
 
                         {/* //students and H-teacher */}
                         {/* <Route path="/students" element={<Students/>}/>

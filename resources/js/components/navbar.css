@@ -5,9 +5,7 @@
     background-color: #021b62;
     color:white
 }
-.notification-icon{
-    color:white;
-}
+
 .profile-name{
     color: white;
 }
@@ -29,4 +27,9 @@
     display: flex;
     justify-content: space-between;
     padding:.5em
+}
+
+.nav-logo{
+width: 70px;
+height: 40px;
 }

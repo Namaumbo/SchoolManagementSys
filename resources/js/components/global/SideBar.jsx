@@ -90,13 +90,7 @@ const SideBar = () => {
                 </Link>
 
 
-                <div className='sidebardown'>
-
-                    <Link to="logout" className='link'>
-                        <li className="logOut"><Logout className='icon' fontSize="13p"/><span className="sideBarItemText">Log Out </span>
-                        </li>
-                    </Link>
-                </div>
+               
             </ul>
         </div>
 
