@@ -18,12 +18,12 @@ export default function Science() {
 
     let [{ loggedIn, role }] = useRecoilState(userState);
     const accessKey = localStorage.getItem("key");
+    const headers = {
+        Authorization: `Bearer ${accessKey}`,
+    };
 
     useEffect(async() => {
       
-            const headers = {
-                Authorization: `Bearer ${accessKey}`,
-            };
             await axios
                 .get("http://127.0.0.1:8000/api/Science-students", { headers })
                 .then((res) => {
@@ -33,23 +33,23 @@ export default function Science() {
                 .catch((err) => {
                     console.error(err);
                 });
-                useEffect(async() => {
-
-                    await axios
-                    .get("http://127.0.0.1:8000/api/Students-science", { headers })
-                    .then((res) => {
-                        setStudentInfo(res.Student);
-                        setStudent(res.Student);
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
-
-
-                })
-
         getUsers().then(null);
     }, ["http://127.0.0.1:8000/api/Science-students"]);
+
+    // useEffect(async() => {
+
+    //     await axios
+    //     .get("http://127.0.0.1:8000/api/Students-science", { headers })
+    //     .then((res) => {
+    //         setStudentInfo(res.Student);
+    //         setStudent(res.Student);
+    //     })
+    //     .catch((err) => {
+    //         console.error(err);
+    //     });
+
+
+    // })
 
     const columns = useMemo(
         () => [

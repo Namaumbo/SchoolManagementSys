@@ -45,13 +45,7 @@ export default function Department(){
                                         HUMANITIES
                                     </span>
                                 </div>
-                                
-                            </div>
-
-                     
-                      
-                        
-                          
+                            </div>      
                         </div>
                     </div>
                     <br />   

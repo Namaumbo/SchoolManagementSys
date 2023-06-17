@@ -30,8 +30,6 @@ export default function Login() {
             setLogin(true);
         }, 2000);
         
-    
-    
        await axios.post("http://localhost:8000/api/login", user)
 
             .then((res) => {

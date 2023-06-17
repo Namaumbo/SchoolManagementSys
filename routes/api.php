@@ -48,8 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getAll');
         Route::get('/science', 'ScienceDepartment');
-        Route::get('/Science-students', 'StudentsInScienceDepartment');
-
+       
         Route::get('/Humanity', 'HumanityDepartment');
         Route::get('/Language', 'LanguageDepartment');
 
@@ -130,3 +129,4 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/roles', function () {
     return RoleResource::collection(Role::all());
 });
+// Route::get('/science-students', 'studentsInScienceDepartment');

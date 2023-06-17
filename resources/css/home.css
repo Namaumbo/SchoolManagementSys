@@ -5,13 +5,15 @@
 
 .content-wrapper {
     display: flex;
-    background-color: #f9fafc;
-  
+    background-color: #f3f3f3;
+    /* background-image:url('../assets/preview.jpg'); */
+
 }
 
 .sideBar {
     flex: 1;
     border-right:1px solid #d4d4d4;
+    background-color: #f9fafc;
 }
 
 .outlet {
@@ -19,6 +21,8 @@
     overflow-y: scroll;
     position: relative;
     height: 100vh;
-
+}
+.home{
+ 
 }
 

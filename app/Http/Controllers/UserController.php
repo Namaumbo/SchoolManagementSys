@@ -49,7 +49,7 @@ class UserController extends Controller
        return User::where('departmentName', 'Science')->get();
    
      }
-    public function StudentsInScienceDepartment()
+    public function studentsInScienceDepartment()
     {
   
       return User::where('departmentName', 'Science')->where('role_id','5')->get();

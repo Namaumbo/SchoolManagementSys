@@ -1,11 +1,11 @@
-/*outer top*/
+/* outer top
 .outerWrapper{
     display: flex;
     width:100%;
-}
+} */
 
 /*middle top*/
-.outVitals {
+/* .outVitals {
     flex: 5;
 }
 .content{
@@ -53,11 +53,11 @@ padding: 10px 10px ;
     width: 250px;
     height: 100px;
     background-color: rgba(75, 148, 161, 0.74);
-    color: white;
+    color: white; */
 
-}
+/* }
 .schoolGraphs{
-    /*border: 2px solid yellow;*/
+   
     margin-left: 10px;
 }
 .sub-Heading{
@@ -107,8 +107,8 @@ padding: 10px 10px ;
 .people{
     padding:2em
 }
-.user{
-    margin-right: 20px;
+.user{ */
+/* margin-right: 20px;
 }
 .schoolGraphs{
     display: flex;
@@ -137,13 +137,13 @@ padding: 10px 10px ;
 .subHeading {
     font-size: 14px;
     font-weight: bolder;
-    text-align: center;
-}
+    text-align: center; */
+/* }
 
 table {
     border-collapse: collapse;
     width: 100%;
-    /* height: 50px; */
+   
    
  
 }
@@ -155,8 +155,8 @@ th, td {
     padding: 8px;
 }
 tr{
-    border: 0.5px solid rgb(194, 194, 194);
-}
+    border: 0.5px solid rgb(194, 194, 194); */
+/* }
 
 td{
     font-weight: 100;
@@ -181,18 +181,8 @@ td{
     margin-Top: 10px;
     max-height: 200px;
 
-}
-.heading-title{
-    display: flex;
-    background-color: #9a8644;
-    width: 99%;
-    height: 40px;
-    padding-left:1em;
-    padding-top: .6em;
-    margin:10px;
-    border-radius: 5px;
-    color:white;
-}
+} */
+/*
 .heading-title h4{
     color:white;
     font-size: 15px;
@@ -210,4 +200,113 @@ margin-left: 5px;
 }
 .cssa{
     
+} */
+
+
+
+
+
+
+.main {
+    border: 1px solid black;
+    height: calc(100% - 50px);
+    width: 100%;
+}
+
+.statistics {
+
+    height: 100px;
+    width: 100%;
+    margin: .87em auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+.cardMn {
+    display: flex;
+    /* justify-content: space-around; */
+    width: 24%;
+    background-color: white;
+    box-shadow: 2px 2px 2px #c6c2c2;
+    align-items: center;
+
+}
+
+.stdPng {
+    width: 40%;
+}
+
+.figure {
+    border-left: 1px solid grey;
+    height: 60%;
+    margin: auto;
+}
+
+.numbers {
+    color: grey;
+    font-size: 15px;
+    padding-left: 20%;
+    /* overflow-x: hidden; */
+}
+
+.col {}
+
+.body {
+    display: flex;
+    width: 100%;
+
+}
+
+.expense-card {
+    background-color: white;
+    box-shadow: 2px 2px 2px #c6c2c2;
+    width: 50%;
+    margin-left: .5%;
+    margin-right: .5%;
+    height: 400px;
+    overflow: hidden;
+    overflow-y: scroll;
+    
+    
+}
+
+.left-card {
+    background-color: white;
+    box-shadow: 2px 2px 2px #c6c2c2;
+    margin-left: .5%;
+    margin-right: .5%;
+    width: 50%;
+
+}
+
+.heading {
+    display: flex;
+    background-color: #9a8644;
+    width: 99%;
+    height: 40px;
+    padding-left: 1em;
+    padding-top: .6em;
+    margin: 10px;
+    border-radius: 5px;
+    color: white;
+}
+thead{
+    background-color: #021b62;
+}
+th {
+    padding: 10px 0 10px 0px;
+  
+}
+table{
+    width: 100%;
+    
+    
+}
+table td{
+   font-weight: 500; 
+
+}
+table tbody{
+    height: 250px;
+    overflow-x: scroll;
 }
