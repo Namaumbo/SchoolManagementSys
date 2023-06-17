@@ -3,55 +3,41 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 
 const data = [
   {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
+    name: '2019',
+    expenses: 4000,
+    income: 2400,
     amt: 2400,
   },
   {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
+    name: '2020',
+    expenses: 3000,
+    income: 1398,
     amt: 2210,
   },
   {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
+    name: '2021',
+    expenses: 2000,
+    income: 4000,
     amt: 2290,
   },
   {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
+    name: '2022',
+    expenses: 2780,
+    income: 3908,
     amt: 2000,
   },
   {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
+    name: '2023',
+    expenses: 1890,
+    income: 4800,
     amt: 2181,
-  },
-  {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
+  }
 ];
 
 export default function Test(){
-   const demoUrl = 'https://codesandbox.io/s/simple-bar-chart-tpz8r';
-
     return (
         <>
-         
+         <ResponsiveContainer width="100%" height="100%">
         <BarChart
           width={500}
           height={300}
@@ -68,10 +54,10 @@ export default function Test(){
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="pv" fill="#8884d8" />
-          <Bar dataKey="uv" fill="#82ca9d" />
+          <Bar dataKey="income" fill="#8884d8" />
+          <Bar dataKey="expenses" fill="#82ca9d" />
         </BarChart>
-    
+        </ResponsiveContainer>
         </>
      
     );

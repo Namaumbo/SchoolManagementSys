@@ -1,220 +1,10 @@
-/* outer top
-.outerWrapper{
-    display: flex;
-    width:100%;
-} */
-
-/*middle top*/
-/* .outVitals {
-    flex: 5;
-}
-.content{
-    display: grid;
-    grid-template-columns: 700px auto;
-    height: 100%;
-    padding: 10px;
-}
-
-.conWrapper {
-    background-color: white;
-    margin-left: 10px;
-    margin-top: 10px;
-    border-radius: 3px;
-    border: 1px solid #aaeaf6;
-}
-.headings {
-    align-items: center;
-    padding-bottom: 10px;
-    font-size: 15px;
-    color: #4a625a;
-}
-.heading{
-    color : white;
-    font-size: 14px;
-}
-.numbers{
-    font-size: 30px;
-    color:white;
-    padding-right: 15px;
-}
-
-.usersCard {
-    width: 50px;
-}
-.containerTabs{
-display: flex;
-justify-content: space-around;
-padding: 10px 10px ;
-}
-.card {
-    -webkit-box-shadow: 0 2px 12px 0 rgba(43, 43, 43, 0.44);
-    box-shadow: 0 2px 12px 0 rgba(43, 43, 43, 0.44);
-    border-radius: 2px;
-    width: 250px;
-    height: 100px;
-    background-color: rgba(75, 148, 161, 0.74);
-    color: white; */
-
-/* }
-.schoolGraphs{
-   
-    margin-left: 10px;
-}
-.sub-Heading{
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-}
-.money{
-    color:lawngreen;
-    font-size: 20px;
-}
-.revenue{
-    padding-top: 5px;
-    padding-bottom: 1em;
-    display: flex;
-    justify-content: space-around;
-}
-.graph {
-    width: 230px;
-    height: 230px;
-    padding: 10px;
-    border-left: 2px solid #dcdcdc;
-}
-.profile-holder{
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid black;
-    object-fit: cover;
-    background-color: #0f5132;
-    color: white;
-    font-weight: bold;
-    font-size: 17px;
-}
-
-
-.vitals{
-    flex: 4;
-}
-
-.scoresNumber{
-    -webkit-box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 21px -11px rgba(0,0,0,0.87);
-    background-color: white;
-    border-radius: 2px;
-}
-.people{
-    padding:2em
-}
-.user{ */
-/* margin-right: 20px;
-}
-.schoolGraphs{
-    display: flex;
-}
-.tableUser{
-    flex:3;
-    margin-left:13px ;
-}
-.chart{
-    flex: 1.3;
-    -webkit-box-shadow: 2px 9px -21px -11px rgba(0,0,0,0.87);
-    box-shadow: 2px 9px 25px -25px rgba(0,0,0,0.87);
-    background-color: white;
-}
-.stats{
-    display: flex;
-    justify-content: space-between;
-}
-
-
-.chartItem{
-    width: 200px;
-    height: 200px;
-}
-
-.subHeading {
-    font-size: 14px;
-    font-weight: bolder;
-    text-align: center; */
-/* }
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-   
-   
- 
-}
-tbody{
-    padding: 10px;
-}
-th, td {
-    text-align: left;
-    padding: 8px;
-}
-tr{
-    border: 0.5px solid rgb(194, 194, 194); */
-/* }
-
-td{
-    font-weight: 100;
-    border-left:.5px solid rgb(194, 194, 194);;
-}
-
-
-.gender{
-    width: 200px;
-    height: 250px;
-}
-
-.title-card{
-  font-size: 20px;
-  color: black;
-  font-weight: bolder;
-  padding: 5px;
-
-}
-.teamTable{
-    margin-left: 10px;
-    margin-Top: 10px;
-    max-height: 200px;
-
-} */
-/*
-.heading-title h4{
-    color:white;
-    font-size: 15px;
-font-weight: bolder;
-margin-left: 5px;
-}
-.card-wrapper{
-    padding: 5px;
-    background-color: white;
-    border: 0.1px solid #a3a9b1;
-    border-bottom: 3px solid  rgba(0,0,0,0.25);
-    border-radius: 5px;
-    margin-right: 10px;
-
-}
-.cssa{
-    
-} */
-
-
-
-
-
 
 .main {
-    border: 1px solid black;
     height: calc(100% - 50px);
     width: 100%;
 }
 
 .statistics {
-
     height: 100px;
     width: 100%;
     margin: .87em auto;
@@ -224,7 +14,6 @@ margin-left: 5px;
 
 .cardMn {
     display: flex;
-    /* justify-content: space-around; */
     width: 24%;
     background-color: white;
     box-shadow: 2px 2px 2px #c6c2c2;
@@ -263,7 +52,7 @@ margin-left: 5px;
     width: 50%;
     margin-left: .5%;
     margin-right: .5%;
-    height: 400px;
+    height: %;
     overflow: hidden;
     overflow-y: scroll;
     
@@ -276,6 +65,7 @@ margin-left: 5px;
     margin-left: .5%;
     margin-right: .5%;
     width: 50%;
+    padding: 20px;
 
 }
 
@@ -309,4 +99,7 @@ table td{
 table tbody{
     height: 250px;
     overflow-x: scroll;
+}
+.left-card{
+
 }

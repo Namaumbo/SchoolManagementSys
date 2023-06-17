@@ -3,11 +3,8 @@ import "./admindash.css";
 import { userState } from "../../User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
 import { useRecoilState } from "recoil";
-
-import { Chart } from "react-google-charts";
 import { FiHome } from "react-icons/all";
 import axios from "axios";
-import { Button, Card } from "@mui/material";
 import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import moneyPng from "../../../../assets/icons8-money-48.png";
@@ -151,25 +148,6 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </div>
-
-            {/* <div className="outerWrapper">
-                <div className="outVitals">
-                  
-                        <div className="left">
-                            <div className="card-wrapper">
-                                <Chart
-                                className="cssa"
-                                    chartType="PieChart"
-                                    data={datum}
-                                    options={options}
-                                    width={"100%"}
-                                    height={"360px"}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
         </>
     );
 
