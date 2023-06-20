@@ -9,6 +9,7 @@ import {
     BiMaleFemale,
     BiMessageAltDetail,
     BiMessageRounded,
+    BiStats,
     BiUser
 } from "react-icons/bi";
 import {GoBook} from "react-icons/go";
@@ -47,6 +48,12 @@ const SideBar = () => {
                     </li>
                 </Link>
 
+                <Link to="assessment" className='link'>
+                    <li className="itemList"><BiStats className='icon'/><span
+                        className="sideBarItemText">Student Assessment</span>
+                    </li>
+                </Link>
+
                 <Link to="logs" className='link'>
                     <li className="itemList"><BiMessageAltDetail className='icon'/><span
                         className="sideBarItemText">Logs</span>
@@ -79,9 +86,11 @@ const SideBar = () => {
 
                 <Link to="Fees-balance" className='link'>
                     <li className="itemList"><BiDollar className='icon'/><span
-                        className="sideBarItemText">Fees balances </span>
+                        className="sideBarItemText">Fees Balances </span>
                     </li>
                 </Link>
+                
+             
 
                 <Link to="Subjects" className='link'>
                     <li className="itemList"><GoBook className='icon'/><span

@@ -8,3 +8,10 @@ export const userState = atom({
         usersList: []
     },
 })
+
+export const userInfo = atom({
+    key:"userInfo",
+    default:{
+        userInfo : {}
+    }
+})

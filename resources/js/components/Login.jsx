@@ -3,7 +3,7 @@ import "../../css/login.css";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userState } from "./User/userState";
+import { userState, userInfo } from "./User/userState";
 import * as iconSection from "react-icons/all";
 import logo from "../../assets/logo.jpg";
 import axios from "axios";
@@ -15,13 +15,13 @@ export default function Login() {
     const [login, setLogin] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    // const [ userInformation , setUserInformation] = useRecoilState(userInfo)
     // const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
-    const user = { "_token":"{{csrf_token()}}",email, password };
+    const user = { _token: "{{csrf_token()}}", email, password };
     let [{ loggedIn, role, usersList }, setLoginStatus] =
         useRecoilState(userState);
 
     const handleSubmit = async (e) => {
-       
         e.preventDefault();
         setLoading(false);
         setMessage("");
@@ -29,26 +29,27 @@ export default function Login() {
             setLoading(true);
             setLogin(true);
         }, 2000);
-        
-       await axios.post("http://localhost:8000/api/login", user)
+
+        await axios
+            .post("http://localhost:8000/api/login", user)
 
             .then((res) => {
-                
                 if (res.data.status === "ok") {
-                  localStorage.setItem('key',res.data.access_token)
+                    const user = btoa(JSON.stringify(res.data["user"]));
+                    localStorage.setItem("key", res.data.access_token);
+                    localStorage.setItem('vitals' , user)
                     setLoginStatus({ loggedIn: true, role: "admin" });
                     navigate("/dashboard");
                 }
             })
-            .catch((error) =>{
+            .catch((error) => {
                 if (error.response && error.response.status === 419) {
-                    console.log(error.response)
-                }    
+                    console.log(error.response);
+                }
             });
     };
     return (
         <>
-      
             <div className="logoScn">
                 <img src={logo} className="logo" />
             </div>

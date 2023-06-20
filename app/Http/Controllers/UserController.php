@@ -203,7 +203,7 @@ class UserController extends Controller
                 "status" => "ok",
                 "access_token" => $token,
                 "token_type" => "bearer",
-                "user " => Auth::user()
+                "user" => Auth::user()
             ],
             ResponseAlias::HTTP_OK
         )->withCookie($cookie);
