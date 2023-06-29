@@ -9,6 +9,7 @@ use App\Models\Level;
 use App\Models\Assessment;
 use App\Models\Department;
 use App\Models\Message;
+use App\Models\Student;
 
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\SubjectResource;
@@ -17,13 +18,14 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\ClassLevelResource;
 use App\Http\Resources\AssessmentResource;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\StudentResource;
 
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
 
 /*
@@ -44,10 +46,10 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
 
 
 //The following are protected routes
-Route::middleware('auth:sanctum')->group(function () {
+//Route::middleware('auth:sanctum')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getAll');
-        Route::get('/science', 'ScienceDepartment');
+        Route::get('/Science', 'ScienceDepartment');
        
         Route::get('/Humanity', 'HumanityDepartment');
         Route::get('/Language', 'LanguageDepartment');
@@ -116,13 +118,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/reportCard', 'gradingScores');
         Route::get('/assessments', 'index');
         Route::get('/assessment/{id}', 'show');
-    }); //Messages
+    });
+     //Messages
     Route::controller(MessageController::class)->group(function () {
         Route::get('/messages', 'getAllMessages');
         Route::post('/create-message', 'store');
         Route::put('/message/{id}', 'update');
         Route::delete('/message/{id}', 'destroy');
     });
+//});
+// Api for students
+    Route::controller(StudentController::class)->group(function () {
+        Route::get('/students', 'getAllStudents');
+        Route::post('/create-student', 'store');
+        Route::put('/student/{id}', 'update');
+        Route::delete('/student/{id}', 'destroy');
+  
 });
 
 // Route::post('/create-role', 'store');

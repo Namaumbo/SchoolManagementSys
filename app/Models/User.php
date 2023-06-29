@@ -60,7 +60,7 @@ class User extends Authenticatable
             Role::class,
             'users',
             'id',
-            'role_id');
+            'role_name');
     }
 
     public function departments():\Illuminate\Database\Eloquent\Relations\BelongsToMany

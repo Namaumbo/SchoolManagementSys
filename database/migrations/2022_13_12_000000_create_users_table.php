@@ -21,12 +21,19 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('sex');
 //            foreing
-            $table->integer('role_id')->unsigned()->nullable();
+            $table->string('role_name')->nullable();
 
             $table->string('departmentName',50)->nullable();
             $table->foreign('departmentName')
                 ->references('departmentName')
                 ->on('departments')
+                ->onDelete('NO ACTION')
+                ->onUpdate('CASCADE');
+
+
+            $table->foreign('role_name')
+                ->references('role_name')
+                ->on('roles')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
 
