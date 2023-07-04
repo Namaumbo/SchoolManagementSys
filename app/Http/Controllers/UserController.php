@@ -64,13 +64,14 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         $user = User::where('email', $request->input('email'))->first();
-        //Username represents an ID for the student
-        if ($user) {
+        //Username represents a
+         if ($user) {
             return response()->json(
                 ['message' => 'User already exists', 'email' => $user],
                 409
             );
         }
+        
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
@@ -87,7 +88,9 @@ class UserController extends Controller
                 '4' => $e,
             ], 404);
         }
-    }
+       
+}
+    
     /**
      * Display the specified resource.
      *
@@ -167,7 +170,7 @@ class UserController extends Controller
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
-        $user->role_id = $request->role_id;
+        $user->role_name = $request->role_name;
         $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
@@ -233,35 +236,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function search(Request $request, $key): JsonResponse
-    {
-        $user = User::query()
-            ->where('firstname', 'LIKE', "%$key%")
-            ->orWhere('surname', 'LIKE', "%$key%")
-            ->orWhere('sex', 'LIKE', "%$key%")
-            ->orWhere('email', 'LIKE', "%$key%")
-            ->orWhere('district', 'LIKE', "%$key%")
-            ->orWhere('village', 'LIKE', "%$key%")
-            ->get();
-        return response()->json([
-            'User' => $user,
-            'status' => 200,
-        ]);
-
-
-
-    }
-    public function addition()
-    {
-        $x = 5;
-        $m = 10;
-        $y = $x * $m;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-            'The value is' => $y
-        ]);
-    }
-
+ 
 }
+
+
+
+    
