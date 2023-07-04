@@ -17,10 +17,8 @@ return new class extends Migration
             $table->increments('id');
             $table->string('role_name');
             $table->timestamps();
-        
         });
     }
-
     /**
      * Reverse the migrations.
      *

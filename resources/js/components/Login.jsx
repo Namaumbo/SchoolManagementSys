@@ -34,6 +34,7 @@ export default function Login() {
             .post("http://localhost:8000/api/login", user)
 
             .then((res) => {
+                console.log(res)
                 if (res.data.status === "ok") {
                     const user = btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
@@ -43,7 +44,9 @@ export default function Login() {
                 }
             })
             .catch((error) => {
+                console.log(error)
                 if (error.response && error.response.status === 419) {
+
                     console.log(error.response);
                 }
             });

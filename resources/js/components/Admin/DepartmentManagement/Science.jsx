@@ -22,17 +22,16 @@ export default function Science() {
         Authorization: `Bearer ${accessKey}`,
     };
 
-    useEffect(async() => {
-      
-            await axios
-                .get("http://127.0.0.1:8000/api/Science-students", { headers })
-                .then((res) => {
-                    setUserInfo(res.data);
-                    setData(res.data);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+    useEffect(async () => {
+        await axios
+            .get("http://127.0.0.1:8000/api/Science-students", { headers })
+            .then((res) => {
+                setUserInfo(res.data);
+                setData(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         getUsers().then(null);
     }, ["http://127.0.0.1:8000/api/Science-students"]);
 
@@ -47,7 +46,6 @@ export default function Science() {
     //     .catch((err) => {
     //         console.error(err);
     //     });
-
 
     // })
 
@@ -87,8 +85,11 @@ export default function Science() {
             menuItem: "Students",
             render: () => (
                 <Tab.Pane>
-                <MaterialReactTable columns={columns} Student={StudentInfo} />
-            </Tab.Pane>
+                    <MaterialReactTable
+                        columns={columns}
+                        Student={StudentInfo}
+                    />
+                </Tab.Pane>
             ),
         },
         {
