@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\Assessment;
-
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -32,11 +31,11 @@ class AssessmentController extends Controller
      */
     public function create(Request $request, $assessment)
     {
+        $assessment->schoolTerm = $request->schoolTerm;
         $assessment->firstAssessment = $request->firstAssessment;
         $assessment->secondAssessment = $request->secondAssessment;
         $assessment->endOfTermAssessment =round($request->endOfTermAssessment*0.6,0);
         $assessment->averageScore=collect($assessment->firstAssessment,$assessment->secondAssessment)->avg()*0.4+$assessment->endOfTermAssessment;
-
         $assessment->created_at = carbon::now();
         $assessment->updated_at = carbon::now();
    

@@ -15,22 +15,32 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('schoolTerm')->unique();
             $table->integer('firstAssessment');
             $table->integer('secondAssessment');
             $table->integer('endOfTermAssessment');
             $table->integer('averageScore')->nullable();
 
-            $table->integer('subject_id')->unsigned()->nullable();;
+            $table->integer('subject_id')->unsigned()->nullable();
             $table->foreign('subject_id')
             ->references('id')
             ->on('subjects')
-            ->onDelete('CASCADE');
+            ->onDelete('NO ACTION')
+            ->onUpdate('CASCADE');
 
-            $table->integer('user_id')->unsigned()->nullable();;
+            $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')
             ->references('id')
             ->on('users')
-            ->onDelete('CASCADE');
+            ->onDelete('NO ACTION')
+              ->onUpdate('CASCADE');
+
+              $table->unsignedInteger('student_id');
+              $table->foreign('student_id')
+              ->references('id')
+              ->on('students')
+              ->onDelete('NO ACTION')
+              ->onUpdate('CASCADE');
 
             $table->timestamps();
         });

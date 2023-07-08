@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('subject_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->string('className');
-            $table->timestamps();
+     
 
             $table->foreign('subject_id')
             ->references('id')
@@ -30,11 +30,12 @@ return new class extends Migration
             ->on('users')
             ->onDelete('CASCADE');
 
-
+            $table->timestamps();
 
 
         });
     }
+
 
     /**
      * Reverse the migrations.

@@ -26,6 +26,14 @@ class Assessment extends Model
             'id',
             'user_id');
     }
-
+    public function students():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+          
+            Assessment::class,
+            'assessments',
+            'id',
+            'student_id');
  
+}
 }

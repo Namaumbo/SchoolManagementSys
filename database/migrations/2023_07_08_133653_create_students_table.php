@@ -13,22 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('students', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
             $table->string('firstname');
             $table->string('surname');
-            $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('sex');
-//            foreing
-            $table->string('role_name')->nullable();
+            $table->string('village');
+            $table->string('traditional_authority');
+            $table->string('district');
+            $table->string('class')->nullable();
 
-            $table->string('departmentName',50)->nullable();
-            $table->foreign('departmentName')
-                ->references('departmentName')
-                ->on('departments')
-                ->onDelete('NO ACTION')
-                ->onUpdate('CASCADE');
+            $table->string('role_name',50)->nullable();
 
 
             $table->foreign('role_name')
@@ -36,18 +32,10 @@ return new class extends Migration
                 ->on('roles')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
-
-            $table->string('password');
-            $table->string('village');
-            $table->string('district');
-            $table->string('traditional_authority');
-            $table->rememberToken();
             $table->timestamps();
-
-
-
         });
     }
+
 
     /**
      * Reverse the migrations.
@@ -56,6 +44,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('students');
     }
 };

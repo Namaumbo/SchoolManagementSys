@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-
 use Illuminate\Http\Request;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
