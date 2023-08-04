@@ -18,10 +18,7 @@ class DepartmentController extends Controller
      *
      * @return Collection
      */
-    public function index(): Collection
-    {
-        return Department::all();
-    }
+   
 
     public function getAll()
     {

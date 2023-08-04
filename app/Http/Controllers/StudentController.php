@@ -4,7 +4,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Subject;
+use App\Models\Relationship;
+
+use App\Models\Assessment;
 use Carbon\Carbon;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+
 use Illuminate\Http\Response;
 class StudentController extends Controller
 {
@@ -79,10 +85,34 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+   
+
+        public function subjectToStudent(Request $request)
+        {
+            $student = Student::where('username', $request->input('username'))->first();
+            $subject = Subject::where('name', $request->input('name'))->first();
+
+            if (!$subject || !$student) {
+                return response()->json("Information provided doesnt exists");
+            }
+          
+            $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+            
+            return response()->json(
+                [
+                    "message" => "Subject added successfully to  " . $student->firstname.' '.$student->surname,
+                    "records" => $subject->students,
+                ]
+            );
+      
+            
+
+        }
+        
+
+         
+     
+    
 
     /**
      * Show the form for editing the specified resource.

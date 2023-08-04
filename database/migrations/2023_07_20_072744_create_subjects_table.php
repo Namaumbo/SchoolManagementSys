@@ -15,23 +15,13 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
-//            foreign
-            $table->string('departmentName',)->nullable();
-            $table->foreign('departmentName')
-                ->references('departmentName')
-                ->on('departments')
-                ->onDelete('NO ACTION')
-                ->onUpdate('CASCADE');
+            $table->string('name')->unique();
 
-            $table->string('subject_name');
-            $table->string('PeriodsPerWeek');
+
             $table->timestamps();
-
-
         });
-
-
     }
+
     /**
      * Reverse the migrations.
      *

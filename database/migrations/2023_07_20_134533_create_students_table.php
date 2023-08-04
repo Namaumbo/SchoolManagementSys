@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id')->primary();
             $table->string('firstname');
             $table->string('surname');
             $table->string('username')->unique();
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('district');
             $table->string('class')->nullable();
 
+
             $table->string('role_name',50)->nullable();
 
 
@@ -32,10 +33,12 @@ return new class extends Migration
                 ->on('roles')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
-            $table->timestamps();
+
+
+                $table->timestamps();
+
         });
     }
-
 
     /**
      * Reverse the migrations.

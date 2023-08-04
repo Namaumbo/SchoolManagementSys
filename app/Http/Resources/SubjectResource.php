@@ -16,8 +16,7 @@ class SubjectResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'subject_name' => $this->subject_name,
-            'PeriodsPerWeek' => $this->PeriodsPerWeek,
+            'name' => $this->name,
             'departments' => DepartmentResource::collection($this->departments),
           
         ];

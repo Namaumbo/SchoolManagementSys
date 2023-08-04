@@ -10,6 +10,8 @@ use App\Models\Assessment;
 use App\Models\Department;
 use App\Models\Message;
 use App\Models\Student;
+use App\Models\Relationship;
+
 
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\SubjectResource;
@@ -19,6 +21,7 @@ use App\Http\Resources\ClassLevelResource;
 use App\Http\Resources\AssessmentResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\RelationshipResource;
 
 use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
@@ -85,14 +88,12 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
     }); 
     //Subjects Routes
     Route::controller(SubjectController::class)->group(function () {
-        Route::get('/subjects', 'index');
+        Route::post('/create-subject/{id}', 'store');
+        Route::get('/subjects', 'getAll');
         Route::get('/subject/{id}', 'show');
-        Route::post('/register-subject', 'store');
-        Route::put(
-            '/subject/{id}',
-            'update'
-        );
-        Route::delete('/subject/{id}', 'destroy');
+
+        Route::put('/update-subject/{id}', 'update');
+
     }); 
     //roles api
     Route::controller(RoleController::class)->group(function () {
@@ -114,10 +115,12 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
         });
     }); //Assessments
     Route::controller(AssessmentController::class)->group(function () {
-        Route::post('/create-assessment', 'store');
-        Route::get('/reportCard', 'gradingScores');
-        Route::get('/assessments', 'index');
-        Route::get('/assessment/{id}', 'show');
+        Route::post('/create-assessment/{id}', 'store');
+        Route::get('/reportCard/{id}', 'gradingSystem');
+        Route::get('/assessments', 'getAssessments');
+        Route::get('/assessment', 'show');
+        Route::put('/edit/assessments/{student_id}', 'update');
+
     });
      //Messages
     Route::controller(MessageController::class)->group(function () {
@@ -133,11 +136,10 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
         Route::post('/create-student', 'store');
         Route::put('/student/{id}', 'update');
         Route::delete('/student/{id}', 'destroy');
-  
+        Route::post('/student-subject', 'subjectToStudent');
+
 });
 
-// Route::post('/create-role', 'store');
 Route::get('/roles', function () {
     return RoleResource::collection(Role::all());
 });
-// Route::get('/science-students', 'studentsInScienceDepartment');

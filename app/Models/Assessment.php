@@ -9,31 +9,25 @@ class Assessment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'firstAssessment',
-        'secondAssessment',
-        'endOfTermAssessment',
-        'AverageScore',
-        'created_at',
-        'updated_at'
+
+
+
+    protected $table = "assessments";
       
-    ];
-    public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            Subject::class,
-            'subjects',
-            'id',
-            'user_id');
-    }
-    public function students():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-          
-            Assessment::class,
-            'assessments',
-            'id',
-            'student_id');
- 
-}
+      protected $fillable=[
+
+       'schoolTerm',
+       'subject_id',
+       'firstAssessment',
+       'secondAssessment',
+       'endOfTermAssessment',
+       'averageScore',
+       'user_id'
+      
+      ];
+      public function students()
+      {
+          return $this->belongsTo(Student::class);
+      }
+
 }

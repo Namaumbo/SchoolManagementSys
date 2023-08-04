@@ -31,30 +31,6 @@ class UserController extends Controller
     }
 
 
-     public function HumanityDepartment()
-     {
-        return User::where('departmentName', 'Humanity')->get();
- 
-     }
-
-     public function LanguageDepartment()
-     {
-        return User::where('departmentName', 'Language')->get();
- 
-     }
-
-     public function ScienceDepartment()
-     {
-   
-       return User::where('departmentName', 'Science')->get();
-   
-     }
-    public function studentsInScienceDepartment()
-    {
-  
-      return User::where('departmentName', 'Science')->where('role_id','5')->get();
-  
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -91,33 +67,8 @@ class UserController extends Controller
        
 }
     
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function exportIntoExcel()
-    {
-        return Excel::download(new User, 'users.xlsx');
-    }
-    public function show(int $id)
-    {
-        return new UserResource(User::findorFail($id));
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     */
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
+   
+   
     public function update(Request $request, int $id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {
@@ -212,21 +163,8 @@ class UserController extends Controller
         )->withCookie($cookie);
     }
 
-    public function UserToRoles(Request $request, int $id)
-    {
-        $user = User::where('id', $id)->first();
-        if ($user) {
-            try {
-                $role = Role::where('id', $request->input('id'))->first();
-                if ($role) {
-                    $user->roles()->syncWithoutDetaching($role);
-                }
-            } catch (EntityNotFoundException $entityNotFoundException) {
-                return $entityNotFoundException;
-            }
-        }
-
-    }
+    
+    
     public function logout()
     {
         Auth::logout();

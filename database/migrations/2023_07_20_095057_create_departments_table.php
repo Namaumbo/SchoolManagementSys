@@ -14,12 +14,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('departments', function (Blueprint $table) {
-
             $table->string('departmentName')->primary();
             $table->string('headOfDepartment')->unique();
             $table->text('description')->nullable(false);
             $table->timestamps();
-
+ 
         });
     }
 

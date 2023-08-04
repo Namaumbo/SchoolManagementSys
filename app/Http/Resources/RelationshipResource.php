@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AssessmentResource extends JsonResource
+class StudentAssessmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,12 @@ class AssessmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'firstAssessment' => $this->firstAssessment,
-            'secondAssessment' => $this->secondAssessment,
-            'endOfTermAssessment' => $this->endOfTermAssessment,
-            'averageScore' => $this->averageScore,
-            'subjectName'=>$this->subjectName,
-        ];
-    }
+            'student_id' => $this->student_id,
+            'assessment_id' => $this->assessment_id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+           // 'students_assessments' => StudentResource::collection($this->students_assessments),
+
+
+        ];    }
 }
