@@ -31,42 +31,15 @@
     margin: auto;
 }
 
-.numbers {
-    color: grey;
-    font-size: 15px;
-    padding-left: 20%;
-    /* overflow-x: hidden; */
-}
-
-.col {}
 
 .body {
-    display: flex;
-    width: 100%;
-
+    /* display: block; */
 }
 
 .expense-card {
     background-color: white;
     box-shadow: 2px 2px 2px #c6c2c2;
-    width: 50%;
-    margin-left: .5%;
-    margin-right: .5%;
-    height: %;
-    overflow: hidden;
-    overflow-y: scroll;
-    
-    
-}
-
-.left-card {
-    background-color: white;
-    box-shadow: 2px 2px 2px #c6c2c2;
-    margin-left: .5%;
-    margin-right: .5%;
-    width: 50%;
-    padding: 20px;
-
+    height: 100px; 
 }
 
 .heading {
@@ -88,18 +61,20 @@ th {
   
 }
 table{
-    width: 100%;
-    
-    
+    width: 50%; 
+    background-color: white;
+    box-shadow: 2px 2px 2px #c6c2c2;
+    margin-bottom: 20px;
 }
 table td{
    font-weight: 500; 
-
 }
 table tbody{
-    height: 250px;
     overflow-x: scroll;
 }
-.left-card{
-
+.right-card{
+    box-shadow: 2px 2px 2px #c6c2c2;
+    width: 50%;
+    height: 30em;
+    background-color:  white;
 }

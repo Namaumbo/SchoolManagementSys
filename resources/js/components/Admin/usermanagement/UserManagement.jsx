@@ -23,9 +23,10 @@ function UserManagement() {
 
     return (
         <>
-            <div className="heading-title">
+          
+            <div className="heading">
                 <IconSection.FiUsers />
-                <h4>Users-available</h4>
+                <span style={{ color: "white" }}>Users-available</span>
             </div>
             <div className="searchForm"> 
                 <form role="search">
@@ -42,7 +43,7 @@ function UserManagement() {
                     className="container text-center"
                     style={{ marginTop: "25%" }}
                 >
-                    <span className="noUser"> loading...</span>
+                    <span className="noUser"> Fetching users wait...</span>
                 </div>
             ) : (
                 <div>

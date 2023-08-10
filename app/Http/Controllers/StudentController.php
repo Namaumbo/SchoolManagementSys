@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 
 use Illuminate\Http\Response;
+
 class StudentController extends Controller
 {
     /**
@@ -19,7 +20,7 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAllStudents()
+    public function getAllStudents() 
     {
         return Student::all();
     }

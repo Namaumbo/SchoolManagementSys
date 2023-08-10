@@ -8,7 +8,7 @@ import axios from "axios";
 import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import moneyPng from "../../../../assets/icons8-money-48.png";
-import Test from '../../../Test'
+import Test from "../../../Test";
 export default function AdminDashboard() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
@@ -110,41 +110,39 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 </div>
-
+                
                 <div className="body">
-                    <div className="expense-card">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First name</th>
-                                    <th>last name</th>
-                                    <th>sex</th>
-                                    <th>Role</th>
-                                    <th>Phone number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.map((user, index) => {
-                                    return (
-                                        <>
-                                            <tr>
-                                                <td>{index + 1}</td>
-                                                <td>{user.firstname} </td>
-                                                <td> {user.surname}</td>
-                                                <td>{user.sex}</td>
-                                                <td>{user.title}</td>
-                                                <td>{user.district}</td>
-                                            </tr>
-                                        </>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div className="left-card">
-                      <Test/>
+                  
+                <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First name</th>
+                                <th>last name</th>
+                                <th>sex</th>
+                                <th>Role</th>
+                                <th>Phone number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((user, index) => {
+                                return (
+                                    <>
+                                        <tr>
+                                            <td>{index + 1}</td>
+                                            <td>{user.firstname} </td>
+                                            <td> {user.surname}</td>
+                                            <td>{user.sex}</td>
+                                            <td>{user.title}</td>
+                                            <td>{user.district}</td>
+                                        </tr>
+                                    </>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                    <div className="right-card">
+                        <Test />
                     </div>
                 </div>
             </div>
