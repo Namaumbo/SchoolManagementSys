@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 
 use Illuminate\Http\Response;
+use PhpParser\Node\Stmt\TryCatch;
 
 class StudentController extends Controller
 {
@@ -20,7 +22,7 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAllStudents() 
+    public function getAllStudents()
     {
         return Student::all();
     }
@@ -30,7 +32,7 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $student):void
+    public function create(Request $request, $student): void
     {
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
@@ -51,33 +53,40 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): JsonResponse
+    
+    //  check this please refer to this 
+     public function store(Request $request): JsonResponse
     {
-        
-        $student = Student::where('username', $request->input('username'))->first();
-         if ($student) {
-            return response()->json(
-                ['message' => 'User already exists', 'Student' => $student],
-                409
-            );
-        }
-        
-        try {
-            $student = new Student;
-            $this->create($request, $student);
 
-            return response()->json([
-                'message' => 'Student saved successfully',
-                'Student' => $student,
-                'status' => 201,
-            ], 201);
+        try {
+            $response = [
+                'message' => '',
+                'status' => '',
+                'student' => null,
+            ];
+            $code = 200;
+            $student = Student::where('username', $request->input('username'))->first();
+            if ($student) {
+                $response['message'] = 'Student already exists';
+                $response['status'] = 'fail';
+                $response['student'] = $student;
+                $code = 409;
+            } else {
+                $student = new Student;
+
+                $this->create($request, $student);
+                $response['message'] = 'Student saved successfully';
+                $response['status'] = 'success';
+                $response['student'] = $student;
+                $code = 201;
+                
+            }
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Student not saved',
-                'status' => 404,
-                '4' => $e,
-            ], 404);
+            $response['message'] = 'Error creating student';
+            $response['status'] = 'fail';
+            $code = 500;
         }
+        return response()->json($response, $code);
     }
 
     /**
@@ -86,34 +95,31 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-   
 
-        public function subjectToStudent(Request $request)
-        {
-            $student = Student::where('username', $request->input('username'))->first();
-            $subject = Subject::where('name', $request->input('name'))->first();
 
-            if (!$subject || !$student) {
-                return response()->json("Information provided doesnt exists");
-            }
-          
-            $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-            
-            return response()->json(
-                [
-                    "message" => "Subject added successfully to  " . $student->firstname.' '.$student->surname,
-                    "records" => $subject->students,
-                ]
-            );
-      
-            
+    public function subjectToStudent(Request $request)
+    {
+        $student = Student::where('username', $request->input('username'))->first();
+        $subject = Subject::where('name', $request->input('name'))->first();
 
+        if (!$subject || !$student) {
+            return response()->json("Information provided doesnt exists");
         }
-        
 
-         
-     
-    
+        $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+
+        return response()->json(
+            [
+                "message" => "Subject added successfully to  " . $student->firstname . ' ' . $student->surname,
+                "records" => $subject->students,
+            ]
+        );
+    }
+
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.

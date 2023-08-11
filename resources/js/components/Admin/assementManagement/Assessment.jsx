@@ -1,29 +1,33 @@
-import React, { useState } from "react";
-import { MaterialReactTable } from "material-react-table";
-import { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { FiHome, FiGitMerge } from "react-icons/fi";
 import { useRecoilState } from "recoil";
 import { userState } from "@/components/User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
 import * as IconSection from "react-icons/all";
-import './Assessment.css'
+import "./Assessment.css";
+import StudentService from "../../../../services/StudentService";
 
 export default function Assessment() {
     const [{ loggedIn, role, usersList }, setUsersList] =
         useRecoilState(userState);
     const [loading, setLoading] = useState(true);
-
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
 
+    let [studentData, setStudentData] = useState([]);
     setTimeout(() => {
         setLoading(false);
     }, 1000);
 
-    function handleEdit(studentId) {
-    alert(studentId,'=> about to edit')
-       
-    }
+    function handleEdit(studentId) {}
 
+    useEffect(() => {
+        let data = StudentService.getAllStudent();
+        data
+        .then((res) => {
+            if(res) setStudentData(res)
+        })
+        .catch((err) => {console.log(err)});
+    }, []);
     return (
         <>
             <div className="heading">
@@ -48,19 +52,24 @@ export default function Assessment() {
                         </thead>
 
                         <tbody>
-                            {userInfo.map((user) => {
+                            {studentData.map((student) => {
                                 return (
-                                    <tr key={user.id}>
-                                        <td>{user.id}</td>
-                                        <td>{user.title}</td>
-                                        <td>{user.firstname}</td>
-                                        <td>{user.surname}</td>
-                                        <td>{user.sex}</td>
-                                        <td>{user.traditional_authority}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.district}</td>
+                                    <tr key={student.id}>
+                                        <td>{student.id}</td>
+                                        <td>{student.firstname}</td>
+                                        <td>{student.surname}</td>
+                                        <td>{student.sex}</td>
+                                        <td>{student.class}</td>
+                                        <td>{student.firstAssessment}</td>
+                                        <td>{student.secondAssessment}</td>
+                                        <td>{student.finalGrade}</td>
                                         <td>
-                                            <button className="btn  btn-secondary btn-sm" onClick={()=>handleEdit(user.id)}>
+                                            <button
+                                                className="btn  btn-secondary btn-sm"
+                                                onClick={() =>
+                                                    handleEdit(student.id)
+                                                }
+                                            >
                                                 <IconSection.AiFillDatabase size="10px" />
                                                 UPDATE
                                             </button>{" "}
@@ -70,12 +79,16 @@ export default function Assessment() {
                             })}
                         </tbody>
                     </table>
-                <div className="main-btns">
-                    <button className="btn btn-success ">Save History</button><span>{" "}</span>
-                    <button className="btn btn-warning ">Produce Report</button>
+                    <div className="main-btns">
+                        <button className="btn btn-success ">
+                            Save History
+                        </button>
+                        <span> </span>
+                        <button className="btn btn-warning ">
+                            Produce Report
+                        </button>
+                    </div>
                 </div>
-                </div>
-               
             </div>
         </>
     );

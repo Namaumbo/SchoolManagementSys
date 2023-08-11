@@ -31,8 +31,6 @@ return new class extends Migration
                 ->on('roles')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
-
-
                 $table->timestamps();
 
         });

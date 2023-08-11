@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./users.css";
 import { useRecoilState } from "recoil";
 import { userState } from "@/components/User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
 import * as IconSection from "react-icons/all";
+import UsersServices from "../../../../services/UsersServices";
 
 function UserManagement() {
     const [{ loggedIn, role, usersList }, setUsersList] =
         useRecoilState(userState);
     const [loading, setLoading] = useState(true);
 
-    let [userInfo, setUserInfo] = useRecoilState(userDetails);
+    let [users, setUsers] = useRecoilState(userDetails);
 
     setTimeout(() => {
         setLoading(false);
@@ -20,15 +21,24 @@ function UserManagement() {
         alert("ok");
         // redirect('/teachers')
     }
+    useEffect(() => {
+        let data = UsersServices.getAllUsers();
+
+        data.then((res) => {
+            console.log(res)
+            setUsers(res);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
 
     return (
         <>
-          
             <div className="heading">
                 <IconSection.FiUsers />
                 <span style={{ color: "white" }}>Users-available</span>
             </div>
-            <div className="searchForm"> 
+            <div className="searchForm">
                 <form role="search">
                     <input
                         class="form-control me-2"
@@ -47,7 +57,7 @@ function UserManagement() {
                 </div>
             ) : (
                 <div>
-                    {userInfo ? (
+                    {users ? (
                         <>
                             <div className="user-tb">
                                 <table className="table table-hover">
@@ -66,7 +76,7 @@ function UserManagement() {
                                     </thead>
 
                                     <tbody>
-                                        {userInfo.map((user) => {
+                                        {users.map((user) => {
                                             return (
                                                 <tr key={user.id}>
                                                     <td>{user.id}</td>
