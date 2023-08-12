@@ -5,13 +5,14 @@ class StudentsService {
     constructor() {}
 
     async getAllStudent() {
-        let res = [];
+        let res = null;
         try {
             let students = new Array();
             let availableStudent = await axios.get(
                 `${this.urlPrefix}/students`
             );
             if (availableStudent.data.length > 0) {
+                //if status successfully an array is returned
                 students = availableStudent.data;
                 res = students
             }
@@ -21,12 +22,15 @@ class StudentsService {
 
         return res;
     }
-    createStudent(){
+    
+    async createStudent(){
+        // let 
+
     }
 
-    updateStudent(){}
+    async updateStudent(){}
 
-    getStudentAssignments(){
+    async getStudentAssignments (){
 
     }
 }

@@ -48,30 +48,38 @@ class RoleController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request) : JsonResponse
+
     {
+        
         $role = Role::where('role_name', $request->input('role_name'))->first();
-        if ($role) {
-            return response()->json(
-                ['message' => 'The role was arleady created', 'role_name' => $role],
-            );
-        }
+
         try {
-            $role = new Role;
-            $this->create($request, $role);
-            return response()->json([
-                'message' => 'Role created successfully',
-                'Role' => $role,
-                'status' => 200,
-            ]);
+            $response  = [];
+            if ($role) {
+
+                $response =   ['message' => 'available role', 'role_name' => $role];
+                $code = 409;
+            }
+            else{
+                $role = new Role;
+                $this->create($request, $role);
+                $response = [
+                    'message' => 'Role created successfully',
+                    'Role' => $role,
+                    'status' => 200,
+                ];
+            }
+           
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Role not saved',
-                'Role' => $role,
-                'status' => 400,
+            $response = [
+                'message' => "{$e->getMessage()}",
+                'role' => $role,
+                'status' => 500,
                 '4' => $e,
-            ]);
+            ];
         }
+        return response()->json($response,$code);
     }
 
     /**
@@ -104,11 +112,19 @@ class RoleController extends Controller
     public function update(Request $request, int $id)
     {
         if (Role::where('id', $id)->exists()) {
+
             $role = Role::find($id);
+            // -----------------------check these comments----------------------------
+            // why creating the role again you can just save from here without creating a new rol
+            
+            
+            
             $this->create($request, $role);
             return response()->json([
                 'message' => 'The role is updated successfully'
             ], 400);
+
+
         } else {
             return response()->json([
                 'message' => 'No such Role found in the database '
@@ -135,6 +151,5 @@ class RoleController extends Controller
                 'message' => 'No  role found in the database ',
             ]);
         }
-
     }
 }

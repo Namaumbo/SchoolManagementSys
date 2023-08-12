@@ -26,8 +26,7 @@ class UserController extends Controller
      */
     public function getAll()
     {
-       return User::all();
-
+        return User::all();
     }
 
 
@@ -41,13 +40,13 @@ class UserController extends Controller
     {
         $user = User::where('email', $request->input('email'))->first();
         //Username represents a
-         if ($user) {
+        if ($user) {
             return response()->json(
                 ['message' => 'User already exists', 'email' => $user],
                 409
             );
         }
-        
+
         try {
             $user = new User;
             $this->userDetailsCommon($request, $user);
@@ -64,11 +63,10 @@ class UserController extends Controller
                 '4' => $e,
             ], 404);
         }
-       
-}
-    
-   
-   
+    }
+
+
+
     public function update(Request $request, int $id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {
@@ -126,7 +124,6 @@ class UserController extends Controller
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
-
     }
 
     /**
@@ -154,7 +151,7 @@ class UserController extends Controller
         return response()->json(
             [
                 "message" => "System successfully logged " . Auth::user()->first_name,
-                "status" => "ok",
+                "status" => "success",
                 "access_token" => $token,
                 "token_type" => "bearer",
                 "user" => Auth::user()
@@ -163,8 +160,8 @@ class UserController extends Controller
         )->withCookie($cookie);
     }
 
-    
-    
+
+
     public function logout()
     {
         Auth::logout();
@@ -173,10 +170,4 @@ class UserController extends Controller
             'message' => 'Successfully logged out',
         ]);
     }
-
- 
 }
-
-
-
-    

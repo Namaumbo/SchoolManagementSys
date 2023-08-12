@@ -50,94 +50,92 @@ Route::get('/exports', [UserController::class, 'exportIntoExcel']);
 
 //The following are protected routes
 //Route::middleware('auth:sanctum')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/users', 'getAll');
-        Route::get('/Science', 'ScienceDepartment');
-       
-        Route::get('/Humanity', 'HumanityDepartment');
-        Route::get('/Language', 'LanguageDepartment');
+Route::controller(UserController::class)->group(function () {
+    Route::get('/users', 'getAll');
+    Route::get('/Science', 'ScienceDepartment');
 
-        Route::get('/add', 'addition');
-        Route::post('/register-user', 'store');
-        Route::post(
-            '/register-user/{id}',
-            'UserToRoles'
-        );
-        Route::get('/user/{id}', 'show');
-        Route::put(
-            '/user/{id}',
-            'update'
-        );
-        Route::delete('/user/{id}', 'destroy');
-        Route::get(
-            '/search/{key}',
-            'Search'
-        );
-        Route::post('/logout', 'logout');
-    });
-    Route::controller(DepartmentController::class)->group(function () {
-        // DepartmentS Routes 
-        Route::get('/departments', 'getAll');
-        Route::get('/department/{id}', 'show');
-        Route::post(
-            '/register-department',
-            'store'
-        );
-        Route::put('/department/{id}', 'update');
-        Route::delete('/department/{id}', 'destroy');
-    }); 
-    //Subjects Routes
-    Route::controller(SubjectController::class)->group(function () {
-        Route::post('/create-subject/{id}', 'store');
-        Route::get('/subjects', 'getAll');
-        Route::get('/subject/{id}', 'show');
+    Route::get('/Humanity', 'HumanityDepartment');
+    Route::get('/Language', 'LanguageDepartment');
 
-        Route::put('/update-subject/{id}', 'update');
+    Route::get('/add', 'addition');
+    Route::post('/register-user', 'store');
+    Route::post(
+        '/register-user/{id}',
+        'UserToRoles'
+    );
+    Route::get('/user/{id}', 'show');
+    Route::put(
+        '/user/{id}',
+        'update'
+    );
+    Route::delete('/user/{id}', 'destroy');
+    Route::get(
+        '/search/{key}',
+        'Search'
+    );
+    Route::post('/logout', 'logout');
+});
+Route::controller(DepartmentController::class)->group(function () {
+    // DepartmentS Routes 
+    Route::get('/departments', 'getAll');
+    Route::get('/department/{id}', 'show');
+    Route::post(
+        '/register-department',
+        'store'
+    );
+    Route::put('/department/{id}', 'update');
+    Route::delete('/department/{id}', 'destroy');
+});
+//Subjects Routes
+Route::controller(SubjectController::class)->group(function () {
+    Route::post('/create-subject/{id}', 'store');
+    Route::get('/subjects', 'getAll');
+    Route::get('/subject/{id}', 'show');
 
-    }); 
-    //roles api
-    Route::controller(RoleController::class)->group(function () {
-       
-        // whats the use?
-        Route::get('/role/{id}', function ($id) {
-            return new
-                RoleResource(Role::findorFail($id));
-        });
-       
-        Route::put('/role/{id}', 'update');
-        Route::delete('/role/{id}', 'destroy');
-    });
-    // classLevels Routes
-    Route::controller(ClassController::class)->group(function () {
-        Route::get('/classes', function () {
-            return
-                ClassLevelResource::collection(Level::all());
-        });
-    }); //Assessments
-    Route::controller(AssessmentController::class)->group(function () {
-        Route::post('/create-assessment/{id}', 'store');
-        Route::get('/reportCard/{id}', 'gradingSystem');
-        Route::get('/assessments', 'getAssessments');
-        Route::get('/assessment', 'show');
-        Route::put('/edit/assessments/{student_id}', 'update');
+    Route::put('/update-subject/{id}', 'update');
+});
+//roles api
+Route::controller(RoleController::class)->group(function () {
+    $urlPrefix = '/role/{id}';
 
+    // whats the use?
+    Route::get($urlPrefix, function ($role_name) {
+        return new
+            RoleResource(Role::findorFail($role_name));
     });
-     //Messages
-    Route::controller(MessageController::class)->group(function () {
-        Route::get('/messages', 'getAllMessages');
-        Route::post('/create-message', 'store');
-        Route::put('/message/{id}', 'update');
-        Route::delete('/message/{id}', 'destroy');
+
+    Route::put($urlPrefix, 'update');
+    Route::delete($urlPrefix, 'destroy');
+});
+// classLevels Routes
+Route::controller(ClassController::class)->group(function () {
+    Route::get('/classes', function () {
+        return
+            ClassLevelResource::collection(Level::all());
     });
+}); //Assessments
+Route::controller(AssessmentController::class)->group(function () {
+    Route::post('/create-assessment/{id}', 'store');
+    Route::get('/reportCard/{id}', 'gradingSystem');
+    Route::get('/assessments', 'getAssessments');
+    Route::get('/assessment', 'show');
+    Route::put('/edit/assessments/{student_id}', 'update');
+});
+//Messages
+Route::controller(MessageController::class)->group(function () {
+    Route::get('/messages', 'getAllMessages');
+    Route::post('/create-message', 'store');
+    Route::put('/message/{id}', 'update');
+    Route::delete('/message/{id}', 'destroy');
+});
 //});
 // Api for students
-    Route::controller(StudentController::class)->group(function () {
-        Route::get('/students', 'getAllStudents');
-        Route::post('/create-student', 'store');
-        Route::put('/student/{id}', 'update');
-        Route::delete('/student/{id}', 'destroy');
-        Route::post('/student-subject', 'subjectToStudent');
-
+Route::controller(StudentController::class)->group(function () {
+    Route::get('/students', 'getAllStudents');
+    Route::post('/create-student', 'store');
+    Route::put('/student/{id}', 'update');
+    Route::delete('/student/{id}', 'destroy');
+    Route::post('/student-subject', 'subjectToStudent');
 });
 
 Route::get('/roles', function () {

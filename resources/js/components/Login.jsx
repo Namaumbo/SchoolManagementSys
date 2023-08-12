@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import { userState, userInfo } from "./User/userState";
 import * as iconSection from "react-icons/all";
 import logo from "../../assets/logo.jpg";
-import axios from "axios";
+import UsersServices from "../../services/UsersServices";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -15,41 +15,56 @@ export default function Login() {
     const [login, setLogin] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     // const [ userInformation , setUserInformation] = useRecoilState(userInfo)
     // const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
-    const user = { _token: "{{csrf_token()}}", email, password };
-    let [{ loggedIn, role, usersList }, setLoginStatus] =
-        useRecoilState(userState);
+
+    //-----------setting role of the user logged in----------//
+
+    let [{}, setLoginStatus] = useRecoilState(userState);
+
+    ///----------------end------------------------------//
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(false);
-        setMessage("");
-        setTimeout(() => {
-            setLoading(true);
-            setLogin(true);
-        }, 2000);
 
-        await axios
-            .post("http://localhost:8000/api/login", user)
+        if (email.length > 0 && password.length > 0) {
+            const user = { _token: "{{csrf_token()}}", email, password };
 
-            .then((res) => {
-                console.log(res)
-                if (res.data.status === "ok") {
-                    const user = btoa(JSON.stringify(res.data["user"]));
-                    localStorage.setItem("key", res.data.access_token);
-                    localStorage.setItem('vitals' , user)
-                    setLoginStatus({ loggedIn: true, role: "admin" });
-                    navigate("/dashboard");
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-                if (error.response && error.response.status === 419) {
+            setLoading(false);
+            setMessage("");
+            setTimeout(() => {
+                setLoading(true);
+                setLogin(true);
+            }, 2000);
+            UsersServices.userLogin(user)
+                .then((res) => {
+                    if (res.status === 200) {
 
-                    console.log(error.response);
-                }
-            });
+                        const user = btoa(JSON.stringify(res.data["user"]));
+                        localStorage.setItem("key", res.data.access_token);
+                        localStorage.setItem('vitals' , user)
+                        setLoginStatus({ loggedIn: true, role: "admin" });
+                        navigate("/dashboard");
+                        console.log(user);
+                        // in the api there should be a return statement as an exception
+                    } else if (res.status === 422) {
+                        console.log(res);
+                    } else {
+                        res = {
+                            message:
+                                "An error occurred Please contact the administrator",
+                            code: 500,
+                            status: "error",
+                        };
+
+                        console.error(res);
+                    }
+                })
+                .catch((err) => {
+                    console.log("error =>", err);
+                });
+        }
     };
     return (
         <>
