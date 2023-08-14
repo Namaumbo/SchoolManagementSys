@@ -31,93 +31,66 @@ class AssessmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request, $assessment)
+
+
+
+    public function store(Request $request,$id): JsonResponse
     {
 
-
-        $assessment->schoolTerm = $request->schoolTerm;
-        $assessment->firstAssessment = $request->firstAssessment;
-        $assessment->secondAssessment = $request->secondAssessment;
-        $assessment->subject_id = $request->subject_id;
-        $assessment->student_id = $request->student_id;
-
-        $assessment->endOfTermAssessment =round($request->endOfTermAssessment*0.6,0);
-        $averageContinousAssessment=(($assessment->firstAssessment+$assessment->secondAssessment)/2)*0.4;
-        $averageScore=$averageContinousAssessment+$assessment->endOfTermAssessment;
-        $assessment->averageScore=$averageScore;
-
-
-        $averageScore=$request->averageScore;
-
-        $assessment->created_at = carbon::now();
-        $assessment->updated_at = carbon::now();
-    
-            $assessment->save();
-     
-   
-    
-}
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request){
-
       
-        $check=Assessment::where('student_id',$request->input('student_id'))
-        ->where('subject_id',$request->input('subject_id'))
-        ->where('schoolTerm',$request->input('schoolTerm'))
-        ->first();
+            $response = [
+                'message' => '',
+                'status' => '',
+                'student' => null,
+            ];
+        $code = 200;
 
-        if($check){
-            return response()->json([
-                'message' =>'Assessment was arleady added to the database',
-             
-                'status' => 201,
-            ], 201);
-        }
+        $student=Student::find($id);
+        $student = Student::where('username', $request->input('username'))->first();
+        $subject = Subject::select('id')->where('name', $request->input('name'))->first();
+       
+        if(!$student || !$subject){
+            $response['message'] = 'There is no such student in the database';
+            $response['status'] = 'fail';
+            $response['student'] = $student;
+            $code = 409;
 
-        try {
-          
+        }else{
+        try{
 
-            $assessment=new Assessment();
+   Assessment::where('student_id',$id)->where('subject_id',$subject->id)->update([         
+    'schoolTerm' =>$request->input('schoolTerm'),
+    'teacherEmail'=>$request->input('teacherEmail'),
+    'firstAssessment' => $request->input('firstAssessment'),
+    'secondAssessment' => $request->input('secondAssessment'),
+    'endOfTermAssessment' => $request->input('endOfTermAssessment'),
+    'averageScore'=>($request->input('firstAssessment')+$request->input('secondAssessment'))*0.2+($request->input('endOfTermAssessment'))*0.6,
+    'created_at'=>carbon::now(),
+    'updated_at'=>carbon::now()
+
+
+]);
+        return response()->json(["status" => "ok", "message" => "An assessment successfully updated"], Response::HTTP_CREATED);
         
-            $this->create($request, $assessment);
-            return response()->json([
-                'message' => 'Assessment saved successfully',
-                'Student' => $assessment,
-                'status' => 201,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Assessment not saved',
-                'status' => 404,
-                '4' => $e,
-            ], 404);
+             
         }
+   catch (\Exception $e) {
+    $response['message'] = 'Please make sure the data provided exists in the database';
+    $response['status'] = 'fail';
+    $code = 500;
 
+}
+  
+        }
+return response()->json($response, $code);
+
+}
+
+public function deleteAssessment($id){
+    $toDelete = Assessment::find($id);
     
 }
-    
-         
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Subject  $role
-     * @return \Illuminate\Http\Response
-     */
-
-    
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\Response
-     */
-
+ 
 
     public function gradingSystem(Request $request,string $id): JsonResponse
        {

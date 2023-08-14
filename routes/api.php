@@ -115,11 +115,9 @@ Route::controller(ClassController::class)->group(function () {
     });
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
-    Route::post('/create-assessment/{id}', 'store');
-    Route::get('/reportCard/{id}', 'gradingSystem');
-    Route::get('/assessments', 'getAssessments');
-    Route::get('/assessment', 'show');
-    Route::put('/edit/assessments/{student_id}', 'update');
+    Route::put('/create-assessment/{id}', 'store');
+
+
 });
 //Messages
 Route::controller(MessageController::class)->group(function () {
@@ -136,6 +134,7 @@ Route::controller(StudentController::class)->group(function () {
     Route::put('/student/{id}', 'update');
     Route::delete('/student/{id}', 'destroy');
     Route::post('/student-subject', 'subjectToStudent');
+
 });
 
 Route::get('/roles', function () {

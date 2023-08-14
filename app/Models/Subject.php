@@ -27,7 +27,7 @@ class Subject extends Model
     {
         return $this->belongsToMany(
             Student::class,
-           'relationships' );
+           'assessments');
     }
 
 

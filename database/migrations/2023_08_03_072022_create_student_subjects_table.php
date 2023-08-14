@@ -16,33 +16,32 @@ return new class extends Migration
         Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('schoolTerm')->nullable();
-            $table->string('subject_id',50)->nullable();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->string('student_id',50)->nullable();
+            $table->string('teacherEmail',50)->nullable();
+            $table->unsignedInteger('subject_id')->nullable();
+            $table->unsignedInteger('student_id')->nullable();
 
             $table->integer('firstAssessment')->nullable();
             $table->integer('secondAssessment')->nullable();
             $table->integer('endOfTermAssessment')->nullable();
             $table->integer('averageScore')->nullable();
 
-                $table->foreign('user_id')
-                    ->references('id')
+                $table->foreign('teacherEmail')
+                    ->references('email')
                     ->on('users')
                     ->onDelete('NO ACTION')
                     ->onUpdate('CASCADE');
 
-                    $table->foreign('subject_id')
-                    ->references('name')
-                    ->on('subjects')
-                    ->onDelete('NO ACTION')
-                    ->onUpdate('CASCADE');
-            
                     $table->foreign('student_id')
-                    ->references('username')
-                    ->on('students')
-                    ->onDelete('NO ACTION')
-                    ->onUpdate('CASCADE');
-
+                        ->references('id')
+                        ->on('students')
+                        ->onDelete('NO ACTION')
+                        ->onUpdate('CASCADE');
+        
+                        $table->foreign('subject_id')
+                            ->references('id')
+                            ->on('subjects')
+                            ->onDelete('NO ACTION')
+                            ->onUpdate('CASCADE');
             $table->timestamps();
 
         });

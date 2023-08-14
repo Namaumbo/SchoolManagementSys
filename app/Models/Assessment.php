@@ -22,12 +22,22 @@ class Assessment extends Model
        'secondAssessment',
        'endOfTermAssessment',
        'averageScore',
-       'user_id'
+       'user_id',
+       'student_id'
+       
       
       ];
-      public function students()
+
+   
+  
+      public function students():\Illuminate\Database\Eloquent\Relations\BelongsToMany
       {
-          return $this->belongsTo(Student::class);
+          return $this->belongsToMany(
+              Student::class,
+              'assessments',
+              'id',
+  
+              'student_id');
       }
 
 }
