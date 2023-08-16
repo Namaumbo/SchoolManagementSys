@@ -21,8 +21,8 @@ class Student extends Model
         "district",
         "class"
 
-
     ];
+    
   
 
     public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
