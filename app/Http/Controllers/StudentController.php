@@ -8,7 +8,7 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Relationship;
 
-use App\Models\Assessment;
+use App\Models\StudentSubject;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 
@@ -107,6 +107,7 @@ class StudentController extends Controller
         }
 
         $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+      
 
         return response()->json(
             [

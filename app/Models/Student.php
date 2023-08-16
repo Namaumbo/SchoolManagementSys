@@ -20,6 +20,7 @@ class Student extends Model
         "traditional_authority",
         "district",
         "class"
+       
 
     ];
     
@@ -36,13 +37,10 @@ class Student extends Model
  
     public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Subject::class, 'relationships' );
+        return $this->belongsToMany(Subject::class, 'assessments' );
     }
 
-    public function assessments()
-    {
-        return $this->hasMany(Assessment::class);
-    }
+
 
    
 

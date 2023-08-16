@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Subject;
-use App\Models\Assessment;
+use App\Models\StudentSubject;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Relationship;
