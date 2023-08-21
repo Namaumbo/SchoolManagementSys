@@ -22,8 +22,8 @@ class Student extends Model
         "class"
        
 
-
     ];
+    
   
 
     public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
