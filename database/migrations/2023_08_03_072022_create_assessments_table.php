@@ -36,6 +36,8 @@ return new class extends Migration
                         ->on('students')
                         ->onDelete('NO ACTION')
                         ->onUpdate('CASCADE');
+
+
         
                         $table->foreign('subject_id')
                             ->references('id')

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -78,12 +77,28 @@ class User extends Authenticatable
     }
 
 
-    public function levels():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function subjects()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
+            Subject::class,
+           'allocationable')->withTimeStamps();
+    }
+
+    public function levels()
+    {
+        return $this->morphedByMany(
             Level::class,
-            'levels',
-            'id',
-            'user_id');
+           'allocationable')->withTimeStamps();
+    }
+
+    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
+
+    {
+        return $this->hasOne(Level::class);
+    
+
+
+
+
     }
 }
