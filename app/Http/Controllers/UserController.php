@@ -6,12 +6,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AnonymousResourceCollection
-     * 
-     */
+    
 
      public function __construct(UserService $userService)
 
@@ -56,9 +51,5 @@ class UserController extends Controller
 
 
     }
-
-
-
-
   
 }

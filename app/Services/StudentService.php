@@ -81,7 +81,7 @@ class StudentService
                 
             }
         } catch (\Exception $e) {
-            $response['message'] = 'Error creating student';
+            $response['message'] = $e->getMessage();
             $response['status'] = 'fail';
             $code = 500;
         }
