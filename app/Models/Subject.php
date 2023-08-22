@@ -30,7 +30,13 @@ class Subject extends Model
            'assessments');
     }
 
-
+    public function users()
+    {
+        return $this->morphToMany(
+            User::class,
+            'allocationable');
+    }
+   
     
           }
 

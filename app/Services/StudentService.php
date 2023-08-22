@@ -1,48 +1,67 @@
 <?php
 
-namespace App\Http\Controllers;
-use App\Services\StudentService;
-
+namespace App\Services;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\Student;
+use App\Models\Subject;
+use App\Models\Relationship;
 
+use App\Models\StudentSubject;
+use Carbon\Carbon;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
 
-class StudentController extends Controller
+use Illuminate\Http\Response;
+use PhpParser\Node\Stmt\TryCatch;
+
+class StudentService
 {
- 
-    public function __construct(StudentService $studentService)
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAll()
     {
-       $this->StudentService = $studentService;
-
-
+        return Student::all();
     }
 
-    public function getAllStudents(){
-    return  $this->StudentService->getAll();
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request, $student): void
+    {
+        $student->firstname = $request->firstname;
+        $student->surname = $request->surname;
+        $student->username = $request->username;
+        $student->sex = $request->sex;
+        $student->village = $request->village;
+        $student->traditional_authority = $request->traditional_authority;
+        $student->district = $request->district;
+        $student->role_name = $request->role_name;
+        $student->created_at = carbon::now();
+        $student->updated_at = carbon::now();
+        $student->save();
     }
-    public function registerStudent(Request $studentService){
 
-     return  $this->StudentService->store($studentService);
-
-    }
-
-<<<<<<< HEAD
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-
-    public function store(Request $request): JsonResponse
+    
+    //  check this please refer to this 
+     public function store(Request $request): JsonResponse
     {
 
         try {
             $response = [
                 'message' => '',
                 'status' => '',
-                'student' => [],
+                'student' => null,
             ];
             $code = 200;
             $student = Student::where('username', $request->input('username'))->first();
@@ -59,6 +78,7 @@ class StudentController extends Controller
                 $response['status'] = 'success';
                 $response['student'] = $student;
                 $code = 201;
+                
             }
         } catch (\Exception $e) {
             $response['message'] = $e->getMessage();
@@ -76,25 +96,30 @@ class StudentController extends Controller
      */
 
 
-    public function subjectToStudent(Request $request)
+    public function Allocation(Request $request)
     {
         $student = Student::where('username', $request->input('username'))->first();
         $subject = Subject::where('name', $request->input('name'))->first();
 
         if (!$subject || !$student) {
-            return response()->json("Information provided does not exists");
+            return response()->json("Information provided doesnt exists");
         }
 
         $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-
+      
 
         return response()->json(
             [
-                "message" => "Subject added successfully to  " . $student->firstname . ' ' . $student->surname,
+                "message" => "Subject registered successfully to  " . $student->firstname . ' ' . $student->surname,
                 "records" => $subject->students,
             ]
         );
     }
+
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -117,23 +142,11 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         if (Student::where('id', $id)->exists()) {
-
             $student = Student::find($id);
-
-            $student->firstname = $request->get('firstname');
-            $student->lastname = $request->get('lastname');
-            $student->username = $request->get('username');
-            $student->sex = $request->get('sex');
-            $student->village = $request->get('village');
-            $student->traditional_authority = $request->get('traditional_authority');
-            $student->district = $request->get('district');
-
-
-            if ($student->save()) {
-                return response()->json([
-                    'message' => 'Student is updated successfully'
-                ], 400);
-            }
+            $this->create($request, $student);
+            return response()->json([
+                'message' => 'Student is updated successfully'
+            ], 400);
         } else {
             return response()->json([
                 'message' => 'No Student found with that information '
@@ -162,20 +175,3 @@ class StudentController extends Controller
         }
     }
 }
-=======
-    public function subjectAndClassAllocation(Request $studentService){
-
-        return  $this->StudentService->Allocation($studentService);
-   
-       }
-
-    public function updateStudent(Request $userService,int $id){
-
-    return  $this->StudentService->update($userService,$id);
-   
-     }
-    
-   }
-    
-
->>>>>>> 2e3aa2c84aa5ef906c69b991d6e47ab3dce243e2
