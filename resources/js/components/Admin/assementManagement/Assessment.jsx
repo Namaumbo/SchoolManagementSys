@@ -1,39 +1,8 @@
-// import React, { useEffect, useState } from "react";
-import { FiHome, FiGitMerge } from "react-icons/fi";
-// import { useRecoilState } from "recoil";
-// import { userState } from "@/components/User/userState";
-// import { userDetails } from "../../recoil_states/userdetails";
+import React, { useEffect, useState } from "react";
+import {  FiGitMerge } from "react-icons/fi";
 import * as IconSection from "react-icons/all";
 import "./Assessment.css";
 // import StudentService from "../../../../services/StudentService";
-
-// export default function Assessment() {
-//     const [{ loggedIn, role, usersList }, setUsersList] =
-//         useRecoilState(userState);
-//     const [loading, setLoading] = useState(true);
-
-//     let [studentData, setStudentData] = useState([]);
-//     const [highlighted, setHighlighted] = useState(false);
-//     const [editable, setEditable] = useState(false);
-
-//     setTimeout(() => {
-//         setLoading(false);
-//     }, 1000);
-
-//     const toggleHighlight = (id) => {
-//         setHighlighted(!highlighted);
-//         setEditable(!editable);
-//     };
-
-//     useEffect(() => {
-//         let data = StudentService.getAllStudent();
-//         data.then((res) => {
-//             if (res) setStudentData(res);
-//         }).catch((err) => {
-//             console.log(err);
-//         });
-//     }, []);
-
 import React, { useState, useEffect } from "react";
 
 const Assessment = () => {
