@@ -1,33 +1,87 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 import { FiHome, FiGitMerge } from "react-icons/fi";
-import { useRecoilState } from "recoil";
-import { userState } from "@/components/User/userState";
-import { userDetails } from "../../recoil_states/userdetails";
+// import { useRecoilState } from "recoil";
+// import { userState } from "@/components/User/userState";
+// import { userDetails } from "../../recoil_states/userdetails";
 import * as IconSection from "react-icons/all";
 import "./Assessment.css";
-import StudentService from "../../../../services/StudentService";
+// import StudentService from "../../../../services/StudentService";
 
-export default function Assessment() {
-    const [{ loggedIn, role, usersList }, setUsersList] =
-        useRecoilState(userState);
-    const [loading, setLoading] = useState(true);
-    let [userInfo, setUserInfo] = useRecoilState(userDetails);
+// export default function Assessment() {
+//     const [{ loggedIn, role, usersList }, setUsersList] =
+//         useRecoilState(userState);
+//     const [loading, setLoading] = useState(true);
 
-    let [studentData, setStudentData] = useState([]);
-    setTimeout(() => {
-        setLoading(false);
-    }, 1000);
+//     let [studentData, setStudentData] = useState([]);
+//     const [highlighted, setHighlighted] = useState(false);
+//     const [editable, setEditable] = useState(false);
 
-    function handleEdit(studentId) {}
+//     setTimeout(() => {
+//         setLoading(false);
+//     }, 1000);
+
+//     const toggleHighlight = (id) => {
+//         setHighlighted(!highlighted);
+//         setEditable(!editable);
+//     };
+
+//     useEffect(() => {
+//         let data = StudentService.getAllStudent();
+//         data.then((res) => {
+//             if (res) setStudentData(res);
+//         }).catch((err) => {
+//             console.log(err);
+//         });
+//     }, []);
+
+import React, { useState, useEffect } from "react";
+
+const Assessment = () => {
+    const [editableRows, setEditableRows] = useState([]);
+    const [editable, setEditable] = useState(false);
 
     useEffect(() => {
-        let data = StudentService.getAllStudent();
-        data
-        .then((res) => {
-            if(res) setStudentData(res)
-        })
-        .catch((err) => {console.log(err)});
+        // Simulate API fetch
+        const fetchData = async () => {
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:8000/api/students"
+                );
+                const data = await response.json();
+                const formattedData = data.map((rowData) => ({
+                    data: rowData,
+                    highlighted: false,
+                    editable: false,
+                }));
+                setEditableRows(formattedData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
     }, []);
+
+    const toggleHighlight = (index) => {
+        setEditable(index, true);
+
+        setEditableRows((prevRows) => {
+            const updatedRows = prevRows.map((row, i) => {
+                if (i === index) {
+                    return {
+                        ...row,
+                        highlighted: !row.highlighted,
+                        editable: !row.editable,
+                    };
+                }
+                return row;
+            });
+            return updatedRows;
+        });
+       
+    };
+
+
     return (
         <>
             <div className="heading">
@@ -39,7 +93,8 @@ export default function Assessment() {
                     <table className="table table-hover">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <td> </td>
+
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Gender</th>
@@ -50,33 +105,55 @@ export default function Assessment() {
                                 <th>Action</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            {studentData.map((student) => {
-                                return (
-                                    <tr key={student.id}>
-                                        <td>{student.id}</td>
-                                        <td>{student.firstname}</td>
-                                        <td>{student.surname}</td>
-                                        <td>{student.sex}</td>
-                                        <td>{student.class}</td>
-                                        <td>{student.firstAssessment}</td>
-                                        <td>{student.secondAssessment}</td>
-                                        <td>{student.finalGrade}</td>
-                                        <td>
-                                            <button
-                                                className="btn  btn-secondary btn-sm"
-                                                onClick={() =>
-                                                    handleEdit(student.id)
-                                                }
-                                            >
-                                                <IconSection.AiFillDatabase size="10px" />
-                                                UPDATE
-                                            </button>{" "}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                            {editableRows.map((row, index) => (
+                                <tr
+                                    key={index}
+                                    className={
+                                        row.highlighted ? "highlighted-row" : ""
+                                    }
+                                >
+                                    <td contentEditable={row.editable}>
+                                        {row.data.id}
+                                    </td>
+
+                                    <td contentEditable={row.editable}>
+                                        {row.data.firstname}
+                                    </td>
+                                    <td contentEditable={row.editable}>
+                                        {row.data.surname}
+                                    </td>
+
+                                    <td contentEditable={row.editable}>
+                                        {row.data.sex}
+                                    </td>
+
+                                    <td contentEditable={row.editable}>
+                                        {row.data.class}
+                                    </td>
+                                    <td contentEditable={row.editable}>
+                                        {row.data.firstAssessment}
+                                    </td>
+                                    <td contentEditable={row.editable}>
+                                        {row.data.secondAssessment}
+                                    </td>
+                                    <td contentEditable={row.editable}>
+                                        {row.data.finalGrade}
+                                    </td>
+
+                                    <td>
+                                        <button
+                                            onClick={() =>
+                                                toggleHighlight(index)
+                                            }
+                                            className={row.highlighted ? "btn btn-success":'btn btn-info'}
+                                        >
+                                            <IconSection.AiFillDatabase size="10px" />
+                                            {row.highlighted ? 'Save' : 'Edit'}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                     <div className="main-btns">
@@ -92,4 +169,6 @@ export default function Assessment() {
             </div>
         </>
     );
-}
+};
+
+export default Assessment;

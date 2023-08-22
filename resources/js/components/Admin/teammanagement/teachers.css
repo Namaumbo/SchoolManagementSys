@@ -3,9 +3,11 @@
 }
 
 .teacherInfo {
-    width: 250px;
-    height: 200px;
+    width: 13%;
+    height: 20% !important;
     background-color: white;
+    padding:1%;
+    text-align: center;
     -webkit-box-shadow: 2px 9px -21px -11px rgba(0, 0, 0, 0.87);
     box-shadow: 2px 9px 25px -25px rgba(0, 0, 0, 0.87);
 }
@@ -14,9 +16,7 @@
     display: flex;
 }
 
-.insideWrapper {
-    margin: auto;
-}
+
 
 .name {
     font-weight: bolder;
@@ -26,9 +26,9 @@
 
 .profilePic {
     margin: auto;
-    width: 70px;
-    height: 70px;
-    border-radius: 50px;
+    width: 45%;
+    height: 5em;
+    border-radius: 60%;
     object-fit: cover;
     filter: maskFilter();
 }

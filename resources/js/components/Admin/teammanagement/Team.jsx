@@ -1,45 +1,40 @@
 import React, { useEffect, useState } from "react";
 import "./teachers.css";
 import { AddCircle, GpsFixed, Phone, Search } from "@mui/icons-material";
-import profile from "../../../../assets/profile.jpeg";
+import profile from "../../../../assets/icons8-male-user-100.png";
 import { FiUsers } from "react-icons/fi";
-import axios from 'axios'
+import axios from "axios";
+import SchoolVitals from "../../../../services/SchoolVitals";
+import UsersServices from "../../../../services/UsersServices";
 
 const Team = () => {
-    const [newTeacher, setNewTeacher] = useState(false);
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
-    // getting the key
-    const accessKey = localStorage.getItem("key");
-    const headers = {
-        Authorization: `Bearer ${accessKey}`,
-    };
+    const [users, setUsers] = useState([]);
+    const [selectedValue, setSelectedValue] = useState(null);
 
     useEffect(() => {
-        async function departments() {
-            
-            await axios
-                .get("http://127.0.0.1:8000/api/departments",{ headers })
-                .then((res) => {
-                    setDepartments(res.data);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-        departments().then(null);
-
-        async function roles() {
-            await axios
-                .get("http://127.0.0.1:8000/api/roles",{ headers })
-                .then((res) => {
-                    setRoles(res.data);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-        roles().then(null);
+        SchoolVitals.getRoles().then((roles) => {
+            if (roles.length > 0) {
+                setRoles(roles);
+            } else {
+                setRoles(["add roles"]);
+            }
+        });
+        SchoolVitals.getDepartments().then((departments) => {
+            if (departments.length > 0) {
+                setDepartments(departments);
+            } else {
+                setDepartments(["add departments"]);
+            }
+        });
+        UsersServices.getAllUsers().then((users) => {
+            if (users.length > 0) {
+                setUsers(users);
+            } else {
+                setUsers([]);
+            }
+        });
     }, ["http://127.0.0.1:8000/api/departments"]);
 
     const [formValues, setFormValues] = useState({
@@ -47,7 +42,6 @@ const Team = () => {
         surname: "",
         title: "",
         village: "",
-        phoneNumber: "",
         traditional_authority: "",
         district: "",
         email: "",
@@ -60,159 +54,58 @@ const Team = () => {
         const { name, value } = event.target;
         setFormValues({ ...formValues, [name]: value });
     };
+
     const handleSelectChange = (event) => {
-        // its giving a bug
         setFormValues({
             ...formValues,
             departmentName: event.target.value,
+        });
+    };
+
+    const handleRadioChange = (event) => {
+        setSelectedValue(event.target.value);
+        setFormValues({
+            ...formValues,
             sex: event.target.value,
+            title: event.target.value === "Male" ? "Mr" : "Mrs",
         });
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const options = {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            };
-            await axios
-                .post(
-                    "http://127.0.0.1:8000/api/register-user",
-                    formValues,
-                    options
-                )
-                .then((res) => {
-                    if (res.status === 201) {
-                        alert("for now alert is ok user saved");
-                        setFormValues({
-                            firstname: "",
-                            surname: "",
-                            title: "",
-                            village: "",
-                            phoneNumber: "",
-                            traditional_authority: "",
-                            district: "",
-                            email: "",
-                            password: "",
-                            departmentName: "",
-                            sex: "",
-                        });
-                    }
-                })
-                .catch((err) => {
-                    alert(err);
-                });
-        } catch (error) {
+            // working but there has to be flashin of message
+            UsersServices.addUser(formValues)
+            .then((res) => {
+                console.log(res);
+            }).catch((err) => {
+                console.log(err);
+            });
+                  } catch (error) {
             console.log(error);
         }
     };
 
-    // function AddTeacher() {
-    //     return (
-    //         <>
-    //             <div className="addTeacherWrapper">
-    //                 <div className="personal">
-    //                     <div className="input">
-    //                         <label>Title</label>
-    //                         <br />
-    //                         <input
-    //                             className="form-control"
-    //                             type="text"
-    //                             value={formValues.title}
-    //                             onChange={handleInputChange}
-    //                             name="title"
-    //                         />
-    //                     </div>
-
-    //                     <div className="input">
-    //                         <label>Phone number</label>
-    //                         <br />
-    //                         <input
-    //                             className="form-control"
-    //                             type="tel"
-    //                             value={formValues.phoneNumber}
-    //                             onChange={handleInputChange}
-    //                             name="phoneNumber"
-    //                         />
-    //                     </div>
-    //                 </div>
-    //                 <div className="input">
-    //                     <label>Department</label>
-    //                     <span style={{ color: "red" }}>*</span>
-    //                     <br />
-
-    //                     <select className="form-select">
-    //                         {departments.map((department) => {
-    //                             return (
-    //                                 <option
-    //                                     key={department.departmentName}
-    //                                     value={department.departmentName}
-    //                                 >
-    //                                     {department.departmentName}
-    //                                 </option>
-    //                             );
-    //                         })}
-    //                     </select>
-    //                 </div>
-    //                 <div className="input">
-    //                     <label>Class</label>
-    //                     <span style={{ color: "red" }}>*</span>
-    //                     <br />
-    //                     <select className="form-select">
-    //                         <option>Form 1</option>
-    //                         <option>Form 2</option>
-    //                         <option>Form 3</option>
-    //                         <option>Form 4</option>
-    //                     </select>
-    //                 </div>
-    //                 <div className="input">
-    //                     <label>Sex</label>
-    //                     <span style={{ color: "red" }}>*</span>
-    //                     <br />
-    //                     <select
-    //                         className="form-select"
-    //                         value={formValues.sex}
-    //                         onChange={handleSelectChange}
-    //                     >
-    //                         <option value="male">Female</option>
-    //                         <option value="female">Male</option>
-    //                     </select>
-    //                 </div>
-    //                 <div className="input">
-    //                     <br />
-    //                     <select className="form-select"></select>
-    //                 </div>
-    //             </div>
-    //         </>
-    //     );
-    // }
-
     return (
         <>
             <div>
-                <div className="heading-title">
+                <div className="heading">
                     <FiUsers />
-                    <span style={{color:'white'}}>Teachers - Panel</span>
+                    <span style={{ color: "white" }}>Teachers - Panel</span>
                 </div>
                 {/*search and buttons*/}
                 <div className="upperActions">
-                    <div className="search">
-                        <Search />
-                        <input
-                            type="text"
-                            className="input"
-                            placeholder="Search Teachers"
-                        />
+                    <div className="searchForm">
+                        <form role="search">
+                            <input
+                                class="form-control me-2"
+                                type="search"
+                                placeholder="Search"
+                                aria-label="Search"
+                            />
+                        </form>
                     </div>
                     <div>
-                        {/* <button className='addBtn' onClick={() => {
-                        setNewTeacher(true)
-                    }}><AddCircle/>New Teacher
-                    </button>
-                   */}
-
                         {/* ////////////////////////// */}
                         <div className="buttons">
                             <button
@@ -252,12 +145,25 @@ const Team = () => {
                                         <div class="modal-body">
                                             <div>
                                                 <div class="form-check form-check-inline">
-                                                    <input
+                                                    {/* <input
                                                         class="form-check-input"
                                                         type="radio"
-                                                        name="inlineRadioOptions"
+                                                        name="gender"
                                                         id="inlineRadio1"
-                                                        value="option1"
+                                                        value="male"
+                                                        checked={selectedValue ==='Male'}
+                                                        onChange={handleRadioChange}
+                                                    /> */}
+                                                    <input
+                                                        type="radio"
+                                                        value="Male"
+                                                        checked={
+                                                            selectedValue ===
+                                                            "Male"
+                                                        }
+                                                        onChange={
+                                                            handleRadioChange
+                                                        }
                                                     />
                                                     <label
                                                         class="form-check-label"
@@ -267,12 +173,30 @@ const Team = () => {
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input
+                                                    {/* <input
                                                         class="form-check-input"
                                                         type="radio"
-                                                        name="inlineRadioOptions"
+                                                        name="gender"
                                                         id="inlineRadio2"
-                                                        value="option2"
+                                                        value="female"
+                                                        checked={
+                                                            selectedValue ===
+                                                            "Female"
+                                                        }
+                                                        onChange={
+                                                            handleRadioChange
+                                                        } */}
+                                                    {/* /> */}
+                                                    <input
+                                                        type="radio"
+                                                        value="Female"
+                                                        checked={
+                                                            selectedValue ===
+                                                            "Female"
+                                                        }
+                                                        onChange={
+                                                            handleRadioChange
+                                                        }
                                                     />
                                                     <label
                                                         class="form-check-label"
@@ -377,21 +301,6 @@ const Team = () => {
                                             </div>
 
                                             <div className="location">
-                                                <input
-                                                    type="text"
-                                                    aria-label="First name"
-                                                    class="form-control"
-                                                    placeholder="Department"
-                                                />
-                                                <input
-                                                    type="password"
-                                                    aria-label="last name name"
-                                                    class="form-control"
-                                                    placeholder="Class"
-                                                />
-                                            </div>
-
-                                            <div className="location">
                                                 <select
                                                     id="ok"
                                                     class="form-select form-select-sm"
@@ -434,7 +343,9 @@ const Team = () => {
                                                     </option>
                                                     {roles.map((role) => {
                                                         return (
-                                                            <option key={role.id}> 
+                                                            <option
+                                                                key={role.id}
+                                                            >
                                                                 {role.role_name}
                                                             </option>
                                                         );
@@ -456,43 +367,35 @@ const Team = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* <button className='addBtn' ><AddCircle/>New Teacher
-                    </button> */}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setNewTeacher(true);
-                                }}
-                                class="btn btn-primary"
-                            >
-                                Add Teacher
-                            </button>
                         </div>
                         {/* ////////////////////////// */}
                     </div>
                 </div>
-                {newTeacher ? (
-                    <>
-                        <AddTeacher />
-                    </>
-                ) : (
-                    <>
-                        <div className="teacherInfo">
-                            <div className="insideWrapper">
-                                <div className="Image">
-                                    <img src={profile} className="profilePic" />
+
+                {/* userss */}
+                <>
+                    {users.map(function (user) {
+                        return (
+                            <>
+                                <div className="teacherInfo">
+                                    <div className="Image">
+                                        <img
+                                            src={profile}
+                                            className="profilePic"
+                                        />
+                                    </div>
+                                    <span className="name">
+                                        {user.firstname}
+                                    </span>
+                                    <div className="expertise">
+                                        {user.departmentName}
+                                    </div>
+                                    <div className="details"></div>
                                 </div>
-                                <span className="name">Tom Hanswell</span>
-                                <div className="expertise">Science</div>
-                                <div className="details">
-                                    <Phone />
-                                    <GpsFixed />
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
+                            </>
+                        );
+                    })}
+                </>
             </div>
         </>
     );

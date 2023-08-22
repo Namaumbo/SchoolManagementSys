@@ -29,7 +29,46 @@ class UserService {
         }
         return res;
     }
-    async addUser(user) {}
+    async addUser(userDetails) {
+        let res = null;
+        try {
+
+            const headers = {
+                headers: { "Content-Type": "application/json",}};
+             
+            await axios
+                .post(
+                    "http://127.0.0.1:8000/api/register-user",
+                    userDetails,
+                    headers
+                )
+                .then((res) => {
+                    if (res) {
+                      res = {
+                        'message':'Successfully registered',
+                        'data':res.data,
+                        'status':res.status
+                      }
+                    }
+                })
+                .catch((err) => {
+                    res = {
+                        'message':'Error registering',
+                        'status':err.status,
+                        'error':err.message
+                    }
+                });
+        }
+        catch (e) {
+            res = {
+                'message':'Error encountered please contact the IT support',
+                'status':500,
+                'error':e.message
+            }
+        }
+        console.log(res)
+
+    }
 
     async deleteUser(user) {}
 

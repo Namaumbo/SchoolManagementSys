@@ -53,16 +53,15 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    
-    //  check this please refer to this 
-     public function store(Request $request): JsonResponse
+
+    public function store(Request $request): JsonResponse
     {
 
         try {
             $response = [
                 'message' => '',
                 'status' => '',
-                'student' => null,
+                'student' => [],
             ];
             $code = 200;
             $student = Student::where('username', $request->input('username'))->first();
@@ -79,7 +78,6 @@ class StudentController extends Controller
                 $response['status'] = 'success';
                 $response['student'] = $student;
                 $code = 201;
-                
             }
         } catch (\Exception $e) {
             $response['message'] = $e->getMessage();
@@ -103,11 +101,11 @@ class StudentController extends Controller
         $subject = Subject::where('name', $request->input('name'))->first();
 
         if (!$subject || !$student) {
-            return response()->json("Information provided doesnt exists");
+            return response()->json("Information provided does not exists");
         }
 
         $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-      
+
 
         return response()->json(
             [
@@ -116,11 +114,6 @@ class StudentController extends Controller
             ]
         );
     }
-
-
-
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -143,11 +136,23 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         if (Student::where('id', $id)->exists()) {
+
             $student = Student::find($id);
-            $this->create($request, $student);
-            return response()->json([
-                'message' => 'Student is updated successfully'
-            ], 400);
+
+            $student->firstname = $request->get('firstname');
+            $student->lastname = $request->get('lastname');
+            $student->username = $request->get('username');
+            $student->sex = $request->get('sex');
+            $student->village = $request->get('village');
+            $student->traditional_authority = $request->get('traditional_authority');
+            $student->district = $request->get('district');
+
+
+            if ($student->save()) {
+                return response()->json([
+                    'message' => 'Student is updated successfully'
+                ], 400);
+            }
         } else {
             return response()->json([
                 'message' => 'No Student found with that information '

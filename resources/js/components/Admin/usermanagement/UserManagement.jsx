@@ -25,7 +25,6 @@ function UserManagement() {
         let data = UsersServices.getAllUsers();
 
         data.then((res) => {
-            console.log(res)
             setUsers(res);
         }).catch((err) => {
             console.log(err);

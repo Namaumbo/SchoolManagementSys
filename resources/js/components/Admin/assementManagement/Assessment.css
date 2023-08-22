@@ -7,3 +7,9 @@
 .user-tb{
     overflow: auto;
 }   
+.highlighted-row {
+    border:1px solid green;
+    background-color: #f0f0f0; /* Set your desired highlight color */
+  }
+
+
