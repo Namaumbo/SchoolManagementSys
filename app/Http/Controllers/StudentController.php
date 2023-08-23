@@ -1,33 +1,52 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Services\StudentService;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\Student;
+use App\Models\Subject;
+use App\Models\Relationship;
 
+use App\Models\StudentSubject;
+use Carbon\Carbon;
+use Illuminate\Contracts\Queue\EntityNotFoundException;
+
+use Illuminate\Http\Response;
+use PhpParser\Node\Stmt\TryCatch;
 
 class StudentController extends Controller
 {
- 
-    public function __construct(StudentService $studentService)
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllStudents()
     {
-       $this->StudentService = $studentService;
-
-
+        return Student::all();
     }
 
-    public function getAllStudents(){
-    return  $this->StudentService->getAll();
-
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request, $student): void
+    {
+        $student->firstname = $request->firstname;
+        $student->surname = $request->surname;
+        $student->username = $request->username;
+        $student->sex = $request->sex;
+        $student->village = $request->village;
+        $student->traditional_authority = $request->traditional_authority;
+        $student->district = $request->district;
+        $student->role_name = $request->role_name;
+        $student->created_at = carbon::now();
+        $student->updated_at = carbon::now();
+        $student->save();
     }
-    public function registerStudent(Request $studentService){
 
-     return  $this->StudentService->store($studentService);
-
-    }
-
-<<<<<<< HEAD
     /**
      * Store a newly created resource in storage.
      *
@@ -162,20 +181,3 @@ class StudentController extends Controller
         }
     }
 }
-=======
-    public function subjectAndClassAllocation(Request $studentService){
-
-        return  $this->StudentService->Allocation($studentService);
-   
-       }
-
-    public function updateStudent(Request $userService,int $id){
-
-    return  $this->StudentService->update($userService,$id);
-   
-     }
-    
-   }
-    
-
->>>>>>> 2e3aa2c84aa5ef906c69b991d6e47ab3dce243e2

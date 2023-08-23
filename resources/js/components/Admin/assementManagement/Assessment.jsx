@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {  FiGitMerge } from "react-icons/fi";
 import * as IconSection from "react-icons/all";
 import "./Assessment.css";
 // import StudentService from "../../../../services/StudentService";
-import React, { useState, useEffect } from "react";
+
 
 const Assessment = () => {
     const [editableRows, setEditableRows] = useState([]);

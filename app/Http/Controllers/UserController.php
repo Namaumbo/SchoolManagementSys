@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -35,7 +36,7 @@ class UserController extends Controller
 
     // deleting the user
 
-<<<<<<< HEAD
+
     /**
      * Store a newly created resource in storage.
      *
@@ -72,7 +73,7 @@ class UserController extends Controller
                 '4' => $e,
             ], 404);
         }
-=======
+    }
     public function deleteUser(int $id){
         return $this->UserService->destroy($id);
     }
@@ -81,7 +82,7 @@ class UserController extends Controller
     public function login(Request $userService){
     return $this->UserService->login($userService);
 
->>>>>>> 2e3aa2c84aa5ef906c69b991d6e47ab3dce243e2
+
     }
 
     public function logout(){
