@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+
 use App\Models\Subject;
 use App\Models\Role;
 use App\Models\Level;
@@ -28,6 +29,7 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\SchoolReportController;
 
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
@@ -123,6 +125,12 @@ Route::controller(LevelController::class)->group(function () {
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
     Route::put('/create-assessment/{id}', 'store');
+
+
+});
+
+Route::controller(SchoolReportController::class)->group(function () {
+    Route::get('/report/{id}', 'index');
 
 
 });
