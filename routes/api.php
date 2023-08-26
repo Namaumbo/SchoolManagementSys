@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
-
 use App\Models\Subject;
 use App\Models\Role;
 use App\Models\Level;
@@ -29,7 +28,6 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LevelController;
-use App\Http\Controllers\SchoolReportController;
 
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
@@ -70,9 +68,7 @@ Route::controller(UserController::class)->group(function () {
         'updateUser'
     );
     Route::delete('/user/{id}', 'deleteUser');
-    Route::get(
-        '/search/{key}',
-        'Search'
+    Route::get('/search/{key}',  'Search'
     );
     Route::post('/logout', 'logout');
 
@@ -124,13 +120,7 @@ Route::controller(LevelController::class)->group(function () {
 
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
-    Route::put('/create-assessment/{id}', 'store');
-
-
-});
-
-Route::controller(SchoolReportController::class)->group(function () {
-    Route::get('/report/{id}', 'index');
+    Route::put('/create-assessment/{id}', 'updateAssessment');
 
 
 });
@@ -144,11 +134,11 @@ Route::controller(MessageController::class)->group(function () {
 //});
 // Api for students
 Route::controller(StudentController::class)->group(function () {
-    Route::get('/students', 'getAllStudents');
+    Route::get('/students', 'getStudents');
     Route::post('/create-student', 'registerStudent');
     Route::put('/student/{id}', 'updateStudent');
     Route::delete('/student/{id}', 'destroy');
-    Route::post('/register-subject', 'subjectAndClassAllocation');
+    Route::post('/student/register-subject', 'registerSubject');
 
 });
 

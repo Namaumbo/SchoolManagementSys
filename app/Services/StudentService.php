@@ -96,13 +96,15 @@ class StudentService
      */
 
 
-    public function Allocation(Request $request)
+    public function registerSubjectToStudent(Request $request)
     {
         $student = Student::where('username', $request->input('username'))->first();
         $subject = Subject::where('name', $request->input('name'))->first();
 
         if (!$subject || !$student) {
-            return response()->json("Information provided doesnt exists");
+            return response()->json([
+                "message" =>  "Information provided doesnt exists"
+            ]);
         }
 
         $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
@@ -110,7 +112,7 @@ class StudentService
 
         return response()->json(
             [
-                "message" => "Subject registered successfully to  " . $student->firstname . ' ' . $student->surname,
+                "message" => $subject->name." registered successfully to ".$student->firstname . ' ' . $student->surname,
                 "records" => $subject->students,
             ]
         );

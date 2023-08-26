@@ -124,29 +124,32 @@ use Psy\Util\Json;
 
 
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, int $id)
     {
 
+        
+        
         try{
+
         if (User::where('id', $id)->exists()) {
             $user = User::find($id);
             $this->userDetailsCommon($request, $user);
             return response()->json([
-                'message' => 'User is updated successfully'
-            ], 400);
+                'message' => 'success',
+                'User' => $user,
+            ],200);
         } 
 
-    } catch (Throwable $e) {
-        throw new GeneralException($e->getMessage());
-    }
+    } catch (GeneralException $e) {
 
+        throw new GeneralException( $e->getMessage());
+     
+    
+
+ 
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
+    }
+  
     public function destroy($id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {

@@ -5,21 +5,32 @@ use App\Models\Subject;
 use App\Models\Assessment;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class SchoolReportController extends Controller
 {
   
-    public function index($id)
+    public function index(Request $request,$id): JsonResponse
     {
+           $show[]=null;
+           $grade[]=null;
+        $student = Student::find($id)->subjects();
+        $assessment=Assessment::select('averageScore','subject_id')->where('student_id',$id)->get();
+        foreach ($assessment as $data){
 
-        $student = Student::find($id);
-        $assessment=Assessment::select('subject_id','averageScore','schoolTerm')->where('student_id',$id)->get();
+            $show[]= $data['averageScore'];
         
+        if($show <80){
 
+           echo 'A';
+        }
+            
+        }
+     
         
-        
-        return $assessment;
     }
+      
+    
 
     public function create()
     {

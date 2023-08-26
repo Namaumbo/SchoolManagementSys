@@ -34,46 +34,7 @@ class UserController extends Controller
          return $this->UserService->update($userService,$id);
     }
 
-    // deleting the user
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function store(Request $request): JsonResponse
-    {
-
-        try {
-
-            $user = User::where('email', $request->input('email'))->first();
-            //Username represents a
-            if ($user) {
-                return response()->json(
-                    ['message' => 'User already exists', 'email' => $user],
-                    409
-                );
-            }
-
-            $user = new User;
-            $this->userDetailsCommon($request, $user);
-
-            return response()->json([
-                'message' => 'User saved successfully',
-                'User' => $user,
-                'status' => 201,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'errors' =>   `{$e->getMessage()}`,
-                'message' => 'User not saved',
-                'status' => 404,
-                '4' => $e,
-            ], 404);
-        }
-    }
     public function deleteUser(int $id){
         return $this->UserService->destroy($id);
     }

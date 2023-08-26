@@ -1,183 +1,50 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\StudentService;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\Student;
-use App\Models\Subject;
-use App\Models\Relationship;
-
-use App\Models\StudentSubject;
-use Carbon\Carbon;
-use Illuminate\Contracts\Queue\EntityNotFoundException;
-
-use Illuminate\Http\Response;
-use PhpParser\Node\Stmt\TryCatch;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getAllStudents()
+    public function __construct(StudentService $StudentService)
+
     {
-        return Student::all();
+       $this->StudentService = $StudentService;
+
+
     }
+    //getting users from the database
+   public function getStudents()
+   {
+     return  $this->StudentService->getAll();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request, $student): void
-    {
-        $student->firstname = $request->firstname;
-        $student->surname = $request->surname;
-        $student->username = $request->username;
-        $student->sex = $request->sex;
-        $student->village = $request->village;
-        $student->traditional_authority = $request->traditional_authority;
-        $student->district = $request->district;
-        $student->role_name = $request->role_name;
-        $student->created_at = carbon::now();
-        $student->updated_at = carbon::now();
-        $student->save();
-    }
+   
+   }
+   //registering users to the database
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   public function registerStudent(Request $StudentService){
+       return  $this->StudentService->store($StudentService);
+   }
+   //Updating users
 
-    public function store(Request $request): JsonResponse
-    {
-
-        try {
-            $response = [
-                'message' => '',
-                'status' => '',
-                'student' => [],
-            ];
-            $code = 200;
-            $student = Student::where('username', $request->input('username'))->first();
-            if ($student) {
-                $response['message'] = 'Student already exists';
-                $response['status'] = 'fail';
-                $response['student'] = $student;
-                $code = 409;
-            } else {
-                $student = new Student;
-
-                $this->create($request, $student);
-                $response['message'] = 'Student saved successfully';
-                $response['status'] = 'success';
-                $response['student'] = $student;
-                $code = 201;
-            }
-        } catch (\Exception $e) {
-            $response['message'] = $e->getMessage();
-            $response['status'] = 'fail';
-            $code = 500;
-        }
-        return response()->json($response, $code);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   public function updateStudent(Request $StudentService,int $id){
+        return $this->StudentService->update($StudentService,$id);
+   }
 
 
-    public function subjectToStudent(Request $request)
-    {
-        $student = Student::where('username', $request->input('username'))->first();
-        $subject = Subject::where('name', $request->input('name'))->first();
+   public function deleteStudent(int $id){
+       return $this->StudentService->destroy($id);
+   }
 
-        if (!$subject || !$student) {
-            return response()->json("Information provided does not exists");
-        }
-
-        $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+   // registering subjects to students
+   public function registerSubject(Request $StudentService){
+    return $this->StudentService->registerSubjectToStudent($StudentService);
 
 
-        return response()->json(
-            [
-                "message" => "Subject added successfully to  " . $student->firstname . ' ' . $student->surname,
-                "records" => $subject->students,
-            ]
-        );
-    }
+   }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+  
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        if (Student::where('id', $id)->exists()) {
-
-            $student = Student::find($id);
-
-            $student->firstname = $request->get('firstname');
-            $student->lastname = $request->get('lastname');
-            $student->username = $request->get('username');
-            $student->sex = $request->get('sex');
-            $student->village = $request->get('village');
-            $student->traditional_authority = $request->get('traditional_authority');
-            $student->district = $request->get('district');
-
-
-            if ($student->save()) {
-                return response()->json([
-                    'message' => 'Student is updated successfully'
-                ], 400);
-            }
-        } else {
-            return response()->json([
-                'message' => 'No Student found with that information '
-            ], 401);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        if (Student::where('id', $id)->exists()) {
-            $student = Student::find($id);
-            $student->delete();
-            return response()->json([
-                'message' => 'Student is deleted successfully'
-            ], 404);
-        } else {
-            return response()->json([
-                'message' => 'No  Student found with that information ',
-            ]);
-        }
-    }
 }
