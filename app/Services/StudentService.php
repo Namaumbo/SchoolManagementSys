@@ -4,6 +4,8 @@ namespace App\Services;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Helpers\Helper;
+
 use App\Models\Subject;
 use App\Models\Relationship;
 
@@ -35,7 +37,18 @@ class StudentService
     {
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
-        $student->username = $request->username;
+        $student->className = $request->className;
+        if($student->className=="Form 1"){
+        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F1/');
+        }elseif($student->className=="Form 2"){
+        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F2/');
+        }elseif($student->className=="Form 3"){
+        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F3/');
+        }elseif($student->className=="Form 4"){
+        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F4/');
+
+        }
+        
         $student->sex = $request->sex;
         $student->village = $request->village;
         $student->traditional_authority = $request->traditional_authority;

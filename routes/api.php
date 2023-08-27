@@ -12,6 +12,7 @@ use App\Models\Message;
 use App\Models\Student;
 use App\Models\Relationship;
 use App\Models\Allocationable;
+use App\Models\School;
 
 
 use App\Http\Resources\DepartmentResource;
@@ -28,6 +29,7 @@ use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\SchoolController;
 
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
@@ -121,6 +123,12 @@ Route::controller(LevelController::class)->group(function () {
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
     Route::put('/create-assessment/{id}', 'updateAssessment');
+
+
+});
+
+Route::controller(SchoolController::class)->group(function () {
+    Route::post('/create-school', 'store');
 
 
 });
