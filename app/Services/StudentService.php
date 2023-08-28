@@ -23,7 +23,7 @@ class StudentService
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getAll() 
     {
         return Student::all();
     }
