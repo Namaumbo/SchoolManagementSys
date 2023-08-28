@@ -56,8 +56,6 @@ class AssessmentService
                     'firstAssessment' => $request->input('firstAssessment'),
                     'secondAssessment' => $request->input('secondAssessment'),
                     'endOfTermAssessment' => $request->input('endOfTermAssessment'),
-                    'teacherEmail' => $request->input('teacherEmail'),
-
                     'averageScore' => ($firstAssessment + $secondAssessment) * 0.2 + ($finalExam) * 0.6,
                     'created_at' => carbon::now(),
                     'updated_at' => carbon::now()

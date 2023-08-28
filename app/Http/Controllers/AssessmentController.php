@@ -8,18 +8,17 @@ use Illuminate\Http\Request;
 
 class AssessmentController extends Controller
 {
+
+   protected $assessmentService ;
     public function __construct(AssessmentService $AssessmentService)
 
     {
-       $this->AssessmentService = $AssessmentService;
-
-
+       $this->assessmentService = $AssessmentService;
     }
    
    public function UpdateAssessment(Request $AssessmentService,int $id)
    {
-
-    return $this->AssessmentService->updateAssessment($AssessmentService,$id);
+    return $this->assessmentService->updateAssessment($AssessmentService,$id);
       }
 
    }

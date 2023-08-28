@@ -8,47 +8,46 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     
+    protected $userService;
 
      public function __construct(UserService $userService)
 
      {
-        $this->UserService = $userService;
+        $this->userService = $userService;
 
 
      }
      //getting users from the database
     public function getUsers()
     {
-      return  $this->UserService->getAll();
-
-    
+      return  $this->userService->getAll();
     }
     //registering users to the database
 
     public function registerUser(Request $userService){
-        return  $this->UserService->store($userService);
+        return  $this->userService->store($userService);
     }
     //Updating users
 
     public function updateUser(Request $userService,int $id){
-         return $this->UserService->update($userService,$id);
+         return $this->userService->update($userService,$id);
     }
 
 
     public function deleteUser(int $id){
-        return $this->UserService->destroy($id);
+        return $this->userService->destroy($id);
     }
     //logging in the system
 
     public function login(Request $userService){
-    return $this->UserService->login($userService);
+    return $this->userService->login($userService);
 
 
     }
 
     public function logout(){
 
-   return $this->UserService->logout();
+   return $this->userService->logout();
 
 
     }
