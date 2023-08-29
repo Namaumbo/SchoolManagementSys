@@ -127,11 +127,7 @@ Route::controller(AssessmentController::class)->group(function () {
 
 });
 
-Route::controller(SchoolController::class)->group(function () {
-    Route::post('/create-school', 'store');
 
-
-});
 //Messages
 Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'getAllMessages');

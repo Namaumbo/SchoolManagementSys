@@ -39,13 +39,13 @@ class StudentService
         $student->surname = $request->surname;
         $student->className = $request->className;
         if($student->className=="Form 1"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F1/');
+        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F1/');
         }elseif($student->className=="Form 2"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F2/');
+        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F2/');
         }elseif($student->className=="Form 3"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F3/');
+        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F3/');
         }elseif($student->className=="Form 4"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',1,'SIMS/F4/');
+        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F4/');
 
         }
         
