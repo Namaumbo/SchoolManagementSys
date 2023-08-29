@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Student;
@@ -11,6 +12,7 @@ use App\Models\Relationship;
 
 use App\Models\StudentSubject;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 
 use Illuminate\Http\Response;
@@ -38,17 +40,16 @@ class StudentService
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
         $student->className = $request->className;
-        if($student->className=="Form 1"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F1/');
-        }elseif($student->className=="Form 2"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F2/');
-        }elseif($student->className=="Form 3"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F3/');
-        }elseif($student->className=="Form 4"){
-        $student->username = Helper::StudentIdGenerator(new Student,'username',3,'SIMS/F4/');
-
+        if ($student->className == "Form 1") {
+            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F1/');
+        } elseif ($student->className == "Form 2") {
+            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F2/');
+        } elseif ($student->className == "Form 3") {
+            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F3/');
+        } elseif ($student->className == "Form 4") {
+            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F4/');
         }
-        
+
         $student->sex = $request->sex;
         $student->village = $request->village;
         $student->traditional_authority = $request->traditional_authority;
@@ -65,9 +66,9 @@ class StudentService
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    
+
     //  check this please refer to this 
-     public function store(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
 
         try {
@@ -91,7 +92,6 @@ class StudentService
                 $response['status'] = 'success';
                 $response['student'] = $student;
                 $code = 201;
-                
             }
         } catch (\Exception $e) {
             $response['message'] = $e->getMessage();
@@ -111,28 +111,37 @@ class StudentService
 
     public function registerSubjectToStudent(Request $request)
     {
-        $student = Student::where('username', $request->input('username'))->first();
-        $subject = Subject::where('name', $request->input('name'))->first();
 
-        if (!$subject || !$student) {
-            return response()->json([
-                "message" =>  "Information provided doesnt exists"
-            ]);
+        try {
+            $response = [];
+            $code = 200;
+            $student = Student::where('username', $request->input('username'))->first();
+            $subject = Subject::where('name', $request->input('name'))->first();
+
+            if (!$student || !$subject){
+                $response['status'] = 'error';
+                $response['message'] = 'No student or subject found';
+                $response['description ']= 'Please select a student or a subject from the list';
+                $code = 404;
+            }
+            else{
+                if($student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name])){
+               
+                    $response['status'] = 'success';
+                    $response['message'] = 'subject added successfully';
+                    $response['describedAs'] = $subject->name;
+                    $response['records'] = $subject->students;
+                    $code = 200;
+                }
+            }
+        } catch (\Exception $e) {
+            $request['status'] = 'fail';
+            $request['message']= $e->getMessage();
+            $code = 500;
+            $response['description']  = 'Error encountered contact IT support';
         }
-
-        $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-      
-
-        return response()->json(
-            [
-                "message" => $subject->name." registered successfully to ".$student->firstname . ' ' . $student->surname,
-                "records" => $subject->students,
-            ]
-        );
+        return response()->json($response , $code);
     }
-
-
-
 
 
 
