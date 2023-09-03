@@ -90,14 +90,5 @@ class User extends Authenticatable
            'allocationable')->withTimeStamps();
     }
 
-    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
-
-    {
-        return $this->hasOne(Level::class);
-    
-
-
-
-
-    }
+  
 }

@@ -37,7 +37,16 @@ class Student extends Model
         return $this->belongsToMany(Subject::class, 'assessments' );
     }
 
+    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
 
+    {
+        return $this->hasOne(Level::class);
+    
+
+
+
+
+    }
 
    
 
