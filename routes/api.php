@@ -119,12 +119,9 @@ Route::controller(AssessmentController::class)->group(function () {
     Route::put('/create-assessment/{id}', 'updateAssessment');
 });
 
-<<<<<<< HEAD
 Route::controller(SchoolReportController::class)->group(function () {
     Route::post('/create-school', 'store');
 });
-=======
->>>>>>> 5dd87253a6c053a2682e645f7adf67f997be5aaf
 
 //Messages
 Route::controller(MessageController::class)->group(function () {

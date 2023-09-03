@@ -84,8 +84,7 @@ class SchoolReportController extends Controller
         foreach ($gradeMappings as $mapping) {
         if ($score >= $mapping['min'] && $score <= $mapping['max']) {
             return $mapping['grade'];
-        }
-        return 'F';
+        } 
     }
     }
     public function create()
