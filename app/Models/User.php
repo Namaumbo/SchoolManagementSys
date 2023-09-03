@@ -68,7 +68,6 @@ class User extends Authenticatable
             Department::class,
             'users',
             'departmentName',
-
             'departmentName');
     }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

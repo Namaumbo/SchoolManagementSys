@@ -109,19 +109,33 @@ class StudentService
      */
 
 
-    public function registerSubjectToStudent(Request $request)
+    public function registerSubjectToStudent(Request $request) : JsonResponse
     {
 
         try {
             $response = [];
             $code = 200;
-            $student = Student::where('username', $request->input('username'))->first();
+            $student = Student::where('id', $request->input('id'))->first();
             $subject = Subject::where('name', $request->input('name'))->first();
+                       
+            if(!$student ){
+                $response['status'] = 'error';
+                $response['message'] = 'No student found';
+                $response['description']= 'Please select a student from the list';
+                $code = 404;
 
-            if (!$student || !$subject){
+            }
+            elseif(!$subject){
+                $response['status'] = 'error';
+                $response['message'] = 'No subject found';
+                $response['description']= 'Please select a subject from the list';
+                $code = 404;
+
+            }
+            elseif (!$student || !$subject){
                 $response['status'] = 'error';
                 $response['message'] = 'No student or subject found';
-                $response['description ']= 'Please select a student or a subject from the list';
+                $response['description']= 'Please select a student or a subject from the list';
                 $code = 404;
             }
             else{
@@ -135,12 +149,12 @@ class StudentService
                 }
             }
         } catch (\Exception $e) {
-            $request['status'] = 'fail';
-            $request['message']= $e->getMessage();
+            $response['status'] = 'fail';
+            $response['message']= $e->getMessage();
             $code = 500;
             $response['description']  = 'Error encountered contact IT support';
         }
-        return response()->json($response , $code);
+        return response()->json($response, $code);
     }
 
 

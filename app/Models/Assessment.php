@@ -36,7 +36,6 @@ class Assessment extends Model
               Student::class,
               'assessments',
               'id',
-  
               'student_id');
       }
 

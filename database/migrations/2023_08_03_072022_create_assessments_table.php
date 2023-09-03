@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
+        
         Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('schoolTerm')->nullable();
             $table->string('teacherEmail',50)->nullable();
             $table->unsignedInteger('subject_id')->nullable();
             $table->unsignedInteger('student_id')->nullable();
-
             $table->integer('firstAssessment')->nullable();
             $table->integer('secondAssessment')->nullable();
             $table->integer('endOfTermAssessment')->nullable();
@@ -35,10 +35,7 @@ return new class extends Migration
                         ->references('id')
                         ->on('students')
                         ->onDelete('NO ACTION')
-                        ->onUpdate('CASCADE');
-
-
-        
+                        ->onUpdate('CASCADE');        
                         $table->foreign('subject_id')
                             ->references('id')
                             ->on('subjects')

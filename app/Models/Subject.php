@@ -23,11 +23,12 @@ class Subject extends Model
     
     
    
-    public function students():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function students():BelongsToMany
     {
         return $this->belongsToMany(
             Student::class,
            'assessments');
+           //pivot table is assessment table
     }
 
     public function users()

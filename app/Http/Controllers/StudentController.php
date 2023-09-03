@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class StudentController extends Controller
 {
     protected $studentService ;
-    public function __construct(StudentService $StudentService)
+    public function __construct(StudentService $studentService)
 
     {
-       $this->studentService = $StudentService;
+       $this->studentService = $studentService;
 
     }
     //getting users from the database
@@ -24,13 +24,13 @@ class StudentController extends Controller
    }
    //registering users to the database
 
-   public function registerStudent(Request $StudentService){
-       return  $this->studentService->store($StudentService);
+   public function registerStudent(Request $studentService){
+       return  $this->studentService->store($studentService);
    }
    //Updating users
 
-   public function updateStudent(Request $StudentService,int $id){
-        return $this->studentService->update($StudentService,$id);
+   public function updateStudent(Request $studentService,int $id){
+        return $this->studentService->update($studentService,$id);
    }
 
    public function deleteStudent(int $id){
@@ -38,9 +38,8 @@ class StudentController extends Controller
    }
 
    // registering subjects to students
-   public function registerSubject(Request $StudentService){
-    return $this->studentService->registerSubjectToStudent($StudentService);
-
+   public function registerSubject(Request $request){
+    return $this->studentService->registerSubjectToStudent($request);
 
    }
 

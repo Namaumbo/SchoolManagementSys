@@ -20,11 +20,8 @@ class Student extends Model
         "traditional_authority",
         "district",
         "class"
-       
-
     ];
     
-  
 
     public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
