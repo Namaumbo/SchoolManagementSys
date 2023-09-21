@@ -40,55 +40,66 @@ class SchoolReportController extends Controller
     }
 
     public function processReportData($assessment)
-    {
-        $processedData = [];
-        $studentData = [];
-    
-        foreach ($assessment as $row) {
-            $gpa = $this->gradeCalculator($row->averageScore);
-            $studentId = $row->student_id;
-    
-            if (!isset($studentData[$studentId])) {
-                $studentData[$studentId] = [
-                    'student_id' => $studentId,
-                    'student_name' => $row->firstname . ' ' . $row->surname,
-                    'total_points' => 0,
-                    'english_passed' => true, // Assuming English has passed by default.
-                    'subject_count' => 0, // Initialize subject count to 0.
-                    'assessments' => [],
-                ];
-            }
-    
-            if ($row->name === 'English' && $gpa ) {
-                // If the student fails English, set 'english_passed' to false.
-                $studentData[$studentId]['english_passed'] = false;
-            }
-    
-            $studentData[$studentId]['total_points'] += $gpa;
-            $studentData[$studentId]['subject_count']++;
-    
-            $studentData[$studentId]['assessments'][] = [
-                'assessment_name' => $row->name,
-                'subject_id' => $row->subject_id,
-                'score' => $row->averageScore,
-                'grade' => $gpa,
+{
+    // Define the passing score for English.
+    $passingScoreForEnglish = 50; // Adjust this value as needed.
+
+    $processedData = [];
+    $studentData = [];
+
+    foreach ($assessment as $row) {
+        $studentId = $row->student_id;
+        $subjectName = $row->name;
+        $score = $row->averageScore;
+
+        if (!isset($studentData[$studentId])) {
+            $studentData[$studentId] = [
+                'student_id' => $studentId,
+                'student_name' => $row->firstname . ' ' . $row->surname,
+                'english_score' => null, // Initialize English score to null.
+                'subject_count' => 0,
+                'assessments' => [],
+                'failed' => false, // Initialize the "failed" flag to false.
             ];
         }
-    
-        $finalProcessedData = array_values($studentData);
-    
-        foreach ($finalProcessedData as &$student) {
-            if (!$student['english_passed'] || $student['subject_count'] < 6) {
-                // analysis message if Students fails English or subjects less than 6
-                $student['analysis'] = 'Needs improvement in all subjects including English';
-            }else{
-                $student['analysis'] = 'Must continue working hard';
- 
+
+        if ($subjectName === 'English') {
+            $studentData[$studentId]['english_score'] = $score;
+            if ($score < $passingScoreForEnglish) {
+                $studentData[$studentId]['english_passed'] = false;
+                $studentData[$studentId]['failed'] = true; // Set the "failed" flag to true if English is failed.
+            } else {
+                $studentData[$studentId]['english_passed'] = true;
             }
         }
-    
-        return $finalProcessedData;
+
+        $studentData[$studentId]['subject_count']++;
+
+        $studentData[$studentId]['assessments'][] = [
+            'assessment_name' => $subjectName,
+            'subject_id' => $row->subject_id,
+            'score' => $score,
+        ];
     }
+
+    $finalProcessedData = array_values($studentData);
+
+    foreach ($finalProcessedData as &$student) {
+        if (!isset($student['english_passed'])) {
+            // If English score is not set, it means the student did not take English.
+            $student['english_passed'] = false;
+            $student['failed'] = true; // Set the "failed" flag to true if English was not taken.
+        }
+
+        if (!$student['english_passed'] || $student['subject_count'] < 6) {
+            $student['analysis'] = 'Needs improvement';
+            $student['failed'] = true; // Set the "failed" flag to true if the conditions are not met.
+        }
+    }
+
+    return $finalProcessedData;
+}
+
     
     public function gradeCalculator($score)
     {
