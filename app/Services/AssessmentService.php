@@ -22,24 +22,24 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class AssessmentService
 {
 
-    public function updateAssessment(Request $request, int $student_id): JsonResponse
+    public function updateAssessment(Request $request): JsonResponse
     {
         $response = [];
         $code = 200;
-        // using the assessment model am searching if student exists
-        $studentRecords   = Assessment::find($student_id);
         
-        if ($studentRecords) {
-            try {
-                //the subject will be there already on the list of assignments from the frontend
-                $subject = Subject::select('id')->where('name', $request->input('name'))->first();
+        $subject = Subject::select('id')->where('name', $request->input('name'))->first();
+        $student = Student::select('id')->where('username', $request->input('username'))->first();
+          // i have revised this abit,checking the existence of the relationship between subject and student
 
-                if ($subject) {
+        if (Assessment::where('subject_id',$subject->id)->where('student_id',$student->id)->exists()) {
+            try {
+               
+                
                     $firstAssessment  = $request->input('firstAssessment');
                     $secondAssessment = $request->input('secondAssessment');
                     $finalExam = $request->input('endOfTermAssessment');
 
-                    Assessment::where('student_id', $student_id)->where('subject_id', $subject->id)->update([
+                    Assessment::where('student_id', $student->id)->where('subject_id', $subject->id)->update([
                         'schoolTerm' => $request->input('schoolTerm'),
                         'teacherEmail' => $request->input('teacherEmail'),
                         'firstAssessment' => $request->input('firstAssessment'),
@@ -52,7 +52,7 @@ class AssessmentService
                     $response['message'] = 'Assessment updated successfully';
                     $response['status'] = 'Success';
                     $code = 200;
-                }
+                
             } catch (\Exception $e) {
                 $response['message'] = $e->getMessage();
                 $response['description'] = 'error encountered please contact the IT officer';
@@ -67,9 +67,10 @@ class AssessmentService
             $code = 404;
         }
 
-        
+     
 
 
         return response()->json($response, $code);
     }
+
 }

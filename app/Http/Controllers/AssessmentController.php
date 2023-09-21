@@ -16,9 +16,9 @@ class AssessmentController extends Controller
        $this->assessmentService = $AssessmentService;
     }
    
-   public function UpdateAssessment(Request $AssessmentService,int $id)
+   public function UpdateAssessment(Request $AssessmentService)
    {
-    return $this->assessmentService->updateAssessment($AssessmentService,$id);
+    return $this->assessmentService->updateAssessment($AssessmentService);
       }
 
    }

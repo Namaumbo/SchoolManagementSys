@@ -116,11 +116,11 @@ Route::controller(LevelController::class)->group(function () {
 }); 
 //Assessments
 Route::controller(AssessmentController::class)->group(function () {
-    Route::put('/create-assessment/{id}', 'updateAssessment');
+    Route::put('/update-assessment', 'updateAssessment');
 });
 
 Route::controller(SchoolReportController::class)->group(function () {
-    Route::post('/create-school', 'store');
+    Route::get('/schoolReport', 'store');
 });
 
 //Messages

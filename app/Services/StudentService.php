@@ -115,7 +115,7 @@ class StudentService
         try {
             $response = [];
             $code = 200;
-            $student = Student::where('id', $request->input('id'))->first();
+            $student = Student::where('username', $request->input('username'))->first();
             $subject = Subject::where('name', $request->input('name'))->first();
                        
             if(!$student ){
