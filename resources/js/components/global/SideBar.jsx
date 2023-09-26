@@ -92,7 +92,7 @@ const SideBar = () => {
                 
              
 
-                <Link to="Subjects" className='link'>
+                <Link to="subject" className='link'>
                     <li className="itemList"><GoBook className='icon'/><span
                         className="sideBarItemText">Subjects </span>
                     </li>

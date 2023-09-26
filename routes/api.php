@@ -90,7 +90,7 @@ Route::controller(DepartmentController::class)->group(function () {
 
 //Subjects Routes
 Route::controller(SubjectController::class)->group(function () {
-    Route::post('/create-subject/{id}', 'store');
+    Route::post('/create-subject', 'store');
     Route::get('/subjects', 'getAll');
     Route::get('/subject/{id}', 'show');
     Route::put('/update-subject/{id}', 'update');

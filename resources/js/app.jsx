@@ -25,6 +25,7 @@ import {userDetails} from "@/components/recoil_states/userdetails";
 import {userState} from "@/components/User/userState";
 import UserManagement from "./components/Admin/usermanagement/UserManagement";
 import Test from "./Test";
+import Subject from "./components/Admin/subjectManagement/Subject";
 
 export default function Index (){
 
@@ -47,6 +48,7 @@ export default function Index (){
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<Department/>}/>
                         <Route path="/department/science" element={<Science/>}/>
+                        <Route path='/subject/' element={<Subject/>}/>
                         <Route path="/logout" element={<Login/>}/>
 
                         {/* //students and H-teacher */}
@@ -70,8 +72,6 @@ export default function Index (){
 
     )
 }
-
-
 
 ReactDOM.createRoot(document.getElementById('app')).render(
     <RecoilRoot>

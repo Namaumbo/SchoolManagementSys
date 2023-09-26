@@ -111,7 +111,6 @@ class SchoolReportController extends Controller
             ['min' => 60, 'max' => 69, 'grade' => '4'],
             ['min' => 0, 'max' => 59, 'grade' => '5'],
         ];
-
         foreach ($gradeMappings as $mapping) {
         if ($score >= $mapping['min'] && $score <= $mapping['max']) {
             return $mapping['grade'];
