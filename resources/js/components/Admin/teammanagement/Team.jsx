@@ -106,7 +106,8 @@ const Team = () => {
                         </form>
                     </div>
                     <div>
-                        {/* ////////////////////////// */}
+                        {/* /////////////////////////
+                        / */}
                         <div className="buttons">
                             <button
                                 type="button"
@@ -145,15 +146,6 @@ const Team = () => {
                                         <div class="modal-body">
                                             <div>
                                                 <div class="form-check form-check-inline">
-                                                    {/* <input
-                                                        class="form-check-input"
-                                                        type="radio"
-                                                        name="gender"
-                                                        id="inlineRadio1"
-                                                        value="male"
-                                                        checked={selectedValue ==='Male'}
-                                                        onChange={handleRadioChange}
-                                                    /> */}
                                                     <input
                                                         type="radio"
                                                         value="Male"
@@ -173,20 +165,6 @@ const Team = () => {
                                                     </label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    {/* <input
-                                                        class="form-check-input"
-                                                        type="radio"
-                                                        name="gender"
-                                                        id="inlineRadio2"
-                                                        value="female"
-                                                        checked={
-                                                            selectedValue ===
-                                                            "Female"
-                                                        }
-                                                        onChange={
-                                                            handleRadioChange
-                                                        } */}
-                                                    {/* /> */}
                                                     <input
                                                         type="radio"
                                                         value="Female"

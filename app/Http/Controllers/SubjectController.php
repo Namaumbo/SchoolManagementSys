@@ -36,7 +36,7 @@ class SubjectController extends Controller
    }
 
     
-    public function create(Request $request,$subject)
+    public function create(Request $request,$subject) : void
     {
         $subject->name = $request->name;
         $subject->created_at = carbon::now();
@@ -46,16 +46,12 @@ class SubjectController extends Controller
     
    }
 
-
-
-    public function store(Request $request,$id): JsonResponse{
+    public function store(Request $request): JsonResponse
+    {
         
           try {
             $subject = new Subject;
-
             $this->create($request, $subject);
-
-
             return response()->json([
                 'message' => 'Subject saved successfully',
                 'Student' => $subject,
@@ -89,12 +85,8 @@ class SubjectController extends Controller
 
             ], 400);
 
-      
-      
         }
-     
-        
-    public function update(Request $request, int $id)
+            public function update(Request $request, int $id) : JsonResponse
     {
         if (Subject::where('id', $id)->exists()) {
             $subject = Subject::find($id);
@@ -109,7 +101,7 @@ class SubjectController extends Controller
         }  
     }
   
-    public function destroy($id)
+    public function destroy($id) : JsonResponse
     {
         
         if (Subject::where('id', $id)->exists()) {

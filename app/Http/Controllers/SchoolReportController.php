@@ -232,7 +232,45 @@ class SchoolReportController extends Controller
         }
     }
 
+<<<<<<< HEAD
     private function isJuniorSection($className)
+=======
+    return $finalProcessedData;
+}
+
+    
+    public function gradeCalculator($score)
+    {
+
+        $gradeMappings = [
+            ['min' => 90, 'max' => 100, 'grade' => '1'],
+            ['min' => 80, 'max' => 89, 'grade' => '2'],
+            ['min' => 70, 'max' => 79, 'grade' => '3'],
+            ['min' => 60, 'max' => 69, 'grade' => '4'],
+            ['min' => 0, 'max' => 59, 'grade' => '5'],
+        ];
+        foreach ($gradeMappings as $mapping) {
+        if ($score >= $mapping['min'] && $score <= $mapping['max']) {
+            return $mapping['grade'];
+        } 
+    }
+    }
+    public function numberOfRegisteredSubjects()
+    {
+        $subjects = Subject::all();
+
+         $subjectCounts = [];
+
+       foreach ($subjects as $subject) {
+      $subjectCounts[$subject->name] = $subject->students()->count();
+       }
+       return $subjectCounts;
+               }
+
+
+
+    public function show($id)
+>>>>>>> 8aef1dfded0b010b0008bfa87120fb5ca3fc23ec
     {
         // Implement your logic to determine if a class is in the junior section
         return preg_match('/^Form [12]/', $className);

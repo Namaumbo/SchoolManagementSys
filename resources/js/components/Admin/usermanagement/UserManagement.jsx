@@ -10,7 +10,6 @@ function UserManagement() {
     const [{ loggedIn, role, usersList }, setUsersList] =
         useRecoilState(userState);
     const [loading, setLoading] = useState(true);
-
     let [users, setUsers] = useRecoilState(userDetails);
 
     setTimeout(() => {
@@ -23,7 +22,6 @@ function UserManagement() {
     }
     useEffect(() => {
         let data = UsersServices.getAllUsers();
-
         data.then((res) => {
             setUsers(res);
         }).catch((err) => {
