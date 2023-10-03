@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 class SchoolReportController extends Controller
 {
 
-    
+
     public function store(Request $request)
     {
         $reportData = Assessment::select(
@@ -24,83 +24,80 @@ class SchoolReportController extends Controller
         )
             ->join('students', 'students.id', '=', 'assessments.student_id')
             ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
-
-
-        
             ->get();
 
 
         $processedData = $this->processReportData($reportData);
-        $subjectCounts=$this->numberOfRegisteredSubjects($reportData);
+        $subjectCounts = $this->numberOfRegisteredSubjects($reportData);
         return response()->json([
             'status' => 'success',
             'message' => 'Grades report generated successfully',
-            'data' => ['report' => $processedData,'registeredSubject'=>$subjectCounts]
+            'data' => ['report' => $processedData, 'registeredSubject' => $subjectCounts]
         ]);
     }
 
     public function processReportData($assessment)
-{
-    // Define the passing score for English.
-    $passingScoreForEnglish = 50; // Adjust this value as needed.
+    {
+        // Define the passing score for English.
+        $passingScoreForEnglish = 50; // Adjust this value as needed.
 
-    $processedData = [];
-    $studentData = [];
+        $processedData = [];
+        $studentData = [];
 
-    foreach ($assessment as $row) {
-        $studentId = $row->student_id;
-        $subjectName = $row->name;
-        $score = $row->averageScore;
+        foreach ($assessment as $row) {
+            $studentId = $row->student_id;
+            $subjectName = $row->name;
+            $score = $row->averageScore;
 
-        if (!isset($studentData[$studentId])) {
-            $studentData[$studentId] = [
-                'student_id' => $studentId,
-                'student_name' => $row->firstname . ' ' . $row->surname,
-                'english_score' => null, // Initialize English score to null.
-                'subject_count' => 0,
-                'assessments' => [],
-                'failed' => false, // Initialize the "failed" flag to false.
+            if (!isset($studentData[$studentId])) {
+                $studentData[$studentId] = [
+                    'student_id' => $studentId,
+                    'student_name' => $row->firstname . ' ' . $row->surname,
+                    'english_score' => null, // Initialize English score to null.
+                    'subject_count' => 0,
+                    'assessments' => [],
+                    'failed' => false, // Initialize the "failed" flag to false.
+                ];
+            }
+
+            if ($subjectName === 'English') {
+                $studentData[$studentId]['english_score'] = $score;
+                if ($score < $passingScoreForEnglish) {
+                    $studentData[$studentId]['english_passed'] = false;
+                    $studentData[$studentId]['failed'] = true; // Set the "failed" flag to true if English is failed.
+                } else {
+                    $studentData[$studentId]['english_passed'] = true;
+                }
+            }
+
+            $studentData[$studentId]['subject_count']++;
+
+            $studentData[$studentId]['assessments'][] = [
+                'assessment_name' => $subjectName,
+                'subject_id' => $row->subject_id,
+                'score' => $score,
             ];
         }
 
-        if ($subjectName === 'English') {
-            $studentData[$studentId]['english_score'] = $score;
-            if ($score < $passingScoreForEnglish) {
-                $studentData[$studentId]['english_passed'] = false;
-                $studentData[$studentId]['failed'] = true; // Set the "failed" flag to true if English is failed.
-            } else {
-                $studentData[$studentId]['english_passed'] = true;
+        $finalProcessedData = array_values($studentData);
+
+        foreach ($finalProcessedData as &$student) {
+            if (!isset($student['english_passed'])) {
+                // If English score is not set, it means the student did not take English.
+                $student['english_passed'] = false;
+                $student['failed'] = true; // Set the "failed" flag to true if English was not taken.
+            }
+
+            if (!$student['english_passed'] || $student['subject_count'] < 6) {
+                $student['analysis'] = 'Needs improvement';
+                $student['failed'] = true; // Set the "failed" flag to true if the conditions are not met.
             }
         }
 
-        $studentData[$studentId]['subject_count']++;
-
-        $studentData[$studentId]['assessments'][] = [
-            'assessment_name' => $subjectName,
-            'subject_id' => $row->subject_id,
-            'score' => $score,
-        ];
+        return $finalProcessedData;
     }
 
-    $finalProcessedData = array_values($studentData);
 
-    foreach ($finalProcessedData as &$student) {
-        if (!isset($student['english_passed'])) {
-            // If English score is not set, it means the student did not take English.
-            $student['english_passed'] = false;
-            $student['failed'] = true; // Set the "failed" flag to true if English was not taken.
-        }
-
-        if (!$student['english_passed'] || $student['subject_count'] < 6) {
-            $student['analysis'] = 'Needs improvement';
-            $student['failed'] = true; // Set the "failed" flag to true if the conditions are not met.
-        }
-    }
-
-    return $finalProcessedData;
-}
-
-    
     public function gradeCalculator($score)
     {
 
@@ -112,22 +109,22 @@ class SchoolReportController extends Controller
             ['min' => 0, 'max' => 59, 'grade' => '5'],
         ];
         foreach ($gradeMappings as $mapping) {
-        if ($score >= $mapping['min'] && $score <= $mapping['max']) {
-            return $mapping['grade'];
-        } 
-    }
+            if ($score >= $mapping['min'] && $score <= $mapping['max']) {
+                return $mapping['grade'];
+            }
+        }
     }
     public function numberOfRegisteredSubjects()
     {
         $subjects = Subject::all();
 
-         $subjectCounts = [];
+        $subjectCounts = [];
 
-       foreach ($subjects as $subject) {
-      $subjectCounts[$subject->name] = $subject->students()->count();
-       }
-       return $subjectCounts;
-               }
+        foreach ($subjects as $subject) {
+            $subjectCounts[$subject->name] = $subject->students()->count();
+        }
+        return $subjectCounts;
+    }
 
 
 
