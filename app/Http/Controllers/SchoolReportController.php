@@ -42,7 +42,7 @@ class SchoolReportController extends Controller
         if ($formLevel == 'Junior Section') {
             // Define grade mappings for junior section
             $gradeMappings = [
-                ['min' => 75, 'max' => 100, 'grade' => 'B', 'remark' => 'Distinction'],
+                ['min' => 75, 'max' => 100, 'grade' => 'A', 'remark' => 'Distinction'],
                 ['min' => 65, 'max' => 74, 'grade' => 'B', 'remark' => 'Very Good'],
                 ['min' => 55, 'max' => 64, 'grade' => 'C', 'remark' => 'Good'],
                 ['min' => 40, 'max' => 54, 'grade' => 'D', 'remark' => 'Pass'],
