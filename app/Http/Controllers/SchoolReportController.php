@@ -234,25 +234,24 @@ class SchoolReportController extends Controller
 
     private function isJuniorSection($className)
     {
-        // Implement your logic to determine if a class is in the junior section
+        
         return preg_match('/^Form [12]/', $className);
     }
 
     private function isSeniorSection($className)
     {
-        // Implement your logic to determine if a class is in the senior section
-        return preg_match('/^Form [34]/', $className);
+              return preg_match('/^Form [34]/', $className);
     }
 
     private function isSubjectConsidered($subjectName, $score, $points)
     {
-        // Implement your logic to determine if a subject should be considered
+        
         return $subjectName !== 'Physical Education' && $points > 0;
     }
 
     private function getPassingScore()
     {
-        // Define the passing score for English and other subjects
-        return 50; // You can adjust this as needed
+       
+        return 50; 
     }
 }
