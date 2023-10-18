@@ -22,25 +22,26 @@ class SchoolReportController extends Controller
             'surname',
             'className'
         )
-        ->join('students', 'students.id', '=', 'assessments.student_id')
-        ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
-        ->get();
-    
+            ->join('students', 'students.id', '=', 'assessments.student_id')
+            ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
+            ->get();
+
         $processedData = $this->processReportData($reportData);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Grades report generated successfully',
             'data' => $processedData,
         ]);
     }
-    
-    private function calculateGPA($score, $formLevel, $subjectName) {
+
+    private function calculateGPA($score, $formLevel, $subjectName)
+    {
         $points = null;
         $grade = null;
         $remark = null;
         $analysis = null;
-    
+
         if ($formLevel == 'Junior Section') {
             // Define grade mappings for junior section
             $gradeMappings = [
@@ -94,43 +95,46 @@ class SchoolReportController extends Controller
             $grade = 'N/A';
             $remark = 'N/A';
         }
-    
+
         return ['grade' => $grade, 'remark' => $remark, 'points' => $points, 'analysis' => $analysis, 'position' => null];
     }
-    
+
     private function processReportData($assessment)
     {
         $processedData = [];
         $subjectRegistrations = [];
-        $passingScoreForEnglish = 50;
 
-    foreach ($assessment as $row) {
-        $studentId = $row->student_id;
-        $subjectName = $row->name;
-        $score = $row->averageScore;
+        foreach ($assessment as $row) {
+            $studentId = $row->student_id;
+            $subjectName = $row->name;
+            $score = $row->averageScore;
+            $className = $row->className ?? null;
 
-        if (!isset($studentData[$studentId])) {
-            $studentData[$studentId] = [
-                'student_id' => $studentId,
-                'student_name' => $row->firstname . ' ' . $row->surname,
-                'english_score' => null, // Initialize English score to null.
-                'subject_count' => 0,
-                'assessments' => [],
-                'failed' => false, // Initialize the "failed" flag to false.
-            ];
-        }
+            // Determine the form level based on the class name
+            $formLevel = $this->determineFormLevel($className);
 
-        if ($subjectName === 'English') {
-            $studentData[$studentId]['english_score'] = $score;
-            if ($score < $passingScoreForEnglish) {
-                $studentData[$studentId]['english_passed'] = false;
-                $studentData[$studentId]['failed'] = true; // Set the "failed" flag to true if English is failed.
-            } else {
-                $studentData[$studentId]['english_passed'] = true;
+            $gpaData = $this->calculateGPA($score, $formLevel, $subjectName);
+
+            if (!isset($processedData[$studentId])) {
+                $processedData[$studentId] = [
+                    'student_id' => $studentId,
+                    'student_name' => $row->firstname . ' ' . $row->surname,
+                    'class' => $row->className,
+                    'subject_count' => 0,
+                    'assessments' => [],
+                    'failed' => false,
+                    'total_marks' => 0,
+                    'total_points' => 0,
+                    'position' => null,
+                    'english_score' => 0,
+                ];
             }
-        }
 
-        $studentData[$studentId]['subject_count']++;
+            // Update subject registration count
+            if (!isset($subjectRegistrations[$subjectName])) {
+                $subjectRegistrations[$subjectName] = 0;
+            }
+            $subjectRegistrations[$subjectName]++;
 
             $processedData[$studentId]['assessments'][] = [
                 'assessment_name' => $subjectName,
@@ -140,48 +144,78 @@ class SchoolReportController extends Controller
                 'points' => $gpaData['points'],
                 'remark' => $gpaData['remark'],
                 'analysis' => $gpaData['analysis'],
-                'position' => $gpaData['position'],
+              
                 'registration_count' => $subjectRegistrations[$subjectName],
             ];
-
+    
             // Accumulate total marks for all subjects
             $processedData[$studentId]['total_marks'] += $score;
-
+    
             // Accumulate English score
             if ($subjectName === 'English') {
                 $processedData[$studentId]['english_score'] = $score;
             }
-
+    
             if ($this->isSubjectConsidered($subjectName, $score, $gpaData['points'])) {
                 $processedData[$studentId]['subject_count']++;
                 $processedData[$studentId]['total_points'] += $gpaData['points'];
             }
-
-            // Check if the student meets the passing criteria
-            if ($formLevel === 'Junior Section') {
-                // For the junior section, check if English score is below passing score
-                if ($subjectName === 'English' && $score < $this->getPassingScore()) {
-                    $processedData[$studentId]['failed'] = true;
-                }
-            } elseif ($formLevel === 'Senior Section') {
-                // For the senior section, check if English score is below passing score
-                // and the student doesn't have the required number of subject_count
-                if (($subjectName === 'English' && $score < $this->getPassingScore()) ||
-                    ($processedData[$studentId]['subject_count'] < 6 && $processedData[$studentId]['english_score'] < $this->getPassingScore())) {
-                    $processedData[$studentId]['failed'] = true;
-                }
+    
+            // Check if the student has failed
+            if ($gpaData['remark'] === 'Fail') {
+                $processedData[$studentId]['failed'] = true;
             }
         }
-
+    
         // Separate junior and senior section data
         $juniorSectionData = array_filter($processedData, function ($student) {
             return isset($student['class']) && $this->isJuniorSection($student['class']);
         });
-
+    
         $seniorSectionData = array_filter($processedData, function ($student) {
             return isset($student['class']) && $this->isSeniorSection($student['class']);
         });
-
+    
+        // Calculate overall grade for junior section students
+        foreach ($juniorSectionData as $studentId => $studentData) {
+            $totalMarks = $studentData['total_marks'];
+            $subjectCount = $studentData['subject_count'];
+    
+            if ($subjectCount >= 6) {
+                $overallGPA = $totalMarks / $subjectCount;
+                $overallGradeData = $this->calculateGPA($overallGPA, 'Junior Section', 'Overall');
+                $juniorSectionData[$studentId]['overall_grade'] = $overallGradeData['grade'];
+    
+                // Add head teacher and class teacher comments for junior section
+                if ($overallGradeData['remark'] === 'Fail') {
+                    $juniorSectionData[$studentId]['head_teacher_comment'] = 'This student has not met the required academic performance standards.';
+                    $juniorSectionData[$studentId]['class_teacher_comment'] = 'This student should consider seeking additional support and focusing on improvement.';
+                } else {
+                    $juniorSectionData[$studentId]['head_teacher_comment'] = 'This student has met the required academic performance standards.';
+                    $juniorSectionData[$studentId]['class_teacher_comment'] = 'This student is performing well and should continue working hard.';
+                }
+            }
+        }
+    
+        // Calculate overall points for senior section students
+        foreach ($seniorSectionData as $studentId => $studentData) {
+            $totalPoints = $studentData['total_points'];
+            $subjectCount = $studentData['subject_count'];
+    
+            if ($subjectCount >= 6 || ($studentData['english_score'] >= $this->getPassingScore() && $subjectCount >= 5)) {
+                $seniorSectionData[$studentId]['overall_points'] =round($totalPoints/$subjectCount);
+    
+                // Add head teacher and class teacher comments for senior section
+                if (isset($seniorSectionData[$studentId]['overall_points']) && $seniorSectionData[$studentId]['overall_points'] > 0) {
+                    $seniorSectionData[$studentId]['head_teacher_comment'] = 'This student has met the required academic performance standards.';
+                    $seniorSectionData[$studentId]['class_teacher_comment'] = 'This student is performing well and should continue working hard';
+                } else {
+                    $seniorSectionData[$studentId]['head_teacher_comment'] = 'This student has not met the required academic performance standards.';
+                    $seniorSectionData[$studentId]['class_teacher_comment'] = 'This student should consider seeking additional support and focusing on improvement.';
+                }
+            }
+        }
+    
         // Rank junior section students based on total marks and subject count
         $juniorSectionTotalMarks = [];
         foreach ($juniorSectionData as $student) {
@@ -190,12 +224,12 @@ class SchoolReportController extends Controller
         arsort($juniorSectionTotalMarks);
         $rank = 1;
         foreach ($juniorSectionTotalMarks as $studentId => $totalMarks) {
-            if ($juniorSectionData[$studentId]['subject_count'] >= 6 && !$juniorSectionData[$studentId]['failed']) {
+            if ($juniorSectionData[$studentId]['subject_count'] >= 6) {
                 $juniorSectionData[$studentId]['position'] = $rank;
             }
             $rank++;
         }
-
+    
         // Rank senior section students based on total points and subject count
         $seniorSectionTotalPoints = [];
         foreach ($seniorSectionData as $student) {
@@ -204,24 +238,24 @@ class SchoolReportController extends Controller
         arsort($seniorSectionTotalPoints);
         $rank = 1;
         foreach ($seniorSectionTotalPoints as $studentId => $totalPoints) {
-            if (($seniorSectionData[$studentId]['subject_count'] >= 6 || ($seniorSectionData[$studentId]['english_score'] >= $this->getPassingScore() && $seniorSectionData[$studentId]['subject_count'] >= 5)) && !$seniorSectionData[$studentId]['failed']) {
+            if (isset($seniorSectionData[$studentId]['overall_points'])) {
                 $seniorSectionData[$studentId]['position'] = $rank;
             }
             $rank++;
         }
-
+    
         // Combine junior and senior section data
         $combinedData = [
             'junior_section' => array_values($juniorSectionData),
             'senior_section' => array_values($seniorSectionData),
         ];
-
+    
         return $combinedData;
     }
+    
 
     private function determineFormLevel($className)
     {
-        // Implement your logic to determine the form level based on the class name
         if (preg_match('/^Form [12]/', $className)) {
             return 'Junior Section';
         } elseif (preg_match('/^Form [34]/', $className)) {
@@ -233,24 +267,21 @@ class SchoolReportController extends Controller
 
     private function isJuniorSection($className)
     {
-        
         return preg_match('/^Form [12]/', $className);
     }
 
     private function isSeniorSection($className)
     {
-              return preg_match('/^Form [34]/', $className);
+        return preg_match('/^Form [34]/', $className);
     }
 
     private function isSubjectConsidered($subjectName, $score, $points)
     {
-        
-        return $subjectName !== 'Physical Education' && $points > 0;
+        return true; // Consider all subjects for passing criteria
     }
 
     private function getPassingScore()
     {
-       
-        return 50; 
+        return 33;
     }
 }
