@@ -9,8 +9,6 @@ use Illuminate\Http\JsonResponse;
 
 class SchoolReportController extends Controller
 {
-
-
     public function store(Request $request)
     {
         $reportData = Assessment::select(
@@ -102,18 +100,18 @@ class SchoolReportController extends Controller
     {
         $processedData = [];
         $subjectRegistrations = [];
-
+    
         foreach ($assessment as $row) {
             $studentId = $row->student_id;
             $subjectName = $row->name;
             $score = $row->averageScore;
             $className = $row->className ?? null;
-
+    
             // Determine the form level based on the class name
             $formLevel = $this->determineFormLevel($className);
-
+    
             $gpaData = $this->calculateGPA($score, $formLevel, $subjectName);
-
+    
             if (!isset($processedData[$studentId])) {
                 $processedData[$studentId] = [
                     'student_id' => $studentId,
@@ -123,18 +121,18 @@ class SchoolReportController extends Controller
                     'assessments' => [],
                     'failed' => false,
                     'total_marks' => 0,
-                    'total_points' => 0,
-                    'position' => null,
-                    'english_score' => 0,
+                     'total_points' => 0,
+                    'head_teacher_comment' => '',
+                    'class_teacher_comment' => '',
                 ];
             }
-
+    
             // Update subject registration count
             if (!isset($subjectRegistrations[$subjectName])) {
                 $subjectRegistrations[$subjectName] = 0;
             }
             $subjectRegistrations[$subjectName]++;
-
+    
             $processedData[$studentId]['assessments'][] = [
                 'assessment_name' => $subjectName,
                 'subject_id' => $row->subject_id,
