@@ -84,7 +84,7 @@ const SideBar = () => {
                     </li>
                 </Link>
 
-                <Link to="Fees-balance" className='link'>
+                <Link to="payments" className='link'>
                     <li className="itemList"><BiDollar className='icon'/><span
                         className="sideBarItemText">Fees Balances </span>
                     </li>

@@ -45,7 +45,7 @@ export default function Login() {
                         localStorage.setItem("key", res.data.access_token);
                         localStorage.setItem('vitals' , user)
                         setLoginStatus({ loggedIn: true, role: "admin" });
-                        navigate("/dashboard");
+                        navigate("/payments");
                         console.log(user);
                         // in the api there should be a return statement as an exception
                     } else if (res.status === 422) {

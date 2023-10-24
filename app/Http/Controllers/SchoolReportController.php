@@ -34,68 +34,67 @@ class SchoolReportController extends Controller
     }
 
     private function calculateGPA($score, $formLevel, $subjectName)
-    {
-        $points = null;
-        $grade = null;
-        $remark = null;
-        $analysis = null;
+{
+    $points = null;
+    $grade = null;
+    $remark = null;
+    $analysis = null;
 
-        if ($formLevel == 'Junior Section') {
-            // Define grade mappings for junior section
-            $gradeMappings = [
-                ['min' => 75, 'max' => 100, 'grade' => 'A', 'remark' => 'Distinction'],
-                ['min' => 65, 'max' => 74, 'grade' => 'B', 'remark' => 'Very Good'],
-                ['min' => 55, 'max' => 64, 'grade' => 'C', 'remark' => 'Good'],
-                ['min' => 40, 'max' => 54, 'grade' => 'D', 'remark' => 'Pass'],
-                ['min' => 0, 'max' => 39, 'grade' => 'F', 'remark' => 'Fail'],
-            ];
+    if ($formLevel == 'Junior Section') {
+        // Define grade mappings for junior section
+        $gradeMappings = [
+            ['min' => 75, 'max' => 100, 'grade' => 'A', 'remark' => 'Distinction'],
+            ['min' => 65, 'max' => 74, 'grade' => 'B', 'remark' => 'Very Good'],
+            ['min' => 55, 'max' => 64, 'grade' => 'C', 'remark' => 'Good'],
+            ['min' => 40, 'max' => 54, 'grade' => 'D', 'remark' => 'Pass'],
+            ['min' => 0, 'max' => 39, 'grade' => 'F', 'remark' => 'Fail'],
+        ];
 
-            foreach ($gradeMappings as $mapping) {
-                if ($score >= $mapping['min'] && $score <= $mapping['max']) {
-                    $grade = $mapping['grade'];
-                    $remark = $mapping['remark'];
-                    break;
+        foreach ($gradeMappings as $mapping) {
+            if ($score >= $mapping['min'] && $score <= $mapping['max']) {
+                $grade = $mapping['grade'];
+                $remark = $mapping['remark'];
 
-                    if ($formLevel == 'Junior Section' && $subjectName === 'English') {
-                        if ($score >= $this->getPassingScore()) {
-                            $points = 1;
-                        }
-                    }
-                }
-            }
-        } elseif ($formLevel == 'Senior Section') {
-            // Define points for the senior section
-            $pointsMappings = [
-                ['min' => 0, 'max' => 33, 'points' => 9, 'analysis' => 'Fail'],
-                ['min' => 34, 'max' => 40, 'points' => 8, 'analysis' => 'Pass'],
-                ['min' => 41, 'max' => 47, 'points' => 7, 'analysis' => 'Pass'],
-                ['min' => 48, 'max' => 54, 'points' => 6, 'analysis' => 'Credit'],
-                ['min' => 55, 'max' => 61, 'points' => 5, 'analysis' => 'Credit'],
-                ['min' => 62, 'max' => 68, 'points' => 4, 'analysis' => 'Credit'],
-                ['min' => 69, 'max' => 74, 'points' => 3, 'analysis' => 'Credit'],
-                ['min' => 75, 'max' => 84, 'points' => 2, 'analysis' => 'Distinction'],
-                ['min' => 84, 'max' => 100, 'points' => 1, 'analysis' => 'Distinction'],
-            ];
-
-            foreach ($pointsMappings as $mapping) {
-                if ($score >= $mapping['min'] && $score <= $mapping['max']) {
-                    $points = $mapping['points'];
-                    $analysis = $mapping['analysis'] ?? null;
-                    break;
-
-                    if ($subjectName === 'English' && $score >= $this->getPassingScore()) {
+                if ($formLevel == 'Junior Section' && $subjectName === 'English') {
+                    if ($score >= $this->getPassingScore()) {
                         $points = 1;
                     }
                 }
             }
-        } else {
-            // Handle other form levels or situations
-            $grade = 'N/A';
-            $remark = 'N/A';
         }
+    } elseif ($formLevel == 'Senior Section') {
+        // Define points for the senior section
+        $pointsMappings = [
+            ['min' => 0, 'max' => 33, 'points' => 9, 'analysis' => 'Fail'],
+            ['min' => 34, 'max' => 40, 'points' => 8, 'analysis' => 'Pass'],
+            ['min' => 41, 'max' => 47, 'points' => 7, 'analysis' => 'Pass'],
+            ['min' => 48, 'max' => 54, 'points' => 6, 'analysis' => 'Credit'],
+            ['min' => 55, 'max' => 61, 'points' => 5, 'analysis' => 'Credit'],
+            ['min' => 62, 'max' => 68, 'points' => 4, 'analysis' => 'Credit'],
+            ['min' => 69, 'max' => 74, 'points' => 3, 'analysis' => 'Credit'],
+            ['min' => 75, 'max' => 84, 'points' => 2, 'analysis' => 'Distinction'],
+            ['min' => 84, 'max' => 100, 'points' => 1, 'analysis' => 'Distinction'],
+        ];
 
-        return ['grade' => $grade, 'remark' => $remark, 'points' => $points, 'analysis' => $analysis, 'position' => null];
+        foreach ($pointsMappings as $mapping) {
+            if ($score >= $mapping['min'] && $score <= $mapping['max']) {
+                $points = $mapping['points'];
+                $analysis = $mapping['analysis'];
+
+                if ($subjectName === 'English' && $score >= $this->getPassingScore()) {
+                    $points = 1;
+                }
+            }
+        }
+    } else {
+        // Handle other form levels or situations
+        $grade = 'N/A';
+        $remark = 'N/A';
     }
+
+    return ['grade' => $grade, 'remark' => $remark, 'points' => $points, 'analysis' => $analysis, 'position' => null];
+}
+
 
     private function processReportData($assessment)
     {

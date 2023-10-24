@@ -12,6 +12,7 @@ use App\Models\Message;
 use App\Models\Student;
 use App\Models\Relationship;
 use App\Models\Allocationable;
+use App\Models\Payment;
 
 
 use App\Http\Resources\DepartmentResource;
@@ -34,6 +35,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -148,6 +150,12 @@ Route::controller(StudentController::class)->group(function () {
     Route::delete('/student/{id}', 'destroy');
     Route::post('/register-subject', 'subjectAndClassAllocation');
 
+});
+
+Route::controller(PaymentController::class)->group(function () {
+    
+    Route::post('/payments', 'feesToStudent');
+   
 });
 
 Route::get('/roles', function () {

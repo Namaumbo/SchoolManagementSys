@@ -7,6 +7,8 @@ import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import AdminDashboard from "./components/Admin/dashboard/AdminDashboard";
+import PaymentManagement from "./components/Admin/dashboard/PaymentManagement";
+
 import Classes from "./components/Admin/classmanagement/Classes";
 import Logs from "./components/Admin/logsmanagement/Logs";
 import Profile from "./components/Admin/Profile";
@@ -36,6 +38,8 @@ export default function Index (){
                     <Route exact path="/" element={<Login/>}/>
                     <Route path='/login' element={<Login/>}/> 
                     <Route path="/" element={<Home/>}> 
+                    <Route path="/payments" element={<PaymentManagement/>}/>
+
                         <Route path="/dashboard" element={<AdminDashboard/>}/>
                         <Route path="/classes" element={<Classes/>}/>
                         <Route path="/logs" element={<Logs/>}/>
@@ -49,7 +53,6 @@ export default function Index (){
                         <Route path="/department" element={<Department/>}/>
                         <Route path="/department/science" element={<Science/>}/>
                         <Route path='/subject/' element={<Subject/>}/>
-                        <Route path="/logout" element={<Login/>}/>
 
                         {/* //students and H-teacher */}
                         {/* <Route path="/students" element={<Students/>}/>
