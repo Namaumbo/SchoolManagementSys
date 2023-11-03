@@ -144,7 +144,7 @@ Route::controller(MessageController::class)->group(function () {
 //});
 // Api for students
 Route::controller(StudentController::class)->group(function () {
-    Route::get('/students', 'getAllStudents');
+    Route::get('/students', 'getStudents');
     Route::post('/create-student', 'registerStudent');
     Route::put('/student/{id}', 'updateStudent');
     Route::delete('/student/{id}', 'destroy');

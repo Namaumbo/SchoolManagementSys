@@ -1,9 +1,9 @@
 // import './bootstrap'
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
-import {RecoilRoot, useRecoilState} from "recoil";
-import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
+import { RecoilRoot, useRecoilState } from "recoil";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import AdminDashboard from "./components/Admin/dashboard/AdminDashboard";
@@ -17,42 +17,55 @@ import SchoolPerformance from "./components/Admin/schoolmanagement/SchoolPerform
 import ClassesPerformance from "./components/Admin/classmanagement/ClassPerformance";
 import Messages from "./components/Admin/messagemanagement/Messages";
 import Assessment from "./components/Admin/assementManagement/Assessment";
-import Students from "./components/Student/Students";
-import StudentsInfo from "./components/Student/StudentsInfo";
+import Students from "./components/Pages/Student/Students";
 import Department from "./components/Admin/DepartmentManagement/Department";
 import Science from "./components/Admin/DepartmentManagement/Science";
-
-import StudentPerformance from "./components/Student/StudentPerformance";
-import {userDetails} from "@/components/recoil_states/userdetails";
-import {userState} from "@/components/User/userState";
+import { userDetails } from "@/components/recoil_states/userdetails";
+import { userState } from "@/components/User/userState";
 import UserManagement from "./components/Admin/usermanagement/UserManagement";
 import Test from "./Test";
 import Subject from "./components/Admin/subjectManagement/Subject";
 
-export default function Index (){
-
-    return(
+export default function Index() {
+    return (
         <>
             <HashRouter>
                 <Routes>
-                    <Route exact path="/" element={<Login/>}/>
-                    <Route path='/login' element={<Login/>}/> 
-                    <Route path="/" element={<Home/>}> 
-                    <Route path="/payments" element={<PaymentManagement/>}/>
+                    <Route exact path="/" element={<Login />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/" element={<Home />}>
+                        <Route
+                            path="/payments"
+                            element={<PaymentManagement />}
+                        />
 
-                        <Route path="/dashboard" element={<AdminDashboard/>}/>
-                        <Route path="/classes" element={<Classes/>}/>
-                        <Route path="/logs" element={<Logs/>}/>
-                        <Route path="/profile" element={<Profile/>}/>
-                        <Route path="/teachers" element={<Team/>}/>
-                        <Route path="/performance" element={<SchoolPerformance/>}/>
-                        <Route path="/assessment" element={<Assessment/>}/>
-                        <Route exact path="/users" element={<UserManagement/>}/>
-                        <Route path="/class-Performance" element={<ClassesPerformance/>}/>
-                        <Route path="/messages" element={<Messages/>}/>
-                        <Route path="/department" element={<Department/>}/>
-                        <Route path="/department/science" element={<Science/>}/>
-                        <Route path='/subject/' element={<Subject/>}/>
+                        <Route path="/dashboard" element={<AdminDashboard />} />
+                        <Route path="/classes" element={<Classes />} />
+                        <Route path="/logs" element={<Logs />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/teachers" element={<Team />} />
+                        <Route
+                            path="/performance"
+                            element={<SchoolPerformance />}
+                        />
+                        <Route path="/assessment" element={<Assessment />} />
+                        <Route path="/students" element={<Students />} />
+                        <Route
+                            exact
+                            path="/users"
+                            element={<UserManagement />}
+                        />
+                        <Route
+                            path="/class-Performance"
+                            element={<ClassesPerformance />}
+                        />
+                        <Route path="/messages" element={<Messages />} />
+                        <Route path="/department" element={<Department />} />
+                        <Route
+                            path="/department/science"
+                            element={<Science />}
+                        />
+                        <Route path="/subject" element={<Subject />} />
 
                         {/* //students and H-teacher */}
                         {/* <Route path="/students" element={<Students/>}/>
@@ -61,24 +74,19 @@ export default function Index (){
                         <Route path='student-performance' element={<StudentPerformance/>}/> */}
                         {/*students and teacher*/}
                     </Route>
-            </Routes> 
-            </HashRouter> 
+                </Routes>
+            </HashRouter>
 
-                {/* <p>this is wor</p> */}
+            {/* <p>this is wor</p> */}
             {/* <AdminDashboard/>*/}
             {/*<Mines />*/}
             {/*<SideBar/>*/}
-            
-            
-            
-        </> 
-
-    )
+        </>
+    );
 }
 
-ReactDOM.createRoot(document.getElementById('app')).render(
+ReactDOM.createRoot(document.getElementById("app")).render(
     <RecoilRoot>
-        <Index/>
+        <Index />
     </RecoilRoot>
-
 );

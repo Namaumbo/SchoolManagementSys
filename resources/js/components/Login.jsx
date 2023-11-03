@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import "../../css/login.css";
-import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState, userInfo } from "./User/userState";
-import * as iconSection from "react-icons/all";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 
@@ -46,7 +44,6 @@ export default function Login() {
                         localStorage.setItem('vitals' , user)
                         setLoginStatus({ loggedIn: true, role: "admin" });
                         navigate("/dashboard");
-                        console.log(user);
                         // in the api there should be a return statement as an exception
                     } else if (res.status === 422) {
                         console.log(res);
@@ -57,7 +54,6 @@ export default function Login() {
                             code: 500,
                             status: "error",
                         };
-
                         console.error(res);
                     }
                 })
@@ -115,6 +111,9 @@ export default function Login() {
                         )}
                     </button>
                 </form>
+                <div>
+                    <p>Don't have an account? please contact administrator</p>
+                </div>
             </div>
             {/* <div className="wrappers">
             

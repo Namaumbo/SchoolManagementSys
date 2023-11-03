@@ -4,6 +4,8 @@ import {Logout,} from "@mui/icons-material";
 import {Link} from 'react-router-dom'
 import {
     BiBarChartAlt2,
+    BiBusSchool,
+    BiChild,
     BiDollar,
     BiHomeAlt2,
     BiMaleFemale,
@@ -54,13 +56,17 @@ const SideBar = () => {
                     </li>
                 </Link>
 
+                <Link to="students" className='link'>
+                    <li className="itemList"><BiChild className='icon'/><span
+                        className="sideBarItemText">Students</span>
+                    </li>
+                </Link>
+
                 <Link to="logs" className='link'>
                     <li className="itemList"><BiMessageAltDetail className='icon'/><span
                         className="sideBarItemText">Logs</span>
                     </li>
                 </Link>
-
-
                 <Link to="messages" className='link'>
                     <li className="itemList"><BiMessageRounded className='icon'/><span
                         className="sideBarItemText">Messages</span>
@@ -89,17 +95,11 @@ const SideBar = () => {
                         className="sideBarItemText">Fees Balances </span>
                     </li>
                 </Link>
-                
-             
-
                 <Link to="subject" className='link'>
                     <li className="itemList"><GoBook className='icon'/><span
                         className="sideBarItemText">Subjects </span>
                     </li>
                 </Link>
-
-
-               
             </ul>
         </div>
 

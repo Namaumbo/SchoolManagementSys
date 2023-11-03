@@ -1,0 +1,13 @@
+.student-toppings{
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+.search-input{
+    width: 25em;
+    border: 1px solid grey;
+    padding: 10px;
+    border-radius: 10px;
+}
