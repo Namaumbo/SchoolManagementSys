@@ -12,8 +12,6 @@ import Test from "../../../Test";
 export default function AdminDashboard() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
-    const [Student, setStudent] = useState([]);
-
     let [{ loggedIn, role }] = useRecoilState(userState);
     const accessKey = localStorage.getItem("key");
 
@@ -48,112 +46,99 @@ export default function AdminDashboard() {
     ];
     const rows = data;
 
-    // if (loggedIn && role === 'admin') {
-
-    const datum = [
-        ["gender", "number of students"],
-        ["female", 32],
-        ["male", 34],
-    ];
-
-    const options = {
-        title: "My Daily Activities",
-    };
-
-    return (
-        <>
-            <div className="main">
-                <div className="heading">
-                    <FiHome />
-                    <span style={{ color: "white" }}>Dashboard - Home</span>
-                </div>
-                <div className="statistics">
-                    <div className="cardMn">
-                        <div>
-                            <span className="name-title">Students</span>
+    if (loggedIn && role === "admin" || loggedIn && role === "Head teacher") {
+        return (
+            <>
+                <div className="main">
+                    <div className="heading">
+                        <FiHome />
+                        <span style={{ color: "white" }}>Dashboard - Home</span>
+                    </div>
+                    <div className="statistics">
+                        <div className="cardMn">
+                            <div>
+                                <span className="name-title">Students</span>
+                            </div>
+                            <div className="figure">
+                                <h4 className="numbers">{rows.length} </h4>
+                            </div>
                         </div>
-                        <div className="figure">
-                            <h4 className="numbers">{rows.length} </h4>
+                        <div className="cardMn">
+                            <div>
+                                <img src={teachersPng} alt="students" />
+
+                                <span className="name-title">Teachers</span>
+                            </div>
+                            <div className="figure">
+                                <h4 className="numbers">{rows.length} </h4>
+                            </div>
+                        </div>
+                        <div className="cardMn">
+                            <div>
+                                <img
+                                    src={studentsPng}
+                                    alt="students"
+                                    className="stdPng"
+                                />
+                                <span className="name-title">Students</span>
+                            </div>
+                            <div className="figure">
+                                <h4 className="numbers">400 </h4>
+                            </div>
+                        </div>
+                        <div className="cardMn">
+                            <div>
+                                <img src={moneyPng} alt="money" />
+
+                                <span className="name-title">
+                                    Total Earnings
+                                </span>
+                            </div>
+                            <div className="figure">
+                                <h4 className="numbers">mk 3,000 </h4>
+                            </div>
                         </div>
                     </div>
-                    <div className="cardMn">
-                        <div>
-                            <img src={teachersPng} alt="students" />
 
-                            <span className="name-title">Teachers</span>
+                    <div className="body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>First name</th>
+                                    <th>last name</th>
+                                    <th>sex</th>
+                                    <th>Role</th>
+                                    <th>Phone number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((user, index) => {
+                                    return (
+                                        <>
+                                            <tr>
+                                                <td>{index + 1}</td>
+                                                <td>{user.firstname} </td>
+                                                <td> {user.surname}</td>
+                                                <td>{user.sex}</td>
+                                                <td>{user.title}</td>
+                                                <td>{user.district}</td>
+                                            </tr>
+                                        </>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                        <div className="right-card">
+                            <Test />
                         </div>
-                        <div className="figure">
-                            <h4 className="numbers">{rows.length} </h4>
-                        </div>
-                    </div>
-                    <div className="cardMn">
-                        <div>
-                            <img
-                                src={studentsPng}
-                                alt="students"
-                                className="stdPng"
-                            />
-                            <span className="name-title">Students</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">400 </h4>
-                        </div>
-                    </div>
-                    <div className="cardMn">
-                        <div>
-                            <img src={moneyPng} alt="money" />
-
-                            <span className="name-title">Total Earnings</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">mk 3,000 </h4>
-                        </div>
-                    </div>
-                </div>
-                
-                <div className="body">
-                  
-                <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>First name</th>
-                                <th>last name</th>
-                                <th>sex</th>
-                                <th>Role</th>
-                                <th>Phone number</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((user, index) => {
-                                return (
-                                    <>
-                                        <tr>
-                                            <td>{index + 1}</td>
-                                            <td>{user.firstname} </td>
-                                            <td> {user.surname}</td>
-                                            <td>{user.sex}</td>
-                                            <td>{user.title}</td>
-                                            <td>{user.district}</td>
-                                        </tr>
-                                    </>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                    <div className="right-card">
-                        <Test />
                     </div>
                 </div>
-            </div>
-        </>
-    );
-
-    // else if (loggedIn && role === 'h-teacher') {
-    // }
-    // else if (loggedIn && role === 'teacher') {
-    // } else {
-    //     // return <Navigate replace to="/login"/>;
-    // }
-    // }
+            </>
+        );
+    } else if (loggedIn && role === "Teacher") {
+       return ( <div>Teacher</div>)
+    } else {
+        // return <Navigate replace to="/login"/>;
+    }
 }

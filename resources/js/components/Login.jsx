@@ -17,11 +17,9 @@ export default function Login() {
     // const [ userInformation , setUserInformation] = useRecoilState(userInfo)
     // const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
 
-    //-----------setting role of the user logged in----------//
-
+    //---------------------------------------setting role of the user logged in-------------------------------------------------//
     let [{}, setLoginStatus] = useRecoilState(userState);
-
-    ///----------------end------------------------------//
+    ///---------------------------------------------------end-------------------------------------------------------------------//
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,12 +36,39 @@ export default function Login() {
             UsersServices.userLogin(user)
                 .then((res) => {
                     if (res.status === 200) {
-
                         const user = btoa(JSON.stringify(res.data["user"]));
                         localStorage.setItem("key", res.data.access_token);
-                        localStorage.setItem('vitals' , user)
-                        setLoginStatus({ loggedIn: true, role: "admin" });
+                        localStorage.setItem("vitals", user);
+                        switch (res.data.user.role_name) {
+                            case "Teacher":
+                                setLoginStatus({
+                                    loggedIn: true,
+                                    role: "Teacher",
+                                });
+                                break;
+                            case "Head teacher":
+                                setLoginStatus({
+                                    loggedIn: true,
+                                    role: "Head teacher",
+                                });
+                                break;
+                            case "Student":
+                                setLoginStatus({
+                                    loggedIn: true,
+                                    role: "Student",
+                                });
+                                break;
+                            case "Administrator":
+                                setLoginStatus({
+                                    loggedIn: true,
+                                    role: "admin",
+                                });
+                                break;
+                            default:
+                                break;
+                        }
                         navigate("/dashboard");
+
                         // in the api there should be a return statement as an exception
                     } else if (res.status === 422) {
                         console.log(res);

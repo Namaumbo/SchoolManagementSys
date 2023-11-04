@@ -13,9 +13,10 @@ export default function NavBar() {
 
     return (
         <div className="nav-items">
-            <div className="logo">Secondary School</div>
+            <div className="school-logo">Secondary School</div>
             <div className="user-detail">
                 <span className="profile-name">
+                role : {user['role_name']} <span> </span> | <span> </span>
                     username : {user['firstname']} <span> </span> | <span> </span>
                     <Link to="/logout">
                         <button className="btn btn-primary btn-sm">

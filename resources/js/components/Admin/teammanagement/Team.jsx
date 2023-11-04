@@ -48,6 +48,7 @@ const Team = () => {
         password: "",
         departmentName: "",
         sex: "",
+        role_name: "",
     });
 
     const handleInputChange = (event) => {
@@ -61,6 +62,12 @@ const Team = () => {
             departmentName: event.target.value,
         });
     };
+    const handleRoleChange = ev => {
+        setFormValues({
+            ...formValues,
+            role_name : ev.target.value,
+        });
+    }
 
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
@@ -74,10 +81,10 @@ const Team = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            // working but there has to be flashin of message
+            
             UsersServices.addUser(formValues)
             .then((res) => {
-                console.log(res);
+                alert('user added successfully')
             }).catch((err) => {
                 console.log(err);
             });
@@ -315,8 +322,14 @@ const Team = () => {
                                                 <select
                                                     class="form-select form-select-sm"
                                                     aria-label=".form-select-sm example"
+                                                    value={
+                                                        formValues.role_name
+                                                    }
+                                                    onChange = {
+                                                        handleRoleChange
+                                                    }
                                                 >
-                                                    <option selected>
+                                                    <option value=""  selected>
                                                         Roles
                                                     </option>
                                                     {roles.map((role) => {
