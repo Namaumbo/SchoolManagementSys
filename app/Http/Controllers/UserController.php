@@ -27,7 +27,6 @@ class UserController extends Controller
     public function registerUser(Request $userService){
         return  $this->userService->store($userService);
     }
-    //Updating users
 
     public function updateUser(Request $userService,int $id){
          return $this->userService->update($userService,$id);
