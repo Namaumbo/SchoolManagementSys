@@ -46,7 +46,7 @@ export default function AdminDashboard() {
     ];
     const rows = data;
 
-    if (loggedIn && role === "admin" || loggedIn && role === "Head teacher") {
+    if (loggedIn && role === "Admin" || loggedIn && role === "Head teacher") {
         return (
             <>
                 <div className="main">

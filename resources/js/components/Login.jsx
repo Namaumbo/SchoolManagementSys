@@ -2,95 +2,125 @@ import React, { useState } from "react";
 import "../../css/login.css";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userState, userInfo } from "./User/userState";
+import { userState } from "./User/userState";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
+import Swal from "sweetalert2";
 
 export default function Login() {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState("");
-    const [login, setLogin] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [, setLoginStatus] = useRecoilState(userState);
 
-    // const [ userInformation , setUserInformation] = useRecoilState(userInfo)
-    // const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated") || false);
+    const handleErrorResponse = (res) => {
+        const { status, data } = res;
 
-    //---------------------------------------setting role of the user logged in-------------------------------------------------//
-    let [{}, setLoginStatus] = useRecoilState(userState);
-    ///---------------------------------------------------end-------------------------------------------------------------------//
+        if (status === 422 && data?.status === "error" && data?.message === "Validation Error") {
+            // Handle validation errors
+            Swal.fire({
+                icon: "error",
+                title: "Validation Error",
+                text: Object.values(data.errors).flat().join("\n"),
+            });
+        } else if (status === 401 && data?.status === "error") {
+            // Handle other errors, including invalid credentials
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data?.message || "An unexpected error occurred. Please contact the administrator.",
+            });
+        } else {
+            // Handle other errors
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "An unexpected error occurred. Please contact the administrator.",
+            });
+        }
+
+        // Handle other status codes if needed
+        switch (status) {
+            // ... other cases
+            default:
+                // Handle other status codes
+                break;
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (email.length > 0 && password.length > 0) {
-            const user = { _token: "{{csrf_token()}}", email, password };
+            setLoading(true);
 
-            setLoading(false);
-            setMessage("");
-            setTimeout(() => {
-                setLoading(true);
-                setLogin(true);
-            }, 2000);
-            UsersServices.userLogin(user)
-                .then((res) => {
-                    if (res.status === 200) {
-                        const user = btoa(JSON.stringify(res.data["user"]));
-                        localStorage.setItem("key", res.data.access_token);
-                        localStorage.setItem("vitals", user);
-                        switch (res.data.user.role_name) {
-                            case "Teacher":
-                                setLoginStatus({
-                                    loggedIn: true,
-                                    role: "Teacher",
-                                });
-                                break;
-                            case "Head teacher":
-                                setLoginStatus({
-                                    loggedIn: true,
-                                    role: "Head teacher",
-                                });
-                                break;
-                            case "Student":
-                                setLoginStatus({
-                                    loggedIn: true,
-                                    role: "Student",
-                                });
-                                break;
-                            case "Administrator":
-                                setLoginStatus({
-                                    loggedIn: true,
-                                    role: "admin",
-                                });
-                                break;
-                            default:
-                                break;
-                        }
-                        navigate("/dashboard");
-
-                        // in the api there should be a return statement as an exception
-                    } else if (res.status === 422) {
-                        console.log(res);
-                    } else {
-                        res = {
-                            message:
-                                "An error occurred Please contact the administrator",
-                            code: 500,
-                            status: "error",
-                        };
-                        console.error(res);
-                    }
-                })
-                .catch((err) => {
-                    console.log("error =>", err);
+            try {
+                const res = await UsersServices.userLogin({
+                    _token: "{{csrf_token()}}",
+                    email,
+                    password,
                 });
+
+                if (res.status === 200) {
+                    const user = btoa(JSON.stringify(res.data["user"]));
+                    localStorage.setItem("key", res.data.access_token);
+                    localStorage.setItem("vitals", user);
+
+                    switch (res.data.user.role_name) {
+                        case "Teacher":
+                            setLoginStatus({
+                                loggedIn: true,
+                                role: "Teacher",
+                            });
+                            break;
+                        case "Head teacher":
+                            setLoginStatus({
+                                loggedIn: true,
+                                role: "Head teacher",
+                            });
+                            break;
+                        case "Student":
+                            setLoginStatus({
+                                loggedIn: true,
+                                role: "Student",
+                            });
+                            break;
+                        case "Administrator":
+                            setLoginStatus({
+                                loggedIn: true,
+                                role: "admin",
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (res.data.status === "success") {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Login Success!",
+                            text: res.data.message || "Welcome!",
+                        });
+
+                        navigate("/dashboard");
+                    }
+                } else {
+                    handleErrorResponse(res);
+                }
+            } catch (error) {
+                // Display error from the controller
+                handleErrorResponse(error.response);
+            } finally {
+                setLoading(false);
+            }
         }
     };
+
     return (
         <>
             <div className="logoScn">
-                <img src={logo} className="logo" />
+                <img src={logo} className="logo" alt="Logo" />
             </div>
             <div className="login-wrapper">
                 <form onSubmit={handleSubmit}>
@@ -111,7 +141,6 @@ export default function Login() {
                     <label htmlFor="validationDefault03" className="label">
                         Password
                     </label>
-
                     <br />
                     <input
                         type="password"
@@ -122,42 +151,18 @@ export default function Login() {
                     />
                     <br />
                     <br />
-                    <button className="loginBtn">
+                    <button className="loginBtn" disabled={loading}>
                         {loading ? (
-                            <span className="login-text">Login</span>
+                            <span className="login-text">Logging in...</span>
                         ) : (
-                            <span style={{ color: "white" }}>
-                                <span
-                                    className="spinner-grow spinner-grow-sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                />
-                            </span>
+                            <span>Login</span>
                         )}
                     </button>
                 </form>
                 <div>
-                    <p>Don't have an account? please contact administrator</p>
+                    <p>Don't have an account? Please contact the administrator.</p>
                 </div>
             </div>
-            {/* <div className="wrappers">
-            
-                        
-                       
-                        <Button  onClick={handleSubmit}>{loading ?
-                            <span style={{color: "white", fontSize: "18px"}}>Login</span> :
-                            <span style={{color: "white"}}>
-                            {/* <span className="spinner-grow spinner-grow-sm" role="status"
-                                  aria-hidden="true"/> 
-                        </span>
-                        }
-                        </Button>
-                        <div className="col-md-6">
-                            <span style={{color: "red"}}>{message}</span>
-                        </div>
-                    </form>
-                </div>
-            </div> */}
         </>
     );
 }

@@ -2,22 +2,29 @@
 
 namespace Database\Factories;
 
+use App\Models\Assessment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Assessment>
- */
 class AssessmentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Assessment::class;
+
     public function definition()
     {
-        return [
-            //
-        ];
-    }
+        $teacherEmail = User::inRandomOrder()->first()->email;
+
+return [
+    'subject_id' => \App\Models\Subject::factory(),
+    'student_id' => \App\Models\Student::factory(),
+    'schoolTerm' => $this->faker->randomElement(['Term 1', 'Term 2', 'Term 3']),
+    'teacherEmail' => $teacherEmail,
+    'firstAssessment' => $this->faker->randomFloat(2, 0, 100),
+    'secondAssessment' => $this->faker->randomFloat(2, 0, 100),
+    'endOfTermAssessment' => $this->faker->randomFloat(2, 0, 100),
+    'averageScore' => 0,
+    'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+    'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+];
+    
+}
 }

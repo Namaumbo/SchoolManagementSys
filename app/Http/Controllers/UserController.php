@@ -28,6 +28,10 @@ class UserController extends Controller
         return  $this->userService->store($userService);
     }
 
+    
+    public function allocationSubject(Request $userService){
+        return  $this->userService->Allocation($userService);
+    }
     public function updateUser(Request $userService,int $id){
          return $this->userService->update($userService,$id);
     }

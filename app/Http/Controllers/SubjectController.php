@@ -32,7 +32,16 @@ class SubjectController extends Controller
 
    public function show(int $id)
    {
-       return Subject::findorFail($id);
+
+    $subject=Subject::with('students','users')->findorFail($id);
+       $relatedStudents=$subject->students;
+       $relatedTeachers=$subject->users;
+       return response()->json([
+      
+        'Students' => $relatedStudents,
+        'Teachers' => $relatedTeachers,
+    ], 201);
+
    }
 
     

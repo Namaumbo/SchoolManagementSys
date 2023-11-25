@@ -77,7 +77,7 @@ Route::controller(UserController::class)->group(function () {
     );
     Route::post('/logout', 'logout');
 
-    Route::post('/allocations', 'Allocation');
+    Route::post('/allocations', 'allocationSubject');
 
 });
 Route::controller(DepartmentController::class)->group(function () {
@@ -125,7 +125,7 @@ Route::controller(LevelController::class)->group(function () {
 
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
-    Route::put('/create-assessment/{id}', 'store');
+    Route::put('/create-assessment/{id}', 'UpdateAssessment');
 
 
 });

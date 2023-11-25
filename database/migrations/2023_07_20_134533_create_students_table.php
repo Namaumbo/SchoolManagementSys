@@ -22,22 +22,16 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
-            $table->string('className')->nullable();
+            $table->unsignedInteger('class_id')->nullable();
 
 
-            $table->string('role_name',50)->nullable();
-            $table->foreign('role_name')
-                ->references('role_name')
-                ->on('roles')
-                ->onDelete('NO ACTION')
-                ->onUpdate('CASCADE');
                 $table->timestamps();
 
 
                 
-                $table->foreign('className')
-                ->references('className')
-                ->on('levels')
+                $table->foreign('class_id')
+                ->references('id')
+                ->on('subjects')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
 

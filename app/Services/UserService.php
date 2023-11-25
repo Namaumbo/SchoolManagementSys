@@ -185,7 +185,7 @@ use Psy\Util\Json;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
-        $user->role_name = $request->role_name;
+        $user->role_id = $request->role_id;
         $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
@@ -197,34 +197,36 @@ use Psy\Util\Json;
      * @return JsonResponse
      */
 
-    public function login(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    "validation_error" => $validator->errors()
-                ]
-            );
-        }
-        //        finding userName
-        if (!Auth::attempt($request->only("email", "password"))) {
-            return response()->json(["wrong credentials"]);
-        }
-        $token = Auth::user()->createToken('Token')->plainTextToken;
-        $cookie = cookie('jwt', $token, 30 * 1);
-        return response()->json(
-            [
-                "message" => "System successfully logged " . Auth::user()->first_name,
-                "status" => "success",
-                "access_token" => $token,
-                "token_type" => "bearer",
-                "user" => Auth::user()
-            ],
-        
-        )->withCookie($cookie);
-    }
-
+     public function login(Request $request): JsonResponse
+     {
+         $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
+         if ($validator->fails()) {
+             return response()->json([
+                 "status" => "error",
+                 "message" => "Validation Error",
+                 "errors" => $validator->errors(),
+             ], 422);
+         }
+ 
+         if (!Auth::attempt($request->only("email", "password"))) {
+             return response()->json([
+                 "status" => "error",
+                 "message" => "Invalid credentials",
+             ], 401);
+         }
+ 
+         $token = Auth::user()->createToken('Token')->plainTextToken;
+         $cookie = cookie('jwt', $token, 30 * 1);
+ 
+         return response()->json([
+             "status" => "success",
+             "message" => "System successfully logged " . Auth::user()->first_name,
+             "access_token" => $token,
+             "token_type" => "bearer",
+             "user" => Auth::user(),
+         ])->withCookie($cookie);
+     }
+ 
 
 
     public function logout()

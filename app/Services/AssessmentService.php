@@ -29,12 +29,12 @@ class AssessmentService
         
         $subject = Subject::select('id')->where('name', $request->input('name'))->first();
         $student = Student::select('id')->where('username', $request->input('username'))->first();
-          // i have revised this abit,checking the existence of the relationship between subject and student
-
+        /*i have revised this abit,checking 
+        the existence of the relationship between subject and student
+               */
         if (Assessment::where('subject_id',$subject->id)->where('student_id',$student->id)->exists()) {
             try {
                
-                
                     $firstAssessment  = $request->input('firstAssessment');
                     $secondAssessment = $request->input('secondAssessment');
                     $finalExam = $request->input('endOfTermAssessment');
