@@ -31,8 +31,8 @@ export default function Index() {
         <>
             <HashRouter>
                 <Routes>
-                    <Route exact path="/" element={<Login />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route exact path="/" element={<Department/>} />
+                    <Route path="/department" element={<Department />} />
                     <Route path="/" element={<Home />}>
                         <Route
                             path="/payments"
@@ -60,7 +60,6 @@ export default function Index() {
                             element={<ClassesPerformance />}
                         />
                         <Route path="/messages" element={<Messages />} />
-                        <Route path="/department" element={<Department />} />
                         <Route
                             path="/department/science"
                             element={<Science />}

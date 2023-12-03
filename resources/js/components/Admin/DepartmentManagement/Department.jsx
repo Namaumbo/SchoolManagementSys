@@ -1,56 +1,25 @@
-import {FiHome, FiUmbrella} from "react-icons/fi";
-import React from "react";
-import './deparment.css'
-import {Link, useNavigate} from 'react-router-dom';
+import Form from 'react-bootstrap/Form';
+import React from "react"
+import Card from 'react-bootstrap/Card';
 
-export default function Department(){
-    return(
-        <>
-            <div className="department-wrapper">
-                <div className="heading-title">
-                    <FiUmbrella/><span style={{color:'white'}}>Department - Panel</span>
-                </div>
-                <div className="science-content">
-                <div className="conWrapper">
-                        <div className="containerTabs">
-                            <div className="card">
-                                <div>
-                                    <span className="heading">
-                                        SCIENCES
-                                    </span>
-                                    <Link to="/department/science" className="links nav-link
-                                                    small-box-footer">More info
-                                                    </Link>
-                                </div>
-                                <span className="stats">
-                               
-                                    <span>
-                                        <h4 className="numbers">
-                                
-                                        </h4>
-                                    </span>
-                                </span>
-                            </div>
-                            <div className="card">
-                                <div>
-                                    <span className="heading">
-                                        languages
-                                    </span>
-                                </div>
-           
-                            </div>
-                            <div className="card">
-                                <div>
-                                    <span className="heading">
-                                        HUMANITIES
-                                    </span>
-                                </div>
-                            </div>      
-                        </div>
-                    </div>
-                    <br />   
-                </div>
-            </div>
-        </>
-    )
+
+// or less ideally
+import { Button } from 'react-bootstrap';
+function Department() {
+  return (
+    <Card style={{ width: '18rem' }}>
+      <Card.Body>
+        <Card.Title>Card Title</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+        <Card.Text>
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </Card.Text>
+        <Card.Link href="#">Card Link</Card.Link>
+        <Card.Link href="#">Another Link</Card.Link>
+      </Card.Body>
+    </Card>
+  );
 }
+
+export default Department;
