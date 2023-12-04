@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('sex');
 //            foreing
+            $table->string('role_name')->nullable();
 
             $table->string('departmentName',50)->nullable();
             $table->foreign('departmentName')
@@ -30,7 +31,11 @@ return new class extends Migration
                 ->onUpdate('CASCADE');
 
 
-           
+            $table->foreign('role_name')
+                ->references('role_name')
+                ->on('roles')
+                ->onDelete('NO ACTION')
+                ->onUpdate('CASCADE');
 
             $table->string('password');
             $table->string('village');

@@ -25,6 +25,12 @@ return new class extends Migration
             $table->unsignedInteger('class_id')->nullable();
 
 
+            $table->string('role_name',50)->nullable();
+            $table->foreign('role_name')
+                ->references('role_name')
+                ->on('roles')
+                ->onDelete('NO ACTION')
+                ->onUpdate('CASCADE');
                 $table->timestamps();
 
 

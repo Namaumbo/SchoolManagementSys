@@ -11,15 +11,16 @@ class Role extends Model
     protected $table = "roles";
 
     protected $fillable = [
-        'id',
         'role_name',
         'created_at',
         'updated_at'
       
     ];
-    public function user()
+ 
+    public function users():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(
+            User::class);
     }
 
 

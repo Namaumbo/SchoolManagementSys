@@ -30,7 +30,7 @@ const SideBar = () => {
     //     navigate('/login')
     // }
 
-    if (role === "admin" || role === "Head teacher") {
+    if (loggedIn && role === "Admin" || loggedIn && role === "Head teacher") {
         return (
             <div className="sideBarItems">
                 <ul className="sideBarList">
@@ -121,9 +121,9 @@ const SideBar = () => {
                 </ul>
             </div>
         );
-    } else if (role === "Teacher") {
+    } else if (loggedIn && role === "Teacher") {
         return (
-        
+         <>
             <div className="sideBarItems">
             <ul className="sideBarList">
                 <Link to="/dashboard" className="link">
@@ -170,6 +170,7 @@ const SideBar = () => {
                 </Link>
             </ul>
             </div>
+            </>
         );
     }
 

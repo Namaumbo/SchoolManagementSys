@@ -29,8 +29,8 @@ class User extends Authenticatable
         "sex",
         "village",
         "traditional_authority",
-        "district",
-        "role_id"
+        "district"
+
     ];
 
     /**
@@ -53,7 +53,14 @@ class User extends Authenticatable
     ];
 
 
-   
+    public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Role::class,
+            'users',
+            'id',
+            'role_name');
+    }
 
     public function departments():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
@@ -61,15 +68,13 @@ class User extends Authenticatable
             Department::class,
             'users',
             'departmentName',
+
             'departmentName');
     }
-// User.php
-
-public function roles()
-{
-    return $this->belongsToMany(Role::class);
-}
-
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
 
 
     public function subjects()
@@ -86,5 +91,14 @@ public function roles()
            'allocationable')->withTimeStamps();
     }
 
-  
+    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
+
+    {
+        return $this->hasOne(Level::class);
+    
+
+
+
+
+    }
 }

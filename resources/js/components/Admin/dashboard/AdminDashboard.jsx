@@ -46,7 +46,7 @@ export default function AdminDashboard() {
     ];
     const rows = data;
 
-    if (loggedIn && role === "Admin" || loggedIn && role === "Head teacher") {
+    if (loggedIn && role === "Head teacher" || loggedIn && role === "Admin") {
         return (
             <>
                 <div className="main">
@@ -137,8 +137,11 @@ export default function AdminDashboard() {
             </>
         );
     } else if (loggedIn && role === "Teacher") {
-       return ( <div>Teacher</div>)
+       return ( 
+       
+       
+       <div>Teacher</div>)
     } else {
-        // return <Navigate replace to="/login"/>;
+         //return <Navigate replace to="/login"/>;
     }
 }

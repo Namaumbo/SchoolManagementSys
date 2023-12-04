@@ -8,7 +8,7 @@ import "./Assessment.css";
 const Assessment = () => {
     const [editableRows, setEditableRows] = useState([]);
     const [editable, setEditable] = useState(false);
-
+    let [{ loggedIn, role }, setUser] = useRecoilState(userState);
     useEffect(() => {
         // Simulate API fetch
         const fetchData = async () => {
@@ -53,10 +53,15 @@ const Assessment = () => {
 
     return (
         <>
+
+
             <div className="heading">
                 <FiGitMerge />
                 <span style={{ color: "white" }}>Assessment - Panel</span>
             </div>
+
+            if (loggedIn && role === "Head teacher" || loggedIn && role === "Admin") {
+
             <div className="assessment-main">
                 <div className="user-tb">
                     <table className="table table-hover">
@@ -136,6 +141,10 @@ const Assessment = () => {
                     </div>
                 </div>
             </div>
+        }else if(loggedIn && role==="Admin" || ){
+
+            
+        }
         </>
     );
 };

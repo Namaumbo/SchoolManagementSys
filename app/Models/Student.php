@@ -20,8 +20,11 @@ class Student extends Model
         "traditional_authority",
         "district",
         "class"
+       
+
     ];
     
+  
 
     public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
@@ -37,16 +40,7 @@ class Student extends Model
         return $this->belongsToMany(Subject::class, 'assessments' );
     }
 
-    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
 
-    {
-        return $this->hasOne(Level::class);
-    
-
-
-
-
-    }
 
    
 

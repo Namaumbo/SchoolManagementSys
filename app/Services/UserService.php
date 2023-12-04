@@ -185,7 +185,7 @@ use Psy\Util\Json;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
-        $user->role_id = $request->role_id;
+        $user->role_name = $request->role_name;
         $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();

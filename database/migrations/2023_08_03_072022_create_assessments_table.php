@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('schoolTerm',50)->nullable();
+            $table->integer('schoolTerm')->nullable();
             $table->string('teacherEmail',50)->nullable();
             $table->unsignedInteger('subject_id')->nullable();
             $table->unsignedInteger('student_id')->nullable();
 
             $table->integer('firstAssessment')->nullable();
             $table->integer('secondAssessment')->nullable();
-            $table->json('endOfTermAssessment')->nullable();
+            $table->integer('endOfTermAssessment')->nullable();
             $table->integer('averageScore')->nullable();
 
                 $table->foreign('teacherEmail')

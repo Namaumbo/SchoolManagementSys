@@ -28,29 +28,7 @@ class SchoolVitals {
             });
         return this.response;
     }
-    async getSubjects() {
-        
-        await axios
-            .get(`${this.urlPrefix}/subjects`)
-            .then((res) => {
-                this.response = res.data;
-            })
-            .catch((err) => {
-                this.response = err;
-            });
-            return this.response;
-    };
-    async addSubject(data){
-        await axios
-        .post(`${this.urlPrefix}/create-subject`, data)
-        .then((res) => {
-            this.response = res.data;
-        }).catch((err) => {
-            this.response = err
-
-        });
-        return this.response;
-    }
+   
 }
 
 export default new SchoolVitals();
