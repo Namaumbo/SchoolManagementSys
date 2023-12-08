@@ -49,14 +49,12 @@ export default function Index (){
                         <Route path="/department/science" element={<Science/>}/>
                         <Route path="/logout" element={<Login/>}/>
 
-                        {/* //students and H-teacher */}
-                        {/* <Route path="/students" element={<Students/>}/>
-                        <Route path='/students-info' element={<StudentsInfo/>}/>
-                        <Route path='/department-performance' element={<Department/>}/>
-                        <Route path='student-performance' element={<StudentPerformance/>}/> */}
-                        {/*students and teacher*/}
+                        <Route path="/students" element={<Students />} />
+                        <Route path="/students-info" element={<StudentsInfo />} />
+                        <Route path="/department-performance" element={<Department />} />
+                       <Route path="/student-performance" element={<StudentPerformance />} />
                     </Route>
-            </Routes> 
+                        </Routes> 
             </HashRouter> 
 
                 {/* <p>this is wor</p> */}

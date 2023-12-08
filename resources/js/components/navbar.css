@@ -1,26 +1,52 @@
-
-.profile-name{
-    color: white;
+.profile-name,
+.school-logo,
+.link,
+.bg-body-tertiary,
+#nav-dropdown-title {
+    color: rgb(255, 255, 255);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
 }
-.user{
+.nav-dropdown-title > .nav-link {
+    color: rgb(255, 255, 255) !important;
+}
+
+.user {
     display: flex;
     justify-content: space-between;
     width: 150px;
     align-items: center;
 }
-.notification{
-    margin-right:1em
-}
-.nav-items{
-    display: flex;
-    justify-content: space-between;
-    background-color: #021b62;
-    padding:.5em;
-    height: 50px;
-    color: white;
+
+.notification {
+    margin-right: 1em;
 }
 
-.nav-logo{
-width: 70px;
-height: 40px;
+.nav-items {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(0, 183, 255);
+    padding: 0.5em;
+    height: 50px;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
 }
+
+.nav-logo {
+    width: 70px;
+    height: 40px;
+}
+.notification {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    color: white;
+  }
+  
+  .notification .icon {
+    color: white;
+    font-size: 20px;
+    margin-right: 5px;
+  }
+  
+

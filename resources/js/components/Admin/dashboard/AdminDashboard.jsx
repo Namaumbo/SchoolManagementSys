@@ -9,6 +9,10 @@ import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import moneyPng from "../../../../assets/icons8-money-48.png";
 import Test from "../../../Test";
+import { Card, Container, Row, Col } from 'react-bootstrap';
+import { FaUser, FaInfo, FaFolderOpen } from 'react-icons/fa';
+import { IconContext } from 'react-icons';
+
 export default function AdminDashboard() {
     let [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
@@ -45,6 +49,15 @@ export default function AdminDashboard() {
         { field: "role_name", headerName: "Role", width: 100 },
     ];
     const rows = data;
+
+
+
+
+    const cardData = [
+        { title: 'Department', icon: <FaUser />, color: 'primary', link: '/department' },
+        { title: 'Assessment', icon: <FaInfo />, color: 'success', link: '/assessment' },
+        { title: 'Information', icon: <FaFolderOpen />, color: 'info', link: '/information' }
+      ];
 
     if (loggedIn && role === "Head teacher" || loggedIn && role === "Admin") {
         return (
@@ -137,10 +150,49 @@ export default function AdminDashboard() {
             </>
         );
     } else if (loggedIn && role === "Teacher") {
+
+
        return ( 
+       <>
+        <div>
+        <div className="heading">
+                        <FiHome />
+                        <span style={{ color: "white" }}>Teacher Dashboard - Home</span>
+                    </div>
+        <Container>
+        <Row>
+          {cardData.map((card, index) => (
+            <Col sm={4} key={index}>
+              <Card
+                bg={card.color}
+                text="white"
+                style={{ width: '18rem', cursor: 'pointer' }}
+                className="mb-2"
+                onClick={() => window.location.assign(card.link)}
+              >
+                <Card.Header>
+                  <IconContext.Provider value={{ size: '2em', className: 'mr-2' }}>
+                    {card.icon}
+                  </IconContext.Provider>
+                  {card.title}
+                </Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                
+                  </Card.Text>
+                  <p style={{ textAlign: 'center', marginTop: '20px' }}>
+                    More Info{' '}
+                    
+                  </p>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Container>
        
-       
-       <div>Teacher</div>)
+    </div>
+    </>);
     } else {
          //return <Navigate replace to="/login"/>;
     }
