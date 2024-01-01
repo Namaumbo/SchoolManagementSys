@@ -20,20 +20,21 @@
         "vite": "^3.2.2"
     },
     "dependencies": {
-        "@emotion/react": "^11.10.5",
-        "@emotion/styled": "^11.10.5",
+        "@emotion/react": "^11.11.3",
+        "@emotion/styled": "^11.11.0",
         "@iconscout/react-unicons": "^1.1.6",
         "@mui/icons-material": "^5.10.15",
-        "@mui/material": "^5.10.15",
-        "@mui/x-data-grid": "^5.17.13",
-        "@mui/x-date-pickers": "^5.0.9",
+        "@mui/material": "^5.15.1",
+        "@mui/x-data-grid": "^5.17.26",
+        "@mui/x-date-pickers": "^6.15.0",
+        "@tanstack/react-query": "^5.15.0",
         "chart.js": "^4.2.0",
         "dayjs": "^1.11.6",
         "faker": "^6.6.6",
         "framer-motion": "^7.6.12",
         "install": "^0.13.0",
         "jquery": "^3.6.1",
-        "material-react-table": "^1.12.0",
+        "material-react-table": "^2.1.0",
         "npm": "^9.1.2",
         "npm-watch": "^0.11.0",
         "react-bootstrap": "^2.9.1",
@@ -43,11 +44,13 @@
         "react-icons": "^4.8.0",
         "react-modal": "^3.16.1",
         "react-pro-sidebar": "^1.0.0-alpha.7",
+        "react-query": "^3.39.3",
         "react-router-dom": "^6.4.3",
         "recharts": "^2.7.1",
         "recoil": "^0.7.6",
         "semantic-ui-css": "^2.5.0",
-        "semantic-ui-react": "^2.1.4",
-        "sweetalert2": "^11.9.0"
+        "semantic-ui-react": "^2.1.5",
+        "sweetalert2": "^11.9.0",
+        "sweetalert2-react-content": "^5.0.7"
     }
 }

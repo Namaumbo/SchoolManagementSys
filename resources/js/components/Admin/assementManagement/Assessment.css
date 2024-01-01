@@ -1,15 +1,26 @@
-.main-btns{
-   
-    float: right;
-    clear: left;
-
+.main-btns {
+  float: right;
+  clear: left;
 }
-.user-tb{
-    overflow: auto;
-}   
+
+.user-tb {
+  overflow: auto;
+}
+
 .highlighted-row {
-    border:1px solid green;
-    background-color: #f0f0f0; /* Set your desired highlight color */
-  }
+  border: 1px solid green;
+  background-color: #f0f0f0; /* Set your desired highlight color */
+}
 
+.form-control {
+  width: 100%;
+}
 
+/* Add spacing between input fields */
+.form-control.mb-2 {
+  margin-bottom: 10px; /* Adjust the value as needed */
+}
+.assessment-teacher{
+
+  color: white;
+}

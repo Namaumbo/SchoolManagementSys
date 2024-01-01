@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Carbon\Carbon;
@@ -10,8 +9,28 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-class AssessmentService
-{
+class AssessmentService{
+
+public function getAssessment(){
+    $reportData = Assessment::select(
+        'averageScore',
+        'subject_id',
+        'student_id',
+        'name',
+        'firstname',
+        'surname',
+        'firstAssessment',
+        'secondAssessment',
+        'username',
+ 
+    )
+        ->join('students', 'students.id', '=', 'assessments.student_id')
+        ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
+        ->get();
+
+        return $reportData;
+}
+
     public function updateAssessment(Request $request): JsonResponse
     {
         $response = [];
@@ -27,7 +46,7 @@ class AssessmentService
 
             $firstAssessment = $this->validateNumeric($request->input('firstAssessment'));
             $secondAssessment = $this->validateNumeric($request->input('secondAssessment'));
-            $endOfTermAssessment = $this->validateEndOfTermAssessment($request->input('endOfTermAssessment'));
+            $endOfTermAssessment = $request->input('endOfTermAssessment', []);
 
             // Allow zero values for assessments
             if ($firstAssessment < 0 || $secondAssessment < 0) {
@@ -36,19 +55,13 @@ class AssessmentService
 
             // Calculate average score based on the number of assessments entered
             if (!empty($firstAssessment) && empty($secondAssessment) && empty($endOfTermAssessment)) {
-                // If only the first assessment is provided, calculate it as a percentage
                 $averageScore = $firstAssessment / 100 * 100;
             } elseif (!empty($firstAssessment) && !empty($secondAssessment) && empty($endOfTermAssessment)) {
-                // If both first and second assessments are provided, calculate the average without multiplying by weights
                 $averageScore = ($firstAssessment + $secondAssessment) / 2;
             } elseif (!empty($firstAssessment) && !empty($secondAssessment) && !empty($endOfTermAssessment)) {
-                // Calculate average for endOfTermAssessment
                 $endOfTermAssessmentAverage = array_sum($endOfTermAssessment) / count($endOfTermAssessment);
-
-                // 40% of the sum of first and second assessments, 60% of the endOfTermAssessment average
                 $averageScore = ($firstAssessment + $secondAssessment) * 0.2 + $endOfTermAssessmentAverage * 0.6;
             } else {
-                // Allow the case where all assessments are zero
                 if ($firstAssessment == 0 && $secondAssessment == 0 && empty($endOfTermAssessment)) {
                     $averageScore = 0;
                 } else {
@@ -61,13 +74,16 @@ class AssessmentService
                 throw new \InvalidArgumentException('Invalid average score. The calculated percentage cannot exceed 100.');
             }
 
+            // Convert array to JSON for storage or set to null if empty
+            $endOfTermAssessmentJson = !empty($endOfTermAssessment) ? json_encode($endOfTermAssessment) : null;
+
             // Update the assessment record
             $assessment->update([
                 'schoolTerm' => $request->input('schoolTerm'),
                 'teacherEmail' => $request->input('teacherEmail'),
                 'firstAssessment' => $firstAssessment,
                 'secondAssessment' => $secondAssessment,
-                'endOfTermAssessment' => $endOfTermAssessment,
+                'endOfTermAssessment' => $endOfTermAssessmentJson,
                 'averageScore' => $averageScore,
                 'updated_at' => Carbon::now(),
                 'created_at' => Carbon::now(),
@@ -89,21 +105,6 @@ class AssessmentService
     {
         if (!is_numeric($value) || $value < 0 || $value > 100) {
             throw new \InvalidArgumentException('Invalid assessment value. Values must be between 0 and 100.');
-        }
-
-        return $value;
-    }
-
-    private function validateEndOfTermAssessment($value)
-    {
-        // Ensure $value is an array
-        if (!is_array($value)) {
-            throw new \InvalidArgumentException('endOfTermAssessment must be an array.');
-        }
-
-        // Validate each value in the array
-        foreach ($value as $item) {
-            $this->validateNumeric($item);
         }
 
         return $value;

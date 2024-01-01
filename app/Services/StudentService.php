@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Illuminate\Http\JsonResponse;
@@ -25,10 +24,14 @@ class StudentService
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAll()
+    public function getStudents()
     {
-        return Student::all();
-    }
+        $students = Student::all();
+        
+        return $students;
+        }
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -40,25 +43,27 @@ class StudentService
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
         $student->className = $request->className;
-        if ($student->className == "Form 1") {
-            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F1/');
-        } elseif ($student->className == "Form 2") {
-            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F2/');
-        } elseif ($student->className == "Form 3") {
-            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F3/');
-        } elseif ($student->className == "Form 4") {
-            $student->username = Helper::StudentIdGenerator(new Student, 'username', 1, 'SIMS/F4/');
-        }
-
+    
+        // Extract the numeric part from the className (e.g., "Form 1" => "1")
+        $classNumber = preg_replace('/[^0-9]/', '', $student->className);
+    
+        // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
+        $classAbbreviation = 'F' . $classNumber;
+    
+        // Generate the student username in the format "SIMS/F1/001", "SIMS/F2/001", etc.
+        $student->username = Helper::StudentIdGenerator(new Student, 'username', 3, 'SIMS/' . $classAbbreviation . '/');
+    
         $student->sex = $request->sex;
         $student->village = $request->village;
         $student->traditional_authority = $request->traditional_authority;
         $student->district = $request->district;
         $student->role_name = $request->role_name;
-        $student->created_at = carbon::now();
-        $student->updated_at = carbon::now();
+        $student->created_at = Carbon::now();
+        $student->updated_at = Carbon::now();
         $student->save();
     }
+    
+    
 
     /**
      * Store a newly created resource in storage.

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
-            $table->unsignedInteger('class_id')->nullable();
+            $table->string('className',50)->nullable();
 
 
             $table->string('role_name',50)->nullable();
@@ -35,9 +35,9 @@ return new class extends Migration
 
 
                 
-                $table->foreign('class_id')
-                ->references('id')
-                ->on('subjects')
+                $table->foreign('className')
+                ->references('className')
+                ->on('levels')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
 

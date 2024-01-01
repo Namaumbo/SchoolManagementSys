@@ -7,29 +7,30 @@ import * as IconSection from "react-icons/all";
 import UsersServices from "../../../../services/UsersServices";
 
 function UserManagement() {
-    const [{ loggedIn, role, usersList }, setUsersList] =
+    const [{ loggedIn, role, usersList, userLevels, userSubjects }, setUsersList] =
         useRecoilState(userState);
     const [loading, setLoading] = useState(true);
 
     let [users, setUsers] = useRecoilState(userDetails);
 
-    setTimeout(() => {
-        setLoading(false);
-    }, 1000);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await UsersServices.getAllUsers();
+                setUsers(response.users);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     function handleEdit() {
         alert("ok");
         // redirect('/teachers')
     }
-    useEffect(() => {
-        let data = UsersServices.getAllUsers();
-
-        data.then((res) => {
-            setUsers(res);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }, []);
 
     return (
         <>
@@ -40,7 +41,7 @@ function UserManagement() {
             <div className="searchForm">
                 <form role="search">
                     <input
-                        class="form-control me-2"
+                        className="form-control me-2"
                         type="search"
                         placeholder="Search"
                         aria-label="Search"
@@ -70,57 +71,46 @@ function UserManagement() {
                                             <th>T/A</th>
                                             <th>Email</th>
                                             <th>District</th>
+                                            <th>Role</th>
+                                            <th>Subjects</th>
+                                            <th>Levels</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        {users.map((user) => {
-                                            return (
-                                                <tr key={user.id}>
-                                                    <td>{user.id}</td>
-                                                    <td>{user.title}</td>
-                                                    <td>{user.firstname}</td>
-                                                    <td>{user.surname}</td>
-                                                    <td>{user.sex}</td>
-                                                    <td>
-                                                        {
-                                                            user.traditional_authority
-                                                        }
-                                                    </td>
-
-                                                    <td>{user.email}</td>
-                                                    <td>{user.district}</td>
-                                                    <td>
-                                                        <button className="btn  btn-danger btn-sm">
-                                                            <IconSection.AiFillDelete size="10px" />
-                                                            Delete
-                                                        </button>{" "}
-                                                        <button className="btn btn-primary btn-sm">
-                                                            <IconSection.FiEdit
-                                                                size="10px"
-                                                                onClick={
-                                                                    handleEdit
-                                                                }
-                                                            />
-                                                            Edit
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                        {users.map((user) => (
+                                            <tr key={user.id}>
+                                                <td>{user.id}</td>
+                                                <td>{user.title}</td>
+                                                <td>{user.firstname}</td>
+                                                <td>{user.surname}</td>
+                                                <td>{user.sex}</td>
+                                                <td>{user.traditional_authority}</td>
+                                                <td>{user.email}</td>
+                                                <td>{user.district}</td>
+                                                <td>{user.role_name}</td>
+                                                <td>{user.subjects.join(', ')}</td>
+                                                <td>{user.levels.join(', ')}</td>
+                                                <td>
+                                                    <button className="btn  btn-danger btn-sm">
+                                                        <IconSection.AiFillDelete size="10px" />
+                                                        Delete
+                                                    </button>{" "}
+                                                    <button className="btn btn-primary btn-sm" onClick={handleEdit}>
+                                                        <IconSection.FiEdit size="10px" />
+                                                        Edit
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
                         </>
                     ) : (
-                        <div
-                            className="container text-center"
-                            style={{ marginTop: "25%" }}
-                        >
-                            <span className="noUser">
-                                Oops! no users so far add Users
-                            </span>
+                        <div className="container text-center" style={{ marginTop: "25%" }}>
+                            <span className="noUser">Oops! no users so far add Users</span>
                         </div>
                     )}
                 </div>

@@ -41,7 +41,10 @@ class Student extends Model
     }
 
 
-
+    public function levels(): BelongsTo
+    {
+        return $this->belongsTo(Level::class, 'class');
+    }
    
 
 }

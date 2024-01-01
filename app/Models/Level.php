@@ -25,11 +25,11 @@ class Level extends Model
             'allocationable');
     }
 
-    public function user():BelongsTo
+    public function student(): HasOne
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Student::class, 'class');
     }
-   
+
 
 
  

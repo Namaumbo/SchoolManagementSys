@@ -17,10 +17,9 @@ class Role extends Model
       
     ];
  
-    public function users():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->belongsToMany(
-            User::class);
+        return $this->hasOne(User::class);
     }
 
 

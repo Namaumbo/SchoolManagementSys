@@ -1,9 +1,10 @@
-import "./sidebar.css";
+import "./Sidebar.css";
 import React from "react";
 import { Logout } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "../User/userState";
+import { userDetails } from "../recoil_states/userdetails";
 import {
     BiBarChartAlt2,
     BiBusSchool,
@@ -30,7 +31,7 @@ const SideBar = () => {
     //     navigate('/login')
     // }
 
-    if (loggedIn && role === "Admin" || loggedIn && role === "Head teacher") {
+    if ( loggedIn && role === "Head teacher") {
         return (
             <div className="sideBarItems">
                 <ul className="sideBarList">

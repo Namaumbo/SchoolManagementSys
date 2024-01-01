@@ -28,11 +28,47 @@ use Psy\Util\Json;
       class UserService {
         use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function getAll()
-    {
-        return User::all();
-    }
-
+        public function getAll()
+        {
+            // Get the logged-in user
+            $user = User::auth();
+        
+            // Check if the user exists
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found',
+                    'status' => 'error',
+                ], 404);
+            }
+        
+            // Load subjects and levels for the logged-in user
+            $user= User::with(['subjects', 'levels'])
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'title' => $user->title,
+                        'firstname' => $user->firstname,
+                        'surname' => $user->surname,
+                        'email' => $user->email,
+                        'sex' => $user->sex,
+                        'village' => $user->village,
+                        'traditional_authority' => $user->traditional_authority,
+                        'district' => $user->district,
+                        'role_name' => $user->role_name,
+                        'departmentName' => $user->departmentName,
+                        'subjects' => $user->subjects->pluck('name'),
+                        'levels' => $user->levels->pluck('className'),
+                    ];
+                });
+        
+            return response()->json([
+                'message' => 'User details retrieved successfully',
+                'status' => 'success',
+                'users' => $users,
+            ]);
+        }
+        
     public function store(Request $request): JsonResponse
     {
         $user = User::where('email', $request->input('email'))->first();

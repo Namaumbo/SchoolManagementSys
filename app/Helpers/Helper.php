@@ -6,28 +6,24 @@ use App\Models\School;
 class Helper {
   
 
-public static function StudentIdGenerator($model,$trow,$length=3,$prefix){
-$data=$model::orderby('id','desc')->first();
-if(!$data){
-    $log_length=$length;
-    $last_number='1';
-}else{
-    $code=substr($data->$trow,strlen($prefix)+1);
-    $actual_last_number=($code/1)*1;
-    $increment_last_number=$actual_last_number+1;
-    $last_number_length=strlen($increment_last_number);
-    $log_length=$length-$last_number_length;
-    $last_number=$increment_last_number;
-}
-$zeros="";
-
-for($i=0;$i<$log_length;$i++){
-    $zeros.="0";
+    public static function StudentIdGenerator($model, $trow, $minLength = 3, $classPrefix)
+    {
+        $data = $model::orderBy('id', 'desc')->first();
     
-}
+        // Check if the className has changed, if yes, reset the increment
+        if (!$data || strpos($data->$trow, $classPrefix) === false) {
+            $last_number = 1;
+        } else {
+            $code = intval(substr($data->$trow, strlen($classPrefix)));
+            $increment_last_number = $code + 1;
+            $last_number = $increment_last_number;
+        }
+    
+        return $classPrefix . str_pad($last_number, $minLength, '0', STR_PAD_LEFT);
+    }
+    
 
-return $prefix.$zeros.$last_number ; 
-}
+    
 
 }
 
@@ -36,3 +32,4 @@ return $prefix.$zeros.$last_number ;
 
 
 ?>
+

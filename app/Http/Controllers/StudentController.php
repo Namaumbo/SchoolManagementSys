@@ -16,9 +16,9 @@ class StudentController extends Controller
 
     }
     //getting users from the database
-   public function getStudents()
+   public function getAll()
    {
-     return  $this->studentService->getAll();
+     return  $this->studentService->getStudents();
    }
    //registering users to the database
 

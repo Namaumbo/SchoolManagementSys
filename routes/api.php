@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -114,18 +113,16 @@ Route::controller(RoleController::class)->group(function () {
 });
 // classLevels Routes
 Route::controller(LevelController::class)->group(function () {
-    Route::get('/classes', function () {
-        return
-            ClassLevelResource::collection(Level::all());
-
-    });
+    Route::get('/classes', 'getClass');
     Route::post('/create-class', 'store');
     Route::put('/update-class', 'classTeacher');
 
+    Route::get('/class/{id}', 'getStudentsByClassAndSubject');
 
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
-    Route::put('/create-assessment/{id}', 'UpdateAssessment');
+    Route::put('/update-assessment', 'UpdateAssessment');
+    Route::get('/assessments', 'getAll');
 
 
 });
@@ -144,11 +141,11 @@ Route::controller(MessageController::class)->group(function () {
 //});
 // Api for students
 Route::controller(StudentController::class)->group(function () {
-    Route::get('/students', 'getStudents');
+    Route::get('/students', 'getAll');
     Route::post('/create-student', 'registerStudent');
     Route::put('/student/{id}', 'updateStudent');
     Route::delete('/student/{id}', 'destroy');
-    Route::post('/register-subject', 'subjectAndClassAllocation');
+    Route::post('/register-subject', 'registerSubject');
 
 });
 

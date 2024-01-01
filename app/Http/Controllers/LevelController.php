@@ -10,6 +10,10 @@ use Carbon\Carbon;
 
 class LevelController extends Controller
 {
+
+       public function getClass(){
+        return Level::all();
+       }
       public function create(Request $request,$class)
         {
             $class->className = $request->className;
@@ -65,7 +69,7 @@ class LevelController extends Controller
         $class = new Level;
         $this->create($request, $class);
 
-        $class->user()->associate($user);
+        $class->users()->associate($user);
         $class->save();
         $response['message'] = 'class teacher successfully created';
         $response['status'] = 'success';
@@ -84,4 +88,55 @@ class LevelController extends Controller
 return response()->json($response, $code);
 
 }
+
+    public function getStudentsByClassAndSubject($classId)
+    {
+        try {
+            // Get the logged-in user
+ 
+        
+            // Get the logged-in user
+            $user = Auth::User();
+
+            // Check if the user has the 'classTeacher' or 'Teacher' role
+            if ($user->first()->roles()->where('role_name', 'classTeacher')->orWhere('role_name', 'Teacher')->exists()) {
+                // Get the class by ID
+                $class = Level::findOrFail($classId);
+
+                // Check if the teacher is assigned to the class
+                if ($class->allocationable()->where('user_id', $user->first()->id)->exists()) {
+                    // Fetch students and subjects for the specified class
+                    $students = $class->student()->with(['role'])->get();
+                    $subjects = $class->subjects()->get();
+
+                    return response()->json([
+                        'message' => 'Students and Subjects fetched successfully',
+                        'students' => $students,
+                        'subjects' => $subjects,
+                        'status' => 200,
+                    ], 200);
+                } else {
+                    // Handle unauthorized access to the class
+                    return response()->json([
+                        'message' => 'Unauthorized access to the class',
+                        'status' => 403,
+                    ], 403);
+                }
+            } else {
+                // Handle if the user does not have the required role
+                return response()->json([
+                    'message' => 'User does not have the required role',
+                    'status' => 403,
+                ], 403);
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions
+            return response()->json([
+                'message' => 'Error fetching students and subjects',
+                'status' => 500,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

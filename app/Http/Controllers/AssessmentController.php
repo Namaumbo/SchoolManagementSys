@@ -21,6 +21,11 @@ class AssessmentController extends Controller
     return $this->assessmentService->updateAssessment($AssessmentService);
       }
 
+      public function getAll()
+      {
+        return  $this->assessmentService->getAssessment();
+      }
+
    }
    
 
