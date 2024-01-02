@@ -31,7 +31,7 @@ use Psy\Util\Json;
         public function getAll()
         {
             // Get the logged-in user
-            $user = User::auth();
+            $user = User::all();
         
             // Check if the user exists
             if (!$user) {
@@ -65,7 +65,7 @@ use Psy\Util\Json;
             return response()->json([
                 'message' => 'User details retrieved successfully',
                 'status' => 'success',
-                'users' => $users,
+                'users' => $user,
             ]);
         }
         
