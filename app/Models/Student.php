@@ -37,7 +37,9 @@ class Student extends Model
  
     public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Subject::class, 'assessments' );
+        return $this->belongsToMany(Subject::class, 'assessments' )
+        ->withPivot(['firstAssessment','secondAssessment','endOfTermAssessment','averageScore']); // Include other columns from the assessments table
+
     }
 
 

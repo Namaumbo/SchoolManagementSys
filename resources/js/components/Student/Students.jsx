@@ -25,46 +25,44 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 import * as IconSection from 'react-icons/all';
 
 const showErrorAlert = (title, text) => {
-  Swal.fire({
-    icon: 'error',
-    title: title,
-    text: text,
-  });
+  console.error(`${title}: ${text}`);
 };
 
 const showSuccessAlert = (title, text) => {
-  Swal.fire({
-    icon: 'success',
-    title: title,
-    text: text,
-  });
+  console.log(`${title}: ${text}`);
 };
 
 const showLoadingAlert = () => {
-  Swal.fire({
-    title: 'Fetching Students',
-    html: 'Please wait...',
-    didOpen: () => {
-      Swal.showLoading();
-    },
-  });
+  console.log('Loading...');
 };
 
 const hideLoadingAlert = () => {
-  Swal.close();
+  console.log('Loading completed.');
+};
+
+const Panel = ({ severity, onClose, children }) => {
+  const backgroundColor = severity === 'success' ? '#4CAF50' : severity === 'error' ? '#FF5733' : '#f5f5f5';
+  const borderColor = severity === 'error' ? 'red' : 'green';
+
+  return (
+    <div style={{ border: `1px solid ${borderColor}`, padding: '1rem', margin: '1rem 0', borderRadius: '4px', backgroundColor }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>{children}</div>
+        <button onClick={onClose} style={{ cursor: 'pointer', backgroundColor: 'transparent', border: 'none' }}>Close</button>
+      </div>
+    </div>
+  );
 };
 
 const Students = () => {
   const [validationErrors, setValidationErrors] = useState({});
   const [fetchedUsers, setFetchedUsers] = useState([]);
   const [classOptions, setClassOptions] = useState([]);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-  const [isLoadingUsersError, setIsLoadingUsersError] = useState(false);
+  const [isLoadingInitialData, setIsLoadingInitialData] = useState(true);
   const [creatingUser, setCreatingUser] = useState(false);
   const [newUserData, setNewUserData] = useState({
     firstname: '',
@@ -76,55 +74,37 @@ const Students = () => {
     district: '',
     role_name: '',
   });
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingCreate, setIsLoadingCreate] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchData = async () => {
       try {
         showLoadingAlert();
-
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        const response = await axios.get('http://127.0.0.1:8000/api/students');
-        console.log('Fetched Users:', response.data);
-        setFetchedUsers(response.data);
+        const usersResponse = await axios.get('http://127.0.0.1:8000/api/students');
+        const classesResponse = await axios.get('http://127.0.0.1:8000/api/classes');
 
-        hideLoadingAlert();
+        setFetchedUsers(usersResponse.data);
+        setClassOptions(classesResponse.data);
       } catch (error) {
-        console.error('Error loading users:', error.message);
+        console.error('Error loading data:', error.message);
         console.error('Response Status Code:', error.response?.status);
-        setIsLoadingUsersError(true);
-        hideLoadingAlert();
         showErrorAlert('Error', 'Failed to fetch students. Please try again later.');
       } finally {
-        setIsLoadingUsers(false);
+        hideLoadingAlert();
+        setIsLoadingInitialData(false);
       }
     };
 
-    const fetchClassOptions = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/classes');
-        setClassOptions(response.data);
-      } catch (error) {
-        console.error('Error loading class options:', error.message);
-      }
-    };
-
-    fetchUsers();
-    fetchClassOptions();
-  }, []);
-
-  const columns = useMemo(
-    () => [
-      { accessorKey: 'id', header: 'ID', size: 80, enableEditing: false },
-      { accessorKey: 'firstname', header: 'Firstname', enableEditing: true },
-      { accessorKey: 'surname', header: 'Surname', enableEditing: true },
-      { accessorKey: 'username', header: 'Username', enableEditing: false },
-    ],
-    [validationErrors]
-  );
+    fetchData();
+  }, [creatingUser]);
 
   const createUser = async (values) => {
     try {
+      setIsLoadingCreate(true);
       const createData = {
         firstname: values.firstname,
         surname: values.surname,
@@ -136,11 +116,45 @@ const Students = () => {
       };
 
       await axios.post('http://127.0.0.1:8000/api/create-student', createData);
-      showSuccessAlert('Success', 'Student created successfully');
+      setSuccessMessage('Student created successfully');
+      setCreatingUser(false);
+      refreshStudents();
     } catch (error) {
       console.error('Error creating user:', error);
-      showErrorAlert('Error Creating User', error.message);
-      throw error;
+      setErrorMessage(error.response?.data?.message || 'Failed to create student. Please try again later.');
+    } finally {
+      setIsLoadingCreate(false);
+    }
+  };
+
+  const openDeleteConfirmModal = async (row) => {
+    const { id } = row;
+    if (window.confirm('Are you sure you want to delete this student?')) {
+      try {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/student/${id}`);
+        if (response.status === 200) {
+          console.log('Student deleted successfully');
+          setFetchedUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+          setSuccessMessage(response.data.message || 'Student deleted successfully');
+        } else {
+          console.error('Failed to delete student');
+          setErrorMessage(response.data?.message || 'Failed to delete student. Please try again later.');
+        }
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        setErrorMessage(error.response?.data?.message || 'Failed to delete student. Please try again later.');
+      } finally {
+        refreshStudents();
+      }
+    }
+  };
+  
+  const refreshStudents = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/students');
+      setFetchedUsers(response.data);
+    } catch (error) {
+      console.error('Error refreshing students:', error.message);
     }
   };
 
@@ -151,35 +165,25 @@ const Students = () => {
       return;
     }
     setValidationErrors({});
-
     try {
+      setCreatingUser(true);
       await createUser(newUserData);
-      setCreatingUser(false);
-      setNewUserData({
-        firstname: '',
-        surname: '',
-        className: '',
-        sex: 'male',
-        village: '',
-        traditional_authority: '',
-        district: '',
-        role_name: '',
-      });
     } catch (error) {
       // Handle error if needed
     }
   };
 
-  const openDeleteConfirmModal = async (row) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      try {
-        // Implement delete user functionality here
-        console.log('Deleting user with ID:', row.original.id);
-      } catch (error) {
-        // Handle error if needed
-      }
-    }
-  };
+  const columns = useMemo(
+    () => [
+      { accessorKey: 'id', header: 'ID', size: 80, enableEditing: false },
+      { accessorKey: 'firstname', header: 'Firstname', enableEditing: true },
+      { accessorKey: 'surname', header: 'Surname', enableEditing: true },
+      { accessorKey: 'username', header: 'Username', enableEditing: false },
+      { accessorKey: 'className', header: 'Class', enableEditing: false },
+
+    ],
+    [validationErrors]
+  );
 
   const table = useMaterialReactTable({
     columns,
@@ -214,7 +218,7 @@ const Students = () => {
     ),
   });
 
-  if (isLoadingUsers) {
+  if (isLoadingInitialData) {
     return (
       <div
         style={{
@@ -231,12 +235,20 @@ const Students = () => {
     );
   }
 
-  if (isLoadingUsersError) {
-    return <p>Error loading students. Please try again later.</p>;
-  }
-
   return (
     <>
+      {successMessage && (
+        <Panel severity="success" onClose={() => setSuccessMessage('')}>
+          {successMessage}
+        </Panel>
+      )}
+
+      {errorMessage && (
+        <Panel severity="error" onClose={() => setErrorMessage('')}>
+          {errorMessage}
+        </Panel>
+      )}
+
       {creatingUser && (
         <Dialog open={creatingUser} onClose={() => setCreatingUser(false)}>
           <DialogTitle sx={{ backgroundColor: 'primary.main', color: 'white' }}>
@@ -274,8 +286,8 @@ const Students = () => {
                     onChange={(e) => setNewUserData({ ...newUserData, className: e.target.value })}
                   >
                     {classOptions.map((classOption) => (
-                      <MenuItem key={classOption.id} value={classOption.name}>
-                        {classOption.name}
+                      <MenuItem key={classOption.id} value={classOption.className}>
+                        {classOption.className}
                       </MenuItem>
                     ))}
                   </Select>
@@ -364,6 +376,7 @@ const Students = () => {
           </DialogActions>
         </Dialog>
       )}
+
       <div className="heading">
         <IconSection.FiUsers />
         <span style={{ color: 'white' }}>Students-available</span>

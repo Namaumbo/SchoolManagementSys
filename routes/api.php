@@ -122,7 +122,7 @@ Route::controller(LevelController::class)->group(function () {
 }); //Assessments
 Route::controller(AssessmentController::class)->group(function () {
     Route::put('/update-assessment', 'UpdateAssessment');
-    Route::get('/assessments', 'getAll');
+    Route::delete('/assessment', 'deleteAssessment');
 
 
 });
@@ -141,10 +141,11 @@ Route::controller(MessageController::class)->group(function () {
 //});
 // Api for students
 Route::controller(StudentController::class)->group(function () {
+
     Route::get('/students', 'getAll');
     Route::post('/create-student', 'registerStudent');
     Route::put('/student/{id}', 'updateStudent');
-    Route::delete('/student/{id}', 'destroy');
+    Route::delete('/student/{id}', 'deleteStudent');
     Route::post('/register-subject', 'registerSubject');
 
 });

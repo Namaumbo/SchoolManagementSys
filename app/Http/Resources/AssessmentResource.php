@@ -20,7 +20,9 @@ class AssessmentResource extends JsonResource
             'secondAssessment' => $this->secondAssessment,
             'endOfTermAssessment' => $this->endOfTermAssessment,
             'averageScore' => $this->averageScore,
-            'subjectName'=>$this->subjectName,
+            'name'=>$this->name,
+           // 'students' => StudentResource::collection($this->students)
+
         ];
     }
 }

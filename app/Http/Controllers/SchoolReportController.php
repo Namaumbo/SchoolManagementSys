@@ -18,7 +18,7 @@ class SchoolReportController extends Controller
             'name',
             'firstname',
             'surname',
-            // 'className'
+     
         )
             ->join('students', 'students.id', '=', 'assessments.student_id')
             ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')

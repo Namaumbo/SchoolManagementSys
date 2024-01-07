@@ -19,6 +19,7 @@ import Students from "./components/Student/Students";
 import StudentsInfo from "./components/Student/StudentsInfo";
 import Department from "./components/Admin/DepartmentManagement/Department";
 import Science from "./components/Admin/DepartmentManagement/Science";
+import Subject from "./components/Admin/subjectManagement/Subject";
 
 import StudentPerformance from "./components/Student/StudentPerformance";
 import {userDetails} from "@/components/recoil_states/userdetails";
@@ -48,6 +49,7 @@ export default function Index (){
                         <Route path="/department" element={<Department/>}/>
                         <Route path="/department/science" element={<Science/>}/>
                         <Route path="/logout" element={<Login/>}/>
+                        <Route path="/subject" element={<Subject />} />
 
                         <Route path="/students" element={<Students />} />
                         <Route path="/students-info" element={<StudentsInfo />} />

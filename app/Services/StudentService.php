@@ -5,9 +5,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Helpers\Helper;
+use App\Http\Resources\StudentResource;
 
 use App\Models\Subject;
 use App\Models\Relationship;
+use App\Models\Assessment;
 
 use App\Models\StudentSubject;
 use Carbon\Carbon;
@@ -26,9 +28,8 @@ class StudentService
      */
     public function getStudents()
     {
-        $students = Student::all();
-        
-        return $students;
+     $students= Student::with('subjects')->get();
+      return $students;
         }
 
     
@@ -61,7 +62,17 @@ class StudentService
         $student->created_at = Carbon::now();
         $student->updated_at = Carbon::now();
         $student->save();
+    
+        // Check if the student is in Form 1 or Form 2
+        if ($classNumber === '1' || $classNumber === '2') {
+            // Register all subjects for Form 1 and Form 2
+            $allSubjects = Subject::all();
+            foreach ($allSubjects as $subject) {
+                $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+            }
+        }
     }
+    
     
     
 
@@ -197,24 +208,41 @@ class StudentService
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+   /**
+ * Remove the specified resource from storage.
+ *
+ * @param  int  $id
+ * @return \Illuminate\Http\Response
+ */
+public function destroy($id)
     {
-        if (Student::where('id', $id)->exists()) {
+        try {
             $student = Student::find($id);
-            $student->delete();
+
+            if ($student) {
+                // Delete associated assessments
+                Assessment::where('student_id', $student->id)->delete();
+
+                // Detach subjects from the pivot table
+                $student->subjects()->detach();
+
+                // Delete the student
+                $student->delete();
+
+                return response()->json([
+                    'message' => 'Student and associated records deleted successfully'
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'No Student found with that information',
+                ], 404);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Student is deleted successfully'
-            ], 404);
-        } else {
-            return response()->json([
-                'message' => 'No  Student found with that information ',
-            ]);
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
+
 }
+

@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import {
   MaterialReactTable,
-  useMaterialReactTable,
 } from 'material-react-table';
 import {
   Box,
@@ -17,11 +16,12 @@ import {
   TextField,
   Typography,
   Paper,
+  MenuItem,
 } from '@mui/material';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
@@ -30,13 +30,21 @@ const Assessments = () => {
   const [expandedDetails, setExpandedDetails] = useState({});
   const [editingStudent, setEditingStudent] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [endOfTermAssessmentFields, setEndOfTermAssessmentFields] = useState([]);
+  const [viewDetailsModalOpen, setViewDetailsModalOpen] = useState(false);
   const [saveMessage, setSaveMessage] = useState(null);
+  const [subjects, setSubjects] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedUsername, setSelectedUsername] = useState('');
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
+
+  const [endOfTermAssessmentFields, setEndOfTermAssessmentFields] = useState([]);
+  const [displayEndOfTermAssessments, setDisplayEndOfTermAssessments] = useState(false);
+  const [paperCount, setPaperCount] = useState(0);
 
   useEffect(() => {
     const fetchAssessments = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/assessments');
+        const response = await axios.get('http://127.0.0.1:8000/api/students');
         console.log('Fetched Assessments:', response.data);
         setFetchedAssessments(response.data);
       } catch (error) {
@@ -44,7 +52,18 @@ const Assessments = () => {
       }
     };
 
+    const fetchSubjects = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/subjects');
+        console.log('Fetched Subjects:', response.data);
+        setSubjects(response.data);
+      } catch (error) {
+        console.error('Error loading subjects:', error.message);
+      }
+    };
+
     fetchAssessments();
+    fetchSubjects();
   }, []);
 
   const toggleDetails = (studentId) => {
@@ -54,9 +73,16 @@ const Assessments = () => {
     }));
   };
 
+  const handleViewDetails = (student) => {
+    setSelectedStudentDetails(student);
+    setViewDetailsModalOpen(true);
+  };
+
   const handleEdit = (student) => {
     setEditingStudent(student);
-    setEndOfTermAssessmentFields([]); // Reset the end-of-term assessment fields
+    setEndOfTermAssessmentFields(student.subjects.map(subject => subject.pivot.endOfTermAssessment || ''));
+    setSelectedSubject(student.subjects[0].id.toString()); // Assuming the student has at least one subject
+    setSelectedUsername(student.username);
     setEditModalOpen(true);
     setSaveMessage(null); // Clear any previous messages
   };
@@ -64,7 +90,7 @@ const Assessments = () => {
   const handleDelete = async (studentId) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/assessments/${studentId}`);
-      const updatedAssessments = fetchedAssessments.filter((assessment) => assessment.student_id !== studentId);
+      const updatedAssessments = fetchedAssessments.filter((assessment) => assessment.id !== studentId);
       setFetchedAssessments(updatedAssessments);
     } catch (error) {
       console.error('Error deleting assessment:', error.message);
@@ -74,90 +100,82 @@ const Assessments = () => {
   const handleEditModalClose = () => {
     setEditingStudent(null);
     setEndOfTermAssessmentFields([]);
+    setSelectedSubject('');
+    setSelectedUsername('');
     setEditModalOpen(false);
     setSaveMessage(null); 
+    setPaperCount(0);
   };
 
+  const handleViewDetailsModalClose = () => {
+    setSelectedStudentDetails(null);
+    setViewDetailsModalOpen(false);
+  };
   const handleSaveEdit = async () => {
     try {
+      // Assuming 'student' is fetched based on 'selectedUsername'
+      const student = fetchedAssessments.find((assessment) => assessment.username === selectedUsername);
+  
+      if (!student) {
+        console.error('Student not found.');
+        return;
+      }
+  
+      const endOfTermAssessmentJson = JSON.stringify(endOfTermAssessmentFields.filter(Boolean));
+  
       const updatedAssessment = {
-        firstAssessment: document.getElementById('firstAssessment').value,
-        secondAssessment: document.getElementById('secondAssessment').value,
-        endOfTermPapers: endOfTermAssessmentFields,
+        username: selectedUsername,
+        name: selectedSubject,
+        student_id: student.id,
+        schoolTerm: document.getElementById('schoolTerm')?.value || '',
+        teacherEmail: document.getElementById('teacherEmail')?.value || '',
+        firstAssessment: document.getElementById('firstAssessment')?.value || '',
+        secondAssessment: document.getElementById('secondAssessment')?.value || '',
+        endOfTermAssessment: endOfTermAssessmentJson,
       };
-
-      const response = await axios.put(`http://127.0.0.1:8000/api/update-assessment`, updatedAssessment);
-
+  
+      const response = await axios.put('http://127.0.0.1:8000/api/update-assessment', updatedAssessment);
+  
       // Display success message
       setSaveMessage({ type: 'success', text: response.data.message });
-
+  
       const updatedAssessments = fetchedAssessments.map((assessment) => {
-        if (assessment.student_id === editingStudent.student_id) {
+        if (assessment.id === student.id) {
           return { ...assessment, ...updatedAssessment };
         }
         return assessment;
       });
       setFetchedAssessments(updatedAssessments);
-
+  
       setEditingStudent(null);
       setEditModalOpen(false);
+      setPaperCount(0); // Reset paperCount to 0 when saving the edit
     } catch (error) {
       console.error('Error saving edits:', error.message);
-
+  
       // Display error message from the backend
-      setSaveMessage({ type: 'error', text: error.response.data.message });
+      setSaveMessage({ type: 'error', text: error.response?.data?.message || 'An error occurred while saving edits.' });
     }
   };
-
+  
+  
   const handleAddPaper = () => {
+    setPaperCount((prevCount) => prevCount + 1);
     setEndOfTermAssessmentFields((prevFields) => [...prevFields, '']);
+    setDisplayEndOfTermAssessments(true);
   };
 
   const handlePaperChange = (index, value) => {
     setEndOfTermAssessmentFields((prevFields) => {
-      const newFields = [...prevFields];
-      newFields[index] = value;
-      return newFields;
+      const updatedFields = [...prevFields];
+      updatedFields[index] = value;
+      return updatedFields;
     });
   };
 
-  const renderAssessmentDetails = (assessment) => (
-    <Collapse in={expandedDetails[assessment.student_id]}>
-      <TableRow>
-        <TableCell colSpan={columns.length}>
-          <Box sx={{ marginLeft: '2rem' }}>
-            <Typography variant="subtitle1" sx={{ mb: 1, fontSize: 16 }}>
-              Student Information
-            </Typography>
-            <TextField
-              label="Name"
-              value={`${assessment.firstname} ${assessment.surname}`}
-              fullWidth
-              disabled
-              sx={{ fontSize: 14, mt: 1 }}
-            />
-            <Typography sx={{ fontSize: 14, mt: 1 }}>
-              <strong>Username:</strong> {assessment.username}
-            </Typography>
-            <MaterialReactTable
-              columns={[
-                { accessorKey: 'firstAssessment', header: 'First Assessment' },
-                { accessorKey: 'secondAssessment', header: 'Second Assessment' },
-                { accessorKey: 'averageScore', header: 'Average Score' },
-                
-              ]}
-              data={[assessment]} // Use an array to render a single row
-              enableEditing={false}
-            />
-          </Box>
-        </TableCell>
-      </TableRow>
-    </Collapse>
-  );
-
   const columns = useMemo(
     () => [
-      { accessorKey: 'student_id', header: 'Student ID', enableEditing: false },
+      { accessorKey: 'id', header: 'Student ID', enableEditing: false },
       {
         accessorKey: 'name',
         header: 'Name',
@@ -181,13 +199,9 @@ const Assessments = () => {
         header: 'Actions',
         Cell: ({ row }) => (
           <Box sx={{ display: 'flex', gap: '1rem' }}>
-            <Tooltip title="Toggle Details">
-              <IconButton onClick={() => toggleDetails(row.original.student_id)}>
-                {expandedDetails[row.original.student_id] ? (
-                  <KeyboardArrowUpIcon />
-                ) : (
-                  <KeyboardArrowDownIcon />
-                )}
+            <Tooltip title="View Details">
+              <IconButton onClick={() => handleViewDetails(row.original)}>
+                <VisibilityIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit">
@@ -196,7 +210,7 @@ const Assessments = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton onClick={() => handleDelete(row.original.student_id)}>
+              <IconButton onClick={() => handleDelete(row.original.id)}>
                 <DeleteIcon sx={{ color: 'red' }} />
               </IconButton>
             </Tooltip>
@@ -214,9 +228,51 @@ const Assessments = () => {
         data={fetchedAssessments}
         renderTableRowSubComponent={({ row }) => renderAssessmentDetails(row.original)}
       />
-
-      {/* Edit Modal */}
+  
+      {/* View Details Modal */}
       <Modal
+        open={viewDetailsModalOpen}
+        onClose={handleViewDetailsModalClose}
+        aria-labelledby="view-details-modal-title"
+        aria-describedby="view-details-modal-description"
+        closeAfterTransition
+      >
+        <Fade in={viewDetailsModalOpen}>
+          <Paper sx={{ p: 3, borderRadius: 12, width: '60%', maxWidth: 2500, maxHeight: '80vh', overflowY: 'auto', position: 'absolute', top: '40%', left: '60%', transform: 'translate(-50%, -50%)' }}>
+            <Typography variant="h6" component="div" sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText', p: 2 }}>
+              Assessment Details
+            </Typography>
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th>Subject Name</th>
+                  <th>Teacher Email</th>
+
+                  <th>First Assessment</th>
+                  <th>Second Assessment</th>
+                  <th>Average Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedStudentDetails?.subjects.map((subject) => (
+                  <tr key={subject.pivot.id}>
+                    <td>{subject.name}</td>
+                    <td>{subject.pivot.teacherEmail}</td>
+
+                    <td>{subject.pivot.firstAssessment}</td>
+                    <td>{subject.pivot.secondAssessment}</td>
+                    <td>{subject.pivot.averageScore}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {/* Render student details here using selectedStudentDetails */}
+          </Paper>
+        </Fade>
+      </Modal>
+  
+     {/* Edit Modal */}
+     <Modal
         open={editModalOpen}
         onClose={handleEditModalClose}
         aria-labelledby="edit-modal-title"
@@ -224,7 +280,7 @@ const Assessments = () => {
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
-          timeout: 500,
+          timeout: 0,
         }}
       >
         <Fade in={editModalOpen}>
@@ -247,23 +303,43 @@ const Assessments = () => {
               disabled
               sx={{ fontSize: 16, mt: 1 }}
             />
-            <TextField label="Username" fullWidth value={editingStudent?.username} sx={{ mt: 2 }} />
-            <Typography variant="subtitle1" sx={{ mt: 3 }}>
-              Assessments
-            </Typography>
-             <TextField label="Subject" fullWidth id="name" sx={{ mt: 2 }} />
+            <TextField
+              select
+              label="Subject"
+              fullWidth
+              id="subject"
+              value={selectedSubject}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              sx={{ mt: 2 }}
+            >
+              {subjects.map((subject) => (
+             <MenuItem key={subject.id} value={subject.name}>
+             {subject.name}
+          </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              label="Username"
+              fullWidth
+              id="username"
+              defaultValue={editingStudent?.username}
+              disabled // Make the TextField disabled
+              sx={{ mt: 2 }}
+            />
+           <TextField label="schoolTerm" fullWidth id="schoolTerm" defaultValue={editingStudent?.firstAssessment} sx={{ mt: 2 }} />
+           <TextField label="teacherEmail" fullWidth id="teacherEmail" defaultValue={editingStudent?.firstAssessment} sx={{ mt: 2 }} />
 
-            <TextField label="First Assessment" fullWidth id="firstAssessment" sx={{ mt: 2 }} />
-            <TextField label="Second Assessment" fullWidth id="secondAssessment" sx={{ mt: 2 }} />
+            <TextField label="First Assessment" fullWidth id="firstAssessment" defaultValue={editingStudent?.firstAssessment} sx={{ mt: 2 }} />
+            <TextField label="Second Assessment" fullWidth id="secondAssessment" defaultValue={editingStudent?.secondAssessment} sx={{ mt: 2 }} />
             <Typography variant="subtitle1" sx={{ mt: 3 }}>
               End of Term Assessments
             </Typography>
-            {endOfTermAssessmentFields.map((value, index) => (
+            {Array.from({ length: paperCount }).map((_, index) => (
               <TextField
                 key={index}
                 label={`Paper ${index + 1}`}
                 fullWidth
-                value={value}
+                value={endOfTermAssessmentFields[index] || ''}
                 onChange={(e) => handlePaperChange(index, e.target.value)}
                 sx={{ mt: 1 }}
               />
