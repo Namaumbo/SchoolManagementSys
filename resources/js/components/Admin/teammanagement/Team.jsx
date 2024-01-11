@@ -319,7 +319,7 @@ const Team = () => {
                                                     )}
                                                 </select>
                                                 <select
-                                                    class="form-select form-select-sm"
+                                                    className="form-select form-select-sm"
                                                     aria-label=".form-select-sm example"
                                                     value={
                                                         formValues.role_name
@@ -344,10 +344,10 @@ const Team = () => {
                                             </div>
                                         </div>
 
-                                        <div class="modal-footer">
+                                        <div className="modal-footer">
                                             <button
                                                 type="button"
-                                                class="btn btn-secondary"
+                                                className="btn btn-secondary"
                                                 data-bs-dismiss="modal"
                                                 onClick={handleSubmit}
                                             >
@@ -366,7 +366,7 @@ const Team = () => {
                 <>
                     {users.map(function (user) {
                         return (
-                            <>
+                            
                                 <div className="teacherInfo">
                                     <div className="Image">
                                         <img
@@ -382,7 +382,7 @@ const Team = () => {
                                     </div>
                                     <div className="details"></div>
                                 </div>
-                            </>
+                            
                         );
                     })}
                 </>
