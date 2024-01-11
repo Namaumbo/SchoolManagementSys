@@ -117,7 +117,7 @@ const Team = () => {
                         <div className="buttons">
                             <button
                                 type="button"
-                                class="btn btn-primary"
+                                className="btn btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#staticBackdrop"
                             >
@@ -125,7 +125,7 @@ const Team = () => {
                             </button>
 
                             <div
-                                class="modal fade"
+                                className="modal fade"
                                 id="staticBackdrop"
                                 data-bs-backdrop="static"
                                 data-bs-keyboard="false"
@@ -133,25 +133,25 @@ const Team = () => {
                                 aria-labelledby="staticBackdropLabel"
                                 aria-hidden="true"
                             >
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
+                                <div className="modal-dialog modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
                                             <h1
-                                                class="modal-title fs-5"
+                                                className="modal-title fs-5"
                                                 id="staticBackdropLabel"
                                             >
                                                 Add Teacher Details
                                             </h1>
                                             <button
                                                 type="button"
-                                                class="btn-close"
+                                                className="btn-close"
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"
                                             ></button>
                                         </div>
-                                        <div class="modal-body">
+                                        <div className="modal-body">
                                             <div>
-                                                <div class="form-check form-check-inline">
+                                                <div className="form-check form-check-inline">
                                                     <input
                                                         type="radio"
                                                         value="Male"
@@ -164,13 +164,13 @@ const Team = () => {
                                                         }
                                                     />
                                                     <label
-                                                        class="form-check-label"
+                                                        className="form-check-label"
                                                         for="inlineRadio1"
                                                     >
                                                         male
                                                     </label>
                                                 </div>
-                                                <div class="form-check form-check-inline">
+                                                <div className="form-check form-check-inline">
                                                     <input
                                                         type="radio"
                                                         value="Female"
