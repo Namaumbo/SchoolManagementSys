@@ -94,8 +94,7 @@ const Team = () => {
     };
 
     return (
-        <>
-            <div>
+        <div>
                 <div className="heading">
                     <FiUsers />
                     <span style={{ color: "white" }}>Teachers - Panel</span>
@@ -388,7 +387,6 @@ const Team = () => {
                     })}
                 </>
             </div>
-        </>
     );
 };
 export default Team;

@@ -9,23 +9,28 @@ import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import moneyPng from "../../../../assets/icons8-money-48.png";
 import Test from "../../../Test";
-import { Card, Container, Row, Col } from 'react-bootstrap';
-import { FaUser, FaInfo, FaFolderOpen } from 'react-icons/fa';
-import { IconContext } from 'react-icons';
+import { Card, Container, Row, Col } from "react-bootstrap";
+import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
+import { IconContext } from "react-icons";
 
 export default function AdminDashboard() {
     const [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
-    const [{ loggedIn, role }] = useRecoilState(userState);
+    // const [{ loggedIn, role }] = useRecoilState(userState);
+    const loggedIn = localStorage.getItem("loggedIn");
+    const role = localStorage.getItem("role");
     const accessKey = localStorage.getItem("key");
 
     useEffect(() => {
+        console.log(role, loggedIn);
         async function getUsers() {
             const headers = {
                 Authorization: `Bearer ${accessKey}`,
             };
             try {
-                const res = await axios.get("http://127.0.0.1:8000/api/users", { headers });
+                const res = await axios.get("http://127.0.0.1:8000/api/users", {
+                    headers,
+                });
                 setUserInfo(res.data);
                 setData(res.data.users); // Assuming the user data is in a 'users' property
             } catch (err) {
@@ -48,99 +53,117 @@ export default function AdminDashboard() {
     const rows = data;
 
     const cardData = [
-        { title: 'Department', icon: <FaUser />, color: 'primary', link: '/department' },
-        { title: 'Assessment', icon: <FaInfo />, color: 'success', link: '/assessment' },
-        { title: 'Information', icon: <FaFolderOpen />, color: 'info', link: '/information' }
+        {
+            title: "Department",
+            icon: <FaUser />,
+            color: "primary",
+            link: "/department",
+        },
+        {
+            title: "Assessment",
+            icon: <FaInfo />,
+            color: "success",
+            link: "/assessment",
+        },
+        {
+            title: "Information",
+            icon: <FaFolderOpen />,
+            color: "info",
+            link: "/information",
+        },
     ];
 
-    const isAdminOrHeadTeacher = loggedIn && (role === "Head teacher" || role === "Admin");
+    const isAdminOrHeadTeacher =
+        window.atob(loggedIn) && window.atob(role) === "Admin";
     const isTeacher = loggedIn && role === "Teacher";
 
     if (isAdminOrHeadTeacher) {
         return (
-            <>
-                <div className="main">
-                    <div className="heading">
-                        <FiHome />
-                        <span style={{ color: "white" }}>Dashboard - Home</span>
-                    </div>
-                    <div className="statistics">
-                        <div className="cardMn">
-                            <div>
-                                <span className="name-title">Students</span>
-                            </div>
-                            <div className="figure">
-                                <h4 className="numbers">{rows.length} </h4>
-                            </div>
+            <div className="main">
+                <div className="heading">
+                    <FiHome />
+                    <span style={{ color: "white" }}>Dashboard - Home</span>
+                </div>
+                <div className="statistics">
+                    <div className="cardMn">
+                        <div>
+                            <span className="name-title">Students</span>
                         </div>
-                        <div className="cardMn">
-                            <div>
-                                <img src={teachersPng} alt="students" />
-                                <span className="name-title">Teachers</span>
-                            </div>
-                            <div className="figure">
-                                <h4 className="numbers">{rows.length} </h4>
-                            </div>
-                        </div>
-                        <div className="cardMn">
-                            <div>
-                                <img
-                                    src={studentsPng}
-                                    alt="students"
-                                    className="stdPng"
-                                />
-                                <span className="name-title">Students</span>
-                            </div>
-                            <div className="figure">
-                                <h4 className="numbers">400 </h4>
-                            </div>
-                        </div>
-                        <div className="cardMn">
-                            <div>
-                                <img src={moneyPng} alt="money" />
-                                <span className="name-title">
-                                    Total Earnings
-                                </span>
-                            </div>
-                            <div className="figure">
-                                <h4 className="numbers">mk 3,000 </h4>
-                            </div>
+                        <div className="figure">
+                            <h4 className="numbers">{rows.length} </h4>
                         </div>
                     </div>
-
-                    <div className="body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    {columns.map((column) => (
-                                        <th key={column.field}>{column.headerName}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rows.map((user, index) => (
-                                    <tr key={index}>
-                                        {columns.map((column) => (
-                                            <td key={column.field}>{user[column.field]}</td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <div className="right-card">
-                            <Test />
+                    <div className="cardMn">
+                        <div>
+                            <img src={teachersPng} alt="students" />
+                            <span className="name-title">Teachers</span>
+                        </div>
+                        <div className="figure">
+                            <h4 className="numbers">{rows.length} </h4>
+                        </div>
+                    </div>
+                    <div className="cardMn">
+                        <div>
+                            <img
+                                src={studentsPng}
+                                alt="students"
+                                className="stdPng"
+                            />
+                            <span className="name-title">Students</span>
+                        </div>
+                        <div className="figure">
+                            <h4 className="numbers">400 </h4>
+                        </div>
+                    </div>
+                    <div className="cardMn">
+                        <div>
+                            <img src={moneyPng} alt="money" />
+                            <span className="name-title">Total Earnings</span>
+                        </div>
+                        <div className="figure">
+                            <h4 className="numbers">mk 3,000 </h4>
                         </div>
                     </div>
                 </div>
-            </>
+
+                <div className="body">
+                    <table>
+                        <thead>
+                            <tr>
+                                {columns.map((column) => (
+                                    <th key={column.field}>
+                                        {column.headerName}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((user, index) => (
+                                <tr key={index}>
+                                    {columns.map((column) => (
+                                        <td key={column.field}>
+                                            {user[column.field]}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="right-card">
+                        <Test />
+                    </div>
+                </div>
+            </div>
         );
-    } else if(isTeacher) {
+    } else if (isTeacher) {
         return (
             <>
-                <div>
+                
                     <div className="heading">
                         <FiHome />
-                        <span style={{ color: "white" }}>Teacher Dashboard - Home</span>
+                        <span style={{ color: "white" }}>
+                            Teacher Dashboard - Home
+                        </span>
                     </div>
                     <Container>
                         <Row>
@@ -149,12 +172,22 @@ export default function AdminDashboard() {
                                     <Card
                                         bg={card.color}
                                         text="white"
-                                        style={{ width: '18rem', cursor: 'pointer' }}
+                                        style={{
+                                            width: "18rem",
+                                            cursor: "pointer",
+                                        }}
                                         className="mb-2"
-                                        onClick={() => window.location.assign(card.link)}
+                                        onClick={() =>
+                                            window.location.assign(card.link)
+                                        }
                                     >
                                         <Card.Header>
-                                            <IconContext.Provider value={{ size: '2em', className: 'mr-2' }}>
+                                            <IconContext.Provider
+                                                value={{
+                                                    size: "2em",
+                                                    className: "mr-2",
+                                                }}
+                                            >
                                                 {card.icon}
                                             </IconContext.Provider>
                                             {card.title}
@@ -163,8 +196,13 @@ export default function AdminDashboard() {
                                             <Card.Text>
                                                 {/* Add relevant content for the Teacher dashboard */}
                                             </Card.Text>
-                                            <p style={{ textAlign: 'center', marginTop: '20px' }}>
-                                                More Info{' '}
+                                            <p
+                                                style={{
+                                                    textAlign: "center",
+                                                    marginTop: "20px",
+                                                }}
+                                            >
+                                                More Info{" "}
                                             </p>
                                         </Card.Body>
                                     </Card>
@@ -172,7 +210,7 @@ export default function AdminDashboard() {
                             ))}
                         </Row>
                     </Container>
-                </div>
+                
             </>
         );
     } else {

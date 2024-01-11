@@ -1,13 +1,16 @@
 
+ul{
+  color:yellow !important;
+}
+/* 
 .sideBarItems {
   border-right: 4px solid rgba(176, 176, 178, 0.39);
   overflow-y:scroll;
   height: 100vh;
-  position: relative;
-  background-color:darkblue ;
+  /* position: relative; 
+  background-color:blue ;
 
 }
-
 
 
 .center ul {
@@ -74,4 +77,4 @@ bottom: 0;
 }
 li {
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-}
+} */

@@ -11,10 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 export default function NavBar() {
 
-
-    const vitals  = localStorage.getItem('vitals')
-    const userInfo = atob(vitals)
-    const user = JSON.parse(userInfo)
+    const user = JSON.parse(window.atob(localStorage.getItem('vitals')))
 
     return (
         <div className="nav-items">
@@ -28,13 +25,13 @@ export default function NavBar() {
           <Nav className="me-auto">
           <Nav.Link href="#features" className="notification">
                 <BiBell className="icon" />
-                 Notifications
+                <span className="nts">Notifications</span> 
                    </Nav.Link>
 
-            <NavDropdown title="Profile" id="collapsible-nav-dropdown" className="nav-dropdown-title">
+            <NavDropdown title="Profile" id="collapsible-nav-dropdown" className="nav-dropdown-title" >
               <NavDropdown.Item href="#">{user['firstname']}</NavDropdown.Item>
               <NavDropdown.Item href="#">
-             Role: {user['role_name']}
+              Role: {user['role_name']}
               </NavDropdown.Item>
 
        
@@ -42,14 +39,13 @@ export default function NavBar() {
           </Nav>
           <Nav>
         
-          <Link to="" className="link">Logout </Link>
+          <Link to="" className="link"><span  className="nts">Logout</span> </Link>
         
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
-             
-
+      
             </div>
         </div>
     );
