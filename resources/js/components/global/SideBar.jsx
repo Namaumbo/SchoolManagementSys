@@ -1,4 +1,3 @@
-import "./Sidebar.css";
 import React from "react";
 import { Logout } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -19,7 +18,9 @@ import {
 import { GoBook } from "react-icons/go";
 import { AiFillDashboard } from "react-icons/all";
 import { FiUmbrella } from "react-icons/fi";
-import Form from "react-bootstrap/Form";
+import "./sidebar.css";
+
+
 const SideBar = () => {
     const role = localStorage.getItem("role");
     const loggedIn = localStorage.getItem("loggedIn");
@@ -33,7 +34,7 @@ const SideBar = () => {
 
     if (window.atob(loggedIn) && window.atob(role) === "Admin") {
         return (
-            <div className="sideBarItems">
+            <div className="sideBarItems" >
                 <ul className="sideBarList">
                     <Link to="/dashboard" className="link">
                         <li className="itemList">
