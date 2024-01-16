@@ -12,6 +12,7 @@ import Test from "../../../Test";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
+import Grid from "@mui/material/Grid";
 
 export default function AdminDashboard() {
     const [userInfo, setUserInfo] = useRecoilState(userDetails);
@@ -22,7 +23,6 @@ export default function AdminDashboard() {
     const accessKey = localStorage.getItem("key");
 
     useEffect(() => {
-        console.log(role, loggedIn);
         async function getUsers() {
             const headers = {
                 Authorization: `Bearer ${accessKey}`,
@@ -34,11 +34,13 @@ export default function AdminDashboard() {
                 setUserInfo(res.data);
                 setData(res.data.users); // Assuming the user data is in a 'users' property
             } catch (err) {
+                // #TODO: Error handling propally give the error in a proper way
+                alert(err.message);
                 console.error(err);
             }
         }
 
-        getUsers();
+        getUsers().then(null);
     }, [accessKey, setUserInfo]);
 
     const columns = [
@@ -73,6 +75,28 @@ export default function AdminDashboard() {
         },
     ];
 
+    const statisticalData = [
+        {
+            menu: "students",
+            image: studentsPng,
+            number: rows.length ? rows.length : 0,
+        },
+        {
+            menu: "teachers",
+            image: teachersPng,
+            number: rows.length ? rows.length : 0,
+        },
+        {
+            menu: "students",
+            image: studentsPng,
+            number: rows.length ? rows.length : 0,
+        },
+        {
+            menu: "students",
+            image: studentsPng,
+            number: rows.length ? rows.length : 0,
+        },
+    ];
     const isAdminOrHeadTeacher =
         window.atob(loggedIn) && window.atob(role) === "Admin";
     const isTeacher = loggedIn && role === "Teacher";
@@ -84,133 +108,129 @@ export default function AdminDashboard() {
                     <FiHome />
                     <span style={{ color: "white" }}>Dashboard - Home</span>
                 </div>
-                <div className="statistics">
-                    <div className="cardMn">
-                        <div>
-                            <span className="name-title">Students</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">{rows.length} </h4>
-                        </div>
-                    </div>
-                    <div className="cardMn">
-                        <div>
-                            <img src={teachersPng} alt="students" />
-                            <span className="name-title">Teachers</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">{rows.length} </h4>
-                        </div>
-                    </div>
-                    <div className="cardMn">
-                        <div>
-                            <img
-                                src={studentsPng}
-                                alt="students"
-                                className="stdPng"
-                            />
-                            <span className="name-title">Students</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">400 </h4>
-                        </div>
-                    </div>
-                    <div className="cardMn">
-                        <div>
-                            <img src={moneyPng} alt="money" />
-                            <span className="name-title">Total Earnings</span>
-                        </div>
-                        <div className="figure">
-                            <h4 className="numbers">mk 3,000 </h4>
-                        </div>
+
+                <div className="container text-center">
+                    <div className="row">
+                        {statisticalData.map((stat) => {
+                            return (
+                                <React.Fragment>
+                                    <div className="col">
+                                        <div className="cardMn">
+                                            <div>
+                                                <img
+                                                className="arts"
+                                                    src={stat.image}
+                                                    alt="students"
+                                                />
+                                                <span className="name-title">
+                                                    {stat.title}
+                                                </span>
+                                            </div>
+                                            <div className="figure">
+                                                <h4 className="numbers">
+                                                    {stat.number}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
                     </div>
                 </div>
 
-                <div className="body">
-                    <table>
-                        <thead>
-                            <tr>
-                                {columns.map((column) => (
-                                    <th key={column.field}>
-                                        {column.headerName}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.map((user, index) => (
-                                <tr key={index}>
-                                    {columns.map((column) => (
-                                        <td key={column.field}>
-                                            {user[column.field]}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="right-card">
-                        <Test />
+               
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-7">
+                            <p>Users Available</p>
+
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            {columns.map((column) => (
+                                                <th key={column.field}>
+                                                    {column.headerName}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {rows.map((user, index) => (
+                                            <tr key={index}>
+                                                {columns.map((column) => (
+                                                    <td key={column.field}>
+                                                        {user[column.field]}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-4">
+                            <p>Revenue Summary</p>
+                                <Test />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                
             </div>
         );
     } else if (isTeacher) {
         return (
             <>
-                
-                    <div className="heading">
-                        <FiHome />
-                        <span style={{ color: "white" }}>
-                            Teacher Dashboard - Home
-                        </span>
-                    </div>
-                    <Container>
-                        <Row>
-                            {cardData.map((card, index) => (
-                                <Col sm={4} key={index}>
-                                    <Card
-                                        bg={card.color}
-                                        text="white"
-                                        style={{
-                                            width: "18rem",
-                                            cursor: "pointer",
-                                        }}
-                                        className="mb-2"
-                                        onClick={() =>
-                                            window.location.assign(card.link)
-                                        }
-                                    >
-                                        <Card.Header>
-                                            <IconContext.Provider
-                                                value={{
-                                                    size: "2em",
-                                                    className: "mr-2",
-                                                }}
-                                            >
-                                                {card.icon}
-                                            </IconContext.Provider>
-                                            {card.title}
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <Card.Text>
-                                                {/* Add relevant content for the Teacher dashboard */}
-                                            </Card.Text>
-                                            <p
-                                                style={{
-                                                    textAlign: "center",
-                                                    marginTop: "20px",
-                                                }}
-                                            >
-                                                More Info{" "}
-                                            </p>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    </Container>
-                
+                <div className="heading">
+                    <FiHome />
+                    <span style={{ color: "white" }}>
+                        Teacher Dashboard - Home
+                    </span>
+                </div>
+                <Container>
+                    <Row>
+                        {cardData.map((card, index) => (
+                            <Col sm={4} key={index}>
+                                <Card
+                                    bg={card.color}
+                                    text="white"
+                                    style={{
+                                        width: "18rem",
+                                        cursor: "pointer",
+                                    }}
+                                    className="mb-2"
+                                    onClick={() =>
+                                        window.location.assign(card.link)
+                                    }
+                                >
+                                    <Card.Header>
+                                        <IconContext.Provider
+                                            value={{
+                                                size: "2em",
+                                                className: "mr-2",
+                                            }}
+                                        >
+                                            {card.icon}
+                                        </IconContext.Provider>
+                                        {card.title}
+                                    </Card.Header>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            {/* Add relevant content for the Teacher dashboard */}
+                                        </Card.Text>
+                                        <p
+                                            style={{
+                                                textAlign: "center",
+                                                marginTop: "20px",
+                                            }}
+                                        >
+                                            More Info{" "}
+                                        </p>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                </Container>
             </>
         );
     } else {
