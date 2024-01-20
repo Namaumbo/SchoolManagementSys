@@ -60,7 +60,7 @@
 }
 
 thead {
-    background-color: #021b62;
+border-bottom: 1px solid rgb(155, 155, 155);
 }
 
 .col-7 {
@@ -70,7 +70,6 @@ thead {
     box-shadow: 1px 1px 1px #c6c2c2;
     margin-top: 10px;
     height: fit-content;
-    /* border:1px solid blue; */
 
 }
 
@@ -98,6 +97,9 @@ thead {
 
 }
 
+tr:nth-child(even){
+background-color: #cecece;
+}
 table {
     /* border:1px solid blue; */
     background-color: white;
@@ -106,6 +108,7 @@ table {
 
 table td {
     font-weight: 500;
+    
 }
 
 table tbody {

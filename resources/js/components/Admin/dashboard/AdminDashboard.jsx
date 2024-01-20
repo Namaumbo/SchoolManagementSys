@@ -113,68 +113,64 @@ export default function AdminDashboard() {
                     <div className="row">
                         {statisticalData.map((stat) => {
                             return (
-                                <React.Fragment>
-                                    <div className="col">
-                                        <div className="cardMn">
-                                            <div>
-                                                <img
+                                <div className="col" key={stat.menu}>
+                                    <div className="cardMn">
+                                        <div>
+                                            <img
                                                 className="arts"
-                                                    src={stat.image}
-                                                    alt="students"
-                                                />
-                                                <span className="name-title">
-                                                    {stat.title}
-                                                </span>
-                                            </div>
-                                            <div className="figure">
-                                                <h4 className="numbers">
-                                                    {stat.number}
-                                                </h4>
-                                            </div>
+                                                src={stat.image}
+                                                alt="students"
+                                            />
+                                            <span className="name-title">
+                                                {stat.title}
+                                            </span>
+                                        </div>
+                                        <div className="figure">
+                                            <h4 className="numbers">
+                                                {stat.number}
+                                            </h4>
                                         </div>
                                     </div>
-                                </React.Fragment>
+                                </div>
                             );
                         })}
                     </div>
                 </div>
 
-               
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-7">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-7">
                             <p>Users Available</p>
 
-                                <table>
-                                    <thead>
-                                        <tr>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {columns.map((column) => (
+                                            <th key={column.field}>
+                                                {column.headerName}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows.map((user, index) => (
+                                        <tr key={user.firstname}>
                                             {columns.map((column) => (
-                                                <th key={column.field}>
-                                                    {column.headerName}
-                                                </th>
+                                                <td key={column.field}>
+                                                    {user[column.field]}
+                                                </td>
                                             ))}
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rows.map((user, index) => (
-                                            <tr key={index}>
-                                                {columns.map((column) => (
-                                                    <td key={column.field}>
-                                                        {user[column.field]}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-4">
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-4">
                             <p>Revenue Summary</p>
-                                <Test />
-                            </div>
+                            <Test />
                         </div>
                     </div>
-                
+                </div>
             </div>
         );
     } else if (isTeacher) {

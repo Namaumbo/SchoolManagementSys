@@ -90,8 +90,6 @@ const Students = () => {
         setFetchedUsers(usersResponse.data);
         setClassOptions(classesResponse.data);
       } catch (error) {
-        console.error('Error loading data:', error.message);
-        console.error('Response Status Code:', error.response?.status);
         showErrorAlert('Error', 'Failed to fetch students. Please try again later.');
       } finally {
         hideLoadingAlert();
@@ -120,7 +118,6 @@ const Students = () => {
       setCreatingUser(false);
       refreshStudents();
     } catch (error) {
-      console.error('Error creating user:', error);
       setErrorMessage(error.response?.data?.message || 'Failed to create student. Please try again later.');
     } finally {
       setIsLoadingCreate(false);
@@ -134,6 +131,7 @@ const Students = () => {
         const response = await axios.delete(`http://127.0.0.1:8000/api/student/${id}`);
         if (response.status === 200) {
           console.log('Student deleted successfully');
+          
           setFetchedUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
           setSuccessMessage(response.data.message || 'Student deleted successfully');
         } else {
