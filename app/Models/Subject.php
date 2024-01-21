@@ -30,13 +30,14 @@ class Subject extends Model
            'assessments');
     }
 
-    public function users()
+    public function users(): BelongsToMany
     {
-        return $this->morphToMany(
-            User::class,
-            'allocationable');
+        return $this->belongsToMany(User::class)
+            ->using(Allocationable::class)
+            ->withPivot(['user_id', 'allocationable_id', 'allocationable_type', 'created_at', 'updated_at', 'name', 'other_field1', 'other_field2']);
     }
+}
    
     
-          }
+          
 

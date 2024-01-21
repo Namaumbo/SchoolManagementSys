@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\Level;
 use App\Models\Allocationable;
+use App\Models\Department;
 
 
 use Illuminate\Contracts\Queue\EntityNotFoundException;
@@ -42,7 +43,7 @@ use Psy\Util\Json;
             }
         
             // Load subjects and levels for the logged-in user
-            $user= User::with(['subjects', 'levels'])
+            $user= User::with(['subjects', 'levels',])
                 ->get()
                 ->map(function ($user) {
                     return [
@@ -56,9 +57,7 @@ use Psy\Util\Json;
                         'traditional_authority' => $user->traditional_authority,
                         'district' => $user->district,
                         'role_name' => $user->role_name,
-                        'departmentName' => $user->departmentName,
-                        'subjects' => $user->subjects->pluck('name'),
-                        'levels' => $user->levels->pluck('className'),
+                      
                     ];
                 });
         
@@ -69,34 +68,48 @@ use Psy\Util\Json;
             ]);
         }
         
-    public function store(Request $request): JsonResponse
-    {
-        $user = User::where('email', $request->input('email'))->first();
-        //Username represents a
-        if ($user) {
-            return response()->json(
-                ['message' => 'User already exists', 'email' => $user],
-                409
-            );
+        public function store(Request $request): JsonResponse
+        {
+            $user = User::where('email', $request->input('email'))->first();
+        
+            // Check if the user already exists
+            if ($user) {
+                return response()->json(['message' => 'User already exists', 'email' => $user], 409);
+            }
+        
+            try {
+                // Create a new user
+                $user = new User;
+                $this->userDetailsCommon($request, $user);
+        
+                // Check if the departmentName is provided in the request
+                if ($request->has('departmentName')) {
+                    // Retrieve the department by name
+                    $department = Department::where('departmentName', $request->input('departmentName'))->first();
+        
+                    // Check if the department exists
+                    if (!$department) {
+                        return response()->json(['message' => 'Department not found', 'status' => 404], 404);
+                    }
+        
+                    // Associate the user with the department
+                    $department->users()->syncWithoutDetaching([$user->id]);
+                }
+        
+                return response()->json([
+                    'message' => 'User saved successfully',
+                    'User' => $user,
+                    'status' => 201,
+                ], 201);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'User not saved',
+                    'status' => 404,
+                    'error' => $e->getMessage(),
+                ], 404);
+            }
         }
-
-        try {
-            $user = new User;
-            $this->userDetailsCommon($request, $user);
-          
-            return response()->json([
-                'message' => 'User saved successfully',
-                'User' => $user,
-                'status' => 201,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'User not saved',
-                'status' => 404,
-                '4' => $e,
-            ], 404);
-        }
-    }
+        
 
     public function Allocation(Request $request): JsonResponse
     {   
@@ -222,7 +235,6 @@ use Psy\Util\Json;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
         $user->role_name = $request->role_name;
-        $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();

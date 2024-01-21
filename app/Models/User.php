@@ -58,15 +58,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_name', 'role_name');
     }
 
-    public function departments():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            Department::class,
-            'users',
-            'departmentName',
-
-            'departmentName');
-    }
+ 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -77,7 +69,9 @@ class User extends Authenticatable
     {
         return $this->morphedByMany(
             Subject::class,
-           'allocationable')->withTimeStamps();
+           'allocationable')->withTimeStamps()
+           ->withPivot(['name']); // Include other columns from the assessments table
+
     }
 
     public function levels()
@@ -86,6 +80,16 @@ class User extends Authenticatable
             Level::class,
            'allocationable')->withTimeStamps();
     }
+
+    public function departments()
+    {
+        return $this->morphedByMany(
+            Department::class,
+           'allocationable')->withTimeStamps();
+    }
+
+
+
 
     public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
 
