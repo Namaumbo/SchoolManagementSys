@@ -23,12 +23,7 @@ return new class extends Migration
 //            foreing
             $table->string('role_name')->nullable();
 
-            $table->string('departmentName',50)->nullable();
-            $table->foreign('departmentName')
-                ->references('departmentName')
-                ->on('departments')
-                ->onDelete('NO ACTION')
-                ->onUpdate('CASCADE');
+              
 
 
             $table->foreign('role_name')
