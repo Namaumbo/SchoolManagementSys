@@ -92,24 +92,18 @@ export default function Login() {
                     
 
                     switch (res.data.user.role_name) {
-                        // case "Teacher":
-                        //     setLoginStatus({
-                        //         loggedIn: true,
-                        //         role: "Teacher",
-                        //     });
-                        //     break;
-                        // case "Head teacher":
-                        //     setLoginStatus({
-                        //         loggedIn: true,
-                        //         role: "Head teacher",
-                        //     });
-                        //     break;
-                        // case "Student":
-                        //     setLoginStatus({
-                        //         loggedIn: true,
-                        //         role: "Student",
-                        //     });
-                        //     break;
+                        case "Teacher":
+                            localStorage.setItem("loggedIn", window.btoa(true));
+                            localStorage.setItem("role", window.btoa("Teacher"));
+                            break;
+                        case "Head teacher":
+                            localStorage.setItem("loggedIn", window.btoa(true));
+                            localStorage.setItem("role", window.btoa("Head teacher"));
+                            break;
+                        case "Student":
+                            localStorage.setItem("loggedIn", window.btoa(true));
+                            localStorage.setItem("role", window.btoa("Student"));
+                            break;
                         case "Admin":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("Admin"));
