@@ -26,8 +26,9 @@ class Department extends Model
     ];
 
 
-   public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
+    public function users(){
+        return $this->morphToMany(
+            User::class,
+            'allocationable');
     }
 }

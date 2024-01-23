@@ -87,6 +87,8 @@ Route::controller(DepartmentController::class)->group(function () {
         '/register-department',
         'store'
     );
+
+    Route::post('/department/{id}/users','registerUsersToDepartment');
     Route::put('/department/{id}', 'update');
     Route::delete('/department/{id}', 'destroy');
 });
