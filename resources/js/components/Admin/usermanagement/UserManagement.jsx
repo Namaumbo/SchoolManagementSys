@@ -3,7 +3,7 @@ import "./users.css";
 import { useRecoilState } from "recoil";
 import { userState } from "@/components/User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
-import * as IconSection from "react-icons/all";
+// import * as IconSection from "react-icons/all";
 import UsersServices from "../../../../services/UsersServices";
 
 function UserManagement() {

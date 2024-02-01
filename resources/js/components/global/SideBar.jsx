@@ -16,7 +16,7 @@ import {
     BiUser,
 } from "react-icons/bi";
 import { GoBook } from "react-icons/go";
-import { AiFillDashboard } from "react-icons/all";
+import { AiFillDashboard } from "react-icons/ai";
 import { FiUmbrella } from "react-icons/fi";
 import "./sidebar.css";
 

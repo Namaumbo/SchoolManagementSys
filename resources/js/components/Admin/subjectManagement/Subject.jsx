@@ -1,5 +1,5 @@
 import React from "react"
-import * as IconSection from "react-icons/all";
+import * as IconSection from "react-icons/bi";
 
 const Profile = () =>{
     return<>

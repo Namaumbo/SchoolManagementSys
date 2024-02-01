@@ -3,7 +3,7 @@ import "./admindash.css";
 import { useRecoilState } from "recoil";
 import { userState } from "@/components/User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
-import { FiHome } from "react-icons/all";
+import { FiHome } from "react-icons/fi";
 import axios from "axios";
 import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
@@ -17,7 +17,6 @@ import Grid from "@mui/material/Grid";
 export default function AdminDashboard() {
     const [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [data, setData] = useState([]);
-    // const [{ loggedIn, role }] = useRecoilState(userState);
     const loggedIn = localStorage.getItem("loggedIn");
     const role = localStorage.getItem("role");
     const accessKey = localStorage.getItem("key");
