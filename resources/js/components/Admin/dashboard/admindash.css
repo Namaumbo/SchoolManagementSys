@@ -54,7 +54,7 @@
 
 .row:nth-child(2) {
     margin-top:5%;
-    border:1px solid black;
+    /* border:1px solid black; */
 }
 
 .expense-card {
@@ -124,9 +124,9 @@ tr:nth-child(even) {
 }
 
 table {
-    /* border:1px solid blue; */
     background-color: white;
-    width: 100%;
+    width: 98%;
+    margin: auto;
 }
 
 table td {
@@ -134,9 +134,15 @@ table td {
 
 }
 
-table tbody {
-    /* overflow-x: scroll; */
+thead tr  {
+    background-color: #1AB394;
 }
+
+thead tr th{
+    color:white
+
+}
+
 
 .right-card {
     /* box-shadow: 2px 2px 2px #c6c2c2; */
