@@ -138,9 +138,18 @@ export default function AdminDashboard() {
 
                 <div className="container">
                     <div className="row">
-                        <div className="col-7">
+                        <div className="col-4">
+                            <p>Revenue Summary</p>
+                            <Test />
+                        </div>
+                        <div className="col-4">
+                            <p>Performance Summary</p>
+                            <Test />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
                             <p>Users Available</p>
-
                             <table>
                                 <thead>
                                     <tr>
@@ -163,10 +172,6 @@ export default function AdminDashboard() {
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="col-4">
-                            <p>Revenue Summary</p>
-                            <Test />
                         </div>
                     </div>
                 </div>
