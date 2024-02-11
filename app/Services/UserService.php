@@ -65,6 +65,7 @@ class UserService
 
         //         ];
         //     });
+        LOG::info('Getting user lists .');
 
         return response()->json([
             'message' => 'User details retrieved successfully',
@@ -102,6 +103,7 @@ class UserService
                 $department->users()->syncWithoutDetaching([$user->id]);
                 LOG::info('Department added successfully to user ' . [$user->firstName]);
             }
+
             LOG::info('User is created name', [$user->firstName]);
             return response()->json([
                 'message' => 'User saved successfully',
@@ -156,6 +158,7 @@ class UserService
             // }
 
             if (!$user || !$level || !$subject){
+                
                 $response['message'] = 'Some of the information provided may not be existing in the database';
                 $response['status'] = 'failure';
                 $response['Teacher'] = $user ? $user->firstname . ' ' . $user->surname : null;

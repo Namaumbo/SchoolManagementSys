@@ -25,3 +25,12 @@
 .card:hover{
     box-shadow: 2px -2px 10px rgba(100, 100, 100, 0.571)
 }
+
+#fab{
+    /* border: 2px solid black; */
+    float: right;
+    margin-top: calc(100vh - 15%);
+    align-self: bottom;
+    margin-right: 10px;
+    
+}
