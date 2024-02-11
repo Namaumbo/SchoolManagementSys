@@ -3,7 +3,8 @@ import "./users.css";
 import { useRecoilState } from "recoil";
 import { userState } from "@/components/User/userState";
 import { userDetails } from "../../recoil_states/userdetails";
-// import * as IconSection from "react-icons/all";
+import * as IconSection from "react-icons/fi";
+import {AiFillDelete} from "react-icons/ai"
 import UsersServices from "../../../../services/UsersServices";
 
 function UserManagement() {
@@ -58,8 +59,7 @@ function UserManagement() {
             ) : (
                 <div>
                     {users ? (
-                        <>
-                            <div className="user-tb">
+                        <div className="user-tb">
                                 <table className="table table-hover">
                                     <thead>
                                         <tr>
@@ -94,7 +94,7 @@ function UserManagement() {
                                                 <td>{user.levels.join(', ')}</td>
                                                 <td>
                                                     <button className="btn  btn-danger btn-sm">
-                                                        <IconSection.AiFillDelete size="10px" />
+                                                        <AiFillDelete size="10px" />
                                                         Delete
                                                     </button>{" "}
                                                     <button className="btn btn-primary btn-sm" onClick={handleEdit}>
@@ -107,7 +107,6 @@ function UserManagement() {
                                     </tbody>
                                 </table>
                             </div>
-                        </>
                     ) : (
                         <div className="container text-center" style={{ marginTop: "25%" }}>
                             <span className="noUser">Oops! no users so far add Users</span>

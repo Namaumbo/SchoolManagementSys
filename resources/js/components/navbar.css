@@ -31,7 +31,10 @@
     height: 50px;
     color: white;
     font-family: 'Roboto', sans-serif;
-}
+    width: calc(100% - 195px);
+    margin-left: 195px ;
+    -webkit-box-shadow: 2px 6px 8px -4px #000000; 
+    box-shadow: 2px 6px 8px -4px #000000;}
 .nav-dropdown-title{
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
