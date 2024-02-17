@@ -80,7 +80,6 @@ const Team = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
             UsersServices.addUser(formValues)
                 .then((res) => {
                     alert("user added successfully");
@@ -88,10 +87,7 @@ const Team = () => {
                 .catch((err) => {
                     console.log(err);
                 });
-        } catch (error) {
-            console.log(error);
-        }
-    };
+   };
 
     return (
         <div>
@@ -104,7 +100,7 @@ const Team = () => {
                 <div className="searchForm">
                     <form role="search">
                         <input
-                            class="form-control me-2"
+                            className="form-control me-2"
                             type="search"
                             placeholder="Search"
                             aria-label="Search"
@@ -344,9 +340,9 @@ const Team = () => {
             {/* userss */}
             {users.map(function (user) {
                 return (
-                    <div className="teacherInfo">
+                    <div className="teacherInfo" key={user.id}>
                         <div className="Image">
-                            <img src={profile} className="profilePic" />
+                            <img src={profile} alt="user" className="profilePic" />
                         </div>
                         <span className="name">{user.firstname}</span>
                         <div className="expertise">{user.departmentName}</div>

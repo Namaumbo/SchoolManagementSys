@@ -77,7 +77,6 @@ function UserManagement() {
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-
                                     <tbody>
                                         {users.map((user) => (
                                             <tr key={user.id}>
