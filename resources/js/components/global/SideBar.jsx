@@ -16,9 +16,10 @@ import {
     BiUser,
 } from "react-icons/bi";
 import { GoBook } from "react-icons/go";
-import { AiFillDashboard } from "react-icons/all";
+import { AiFillDashboard } from "react-icons/ai";
 import { FiUmbrella } from "react-icons/fi";
 import "./sidebar.css";
+import placeholder from '../../../assets/placeHolderLogo.png'
 
 
 const SideBar = () => {
@@ -35,6 +36,9 @@ const SideBar = () => {
     if (window.atob(loggedIn) && window.atob(role) === "Admin") {
         return (
             <div className="sideBarItems" >
+            <div className="sidebar-img">
+                <img src={placeholder} alt="logo" width={100} />
+            </div>
                 <ul className="sideBarList">
                     <Link to="/dashboard" className="link">
                         <li className="itemList">

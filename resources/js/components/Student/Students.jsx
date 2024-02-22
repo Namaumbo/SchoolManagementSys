@@ -26,7 +26,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import * as IconSection from 'react-icons/all';
+import * as IconSection from 'react-icons/fi';
 
 const showErrorAlert = (title, text) => {
   console.error(`${title}: ${text}`);

@@ -25,7 +25,20 @@
     border-radius: 5px;
 
 }
+.cardMn:nth-child(1){
+    border-top: 2px solid green;
+}
 
+.col-4:nth-child(1){
+    width: 48%;
+    margin-right: 10px;
+    margin-left: 1%
+
+}
+.col-4:nth-child(2){
+    width: 48%;
+    margin-left: 1%;
+}
 
 .stdPng {
     width: 40%;
@@ -39,7 +52,10 @@
     border-left: 1px solid grey;
 }
 
-.row {}
+.row:nth-child(2) {
+    margin-top:5%;
+    /* border:1px solid black; */
+}
 
 .expense-card {
     background-color: white;
@@ -60,7 +76,7 @@
 }
 
 thead {
-border-bottom: 1px solid rgb(155, 155, 155);
+    border-bottom: 1px solid rgb(155, 155, 155);
 }
 
 .col-7 {
@@ -91,29 +107,42 @@ border-bottom: 1px solid rgb(155, 155, 155);
     font-size: 18px;
 }
 
+.col-12 p {
+    font-weight: bolder;
+    font-size: 18px;
+
+}
+
 .row {
     /* height: 250px; */
     /* border:1px solid/ blue; */
 
 }
 
-tr:nth-child(even){
-background-color: #cecece;
+tr:nth-child(even) {
+    background-color: #cecece;
 }
+
 table {
-    /* border:1px solid blue; */
     background-color: white;
-    width: 100%;
+    width: 98%;
+    margin: auto;
 }
 
 table td {
     font-weight: 500;
-    
+
 }
 
-table tbody {
-    /* overflow-x: scroll; */
+thead tr  {
+    background-color: #1AB394;
 }
+
+thead tr th{
+    color:white
+
+}
+
 
 .right-card {
     /* box-shadow: 2px 2px 2px #c6c2c2; */
