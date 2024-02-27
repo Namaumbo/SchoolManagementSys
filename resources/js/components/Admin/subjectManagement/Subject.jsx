@@ -3,9 +3,44 @@ import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
 import { Fab } from "@mui/material";
 import "./subject.css";
+import axios from "axios";
+import SubjectService from "../../../../services/SubjectService";
 
 const Profile = () => {
-    const handleSubmit = () => {};
+    /**
+     *
+     */
+    const [subjectName, setSubjectName] = React.useState("");
+    // TODO: add subject name option
+    const allowedSubjects = [
+        "Math",
+        "English",
+        "History",
+        "BibleKnowledge",
+        "Chemistry",
+        "Physics",
+        "Chichewa",
+    ];
+    const handleSubmit = () => {
+        // Create a new subject object with the specified subject name
+
+        if (!allowedSubjects.includes(subjectName)) {
+            window.alert("Invalid subject name");
+            return;
+        }
+          /**
+   * Handles the submission of the subject form.
+   * Checks if the subject name is valid and adds the subject if it is.
+   */
+       SubjectService.addSubject(subjectName)
+       .then((res) => {
+        console.log(res);
+        alert("user added successfully");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+    };
     return (
         <>
             <div className="heading">
@@ -29,7 +64,7 @@ const Profile = () => {
                                 className="modal-title fs-5"
                                 id="staticBackdropLabel"
                             >
-                                Add Teacher Details
+                                Add Subject Details
                             </h1>
                             <button
                                 type="button"
@@ -39,162 +74,21 @@ const Profile = () => {
                             ></button>
                         </div>
                         <div className="modal-body">
-                            <div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        type="radio"
-                                        value="Male"
-                                        // checked={selectedValue === "Male"}
-                                        // onChange={handleRadioChange}
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        for="inlineRadio1"
-                                    >
-                                        male
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        type="radio"
-                                        value="Female"
-                                        // checked={selectedValue === "Female"}
-                                        // onChange={handleRadioChange}
-                                    />
-                                    <label
-                                        class="form-check-label"
-                                        for="inlineRadio2"
-                                    >
-                                        female
-                                    </label>
-                                </div>
-
-                                <div className="names">
-                                    {/* firstname */}
-                                    <input
-                                        type="text"
-                                        aria-label="First name"
-                                        class="form-control"
-                                        placeholder="First Name"
-                                        // value={formValues.firstname}
-                                        // onChange={handleInputChange}
-                                        name="firstname"
-                                    />
-                                    {/* lastname */}
-                                    <input
-                                        type="text"
-                                        aria-label="last name name"
-                                        class="form-control"
-                                        placeholder="Last Name"
-                                        // value={formValues.surname}
-                                        // onChange={handleInputChange}
-                                        name="surname"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="location">
-                                {/* district */}
-                                <input
-                                    type="text"
-                                    aria-label="First name"
-                                    class="form-control"
-                                    placeholder="District"
-                                    // value={formValues.district}
-                                    // onChange={handleInputChange}
-                                    name="district"
-                                />
-                                {/* village */}
-                                <input
-                                    type="text"
-                                    aria-label="last name name"
-                                    class="form-control"
-                                    placeholder="Village"
-                                    // value={formValues.village}
-                                    // onChange={handleInputChange}
-                                    name="village"
-                                />
-                            </div>
-
                             <div className="gadgets">
-                                {/* T/A */}
+                                {/* Subject name */}
                                 <input
                                     type="text"
                                     aria-label="First name"
-                                    class="form-control"
-                                    placeholder="Traditional authority"
-                                    id="tA"
-                                    // value={formValues.traditional_authority}
-                                    // onChange={handleInputChange}
-                                    name="traditional_authority"
+                                    className="form-control"
+                                    placeholder="e.g. English"
+                                    id="subjectName"
+                                    onChange={(e) =>
+                                        setSubjectName(e.target.value)
+                                    }
+                                    value={subjectName}
+                                    name="subjectName"
                                 />
                             </div>
-
-                            <div className="location">
-                                {/* email */}
-                                <input
-                                    type="text"
-                                    aria-label="First name"
-                                    class="form-control"
-                                    placeholder="Email"
-                                    // value={formValues.email}
-                                    // onChange={handleInputChange}
-                                    name="email"
-                                />
-                                {/* password */}
-                                <input
-                                    type="password"
-                                    aria-label="last name name"
-                                    class="form-control"
-                                    placeholder="Partial Password"
-                                    // value={formValues.password}
-                                    // onChange={handleInputChange}
-                                    name="password"
-                                />
-                            </div>
-
-                            {/* <div className="location">
-                                <select
-                                    id="ok"
-                                    class="form-select form-select-sm"
-                                    name="department"
-                                    // value={formValues.departmentName}
-                                    // onChange={handleSelectChange}
-                                >
-                                    <option value="" selected>
-                                        departments
-                                    </option>
-                                    {departments.map((department) => {
-                                        return (
-                                            <option
-                                                key={department.departmentName}
-                                                value={
-                                                    department.departmentName
-                                                }
-                                            >
-                                                {department.departmentName}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                                <select
-                                    className="form-select form-select-sm"
-                                    aria-label=".form-select-sm example"
-                                    value={formValues.role_name}
-                                    onChange={handleRoleChange}
-                                >
-                                    <option value="" selected>
-                                        Roles
-                                    </option>
-                                    {roles.map((role) => {
-                                        return (
-                                            <option key={role.id}>
-                                                {role.role_name}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div> */}
                         </div>
 
                         <div className="modal-footer">
