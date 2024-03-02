@@ -1,45 +1,31 @@
 import React from "react";
 import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
-import { Fab } from "@mui/material";
+import Button from "@mui/material/Button";
+import { Fab, Snackbar } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+
 import "./subject.css";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
 const Profile = () => {
-    /**
-     *
-     */
     const [subjectName, setSubjectName] = React.useState("");
-    // TODO: add subject name option
-    const allowedSubjects = [
-        "Math",
-        "English",
-        "History",
-        "BibleKnowledge",
-        "Chemistry",
-        "Physics",
-        "Chichewa",
-    ];
+    const [open, setOpen] = React.useState(false);
     const handleSubmit = () => {
-        // Create a new subject object with the specified subject name
-
-        if (!allowedSubjects.includes(subjectName)) {
-            window.alert("Invalid subject name");
-            return;
-        }
-          /**
-   * Handles the submission of the subject form.
-   * Checks if the subject name is valid and adds the subject if it is.
-   */
-       SubjectService.addSubject(subjectName)
-       .then((res) => {
-        console.log(res);
-        alert("user added successfully");
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+        SubjectService.addSubject(subjectName)
+            .then((res) => {
+                setOpen(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setOpen(false);
+                }, 2500);
+            });
     };
     return (
         <>
@@ -48,12 +34,17 @@ const Profile = () => {
                 <span style={{ color: "white" }}>Subject Management</span>
             </div>
 
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                message="Subject Saved Successifuly"
+            ></Snackbar>
             <div
                 className="modal fade"
                 id="staticBackdrop"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
-                tabindex="-1"
+                tabIndex="-1"
                 aria-labelledby="staticBackdropLabel"
                 aria-hidden="true"
             >

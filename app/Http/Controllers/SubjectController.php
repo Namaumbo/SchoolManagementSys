@@ -24,8 +24,6 @@ use lluminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SubjectController extends Controller
 {
-
-
     public function getAll()
     {
         return Subject::all();
@@ -33,64 +31,52 @@ class SubjectController extends Controller
 
     public function show(int $id)
     {
-
-        $subject = Subject::with('students', 'users')->findorFail($id);
+        $subject = Subject::with('students', 'users')->findOrFail($id);
         $relatedStudents = $subject->students;
         $relatedTeachers = $subject->users;
         return response()->json([
-
             'Students' => $relatedStudents,
             'Teachers' => $relatedTeachers,
         ], 201);
     }
 
-
     public function create(Request $request, $subject): void
     {
         $subject->name = $request->name;
-        $subject->created_at = carbon::now();
-        $subject->updated_at = carbon::now();
-
         $subject->save();
     }
 
     public function store(Request $request): JsonResponse
     {
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+        ]);
 
         try {
-            $subject = new Subject;
-            #TODO: check the name here 
-            $this->create($request, $subject);
+            $subject = Subject::create([
+                'name' => $validatedData['name'],
+            ]);
             return response()->json([
                 'message' => 'Subject saved successfully',
-                'Student' => $subject,
-                'status' => 201,
+                'Subject' => $subject,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Subject not saved',
-                'status' => 404,
                 'e' => $e->getMessage(),
             ], 404);
         }
     }
 
-
     public function gradingSystem(Request $request, string $id): JsonResponse
     {
-
-
-        $response = new StudentResource(Student::findorFail($id));
-
+        $response = new StudentResource(Student::findOrFail($id));
 
         return response()->json([
-
-
             'Score' => $response->assessments,
-
-
         ], 400);
     }
+
     public function update(Request $request, int $id): JsonResponse
     {
         if (Subject::where('id', $id)->exists()) {
@@ -108,7 +94,6 @@ class SubjectController extends Controller
 
     public function destroy($id): JsonResponse
     {
-
         if (Subject::where('id', $id)->exists()) {
             $subject = Subject::find($id);
             $subject->delete();
