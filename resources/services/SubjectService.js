@@ -52,5 +52,17 @@ class SubjectService {
             throw new Error("Failed to create subject", error.message);
         }
     }
+
+    async getAllSubjects() {
+        try {
+            const response = await axios.get(`${this.urlPrefix}/subjects`, {
+                headers: this.headers,
+            });
+            return response.data;
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to get subjects", error);
+        }
+    }
 }
 export default new SubjectService();
