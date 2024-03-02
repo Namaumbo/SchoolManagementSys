@@ -53,6 +53,11 @@ class SubjectService {
         }
     }
 
+    /**
+     * Retrieves all subjects from the server.
+     * @returns {Promise<Array>} A promise that resolves with an array of subjects.
+     * @throws {Error} If there is an error retrieving the subjects.
+     */
     async getAllSubjects() {
         try {
             const response = await axios.get(`${this.urlPrefix}/subjects`, {
