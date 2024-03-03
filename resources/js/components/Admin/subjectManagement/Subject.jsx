@@ -101,6 +101,7 @@ const Profile = () => {
                 autoHideDuration={6000}
                 message="Subject Saved Successifuly 🙂"
             />
+            
             <div className="row align-items-start">
                 {subjects.map((subject) => {
                     return (

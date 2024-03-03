@@ -33,12 +33,12 @@ class SubjectService {
 
     async addSubject(subject) {
         try {
-            const wordNormalizer = utils.wordNormalizer(subject);
-            console.info(`adding ${wordNormalizer} to database`);
-            if (this.availableSubjectNames.includes(wordNormalizer)) {
+            const wordNormalized = utils.wordNormalizer(subject);
+            console.info(`adding ${wordNormalized} to database`);
+            if (this.availableSubjectNames.includes(wordNormalized)) {
                 const response = await axios.post(
                     `${this.urlPrefix}/create-subject`,
-                    { name: wordNormalizer },
+                    { name: wordNormalized },
                     {
                         headers: this.headers,
                     }
