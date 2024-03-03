@@ -11,13 +11,14 @@ return new class extends Migration
      *
      * @return void
      */
+
+    // TODO:  here include some fields like 
+    // FIXME: form or level , descripition , credithrs taught
     public function up()
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-
-
             $table->timestamps();
         });
     }

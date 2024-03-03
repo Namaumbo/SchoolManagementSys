@@ -33,7 +33,34 @@ use Psy\Util\Json;
         {
             // Get the logged-in user
             $user = User::all();
-             
+
+        
+            // Check if the user exists
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found',
+                    'status' => 'error',
+                ], 404);
+            }
+        
+            // // Load subjects and levels for the logged-in user
+            // $user= User::with(['subjects', 'levels',])
+            //     ->get()
+            //     ->map(function ($user) {
+            //         return [
+            //             'id' => $user->id,
+            //             'title' => $user->title,
+            //             'firstname' => $user->firstname,
+            //             'surname' => $user->surname,
+            //             'email' => $user->email,
+            //             'sex' => $user->sex,
+            //             'village' => $user->village,
+            //             'traditional_authority' => $user->traditional_authority,
+            //             'district' => $user->district,
+            //             'role_name' => $user->role_name,
+                      
+            //         ];
+            //     })
         
             return response()->json([
                 'message' => 'User details retrieved successfully',
@@ -74,12 +101,22 @@ use Psy\Util\Json;
         }
         
 
-        public function Allocation(Request $request): JsonResponse
-        {
-            try {
-                $user = User::where('email', $request->input('email'))->first();
-                $subject = Subject::where('name', $request->input('name'))->first();
-                $level = Level::where('className', $request->input('className'))->first();
+    public function Allocation(Request $request): JsonResponse
+    {   
+
+        $user = User::where('email', $request->input('email'))->first();
+        $level=Level::where('className',$request->input('className'))->first();
+        $subject=Subject::where('name',$request->input('name'))->first();
+        try {
+            $response = [
+                'message' => '',
+                'status' => '',
+                'Teacher' => null,
+                'Email' => null,
+                'Class' => null,
+                'Subject' => null,
+            ];
+
         
                 if (!$user || !$level || !$subject) {
                     return $this->handleAllocationError(
