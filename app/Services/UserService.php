@@ -33,6 +33,7 @@ use Psy\Util\Json;
         {
             // Get the logged-in user
             $user = User::all();
+
         
             // Check if the user exists
             if (!$user) {
@@ -59,7 +60,7 @@ use Psy\Util\Json;
             //             'role_name' => $user->role_name,
                       
             //         ];
-            //     });
+            //     })
         
             return response()->json([
                 'message' => 'User details retrieved successfully',
@@ -82,19 +83,8 @@ use Psy\Util\Json;
                 $user = new User;
                 $this->userDetailsCommon($request, $user);
         
-                // Check if the departmentName is provided in the request
-                if ($request->has('departmentName')) {
-                    // Retrieve the department by name
-                    $department = Department::where('departmentName', $request->input('departmentName'))->first();
-        
-                    // Check if the department exists
-                    if (!$department) {
-                        return response()->json(['message' => 'Department not found', 'status' => 404], 404);
-                    }
-        
-                    // Associate the user with the department
-                    $department->users()->syncWithoutDetaching([$user->id]);
-                }
+              
+
         
                 return response()->json([
                     'message' => 'User saved successfully',
@@ -126,45 +116,57 @@ use Psy\Util\Json;
                 'Class' => null,
                 'Subject' => null,
             ];
-            $code = 200;
+
         
-       
-        if (!$user || !$level || !$subject) {
-            $response['message'] = 'Information provided doesnt exists in the database';
-             $response['status'] = 'success';
-                $response['Teacher'] = $user->firstname.' '.$user->surname;
-                $response['Email'] = $user->email;
-                $response['Class'] = $level->className;
-                $response['Subject'] = $subject->name;
-
-
-            $code = 201;
-        }
-             else{
-            $user->subjects()->attach($subject);
-            $user->levels()->attach($level);
-    
-                $response['message'] = 'Subject and class allocated successfully';
-                $response['status'] = 'success';
-                $response['Teacher'] = $user->firstname.' '.$user->surname;
-                $response['Email'] = $user->email;
-                $response['Class'] = $level->className;
-                $response['Subject'] = $subject->name;
-
-
-                $code = 201;
-             }
-            
-        } catch (\Exception $e) {
-            $response['message'] = 'Error allocating subject and class';
-            $response['status'] = 'fail';
-            $code = 500;
-        }
-        return response()->json($response, $code);
+                if (!$user || !$level || !$subject) {
+                    return $this->handleAllocationError(
+                        'Information provided doesn\'t exist in the database',
+                        $user,
+                        $level,
+                        $subject
+                    );
+                }
         
-       
-
+                // Allocate users with subject and class
+                $subject->users()->syncWithoutDetaching($user);
+                $subject->levels()->syncWithoutDetaching($level);
+                $subject->save();
+        
+                return $this->handleAllocationSuccess($user, $level, $subject);
+            } catch (\Exception $e) {
+                return $this->handleAllocationError(
+                    'Error allocating subject and class: ' . $e->getMessage(),
+                    $user ?? null,
+                    $level ?? null,
+                    $subject ?? null
+                );
+            }
         }
+        
+        private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
+        {
+            return response()->json([
+                'message' => 'Subject and class allocated successfully',
+                'status' => 'success',
+                'Teacher' => $user->firstname . ' ' . $user->surname,
+                'Email' => $user->email,
+                'Class' => $level->className,
+                'Subject' => $subject->name,
+            ], 201);
+        }
+        
+        private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
+        {
+            return response()->json([
+                'message' => $errorMessage,
+                'status' => 'fail',
+                'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
+                'Email' => $user ? $user->email : null,
+                'Class' => $level ? $level->className : null,
+                'Subject' => $subject ? $subject->name : null,
+            ]);
+        }
+        
     public function UserToDepartment(){
        
 

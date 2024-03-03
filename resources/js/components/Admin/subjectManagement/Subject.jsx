@@ -10,8 +10,13 @@ import "./subject.css";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
-const Profile = () => {
-    const [subjects, setSubjects] = React.useState([]);
+
+const Subject = () => {
+      const [subjects, setSubjects] = React.useState([]);
+
+    /**
+     *
+     */
     const [subjectName, setSubjectName] = React.useState("");
     const [open, setOpen] = React.useState(false);
 
@@ -195,4 +200,4 @@ const Profile = () => {
         </>
     );
 };
-export default Profile;
+export default Subject;
