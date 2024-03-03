@@ -6,7 +6,7 @@ import "./subject.css";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
-const Profile = () => {
+const Subject = () => {
     /**
      *
      */
@@ -120,4 +120,4 @@ const Profile = () => {
         </>
     );
 };
-export default Profile;
+export default Subject;

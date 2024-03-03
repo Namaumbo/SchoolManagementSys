@@ -65,40 +65,19 @@ class User extends Authenticatable
     }
 
 
-    public function subjects()
-    {
-        return $this->morphedByMany(
-            Subject::class,
-           'allocationable')->withTimeStamps()
-           ->withPivot(['name']); // Include other columns from the assessments table
-
-    }
-
-    public function levels()
-    {
-        return $this->morphedByMany(
-            Level::class,
-           'allocationable')->withTimeStamps();
-    }
-
-    public function departments()
-    {
-        return $this->morphedByMany(
-            Department::class,
-           'allocationable')->withTimeStamps();
-    }
-
-
-
 
     public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
 
     {
         return $this->hasOne(Level::class);
-    
-
+    }
+        public function subjects(){
+            return $this->morphToMany(
+                Subject::class,
+                'allocationable');
+        }
 
 
 
     }
-}
+
