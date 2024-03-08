@@ -5,18 +5,14 @@ import Button from "@mui/material/Button";
 import { Fab, Snackbar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-
-import "./subject.css";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
-
 const Subject = () => {
-      const [subjects, setSubjects] = React.useState([]);
-
     /**
      *
      */
+    const [subjects, setSubjects] = React.useState([]);
     const [subjectName, setSubjectName] = React.useState("");
     const [open, setOpen] = React.useState(false);
 
@@ -81,20 +77,25 @@ const Subject = () => {
     }, [SubjectService.getAllSubjects]);
 
     const handleSubmit = () => {
-        SubjectService.addSubject(subjectName)
-            .then((res) => {
-                setOpen(true);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    setOpen(false);
-                }, 2500);
-            });
-    };
+        // Create a new subject object with the specified subject name
 
+        if (!allowedSubjects.includes(subjectName)) {
+            window.alert("Invalid subject name");
+            return;
+        }
+          /**
+   * Handles the submission of the subject form.
+   * Checks if the subject name is valid and adds the subject if it is.
+   */
+       SubjectService.addSubject(subjectName)
+       .then((res) => {
+        console.log(res);
+        alert("user added successfully");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+    };
     return (
         <>
             <div className="heading">
@@ -106,7 +107,6 @@ const Subject = () => {
                 autoHideDuration={6000}
                 message="Subject Saved Successifuly 🙂"
             />
-            
             <div className="row align-items-start">
                 {subjects.map((subject) => {
                     return (
@@ -134,7 +134,7 @@ const Subject = () => {
                 id="staticBackdrop"
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
-                tabIndex="-1"
+                tabindex="-1"
                 aria-labelledby="staticBackdropLabel"
                 aria-hidden="true"
             >
@@ -185,6 +185,7 @@ const Subject = () => {
                     </div>
                 </div>
             </div>
+
             <Fab
                 size="medium"
                 color="primary"
