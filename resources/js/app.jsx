@@ -18,7 +18,7 @@ import Assessment from "./components/Admin/assementManagement/Assessment";
 import Students from "./components/Student/Students";
 import StudentsInfo from "./components/Student/StudentsInfo";
 import Department from "./components/Admin/DepartmentManagement/Department";
-import Science from "./components/Admin/DepartmentManagement/Science";
+import Science from "./components/Admin/DepartmentManagement/Department";
 import Subject from "./components/Admin/subjectManagement/Subject";
 
 import StudentPerformance from "./components/Student/StudentPerformance";
@@ -47,7 +47,6 @@ export default function Index (){
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<Department/>}/>
-                        <Route path="/department/science" element={<Science/>}/>
                         <Route path="/logout" element={<Login/>}/>
                         <Route path="/subject" element={<Subject />} />
 

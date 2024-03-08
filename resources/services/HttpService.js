@@ -8,6 +8,7 @@ class HttpService {
     setHeaders() {
         const accessKey = this.getToken()
         const headers = {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${accessKey}`,
         };
         return headers;

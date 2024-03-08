@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
+use App\Models\User;
+
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -151,4 +153,31 @@ class DepartmentController extends Controller
             ]);
         }
     }
+
+    public function registerUsersToDepartment(Request $request, $id): JsonResponse
+    {
+     
+
+        try {
+            $department = Department::findOrFail($id);
+
+            // Get user IDs by their emails
+            $user = User::where('email', $request->input('email'))->first();
+
+            // Attach users to the department
+            $department->users()->syncWithoutDetaching($user);
+
+            return response()->json([
+                'message' => 'Users added to the department successfully',
+                'department' => $department->users,
+            ], ResponseAlias::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to add users to the department',
+                'error' => $e->getMessage(),
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

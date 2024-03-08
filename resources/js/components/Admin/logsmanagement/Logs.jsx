@@ -1,10 +1,11 @@
 import React from "react"
-import {AiFillDelete, FiBook, FiDelete} from "react-icons/all";
+import {FiBook, FiDelete} from "react-icons/fi";
+import {AiFillDelete, } from "react-icons/ai"
 import './logs.css'
 
+
 const Logs = () => {
-    return <>
-        <div className='logs-wrapper'>
+    return <div className='logs-wrapper'>
             <div className="heading-title">
                 <FiBook/><span style={{color:'white'}}>Logs - Panel</span>
             </div>
@@ -42,8 +43,5 @@ const Logs = () => {
                 </table>
             </div>
         </div>
-
-
-    </>
 }
 export default Logs

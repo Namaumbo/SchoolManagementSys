@@ -1,10 +1,8 @@
-import "./Sidebar.css";
 import React from "react";
 import { Logout } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "../User/userState";
-import { userDetails } from "../recoil_states/userdetails";
 import {
     BiBarChartAlt2,
     BiBusSchool,
@@ -18,11 +16,15 @@ import {
     BiUser,
 } from "react-icons/bi";
 import { GoBook } from "react-icons/go";
-import { AiFillDashboard } from "react-icons/all";
+import { AiFillDashboard } from "react-icons/ai";
 import { FiUmbrella } from "react-icons/fi";
-import Form from 'react-bootstrap/Form';
+import "./sidebar.css";
+import placeholder from '../../../assets/placeHolderLogo.png'
+
+
 const SideBar = () => {
-    let [{ loggedIn, role }, setUser] = useRecoilState(userState);
+    const role = localStorage.getItem("role");
+    const loggedIn = localStorage.getItem("loggedIn");
     // const navigate = useNavigate()
 
     // function logOut() {
@@ -31,9 +33,12 @@ const SideBar = () => {
     //     navigate('/login')
     // }
 
-    if ( loggedIn && role === "Head teacher") {
+    if (window.atob(loggedIn) && window.atob(role) === "Admin") {
         return (
-            <div className="sideBarItems">
+            <div className="sideBarItems" >
+            <div className="sidebar-img">
+                <img src={placeholder} alt="logo" width={100} />
+            </div>
                 <ul className="sideBarList">
                     <Link to="/dashboard" className="link">
                         <li className="itemList">
@@ -122,60 +127,64 @@ const SideBar = () => {
                 </ul>
             </div>
         );
-    } else if (loggedIn && role === "Teacher") {
+    } else if (window.atob(loggedIn) && window.atob(role) === "Teacher") {
         return (
-         <>
-            <div className="sideBarItems">
-            <ul className="sideBarList">
-                <Link to="/dashboard" className="link">
-                    <li className="itemList">
-                        <AiFillDashboard className="icon" />
-                        <span className="sideBarItemText">Home</span>
-                    </li>
-                </Link>
-                <Link to="/assessment" className="link">
-                    <li className="itemList">
-                        <BiStats className="icon" />
-                        <span className="sideBarItemText">
-                            Student Assessment
-                        </span>
-                    </li>
-                </Link>
+            <>
+                {/* <div className="sideBarItems"> */}
+                    <ul className="sideBarList">
+                        <Link to="/dashboard" className="link">
+                            <li className="itemList">
+                                <AiFillDashboard className="icon" />
+                                <span className="sideBarItemText">Home</span>
+                            </li>
+                        </Link>
+                        <Link to="/assessment" className="link">
+                            <li className="itemList">
+                                <BiStats className="icon" />
+                                <span className="sideBarItemText">
+                                    Student Assessment
+                                </span>
+                            </li>
+                        </Link>
 
-                <Link to="students" className="link">
-                    <li className="itemList">
-                        <BiChild className="icon" />
-                        <span className="sideBarItemText">Students</span>
-                    </li>
-                </Link>
+                        <Link to="students" className="link">
+                            <li className="itemList">
+                                <BiChild className="icon" />
+                                <span className="sideBarItemText">
+                                    Students
+                                </span>
+                            </li>
+                        </Link>
 
-                <Link to="classes" className="link">
-                    <li className="itemList">
-                        <BiHomeAlt2 className="icon" />
-                        <span className="sideBarItemText">Classes</span>
-                    </li>
-                </Link>
+                        <Link to="classes" className="link">
+                            <li className="itemList">
+                                <BiHomeAlt2 className="icon" />
+                                <span className="sideBarItemText">Classes</span>
+                            </li>
+                        </Link>
 
-                <Link to="performance" className="link">
-                    <li className="itemList">
-                        <BiBarChartAlt2 className="icon" />
-                        <span className="sideBarItemText">Performance</span>
-                    </li>
-                </Link>
+                        <Link to="performance" className="link">
+                            <li className="itemList">
+                                <BiBarChartAlt2 className="icon" />
+                                <span className="sideBarItemText">
+                                    Performance
+                                </span>
+                            </li>
+                        </Link>
 
-                <Link to="subject" className="link">
-                    <li className="itemList">
-                        <GoBook className="icon" />
-                        <span className="sideBarItemText">Subjects </span>
-                    </li>
-                </Link>
-            </ul>
-            </div>
+                        <Link to="subject" className="link">
+                            <li className="itemList">
+                                <GoBook className="icon" />
+                                <span className="sideBarItemText">
+                                    Subjects{" "}
+                                </span>
+                            </li>
+                        </Link>
+                    </ul>
+                {/* </div> */}
             </>
         );
     }
-
-    
 };
 
 export default SideBar;

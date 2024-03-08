@@ -1,4 +1,3 @@
-
 .main {
     height: calc(100% - 50px);
     width: 100%;
@@ -12,34 +11,56 @@
     justify-content: space-around;
 }
 
+.arts {
+    width: 50px;
+}
+
 .cardMn {
     display: flex;
-    width: 24%;
     background-color: white;
-    box-shadow: 2px 2px 2px #c6c2c2;
+    -webkit-box-shadow: 1px 2px 14px -5px #636363;
+    box-shadow: 1px 2px 14px -5px #5a5a5a;
     align-items: center;
+    height: 7em;
+    border-radius: 5px;
 
+}
+.cardMn:nth-child(1){
+    border-top: 2px solid green;
+}
+
+.col-4:nth-child(1){
+    width: 48%;
+    margin-right: 10px;
+    margin-left: 1%
+
+}
+.col-4:nth-child(2){
+    width: 48%;
+    margin-left: 1%;
 }
 
 .stdPng {
     width: 40%;
 }
 
-.figure {
-    border-left: 1px solid grey;
-    height: 60%;
-    margin: auto;
+.numbers {
+    font-size: 30px;
 }
 
+.figure {
+    border-left: 1px solid grey;
+}
 
-.body {
-    display: block; 
+.row:nth-child(2) {
+    margin-top:5%;
+    /* border:1px solid black; */
 }
 
 .expense-card {
     background-color: white;
-    box-shadow: 2px 2px 2px #c6c2c2;
-    height: 100px; 
+
+    height: 100px;
 }
 
 .heading {
@@ -53,28 +74,79 @@
     border-radius: 5px;
     color: white;
 }
-thead{
-    background-color: #021b62;
+
+thead {
+    border-bottom: 1px solid rgb(155, 155, 155);
 }
-th {
-    padding: 10px 0 10px 0px;
-  
+
+.col-7 {
+    background-color: #ffffff;
+    margin-left: 10px;
+    margin-right: 7px;
+    box-shadow: 1px 1px 1px #c6c2c2;
+    margin-top: 10px;
+    height: fit-content;
+
 }
-table{
-    width: 50%; 
+
+.col-7 p {
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.col-4 {
+    width: 29em;
+    background-color: #ffffff;
+    box-shadow: 1px 1px 1px #c6c2c2;
+    margin-top: 10px;
+    height: 250px;
+}
+
+.col-4 p {
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.col-12 p {
+    font-weight: bolder;
+    font-size: 18px;
+
+}
+
+.row {
+    /* height: 250px; */
+    /* border:1px solid/ blue; */
+
+}
+
+tr:nth-child(even) {
+    background-color: #cecece;
+}
+
+table {
     background-color: white;
-    box-shadow: 2px 2px 2px #c6c2c2;
-    margin-bottom: 20px;
+    width: 98%;
+    margin: auto;
 }
-table td{
-   font-weight: 500; 
+
+table td {
+    font-weight: 500;
+
 }
-table tbody{
-    overflow-x: scroll;
+
+thead tr  {
+    background-color: #1AB394;
 }
-.right-card{
-    box-shadow: 2px 2px 2px #c6c2c2;
-    width: 50%;
-    height: 30em;
-    background-color:  white;
+
+thead tr th{
+    color:white
+
+}
+
+
+.right-card {
+    /* box-shadow: 2px 2px 2px #c6c2c2; */
+    /* width: 50%; */
+    /* height: 30em; */
+    background-color: white;
 }

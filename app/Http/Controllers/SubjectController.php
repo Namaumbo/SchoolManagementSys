@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\StudentSubject;
@@ -25,77 +26,72 @@ class SubjectController extends Controller
 {
 
 
- public function getAll()
-   {
-    return Subject::all();
-   }
+    public function getAll()
+    {
+        return Subject::all();
+    }
 
-   public function show(int $id)
-   {
+    public function show(int $id)
+    {
 
-    $subject=Subject::with('students','users')->findorFail($id);
-       $relatedStudents=$subject->students;
-       $relatedTeachers=$subject->users;
-       return response()->json([
-      
-        'Students' => $relatedStudents,
-        'Teachers' => $relatedTeachers,
-    ], 201);
+        $subject = Subject::with('students', 'users')->findorFail($id);
+        $relatedStudents = $subject->students;
+        $relatedTeachers = $subject->users;
+        return response()->json([
 
-   }
+            'Students' => $relatedStudents,
+            'Teachers' => $relatedTeachers,
+        ], 201);
+    }
 
-    
-    public function create(Request $request,$subject) : void
+
+    public function create(Request $request, $subject): void
     {
         $subject->name = $request->name;
         $subject->created_at = carbon::now();
         $subject->updated_at = carbon::now();
-    
-            $subject->save();
-    
-   }
+
+        $subject->save();
+    }
 
     public function store(Request $request): JsonResponse
     {
-        
-          try {
-            $subject = new Subject;
-            $this->create($request, $subject);
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+        ]);
+
+        try {
+            $subject = Subject::create([
+                'name' => $validatedData['name'],
+            ]);
             return response()->json([
                 'message' => 'Subject saved successfully',
-                'Student' => $subject,
-                'status' => 201,
+                'Subject' => $subject,
             ], 201);
-
-        
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Subject not saved',
-                'status' => 404,
-                '4' => $e,
+                'e' => $e->getMessage(),
             ], 404);
         }
-       
     }
 
-    
-    public function gradingSystem(Request $request,string $id): JsonResponse
-       {
-            
-    
-         $response =new StudentResource(Student::findorFail($id));
-               
-        
-              return response()->json([
-             
+    public function gradingSystem(Request $request, string $id): JsonResponse
+    {
 
-                'Score'=>$response->assessments,
-             
 
-            ], 400);
+        $response = new StudentResource(Student::findorFail($id));
 
-        }
-            public function update(Request $request, int $id) : JsonResponse
+
+        return response()->json([
+
+
+            'Score' => $response->assessments,
+
+
+        ], 400);
+    }
+    public function update(Request $request, int $id): JsonResponse
     {
         if (Subject::where('id', $id)->exists()) {
             $subject = Subject::find($id);
@@ -107,14 +103,14 @@ class SubjectController extends Controller
             return response()->json([
                 'message' => 'No Subject found with that information '
             ], 401);
-        }  
+        }
     }
-  
-    public function destroy($id) : JsonResponse
+
+    public function destroy($id): JsonResponse
     {
-        
+
         if (Subject::where('id', $id)->exists()) {
-            $subject =Subject::find($id);
+            $subject = Subject::find($id);
             $subject->delete();
             return response()->json([
                 'message' => 'Subject is deleted successfully'
@@ -124,6 +120,5 @@ class SubjectController extends Controller
                 'message' => 'No such Subject found in the database ',
             ]);
         }
-    
     }
 }

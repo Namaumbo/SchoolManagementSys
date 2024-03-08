@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'Level'=>'App\Models\Level',
             'Subject'=>'App\Models\Subject',
+            'department'=>'App\Models\Department',
         ]);
   
         JsonResource::withoutWrapping();

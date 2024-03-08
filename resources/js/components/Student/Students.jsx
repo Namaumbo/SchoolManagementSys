@@ -26,7 +26,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import * as IconSection from 'react-icons/all';
+import Swal from 'sweetalert2';
+import * as IconSection from 'react-icons/fi';
 
 const showErrorAlert = (title, text) => {
   console.error(`${title}: ${text}`);
@@ -90,8 +91,6 @@ const Students = () => {
         setFetchedUsers(usersResponse.data);
         setClassOptions(classesResponse.data);
       } catch (error) {
-        console.error('Error loading data:', error.message);
-        console.error('Response Status Code:', error.response?.status);
         showErrorAlert('Error', 'Failed to fetch students. Please try again later.');
       } finally {
         hideLoadingAlert();
@@ -120,7 +119,6 @@ const Students = () => {
       setCreatingUser(false);
       refreshStudents();
     } catch (error) {
-      console.error('Error creating user:', error);
       setErrorMessage(error.response?.data?.message || 'Failed to create student. Please try again later.');
     } finally {
       setIsLoadingCreate(false);
@@ -129,7 +127,17 @@ const Students = () => {
 
   const openDeleteConfirmModal = async (row) => {
     const { id } = row;
-    if (window.confirm('Are you sure you want to delete this student?')) {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this student!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
       try {
         const response = await axios.delete(`http://127.0.0.1:8000/api/student/${id}`);
         if (response.status === 200) {
@@ -148,7 +156,7 @@ const Students = () => {
       }
     }
   };
-  
+
   const refreshStudents = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:8000/api/students');
@@ -180,7 +188,6 @@ const Students = () => {
       { accessorKey: 'surname', header: 'Surname', enableEditing: true },
       { accessorKey: 'username', header: 'Username', enableEditing: false },
       { accessorKey: 'className', header: 'Class', enableEditing: false },
-
     ],
     [validationErrors]
   );

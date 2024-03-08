@@ -58,43 +58,26 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_name', 'role_name');
     }
 
-    public function departments():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(
-            Department::class,
-            'users',
-            'departmentName',
-
-            'departmentName');
-    }
+ 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
 
-    public function subjects()
-    {
-        return $this->morphedByMany(
-            Subject::class,
-           'allocationable')->withTimeStamps();
-    }
-
-    public function levels()
-    {
-        return $this->morphedByMany(
-            Level::class,
-           'allocationable')->withTimeStamps();
-    }
 
     public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
 
     {
         return $this->hasOne(Level::class);
-    
-
+    }
+        public function subjects(){
+            return $this->morphToMany(
+                Subject::class,
+                'allocationable');
+        }
 
 
 
     }
-}
+

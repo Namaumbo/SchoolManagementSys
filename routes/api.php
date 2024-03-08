@@ -87,12 +87,14 @@ Route::controller(DepartmentController::class)->group(function () {
         '/register-department',
         'store'
     );
+
+    Route::post('/department/{id}/users','registerUsersToDepartment');
     Route::put('/department/{id}', 'update');
     Route::delete('/department/{id}', 'destroy');
 });
 //Subjects Routes
 Route::controller(SubjectController::class)->group(function () {
-    Route::post('/create-subject/{id}', 'store');
+    Route::post('/create-subject', 'store');
     Route::get('/subjects', 'getAll');
     Route::get('/subject/{id}', 'show');
 

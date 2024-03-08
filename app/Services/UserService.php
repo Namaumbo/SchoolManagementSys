@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\Level;
 use App\Models\Allocationable;
+use App\Models\Department;
 
 
 use Illuminate\Contracts\Queue\EntityNotFoundException;
@@ -32,35 +33,7 @@ use Psy\Util\Json;
         {
             // Get the logged-in user
             $user = User::all();
-        
-            // Check if the user exists
-            if (!$user) {
-                return response()->json([
-                    'message' => 'User not found',
-                    'status' => 'error',
-                ], 404);
-            }
-        
-            // Load subjects and levels for the logged-in user
-            $user= User::with(['subjects', 'levels'])
-                ->get()
-                ->map(function ($user) {
-                    return [
-                        'id' => $user->id,
-                        'title' => $user->title,
-                        'firstname' => $user->firstname,
-                        'surname' => $user->surname,
-                        'email' => $user->email,
-                        'sex' => $user->sex,
-                        'village' => $user->village,
-                        'traditional_authority' => $user->traditional_authority,
-                        'district' => $user->district,
-                        'role_name' => $user->role_name,
-                        'departmentName' => $user->departmentName,
-                        'subjects' => $user->subjects->pluck('name'),
-                        'levels' => $user->levels->pluck('className'),
-                    ];
-                });
+             
         
             return response()->json([
                 'message' => 'User details retrieved successfully',
@@ -69,90 +42,94 @@ use Psy\Util\Json;
             ]);
         }
         
-    public function store(Request $request): JsonResponse
-    {
-        $user = User::where('email', $request->input('email'))->first();
-        //Username represents a
-        if ($user) {
-            return response()->json(
-                ['message' => 'User already exists', 'email' => $user],
-                409
-            );
-        }
+        public function store(Request $request): JsonResponse
+        {
+            $user = User::where('email', $request->input('email'))->first();
+        
+            // Check if the user already exists
+            if ($user) {
+                return response()->json(['message' => 'User already exists', 'email' => $user], 409);
+            }
+        
+            try {
+                // Create a new user
+                $user = new User;
+                $this->userDetailsCommon($request, $user);
+        
+              
 
-        try {
-            $user = new User;
-            $this->userDetailsCommon($request, $user);
-          
+        
+                return response()->json([
+                    'message' => 'User saved successfully',
+                    'User' => $user,
+                    'status' => 201,
+                ], 201);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'User not saved',
+                    'status' => 404,
+                    'error' => $e->getMessage(),
+                ], 404);
+            }
+        }
+        
+
+        public function Allocation(Request $request): JsonResponse
+        {
+            try {
+                $user = User::where('email', $request->input('email'))->first();
+                $subject = Subject::where('name', $request->input('name'))->first();
+                $level = Level::where('className', $request->input('className'))->first();
+        
+                if (!$user || !$level || !$subject) {
+                    return $this->handleAllocationError(
+                        'Information provided doesn\'t exist in the database',
+                        $user,
+                        $level,
+                        $subject
+                    );
+                }
+        
+                // Allocate users with subject and class
+                $subject->users()->syncWithoutDetaching($user);
+                $subject->levels()->syncWithoutDetaching($level);
+                $subject->save();
+        
+                return $this->handleAllocationSuccess($user, $level, $subject);
+            } catch (\Exception $e) {
+                return $this->handleAllocationError(
+                    'Error allocating subject and class: ' . $e->getMessage(),
+                    $user ?? null,
+                    $level ?? null,
+                    $subject ?? null
+                );
+            }
+        }
+        
+        private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
+        {
             return response()->json([
-                'message' => 'User saved successfully',
-                'User' => $user,
-                'status' => 201,
+                'message' => 'Subject and class allocated successfully',
+                'status' => 'success',
+                'Teacher' => $user->firstname . ' ' . $user->surname,
+                'Email' => $user->email,
+                'Class' => $level->className,
+                'Subject' => $subject->name,
             ], 201);
-        } catch (\Exception $e) {
+        }
+        
+        private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
+        {
             return response()->json([
-                'message' => 'User not saved',
-                'status' => 404,
-                '4' => $e,
-            ], 404);
+                'message' => $errorMessage,
+                'status' => 'fail',
+                'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
+                'Email' => $user ? $user->email : null,
+                'Class' => $level ? $level->className : null,
+                'Subject' => $subject ? $subject->name : null,
+            ]);
         }
-    }
-
-    public function Allocation(Request $request): JsonResponse
-    {   
-
-        $user = User::where('email', $request->input('email'))->first();
-        $level=Level::where('className',$request->input('className'))->first();
-        $subject=Subject::where('name',$request->input('name'))->first();
-        try {
-            $response = [
-                'message' => '',
-                'status' => '',
-                'Teacher' => null,
-                'Email' => null,
-                'Class' => null,
-                'Subject' => null,
-
-            ];
-            $code = 200;
         
-       
-        if (!$user || !$level || !$subject) {
-            $response['message'] = 'Information provided doesnt exists in the database';
-             $response['status'] = 'success';
-                $response['Teacher'] = $user->firstname.' '.$user->surname;
-                $response['Email'] = $user->email;
-                $response['Class'] = $level->className;
-                $response['Subject'] = $subject->name;
-
-
-            $code = 201;
-        }
-             else{
-            $user->subjects()->attach($subject);
-            $user->levels()->attach($level);
-    
-                $response['message'] = 'Subject and class allocated successfully';
-                $response['status'] = 'success';
-                $response['Teacher'] = $user->firstname.' '.$user->surname;
-                $response['Email'] = $user->email;
-                $response['Class'] = $level->className;
-                $response['Subject'] = $subject->name;
-
-
-                $code = 201;
-             }
-            
-        } catch (\Exception $e) {
-            $response['message'] = 'Error allocating subject and class';
-            $response['status'] = 'fail';
-            $code = 500;
-        }
-        return response()->json($response, $code);
-        
-       
-
-        }
     public function UserToDepartment(){
        
 
@@ -222,7 +199,6 @@ use Psy\Util\Json;
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
         $user->role_name = $request->role_name;
-        $user->departmentName = $request->departmentName;
         $user->created_at = carbon::now();
         $user->updated_at = carbon::now();
         $user->save();
