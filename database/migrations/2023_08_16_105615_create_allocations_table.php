@@ -17,13 +17,13 @@ return new class extends Migration
             $table->increments('id');
 
 
-            $table->unsignedInteger('user_id')->nullable();
+            $table->unsignedInteger('subject_id')->nullable();
      
             $table->morphs('allocationable');
 
-            $table->foreign('user_id')
+            $table->foreign('subject_id')
             ->references('id')
-            ->on('users')
+            ->on('subjects')
             ->onDelete('NO ACTION')
             ->onUpdate('CASCADE');
 

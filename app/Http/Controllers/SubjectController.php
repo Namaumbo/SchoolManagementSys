@@ -24,6 +24,8 @@ use lluminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SubjectController extends Controller
 {
+
+
     public function getAll()
     {
         return Subject::all();
@@ -31,18 +33,24 @@ class SubjectController extends Controller
 
     public function show(int $id)
     {
-        $subject = Subject::with('students', 'users')->findOrFail($id);
+
+        $subject = Subject::with('students', 'users')->findorFail($id);
         $relatedStudents = $subject->students;
         $relatedTeachers = $subject->users;
         return response()->json([
+
             'Students' => $relatedStudents,
             'Teachers' => $relatedTeachers,
         ], 201);
     }
 
+
     public function create(Request $request, $subject): void
     {
         $subject->name = $request->name;
+        $subject->created_at = carbon::now();
+        $subject->updated_at = carbon::now();
+
         $subject->save();
     }
 
@@ -70,13 +78,19 @@ class SubjectController extends Controller
 
     public function gradingSystem(Request $request, string $id): JsonResponse
     {
-        $response = new StudentResource(Student::findOrFail($id));
+
+
+        $response = new StudentResource(Student::findorFail($id));
+
 
         return response()->json([
+
+
             'Score' => $response->assessments,
+
+
         ], 400);
     }
-
     public function update(Request $request, int $id): JsonResponse
     {
         if (Subject::where('id', $id)->exists()) {
@@ -94,6 +108,7 @@ class SubjectController extends Controller
 
     public function destroy($id): JsonResponse
     {
+
         if (Subject::where('id', $id)->exists()) {
             $subject = Subject::find($id);
             $subject->delete();

@@ -89,32 +89,39 @@ export default function Login() {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
                     localStorage.setItem("vitals", user);
-                    
 
                     switch (res.data.user.role_name) {
                         case "Teacher":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem("role", window.btoa("Teacher"));
+                            localStorage.setItem(
+                                "role",
+                                window.btoa("Teacher")
+                            );
                             break;
                         case "Head teacher":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem("role", window.btoa("Head teacher"));
+                            localStorage.setItem(
+                                "role",
+                                window.btoa("Head teacher")
+                            );
                             break;
                         case "Student":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem("role", window.btoa("Student"));
+                            localStorage.setItem(
+                                "role",
+                                window.btoa("Student")
+                            );
                             break;
-                        case "Admin":
+                        case "admin":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem("role", window.btoa("Admin"));
-                     
+                            localStorage.setItem("role", window.btoa("admin"));
+
                             break;
                         default:
                             break;
                     }
 
                     if (res.data.status === "success") {
-
                         Swal.fire({
                             icon: "success",
                             title: "Login Success!",

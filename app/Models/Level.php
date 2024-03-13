@@ -19,9 +19,9 @@ class Level extends Model
       
     ];
 
-    public function users(){
+    public function subjects(){
         return $this->morphToMany(
-            User::class,
+            Subject::class,
             'allocationable');
     }
 
