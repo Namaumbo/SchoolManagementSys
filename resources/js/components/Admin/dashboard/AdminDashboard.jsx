@@ -97,7 +97,7 @@ export default function AdminDashboard() {
         },
     ];
     const isAdminOrHeadTeacher =
-        window.atob(loggedIn) && window.atob(role) === "Admin";
+        window.atob(loggedIn) && window.atob(role) === "admin";
     const isTeacher = loggedIn && role === "Teacher";
 
     if (isAdminOrHeadTeacher) {
