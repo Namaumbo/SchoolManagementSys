@@ -9,23 +9,49 @@ use Illuminate\Http\JsonResponse;
 
 class SchoolReportController extends Controller
 {
+
+    /*
+*  
+// Class representing the SchoolReportController.
+
+// This class is responsible for generating the grades report for the school. It retrieves assessmen
+data with related student and subject information, processes the data to generate the grades report, 
+and returns the report as a JSON response.
+
+// Attributes:
+//     None
+
+// Methods:
+//     - store(Request $request): Retrieves assessment data, processes the data, and returns the grades report
+ as a JSON response.
+//     - calculateGPA($score, $formLevel, $subjectName): Calculates the GPA (Grade Point Average) based 
+on the score, form level, and subject name.
+//     - processReportData($assessment): Processes the assessment data to generate the grades report.
+//     - determineFormLevel($className): Determines the form level based on the class name.
+//     - isJuniorSection($className): Checks if the class belongs to the junior section.
+//     - isSeniorSection($className): Checks if the class belongs to the senior section.
+//     - isSubjectConsidered($subjectName, $score, $points): Checks if the subject should be
+ considered for the passing criteria.
+//
+*     - getPassingScore(): Returns the passing score for the assessments.
+*/
+    const JUNIOR_SECTION = 'Junior Section';
+    const SENIOR_SECTION = 'Senior Section';
     public function store(Request $request)
     {
         try {
             // Retrieve assessment data with related student and subject information
-            $reportData = Assessment::select(
-                'averageScore',
-                'assessments.subject_id',
-                'assessments.student_id',
-                'subjects.name',
-                'students.firstname',
-                'students.surname',
-                'students.className' // Include className column
-            )
-                ->join('students', 'students.id', '=', 'assessments.student_id')
-                ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
+            $reportData = Assessment::with(['student', 'subject'])
+                ->select(
+                    'averageScore',
+                    'subject_id',
+                    'student_id',
+                    'name',
+                    'firstname',
+                    'surname',
+                    'className'
+                )
                 ->get();
-
             // Process the assessment data to generate the grades report
             $processedData = $this->processReportData($reportData);
 
@@ -52,7 +78,7 @@ class SchoolReportController extends Controller
         $remark = null;
         $analysis = null;
 
-        if ($formLevel == 'Junior Section') {
+        if ($formLevel === self::JUNIOR_SECTION) {
             // Define grade mappings for junior section
             $gradeMappings = [
                 ['min' => 75, 'max' => 100, 'grade' => 'A', 'remark' => 'Distinction'],
@@ -62,19 +88,41 @@ class SchoolReportController extends Controller
                 ['min' => 0, 'max' => 39, 'grade' => 'F', 'remark' => 'Fail'],
             ];
 
-            foreach ($gradeMappings as $mapping) {
-                if ($score >= $mapping['min'] && $score <= $mapping['max']) {
-                    $grade = $mapping['grade'];
-                    $remark = $mapping['remark'];
+            // considered binary search here algorithim  and data structure
 
-                    if ($formLevel == 'Junior Section' && $subjectName === 'English') {
+            $low = 0;
+            $high = count($gradeMappings) - 1;
+            while ($low <= $high) {
+                $mid = floor(($low + $high) / 2);
+                if ($score >= $gradeMappings[$mid]['min'] && $score <= $gradeMappings[$mid]['max']) {
+                    $grade = $gradeMappings[$mid]['grade'];
+                    $remark = $gradeMappings[$mid]['remark'];
+
+                    if ($formLevel == self::JUNIOR_SECTION && $subjectName === 'English') {
                         if ($score >= $this->getPassingScore()) {
                             $points = 1;
                         }
                     }
+                    break;
+                } elseif ($score < $gradeMappings[$mid]['min']) {
+                    $high = $mid - 1;
+                } else {
+                    $low = $mid + 1;
                 }
             }
-        } elseif ($formLevel == 'Senior Section') {
+            // foreach ($gradeMappings as $mapping) {
+            //     if ($score >= $mapping['min'] && $score <= $mapping['max']) {
+            //         $grade = $mapping['grade'];
+            //         $remark = $mapping['remark'];
+
+            //         if ($formLevel == self::JUNIOR_SECTION && $subjectName === 'English') {
+            //             if ($score >= $this->getPassingScore()) {
+            //                 $points = 1;
+            //             }
+            //         }
+            //     }
+            // }
+        } elseif ($formLevel === self::SENIOR_SECTION) {
             // Define points for the senior section
             $pointsMappings = [
                 ['min' => 0, 'max' => 33, 'points' => 9, 'analysis' => 'Fail'],
@@ -93,7 +141,8 @@ class SchoolReportController extends Controller
                     $points = $mapping['points'];
                     $analysis = $mapping['analysis'];
 
-                    if ($subjectName === 'English' && $score >= $this->getPassingScore()) {
+                    $isEnglish = ($subjectName === 'English');
+                    if ($isEnglish && $score >= $this->getPassingScore()) {
                         $points = 1;
                     }
                 }
@@ -165,10 +214,10 @@ class SchoolReportController extends Controller
                 $processedData[$studentId]['english_score'] = $score;
             }
 
-            if ($formLevel === 'Junior Section') {
+            if ($formLevel === self::JUNIOR_SECTION) {
                 // Calculate overall grade for junior section students
                 $processedData[$studentId]['subject_count']++;
-            } elseif ($formLevel === 'Senior Section') {
+            } elseif ($formLevel === self::SENIOR_SECTION) {
                 // Calculate total points for senior section students
                 if ($this->isSubjectConsidered($subjectName, $score, $gpaData['points'])) {
                     $processedData[$studentId]['subject_count']++;
@@ -190,7 +239,7 @@ class SchoolReportController extends Controller
 
                 if ($subjectCount >= 6) {
                     $overallGPA = $totalMarks / $subjectCount;
-                    $overallGradeData = $this->calculateGPA($overallGPA, 'Junior Section', 'Overall');
+                    $overallGradeData = $this->calculateGPA($overallGPA, self::JUNIOR_SECTION, 'Overall');
                     $processedData[$studentId]['overall_grade'] = $overallGradeData['grade'];
 
                     // Add head teacher and class teacher comments for junior section
@@ -279,9 +328,9 @@ class SchoolReportController extends Controller
     private function determineFormLevel($className)
     {
         if (preg_match('/^Form [12]/', $className)) {
-            return 'Junior Section';
+            return self::JUNIOR_SECTION;
         } elseif (preg_match('/^Form [34]/', $className)) {
-            return 'Senior Section';
+            return self::SENIOR_SECTION;
         } else {
             return 'Other';
         }

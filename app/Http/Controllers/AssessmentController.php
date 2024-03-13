@@ -21,9 +21,9 @@ class AssessmentController extends Controller
     return $this->assessmentService->updateAssessment($AssessmentService);
       }
 
-      public function deleteAssessment(int $id){
-         return $this->AssessmentService->deleteAssessmentsForStudentAndSubject($id);
-     }
+   //    public function deleteAssessment(int $id){
+   //       return $this->AssessmentService->deleteAssessmentsForStudentAndSubject($id);
+   //   }
 
    }
    
