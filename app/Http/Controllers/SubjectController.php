@@ -43,6 +43,58 @@ class SubjectController extends Controller
             'Teachers' => $relatedTeachers,
         ], 201);
     }
+    public function subjectPerformance()
+{
+    try {
+        $subjects = Subject::with(['students', 'students.assessments'])
+                            ->get();
+
+        $subjectPerformance = [];
+
+        foreach ($subjects as $subject) {
+            $averageScore = $this->calculateAverageScore($subject->students);
+            
+            $subjectData = [
+                'subject_id' => $subject->id,
+                'subject_name' => $subject->name,
+                'performance' => [
+                    'average_score' => $averageScore,
+                    // You can add more performance metrics here
+                ]
+            ];
+
+            $subjectPerformance[] = $subjectData;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Subject performance data retrieved successfully',
+            'data' => $subjectPerformance,
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to retrieve subject performance data',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+private function calculateAverageScore($students)
+{
+    $totalScore = 0;
+    $totalStudents = $students->count();
+
+    foreach ($students as $student) {
+        foreach ($student->assessments as $assessment) {
+            // Assuming 'averageScore' is the attribute name for the score
+            $totalScore += $assessment->averageScore;
+        }
+    }
+
+    return $totalStudents > 0 ? $totalScore / $totalStudents : 0;
+}
+
 
 
     public function create(Request $request, $subject): void

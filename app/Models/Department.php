@@ -29,6 +29,6 @@ class Department extends Model
     public function subjects(){
         return $this->morphToMany(
             Subject::class,
-            'allocationable');
+            'allocationables');
     }
 }
