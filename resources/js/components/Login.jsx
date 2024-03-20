@@ -106,7 +106,7 @@ export default function Login() {
                             break;
                         case "Admin":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem("role", window.btoa("Admin"));
+                            localStorage.setItem("role", window.btoa("admin"));
                      
                             break;
                         default:

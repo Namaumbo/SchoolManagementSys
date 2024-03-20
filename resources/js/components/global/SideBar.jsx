@@ -33,7 +33,7 @@ const SideBar = () => {
     //     navigate('/login')
     // }
 
-    if (window.atob(loggedIn) && window.atob(role) === "Admin") {
+    if (window.atob(loggedIn) && window.atob(role) === "admin") {
         return (
             <div className="sideBarItems" >
             <div className="sidebar-img">
