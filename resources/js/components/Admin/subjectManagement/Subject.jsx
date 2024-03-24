@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
 import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
-import { Fab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, TextField, Button, Typography, Box } from "@mui/material";
+import {
+    Fab,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Modal,
+    TextField,
+    Button,
+    Typography,
+    Box,
+    Snackbar,
+} from "@mui/material";
 import Swal from "sweetalert2";
-import Button from "@mui/material/Button";
-import { Fab, Snackbar } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
+
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
@@ -14,6 +26,7 @@ const Subject = () => {
     const [subjectName, setSubjectName] = useState("");
     const [subjectCode, setSubjectCode] = useState("");
     const [periodsPerWeek, setPeriodsPerWeek] = useState("");
+    const [addedSubject, setAddedSubject] = useState(false);
     const [subjects, setSubjects] = useState([]);
     const allowedSubjects = [
         "Mathematics",
@@ -27,7 +40,7 @@ const Subject = () => {
         "French",
         "Life Skills",
         "Social and Developmental Studies",
-        "Additional Mathematics"
+        "Additional Mathematics",
     ];
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -43,9 +56,9 @@ const Subject = () => {
     const handleSubmit = () => {
         if (!allowedSubjects.includes(subjectName)) {
             Swal.fire({
-                icon: 'error',
-                title: 'Invalid Subject Name',
-                text: 'Please enter a valid subject name!',
+                icon: "error",
+                title: "Invalid Subject Name",
+                text: "Please enter a valid subject name!",
             });
             return;
         }
@@ -53,17 +66,12 @@ const Subject = () => {
         const newSubject = {
             name: subjectName,
             code: subjectCode,
-            periodsPerWeek: periodsPerWeek
+            periodsPerWeek: periodsPerWeek,
         };
 
         SubjectService.addSubject(newSubject)
             .then((res) => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Subject Added Successfully',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                setAddedSubject(true);
                 setModalOpen(false); // Close the modal
                 setSubjectName(""); // Clear input fields
                 setSubjectCode("");
@@ -72,20 +80,22 @@ const Subject = () => {
             })
             .catch((err) => {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to add subject. Please try again later.',
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to add subject. Please try again later.",
                 });
             });
     };
 
     const fetchSubjects = () => {
         // Fetch list of subjects from backend
-        axios.get("api/subjects")
+        axios
+            .get("api/subjects")
             .then((res) => {
                 setSubjects(res.data);
             })
             .catch((err) => {
+                // TODO: Error handling error UI
                 console.log(err);
             });
     };
@@ -100,33 +110,13 @@ const Subject = () => {
                 <IconSection.BiBookOpen />
                 <span style={{ color: "white" }}>Subject Management</span>
             </div>
+
             <Snackbar
-                open={open}
+                open={addedSubject}
                 autoHideDuration={6000}
                 message="Subject Saved Successifuly 🙂"
             />
-            <div className="row align-items-start">
-                {subjects.map((subject) => {
-                    return (
-                        <div className="row" key={subject.id}>
-                            <div className="card">
-                                <div className="card-body">
-                                    <h5 className="card-title">
-                                        {subject.name}
-                                    </h5>
-                                    <h6 className="card-subtitle mb-2 text-muted">
-                                        20Students
-                                    </h6>
-                                    <p className="card-text">
-                                        Some information and description added
-                                        to the Subject.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+
             <div
                 className="modal fade"
                 id="staticBackdrop"
@@ -203,8 +193,26 @@ const Subject = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                    <Box sx={{ mb: 2, bgcolor: 'primary.main', color: 'primary.contrastText', p: 2 }}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            mb: 2,
+                            bgcolor: "primary.main",
+                            color: "primary.contrastText",
+                            p: 2,
+                        }}
+                    >
                         <Typography variant="h6" component="div" align="center">
                             Add Subject
                         </Typography>
@@ -233,9 +241,23 @@ const Subject = () => {
                         value={periodsPerWeek}
                         onChange={(e) => setPeriodsPerWeek(e.target.value)}
                     />
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                        <Button variant="contained" onClick={handleModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={handleSubmit}>Save</Button>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: 2,
+                        }}
+                    >
+                        <Button variant="contained" onClick={handleModalClose}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                        >
+                            Save
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
@@ -259,8 +281,15 @@ const Subject = () => {
                                 <TableCell>{subject.code}</TableCell>
                                 <TableCell>{subject.periodsPerWeek}</TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="primary">View</Button>
-                                    <Button variant="contained" color="secondary">Edit</Button>
+                                    <Button variant="contained" color="primary">
+                                        View
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                    >
+                                        Edit
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

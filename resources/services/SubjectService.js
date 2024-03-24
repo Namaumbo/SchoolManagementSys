@@ -8,6 +8,7 @@ class SubjectService {
     headers = HttpService.setHeaders();
 
     async addSubject(subject) {
+        
         try {
             const wordNormalizer = utils.wordNormalizer(subject);
             console.info(`adding ${wordNormalizer} to database`);

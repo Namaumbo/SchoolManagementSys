@@ -15,32 +15,47 @@ import { IconContext } from "react-icons";
 import Grid from "@mui/material/Grid";
 
 export default function AdminDashboard() {
-    const [userInfo, setUserInfo] = useRecoilState(userDetails);
+    // const [userInfo, setUserInfo] = useRecoilState(userDetails);
+    const [students, setStudents] = useState([]);
     const [data, setData] = useState([]);
     const loggedIn = localStorage.getItem("loggedIn");
     const role = localStorage.getItem("role");
     const accessKey = localStorage.getItem("key");
 
     useEffect(() => {
-        async function getUsers() {
-            const headers = {
-                Authorization: `Bearer ${accessKey}`,
-            };
-            try {
-                const res = await axios.get("http://127.0.0.1:8000/api/users", {
-                    headers,
-                });
-                setUserInfo(res.data);
-                setData(res.data.users); // Assuming the user data is in a 'users' property
-            } catch (err) {
-                // #TODO: Error handling propally give the error in a proper way
-                alert(err.message);
-                console.error(err);
-            }
+        const headers = {
+            Authorization: `Bearer ${accessKey}`,
+        };
+        function getUsers() {
+            return axios({
+                method: "GET",
+                url: "http://127.0.0.1:8000/api/users",
+                headers: headers,
+            });
+        }
+        function getStudents() {
+            return axios({
+                method: "GET",
+                url: "http://127.0.0.1:8000/api/students",
+                headers: headers,
+            });
         }
 
-        getUsers().then(null);
-    }, [accessKey, setUserInfo]);
+        Promise.allSettled([getUsers(), getStudents()])
+            .then((responses) => {
+                const userResponses = responses[0];
+                const studentsResponses = responses[1];
+                if (userResponses.status === "fulfilled") {
+                    setData(userResponses.value.data.users);
+                }
+                if (studentsResponses.status === "fulfilled") {
+                    setStudents(studentsResponses.value.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [accessKey, setData, setStudents]);
 
     const columns = [
         { field: "id", headerName: "ID", width: 50 },
@@ -50,8 +65,6 @@ export default function AdminDashboard() {
         { field: "email", headerName: "Email", type: "String", width: 180 },
         { field: "role_name", headerName: "Role", width: 100 },
     ];
-
-    const rows = data;
 
     const cardData = [
         {
@@ -78,22 +91,22 @@ export default function AdminDashboard() {
         {
             menu: "students",
             image: studentsPng,
-            number: rows.length ? rows.length : 0,
+            number: students.length ? students.length : 0,
         },
         {
             menu: "teachers",
             image: teachersPng,
-            number: rows.length ? rows.length : 0,
+            number: data.length ? data.length : 0,
         },
         {
             menu: "students",
             image: studentsPng,
-            number: rows.length ? rows.length : 0,
+            number: 0,
         },
         {
             menu: "students",
             image: studentsPng,
-            number: rows.length ? rows.length : 0,
+            number: 0,
         },
     ];
     const isAdminOrHeadTeacher =
@@ -111,6 +124,7 @@ export default function AdminDashboard() {
                 <div className="container text-center">
                     <div className="row">
                         {statisticalData.map((stat) => {
+                            console.log(stat);
                             return (
                                 <div className="col" key={stat.menu}>
                                     <div className="cardMn">
@@ -161,7 +175,7 @@ export default function AdminDashboard() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {rows.map((user, index) => (
+                                    {data.map((user, index) => (
                                         <tr key={user.firstname}>
                                             {columns.map((column) => (
                                                 <td key={column.field}>
