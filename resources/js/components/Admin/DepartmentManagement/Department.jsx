@@ -1,322 +1,154 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Box,
-  Alert,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Modal,
-  Backdrop,
-  Fade,
-} from "@mui/material";
+import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable } from "material-react-table";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+    Box,
+    IconButton,
+    Tooltip,
+    Collapse,
+    TableCell,
+    TableRow,
+    Modal,
+    Backdrop,
+    Fade,
+    Button,
+    TextField,
+    Typography,
+    Paper,
+    MenuItem,
+} from "@mui/material";
+
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
+import axios from "axios";
 
 const Department = () => {
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [allocateModalOpen, setAllocateModalOpen] = useState(false);
-  const [classNames, setClassNames] = useState([]);
-  const [emails, setEmails] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+    // State variables for department management
+    const [users, setUsers] = useState([]);
+    const [subjects, setSubjects] = useState([]);
+    const [classes, setClasses] = useState([]);
+    const [selectedUser, setSelectedUser] = useState("");
+    const [selectedSubject, setSelectedSubject] = useState("");
+    const [selectedClass, setSelectedClass] = useState("");
+    const [allocationMessage, setAllocationMessage] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersResponse = await axios.get("http://127.0.0.1:8000/api/users");
-        console.log("Users Response:", usersResponse.data);
-
-        const emailsResponse = await axios.get("http://127.0.0.1:8000/api/emails");
-        console.log("Emails Response:", emailsResponse.data);
-
-        const classesResponse = await axios.get("http://127.0.0.1:8000/api/classes");
-        console.log("Classes Response:", classesResponse.data);
-
-        const subjectsResponse = await axios.get("http://127.0.0.1:8000/api/subjects");
-        console.log("Subjects Response:", subjectsResponse.data);
-
-        setUsers(usersResponse.data);
-        setEmails(emailsResponse.data.emails); // Update this line
-        setClassNames(classesResponse.data);
-        setSubjects(subjectsResponse.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const usersResponse = await axios.get("http://127.0.0.1:8000/api/users");
+          const classesResponse = await axios.get("http://127.0.0.1:8000/api/classes");
+          const subjectsResponse = await axios.get("http://127.0.0.1:8000/api/subjects");
+    
+          setUsers(usersResponse.data);
+      
+          setSubjects(subjectsResponse.data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setError(error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+    
+      fetchData();
+    }, []);
+    // Event handler to allocate user to subject and class
+    const handleAllocation = async () => {
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/allocations", {
+                email: selectedUser,
+                subject: selectedSubject,
+                className: selectedClass,
+            });
+            setAllocationMessage({ type: "success", text: response.data.message });
+        } catch (error) {
+            setAllocationMessage({ type: "error", text: error.response?.data?.message || "An error occurred while allocating user." });
+        }
     };
 
-    fetchData();
-  }, []);
+    return (
+        <React.Fragment>
+            <div className="heading">
+                <span style={{ color: "white" }}>Department</span>
+            </div>
 
-  const columns = [
-    { accessorKey: "id", header: "ID", enableSorting: true },
-    { accessorKey: "title", header: "Title", enableSorting: true },
-    { accessorKey: "firstname", header: "First Name", enableSorting: true },
-    { accessorKey: "surname", header: "Surname", enableSorting: true },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      Cell: ({ row }) => (
-        <>
-          <IconButton onClick={() => handleView(row.original)}>
-            <VisibilityIcon />
-          </IconButton>
-          <IconButton onClick={() => handleEdit(row.original)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleDeleteDialogOpen(row.original.id)}>
-            <DeleteIcon style={{ color: "red" }} />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+            {/* User Selection */}
+            <TextField
+                select
+                label="User"
+                fullWidth
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+                sx={{ mt: 2 }}
+            >
+                {users.map((user) => (
+                    <MenuItem key={user.id} value={user.email}>
+                        {user.firstname} {user.surname} ({user.email})
+                    </MenuItem>
+                ))}
+            </TextField>
 
-  const handleView = (user) => {
-    setSelectedUser(user);
-    setViewModalOpen(true);
-  };
+            {/* Subject Selection */}
+            <TextField
+                select
+                label="Subject"
+                fullWidth
+                value={selectedSubject}
+                onChange={(e) => setSelectedSubject(e.target.value)}
+                sx={{ mt: 2 }}
+            >
+                {subjects.map((subject) => (
+                    <MenuItem key={subject.id} value={subject.name}>
+                        {subject.name}
+                    </MenuItem>
+                ))}
+            </TextField>
 
-  const handleEdit = (user) => {
-    console.log("Edit user:", user);
-    // Implement edit functionality here
-  };
+            {/* Class Selection */}
+            <TextField
+                select
+                label="Class"
+                fullWidth
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                sx={{ mt: 2 }}
+            >
+                {classes.map((classItem) => (
+                    <MenuItem key={classItem.id} value={classItem.className}>
+                        {classItem.className}
+                    </MenuItem>
+                ))}
+            </TextField>
 
-  const handleDeleteDialogOpen = (userId) => {
-    setSelectedUser(userId);
-    setDeleteDialogOpen(true);
-  };
+            {/* Allocation Button */}
+            <Button
+                onClick={handleAllocation}
+                variant="contained"
+                color="primary"
+                sx={{ textTransform: "none", mt: 2 }}
+            >
+                Allocate
+            </Button>
 
-  const handleDeleteDialogClose = () => {
-    setSelectedUser(null);
-    setDeleteDialogOpen(false);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`http://127.0.0.1:8000/api/users/${selectedUser}`);
-      const updatedUsers = users.filter((user) => user.id !== selectedUser);
-      setUsers(updatedUsers);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    } finally {
-      setSelectedUser(null);
-      setDeleteDialogOpen(false);
-    }
-  };
-
-  const handleViewModalClose = () => {
-    setViewModalOpen(false);
-  };
-
-  const handleAllocateModalOpen = () => {
-    setAllocateModalOpen(true);
-  };
-
-  const handleAllocateModalClose = () => {
-    setAllocateModalOpen(false);
-  };
-
-  const handleAllocateSubjectsLevels = () => {
-    if (selectedUser) {
-      const selectedClassName = document.getElementById("className").value;
-      const selectedEmail = document.getElementById("email").value;
-
-      axios
-        .post("http://127.0.0.1:8000/api/allocations", {
-          email: selectedEmail,
-          name: document.getElementById("subjectName").value,
-          className: selectedClassName,
-        })
-        .then((response) => {
-          console.log("Allocation success:", response.data);
-          // Handle success, update UI, show success message, etc.
-        })
-        .catch((error) => {
-          console.error(
-            "Allocation error:",
-            error.response ? error.response.data : error.message
-          );
-          // Handle error, show error message, etc.
-        })
-        .finally(() => {
-          setAllocateModalOpen(false);
-        });
-    } else {
-      console.error("No user selected for allocation.");
-    }
-  };
-
-  return (
-    <React.Fragment>
-      <div className="heading">
-        <AddIcon />
-        <span style={{ color: "white" }}>Head Of Department-Dashboard</span>
-      </div>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={handleAllocateModalOpen}
-        style={{ marginLeft: '10px' }}
-      >
-        Allocate
-      </Button>
-
-      <div style={{ width: "1100px" }}>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <MaterialReactTable
-            columns={columns}
-            data={users}
-            searchTerm={searchTerm}
-            paginate
-            sortable
-            itemsPerPage={5}
-          />
-        )}
-      </div>
-
-      {/* View Details Modal */}
-      <Modal
-        open={viewModalOpen}
-        onClose={handleViewModalClose}
-        aria-labelledby="view-modal-title"
-        aria-describedby="view-modal-description"
-        closeAfterTransition
-      >
-        <Fade in={viewModalOpen}>
-          <Paper
-            sx={{
-              p: 3,
-              width: "60%",
-              maxWidth: 800,
-              maxHeight: "80vh",
-              overflowY: "auto",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <Alert severity="success" sx={{ mb: 3, backgroundColor: "success.main" }}>
-              <Typography variant="h4" fontWeight="bold" color="success.contrastText">
-                Personal Details
-              </Typography>
-            </Alert>
-            {selectedUser && (
-              <Box>
-                <Typography variant="h6">
-                  {selectedUser.title} {selectedUser.firstname} {selectedUser.surname}
+            {/* Allocation Message */}
+            {allocationMessage && (
+                <Typography
+                    variant="body2"
+                    sx={{
+                        mt: 2,
+                        backgroundColor: allocationMessage.type === "success" ? "success.main" : "error.main",
+                        color: "white",
+                        padding: 1,
+                        borderRadius: 4,
+                    }}
+                >
+                    {allocationMessage.text}
                 </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  Email: {selectedUser.email}
-                </Typography>
-              </Box>
             )}
-          </Paper>
-        </Fade>
-      </Modal>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={handleDeleteDialogClose}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">Delete User</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            Are you sure you want to delete this user?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Allocate Subjects/Levels Modal */}
-      <Dialog
-        open={allocateModalOpen}
-        onClose={handleAllocateModalClose}
-        aria-labelledby="allocate-modal-title"
-        aria-describedby="allocate-modal-description"
-      >
-        <DialogTitle id="allocate-modal-title">Allocate Subjects/Levels</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="classNameLabel">Class Name</InputLabel>
-            <Select labelId="classNameLabel" id="className" label="Class Name" defaultValue="">
-              {classNames.map((className) => (
-                <MenuItem key={className.id} value={className.className}>
-                  {className.className}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="emailLabel">Email</InputLabel>
-            <Select labelId="emailLabel" id="email" label="Email" defaultValue="">
-              {emails.map((email) => (
-                <MenuItem key={email} value={email}>
-                  {email}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel id="subjectNameLabel">Subject Name</InputLabel>
-            <Select labelId="subjectNameLabel" id="subjectName" label="Subject Name" defaultValue="">
-              {subjects.map((subject) => (
-                <MenuItem key={subject.id} value={subject.name}>
-                  {subject.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleAllocateModalClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAllocateSubjectsLevels} color="success" autoFocus>
-            Allocate
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  );
+        </React.Fragment>
+    );
 };
 
 export default Department;

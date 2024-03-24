@@ -97,6 +97,7 @@ Route::controller(SubjectController::class)->group(function () {
     Route::post('/create-subject', 'store');
     Route::get('/subjects', 'getAll');
     Route::get('/subject/{id}', 'show');
+    Route::get('/subjectPerformance', 'subjectPerformance');
 
     Route::put('/update-subject/{id}', 'update');
 });

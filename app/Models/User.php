@@ -74,7 +74,7 @@ class User extends Authenticatable
         public function subjects(){
             return $this->morphToMany(
                 Subject::class,
-                'allocationable');
+                'allocationables');
         }
 
 

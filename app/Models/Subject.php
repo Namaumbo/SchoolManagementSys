@@ -49,15 +49,13 @@ class Subject extends Model
     {
         return $this->morphedByMany(
             Level::class,
-            'allocationable'
-        )->withTimeStamps();
+           'allocationables')->withTimeStamps();
     }
 
     public function departments()
     {
         return $this->morphedByMany(
             Department::class,
-            'allocationable'
-        )->withTimeStamps();
+           'allocationables')->withTimeStamps();
     }
 }

@@ -1,19 +1,12 @@
+// SubjectService.js
 import HttpService from "./HttpService";
 import axios from "axios";
 
 class SubjectService {
     constructor() {}
-    // TODO: this url prefix should be coming from  freezed object``
     urlPrefix = "http://127.0.0.1:8000/api";
-    response = null;
-
     headers = HttpService.setHeaders();
 
-    /**
-     * Makes an HTTP POST request to create a new subject.
-     * @param {Object} subject - The details of the subject to be created.
-     * @returns {Promise} - A promise that resolves with the response data or rejects with an error object.
-     */
     async addSubject(subject) {
         try {
             const wordNormalizer = utils.wordNormalizer(subject);
@@ -46,6 +39,20 @@ class SubjectService {
             const response = await axios.get(`${this.urlPrefix}/subjects`, {
                 headers: this.headers,
             });
+            return response.data;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async fetchSubjectPerformance() {
+        try {
+            const response = await axios.get(
+                `${this.urlPrefix}/subjectPerformance`,
+                {
+                    headers: this.headers,
+                }
+            );
             return response.data;
         } catch (error) {
             return error;

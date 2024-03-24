@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
+import { Fab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, TextField, Button, Typography, Box } from "@mui/material";
+import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import { Fab, Snackbar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -9,93 +11,89 @@ import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
 const Subject = () => {
-    /**
-     *
-     */
-    const [subjects, setSubjects] = React.useState([]);
-    const [subjectName, setSubjectName] = React.useState("");
-    const [open, setOpen] = React.useState(false);
+    const [subjectName, setSubjectName] = useState("");
+    const [subjectCode, setSubjectCode] = useState("");
+    const [periodsPerWeek, setPeriodsPerWeek] = useState("");
+    const [subjects, setSubjects] = useState([]);
+    const allowedSubjects = [
+        "Mathematics",
+        "English",
+        "History",
+        "Bible Knowledge",
+        "Chemistry",
+        "Physics",
+        "Chichewa",
+        "Geography",
+        "French",
+        "Life Skills",
+        "Social and Developmental Studies",
+        "Additional Mathematics"
+    ];
 
-    // Improved version of the SubjectService function
+    const [modalOpen, setModalOpen] = useState(false);
 
-    useEffect(() => {
-        //TODO: display to the user interface
-        const displayErrorMessage = (message) => {
-            // Display user-friendly error message
-            // Use proper error handling mechanism or library
-            // Example: displayErrorMessage(message);
-            console.log(message);
-        };
+    const handleModalOpen = () => {
+        setModalOpen(true);
+    };
 
-        // FIXME: implement error to be logged to service
-        const logErrorToService = (error) => {
-            // Log error to external service
-            // Use proper error handling mechanism or library
-            // Example: logErrorToService(error);
-            console.log(error);
-        };
-
-        const handleTimeout = () => {
-            console.log("Request timed out");
-            // Handle timeout error
-        };
-
-        const getAllSubjects = async () => {
-            try {
-                const response = await SubjectService.getAllSubjects();
-                clearTimeout(timeout); // Clear the timeout if the request completes successfully
-                if (response !== null && response !== undefined) {
-                    if (response.length > 0) {
-                        console.log(response);
-                        setSubjects(response);
-                    } else {
-                        // Handle empty array case
-                        setSubjects([]);
-                    }
-                } else {
-                    // handle the case where subjects is null or undefined
-                }
-            } catch (error) {
-                clearTimeout(timeout); // Clear the timeout if there is an error
-                // TODO: Display user-friendly error message or log error to external service
-                displayErrorMessage(
-                    "Failed to fetch subjects. Please try again later."
-                );
-                // or
-                // TODO: Log error message
-                logErrorToService(error);
-            }
-        };
-
-        const timeout = setTimeout(handleTimeout, 5000); // Timeout after 5 seconds
-
-        getAllSubjects();
-
-        return () => {
-            clearTimeout(timeout); // Clear the timeout if the component is unmounted
-        };
-    }, [SubjectService.getAllSubjects]);
+    const handleModalClose = () => {
+        setModalOpen(false);
+    };
 
     const handleSubmit = () => {
-        // Create a new subject object with the specified subject name
-
         if (!allowedSubjects.includes(subjectName)) {
-            window.alert("Invalid subject name");
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Subject Name',
+                text: 'Please enter a valid subject name!',
+            });
             return;
         }
-          /**
-   * Handles the submission of the subject form.
-   * Checks if the subject name is valid and adds the subject if it is.
-   */
-       SubjectService.addSubject(subjectName)
-       .then((res) => {
-        console.log(res);
-        alert("user added successfully");
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+
+        const newSubject = {
+            name: subjectName,
+            code: subjectCode,
+            periodsPerWeek: periodsPerWeek
+        };
+
+        SubjectService.addSubject(newSubject)
+            .then((res) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject Added Successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setModalOpen(false); // Close the modal
+                setSubjectName(""); // Clear input fields
+                setSubjectCode("");
+                setPeriodsPerWeek("");
+                fetchSubjects(); // Fetch updated list of subjects
+            })
+            .catch((err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add subject. Please try again later.',
+                });
+            });
     };
+
+    const fetchSubjects = () => {
+        // Fetch list of subjects from backend
+        axios.get("api/subjects")
+            .then((res) => {
+                setSubjects(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    useEffect(() => {
+        fetchSubjects();
+    }, []); // Fetch subjects on component mount
+
     return (
         <>
             <div className="heading">
@@ -198,7 +196,79 @@ const Subject = () => {
             >
                 <GoPlus size={25} />
             </Fab>
+
+            <Modal
+                open={modalOpen}
+                onClose={handleModalClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                    <Box sx={{ mb: 2, bgcolor: 'primary.main', color: 'primary.contrastText', p: 2 }}>
+                        <Typography variant="h6" component="div" align="center">
+                            Add Subject
+                        </Typography>
+                    </Box>
+                    <TextField
+                        margin="normal"
+                        label="Subject Name"
+                        variant="outlined"
+                        fullWidth
+                        value={subjectName}
+                        onChange={(e) => setSubjectName(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        label="Subject Code"
+                        variant="outlined"
+                        fullWidth
+                        value={subjectCode}
+                        onChange={(e) => setSubjectCode(e.target.value)}
+                    />
+                    <TextField
+                        margin="normal"
+                        label="Periods Per Week"
+                        variant="outlined"
+                        fullWidth
+                        value={periodsPerWeek}
+                        onChange={(e) => setPeriodsPerWeek(e.target.value)}
+                    />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                        <Button variant="contained" onClick={handleModalClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={handleSubmit}>Save</Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            <TableContainer component={Paper} style={{ marginTop: 20 }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>#</TableCell>
+                            <TableCell>Subject Name</TableCell>
+                            <TableCell>Subject Code</TableCell>
+                            <TableCell>Periods Per Week</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {subjects.map((subject, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{subject.name}</TableCell>
+                                <TableCell>{subject.code}</TableCell>
+                                <TableCell>{subject.periodsPerWeek}</TableCell>
+                                <TableCell>
+                                    <Button variant="contained" color="primary">View</Button>
+                                    <Button variant="contained" color="secondary">Edit</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </>
     );
 };
+
 export default Subject;

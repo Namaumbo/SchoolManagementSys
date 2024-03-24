@@ -47,6 +47,11 @@ class Student extends Model
     {
         return $this->belongsTo(Level::class, 'class');
     }
+    
+    public function assessments()
+    {
+        return $this->hasMany(Assessment::class);
+    }
    
 
 }
