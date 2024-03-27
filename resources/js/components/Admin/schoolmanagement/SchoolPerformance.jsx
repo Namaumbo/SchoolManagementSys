@@ -16,6 +16,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import JSZip from "jszip";
 import { jsPDF } from "jspdf"; // Import jsPDF for PDF generation
 import Docxtemplater from "docxtemplater";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import SchoolReport from "./SchoolReport";
 import "./SchoolPerformance.css";
 
 const SchoolPerformance = () => {
@@ -117,6 +119,21 @@ const SchoolPerformance = () => {
 
     return (
         <div>
+            <div>
+                {reportData.map((report, index) => (
+                    <div key={index}>
+                        <PDFDownloadLink
+                            document={<SchoolReport report={report} />}
+                            fileName={`report_${index + 1}.pdf`}
+                        >
+                            {({ blob, url, loading, error }) =>
+                                loading ? "Generating PDF..." : "Download PDF"
+                            }
+                        </PDFDownloadLink>
+                    </div>
+                ))}
+            </div>
+
             <Typography variant="h4" gutterBottom>
                 School Report
             </Typography>
