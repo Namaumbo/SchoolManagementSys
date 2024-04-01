@@ -1,54 +1,62 @@
 .modalPaper {
-    width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    overflow-y: auto;
-    border: 1px solid black;
-  }
-  
-  .studentTable {
-    width: 100%;
-    margin-bottom: 15px;
-    Font-weight:bold;
-    font-size:20px;
-  }
-  
-  .studentTable td {
-    padding: 3px;
-    border: 1px solid black; /* Add border to all sides of table cells */
-    font-size:15px;
-    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  width: 90%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid black;
+}
 
-  }
-  
-  .headerCell {
-    font-weight: bold;
-    padding: 10px;
-  }
-  
-  .assessmentTable {
-    width: 100%;
-    margin-top: 5px;
-  }
-  
-  .assessmentTable th,
-  .assessmentTable td {
-    padding: 3px;
-    font-size:15px;
-    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+.studentTable {
+  width: 100%;
+  margin-bottom: 15px;
+  Font-weight: bold;
+  font-size: 20px;
+}
 
-    text-align: left;
-    border: 1px solid black; /* Add border to all sides of table cells */
-  }
-  
-  .assessmentTable th {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  .grading{
-    text-align: center;
-    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+.studentTable td {
+  padding: 3px;
+  border: 1px solid black;
+  /* Add border to all sides of table cells */
+  font-size: 15px;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
 
-  }
- 
+}
+
+.headerCell {
+  font-weight: bold;
+  padding: 10px;
+}
+
+.assessmentTable {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.assessmentTable th,
+.assessmentTable td {
+  padding: 3px;
+  font-size: 15px;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+
+  text-align: left;
+  border: 1px solid black;
+  /* Add border to all sides of table cells */
+}
+
+.assessmentTable th {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.grading {
+  text-align: center;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+
+}
+
+.button-container {
+
+  float: right;
+  padding: 10px
+}

@@ -25,17 +25,18 @@
     border-radius: 5px;
 
 }
-.cardMn:nth-child(1){
+
+.cardMn:nth-child(1) {
     border-top: 2px solid green;
 }
 
-.col-4:nth-child(1){
+.col-4:nth-child(1) {
     width: 48%;
     margin-right: 10px;
     margin-left: 1%
-
 }
-.col-4:nth-child(2){
+
+.col-4:nth-child(2) {
     width: 48%;
     margin-left: 1%;
 }
@@ -53,7 +54,7 @@
 }
 
 .row:nth-child(2) {
-    margin-top:5%;
+    margin-top: 5%;
     /* border:1px solid black; */
 }
 
@@ -70,7 +71,7 @@
     height: 40px;
     padding-left: 1em;
     padding-top: .6em;
-    margin: 10px;
+    margin: 10px 10px 10px 0;
     border-radius: 5px;
     color: white;
 }
@@ -134,13 +135,12 @@ table td {
 
 }
 
-thead tr  {
+thead tr {
     background-color: #1AB394;
 }
 
-thead tr th{
-    color:white
-
+thead tr th {
+    color: white
 }
 
 
