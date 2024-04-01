@@ -125,7 +125,7 @@ const SchoolPerformance = () => {
                     <Document>
                         {reportData.map((report, index) => (
                             <Page key={index} size="A4">
-                            {/* component for schoolReport */}
+                                {/* component for schoolReport */}
                                 <SchoolReport report={report} />
                             </Page>
                         ))}
