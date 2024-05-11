@@ -3,49 +3,78 @@ import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
     page: {
-        flexDirection: "row",
-        backgroundColor: "#E4E4E4",
+      flexDirection: 'row',
+      backgroundColor: '#E4E4E4',
     },
     section: {
-        margin: 10,
-        padding: 10,
-        flexGrow: 1,
-        border: "1px solid black",
-    },
-    box: {
-        border: "1px solid black",
-    },
-    title: {
-        alignItems: "center",
-        fontSize: "20px",
-    },
-    header: {
-        backgroundColor: "grey",
-        alignItems: "center",
-        fontWeight: "bold",
-    },
-    studentInfo: {
-        fontSize: 12,
+      margin: 10,
+      padding: 10,
+      flexGrow: 1,
     },
     table: {
-        flexDirection: "column",
-    },
-    tableHeader: {
-        flexDirection: "row",
-        justifyContent: "spaceBetween",
-        width: "100%",
-        borderRight: 1,
-        fontSize: 15,
+      display: 'table',
+      width: '100%',
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderColor: '#000',
     },
     tableRow: {
-        flexDirection: "row",
-        justifyContent: "spaceBetween",
-        borderBottom: 1,
+      flexDirection: 'row',
     },
-});
+    tableCell: {
+      padding: 5,
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderColor: '#000',
+    },
+  });
 
 const SchoolReport = ({ report }) => (
+
     <Document>
+   
+   <View style={styles.section}>
+        <Text>Table Example</Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <View style={styles.tableCell}>
+              <Text>Assessment Name</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>Score</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>Grade</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>Remarks</Text>
+            </View>
+          </View>
+          {/* Add more rows here */}
+          <View style={styles.tableRow}>
+            <View style={styles.tableCell}>
+              <Text>English</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>72</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>A</Text>
+            </View>
+            <View style={styles.tableCell}>
+              <Text>Distinction</Text>
+            </View>
+          </View>
+          {/* Add more rows as needed */}
+        </View>
+      </View>
+  </Document>
+   
+);
+
+export default SchoolReport;
+{
+     {/* <Document>
         <Text style={styles.title}>Progress Report</Text>
         <View style={styles.header}>
             <Text style={styles.studentInfo}>
@@ -82,7 +111,5 @@ const SchoolReport = ({ report }) => (
             <Text>Total Marks: {report.total_marks}</Text>
             <Text>Subject Count: {report.subject_count}</Text>
         </View> */}
-    </Document>
-);
-
-export default SchoolReport;
+    // </Document> */}
+}

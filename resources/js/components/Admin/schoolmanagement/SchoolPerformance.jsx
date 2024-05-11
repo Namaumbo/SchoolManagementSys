@@ -14,7 +14,15 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import JSZip from "jszip";
-import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
+import {
+    PDFDownloadLink,
+    Document,
+    Page,
+    Text,
+    StyleSheet,
+    View,
+    PDFViewer,
+} from "@react-pdf/renderer";
 
 import Docxtemplater from "docxtemplater";
 import SchoolReport from "./SchoolReport";
@@ -24,6 +32,52 @@ const SchoolPerformance = () => {
     const [reportData, setReportData] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
+
+    const styles = StyleSheet.create({
+        page: {
+            flexDirection: "row",
+            backgroundColor: "#E4E4E4",
+        },
+        section: {
+            margin: 10,
+            padding: 10,
+            flexGrow: 1,
+            border: "1px solid black",
+        },
+        box: {
+            border: "1px solid black",
+        },
+        title: {
+            alignItems: "center",
+            fontSize: "20px",
+        },
+        header: {
+            backgroundColor: "grey",
+            alignItems: "center",
+            fontWeight: "bold",
+        },
+        studentInfo: {
+            fontSize: 12,
+        },
+        table: {
+            flexDirection: "column",
+        },
+        tableHeader: {
+            flexDirection: "row",
+            justifyContent: "spaceBetween",
+            width: "100%",
+            borderRight: 1,
+            fontSize: 15,
+        },
+        tableRow: {
+            flexDirection: "row",
+            justifyContent: "spaceBetween",
+            borderBottom: 1,
+        },
+        main:{
+            border : "1px solid black",
+        }
+    });
 
     useEffect(() => {
         console.timeLog("we start");
@@ -68,35 +122,6 @@ const SchoolPerformance = () => {
         return true;
     };
 
-    //  FIXME: not used
-    const handleViewDetails = (student) => {
-        setSelectedStudent(student);
-        setModalOpen(true);
-    };
-
-    //  FIXME: not used
-    const handleExportTypeChange = (type) => {
-        setExportType(type);
-    };
-
-    //  FIXME: not used
-    const handleDownloadReport = () => {
-        if (selectedStudent) {
-            if (exportType === "pdf") {
-                generatePDFReport(selectedStudent);
-            } else if (exportType === "word") {
-                generateWordReport(selectedStudent);
-            }
-        }
-    };
-
-    //   FIXME: not used
-    const generatePDFReport = (student) => {
-        const doc = new jsPDF();
-        doc.text(20, 20, `Student Name: ${student.student_name}`);
-        //   Add more content as needed
-        doc.save(`${student.student_name}_report.pdf`);
-    };
 
     //   FIXME: CHANGE CODE COPIED FROM CHATGPT
     const generateWordReport = (student) => {
@@ -127,21 +152,26 @@ const SchoolPerformance = () => {
             <div className="heading">
                 <span style={{ color: "white" }}>Report-Management</span>
             </div>
+
+          
             <div className="button-container">
-                <Button
+            <PDFViewer>
+                <SchoolReport/>
+            </PDFViewer>
+                {/* <Button
                     size="small"
                     variant="contained"
                     color="success"
                     onClick={() => handleExportTypeChange("pdf")}
                 >
-                    <PDFDownloadLink
+                <PDFDownloadLink
                         style={{ color: "white" }}
                         document={
                             <Document>
                                 {reportData.map((report, index) => (
                                     <Page key={index} size="A4">
-                                        {/* component for schoolReport */}
-                                        <SchoolReport report={report} />
+                {/* component for schoolReport 
+                <SchoolReport report={report} />
                                     </Page>
                                 ))}
                             </Document>
@@ -154,7 +184,7 @@ const SchoolPerformance = () => {
                                 : "Download All Reports"
                         }
                     </PDFDownloadLink>
-                </Button>
+                </Button> */}
 
                 {/* <Button
                         size="small"
@@ -165,17 +195,10 @@ const SchoolPerformance = () => {
                         Export to Word
                     </Button> */}
 
-                {/* <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        onClick={handleDownloadReport}
-                    >
-                        Download Report
-                    </Button> */}
+               
             </div>
             <br />
-            <TableContainer component={Paper}>
+            {/* <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -369,7 +392,7 @@ const SchoolPerformance = () => {
                         </div>
                     )}
                 </Paper>
-            </Modal>{" "}
+            </Modal>{" "} */}
         </React.Fragment>
     );
 };
