@@ -38,7 +38,7 @@ class UserService {
              
             await axios
                 .post(
-                    "http://127.0.0.1:8000/api/register-user",
+                    "http://127.0.0.1:8001/api/register-user",
                     userDetails,
                     headers
                 )

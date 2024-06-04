@@ -14,6 +14,8 @@ class Subject extends Model
 
     protected $fillable = [
         'name',
+        'code',
+        'periodsPerWeek',
     ];
 
     public function students(): BelongsToMany

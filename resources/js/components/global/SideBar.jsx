@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Logout } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -24,13 +24,11 @@ import placeholder from "../../../assets/placeHolderLogo.png";
 const SideBar = () => {
     const role = localStorage.getItem("role");
     const loggedIn = localStorage.getItem("loggedIn");
-    // const navigate = useNavigate()
+    const [theme, setTheme] = useState("light");
 
-    // function logOut() {
-    //     setUser(loggedIn="",role="")
-    //     window.location.reload(true)
-    //     navigate('/login')
-    // }
+    const toggleTheme = () => {
+        setTheme(theme === "light" ? "dark" : "light");
+    };
 
     if (window.atob(loggedIn) && window.atob(role) === "admin") {
         return (
@@ -123,6 +121,8 @@ const SideBar = () => {
                             <span className="sideBarItemText">Subjects </span>
                         </li>
                     </Link>
+
+                    <button onClick={toggleTheme}>Toggle Theme</button>
                 </ul>
             </div>
         );
@@ -173,6 +173,8 @@ const SideBar = () => {
                             <span className="sideBarItemText">Subjects </span>
                         </li>
                     </Link>
+
+                    <button onClick={toggleTheme}>Toggle Theme</button>
                 </ul>
                 {/* </div> */}
             </>

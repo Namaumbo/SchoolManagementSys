@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
+            $table->integer('code')->unique();
+            $table->integer('periodsPerWeek');
 
 
             $table->timestamps();

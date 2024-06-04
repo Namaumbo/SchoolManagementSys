@@ -83,8 +83,8 @@ const Students = () => {
     const fetchData = async () => {
       try {
         showLoadingAlert();
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
+        await new Promise((resolve) => setTimeout(resolve, 15000));
+        
         const usersResponse = await axios.get('http://127.0.0.1:8000/api/students');
         const classesResponse = await axios.get('http://127.0.0.1:8000/api/classes');
 
@@ -236,7 +236,8 @@ const Students = () => {
           height: '100vh',
         }}
       >
-        <p>Fetching Students, please wait...</p>
+          <span style={{ color: "black", fontSize:30 }}>Fetching Students....please wait</span>
+
         <div className="loader"></div>
       </div>
     );

@@ -1,6 +1,6 @@
 <?php
 namespace App\Services;
-use App\Exceptions\GeneralException;
+use App\Exceptions\Handler;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -28,7 +28,8 @@ use Psy\Util\Json;
 
       class UserService {
         use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+       public $response = [];
+        public$code = 404;
         public function getAll()
         {
             // Get the logged-in user
@@ -130,38 +131,37 @@ use Psy\Util\Json;
             ]);
         }
         
-    public function UserToDepartment(){
-       
-
-     }
-
-
-
-    public function update(Request $request, int $id)
-    {
-
-        
-        
+    public function show(int $id){
         try{
+      $user=User::findorfail($id);
+      return $user;
 
-        if (User::where('id', $id)->exists()) {
-            $user = User::find($id);
-            $this->userDetailsCommon($request, $user);
-            return response()->json([
-                'message' => 'success',
-                'User' => $user,
-            ],200);
-        } 
-
-    } catch (GeneralException $e) {
-
-        throw new GeneralException( $e->getMessage());
-     
+     } catch (\Exception $e) {
+        $response['message'] = $e->getMessage();
+      
     
 
- 
+    return response()->json($response);
+}
+
     }
+    public function update(Request $request, int $id): JsonResponse
+    {
+        try {
+            $user = User::findOrFail($id);
+            $this->userDetailsCommon($request, $user);
+            return response()->json([
+                'message' => 'Success',
+                'user' => $user,
+            ], 200);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
+
+
+
+    
   
     public function destroy($id): JsonResponse
     {

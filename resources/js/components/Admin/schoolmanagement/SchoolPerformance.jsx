@@ -11,24 +11,31 @@ import {
   TableRow,
   Typography,
   Button,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import JSZip from "jszip";
-import { jsPDF } from "jspdf"; // Import jsPDF for PDF generation
-import Docxtemplater from "docxtemplater";
+import PrintIcon from "@mui/icons-material/Print";
 import "./SchoolPerformance.css";
 
 const SchoolPerformance = () => {
   const [reportData, setReportData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [exportType, setExportType] = useState("pdf"); // Default export type is PDF
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedClass, setSelectedClass] = useState("All Classes");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/schoolReport");
-        setReportData(response.data.data.junior_section);
+        if (response.data && response.data.data && response.data.data.junior_section) {
+          setReportData(response.data.data.junior_section);
+          setFilteredData(response.data.data.junior_section);
+        } else {
+          console.error("Invalid API response");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -42,67 +49,175 @@ const SchoolPerformance = () => {
     setModalOpen(true);
   };
 
-  const handleExportTypeChange = (type) => {
-    setExportType(type);
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleDownloadReport = () => {
-    if (selectedStudent) {
-      if (exportType === "pdf") {
-        generatePDFReport(selectedStudent);
-      } else if (exportType === "word") {
-        generateWordReport(selectedStudent);
-      }
+  const handleMenuClose = (selectedClass) => {
+    setAnchorEl(null);
+    setSelectedClass(selectedClass);
+
+    if (selectedClass === "All Classes") {
+      setFilteredData(reportData);
+    } else {
+      const filtered = reportData.filter(student => student.class === selectedClass);
+      setFilteredData(filtered);
     }
   };
 
-  const generatePDFReport = (student) => {
-    const doc = new jsPDF();
-    doc.text(20, 20, `Student Name: ${student.student_name}`);
-    // Add more content as needed
-    doc.save(`${student.student_name}_report.pdf`);
-  };
+  const printClassReports = () => {
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write("<html><head><title>School Reports</title>");
+    printWindow.document.write("<style>");
+    printWindow.document.write(`
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .report-container { page-break-after: always; margin-bottom: 20px; }
+    .header { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+    th, td { border: 1px solid black; padding: 4px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    .h2,h3,h4{
+      text-align:center;
+    }
+  `);
+    printWindow.document.write("</style>");
+    printWindow.document.write("</head><body>");
 
-  const generateWordReport = (student) => {
-    axios
-      .get("path/to/word/template", { responseType: "arraybuffer" })
-      .then((response) => {
-        const content = response.data;
-        const zip = new JSZip(content);
-        const doc = new Docxtemplater().loadZip(zip);
-        doc.setData({
-          student_name: student.student_name,
-          // Add more data as needed
+    filteredData.forEach((student) => {
+        printWindow.document.write(`
+            <div class="report-container">
+             
+                <div class="student-info">
+
+                <h1>PUTEYA DAY SECONDARY SCHOOL</h1>
+                <h3>POST OFFICE BOX 177</h3>
+                 <h3>Chilema</h3>
+              
+                 <h3>PROGRESS REPORT</h3>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="headerCell" colspan="2">NAME OF STUDENT: ${student.student_name}</td>
+                                <td class="headerCell" colspan="2">POSITION IN CLASS: ${student.position}</td>
+                            </tr>
+                            <tr>
+                                <td class="headerCell" colspan="2">TERM: ${student.schoolTerm}</td>
+                                <td class="headerCell" colspan="2">CLASS: ${student.class}</td>
+                            </tr>
+                            <tr>
+                                <td class="headerCell" colspan="2">ENROLMENT: ${student.enrolment}</td>
+                                <td class="headerCell" colspan="2">CLASS TEACHER: ${student.classTeacher}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        `);
+
+        // Print assessment table
+        printWindow.document.write(`
+            <table class="assessmentTable">
+                <thead>
+                    <tr>
+                        <th class="headerCell">ASSESSMENT NAME</th>
+                        <th class="headerCell">SCORE</th>
+                        <th class="headerCell">GRADE</th>
+                        <th class="headerCell">REMARK</th>
+                        <th class="headerCell">TEACHER</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `);
+
+        student.assessments.forEach((assessment) => {
+            printWindow.document.write(`
+                <tr>
+                    <td>${assessment.assessment_name}</td>
+                    <td>${assessment.score}</td>
+                    <td>${assessment.grade}</td>
+                    <td>${assessment.remark}</td>
+                    <td>${assessment.teacherEmail}</td>
+                </tr>
+            `);
         });
-        doc.render();
-        const output = doc.getZip().generate({
-          type: "blob",
-          mimeType:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        });
-        saveAs(output, `${student.student_name}_report.docx`);
-      })
-      .catch((error) => {
-        console.error("Error fetching word template:", error);
-      });
-  };
+
+        printWindow.document.write(`
+        <table class="assessmentTable">
+            <thead>
+                <tr>
+                    <th class="headerCell"><strong>Overall Marks:</strong> ${student.total_marks}</th>
+                    <th class="headerCell"><strong>Overall Grade:</strong>${student.overall_grade}</th>
+                    <th class="headerCell"><strong>Remark:</strong> ${student.failed ? "Fail" : "Pass"}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `);
+
+        printWindow.document.write(`
+                </tbody>
+            </table>
+        `);
+
+        // Print additional student data and range of grades
+        printWindow.document.write(`
+            <div class="additional-info">
+              
+                <p><strong>Class Teacher's Comment:</strong> ${student.class_teacher_comment}</p>
+                <p><strong>Head Teacher's Comment:</strong> ${student.head_teacher_comment}</p>
+                <h3 class="grading">Range of Grades</h3>
+                <table class="grading">
+                    <thead>
+                        <tr>
+                            <th class="headerCell">A</th>
+                            <th class="headerCell">B</th>
+                            <th class="headerCell">C</th>
+                            <th class="headerCell">D</th>
+                            <th class="headerCell">F</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>80-100</td>
+                            <td>70-79</td>
+                            <td>60-69</td>
+                            <td>50-59</td>
+                            <td>0-49</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        `);
+    });
+
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.print();
+};
+
 
   return (
     <div>
       <Typography variant="h4" gutterBottom>
         School Report
       </Typography>
-      <div className="button-container">
-        <Button variant="contained" onClick={() => handleExportTypeChange("pdf")}>
-          Export to PDF
-        </Button>
-        <Button variant="contained" onClick={() => handleExportTypeChange("word")}>
-          Export to Word
-        </Button>
-        <Button variant="contained" onClick={handleDownloadReport}>
-          Download Report
-        </Button>
-      </div>
+      <Button
+        variant="contained"
+        onClick={handleMenuClick}
+        style={{ marginBottom: '20px' }}
+      >
+        {selectedClass}
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => handleMenuClose(selectedClass)}
+      >
+        <MenuItem onClick={() => handleMenuClose("All Classes")}>All Classes</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("Form 1")}>Form 1</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("Form 2")}>Form 2</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("Form 3")}>Form 3</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("Form 4")}>Form 4</MenuItem>
+      </Menu>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -114,7 +229,7 @@ const SchoolPerformance = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {reportData.map((student) => (
+            {filteredData.map((student) => (
               <TableRow key={student.student_id} className="tableRow">
                 <TableCell>{student.student_id}</TableCell>
                 <TableCell>{student.student_name}</TableCell>
@@ -133,25 +248,47 @@ const SchoolPerformance = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Button
+        variant="contained"
+        startIcon={<PrintIcon />}
+        onClick={printClassReports}
+        style={{ marginTop: '20px' }}
+      >
+        Print {selectedClass} Reports
+      </Button>
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <Paper className="modalPaper">
           {selectedStudent && (
             <div>
+              <Typography variant="h4" gutterBottom>
+                PROGRESS REPORT
+              </Typography>
               <TableContainer>
                 <Table className="studentTable">
                   <TableBody>
-                    <Typography>PROGRESS REPORT</Typography>
                     <TableRow>
-                      <TableCell className="headerCell">NAME OF STUDENT :{selectedStudent.student_name}</TableCell>
-                      <TableCell className="headerCell">POSITION IN CLASS :{selectedStudent.position}</TableCell>
+                      <TableCell className="headerCell">
+                        NAME OF STUDENT: {selectedStudent.student_name}
+                      </TableCell>
+                      <TableCell className="headerCell">
+                        POSITION IN CLASS: {selectedStudent.position}
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="headerCell">TERM:{selectedStudent.schoolTerm}</TableCell>
-                      <TableCell className="headerCell"> CLASS :{selectedStudent.class}</TableCell>
+                      <TableCell className="headerCell">
+                        TERM: {selectedStudent.schoolTerm}
+                      </TableCell>
+                      <TableCell className="headerCell">
+                        CLASS: {selectedStudent.class}
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="headerCell">ENROLMENT:{selectedStudent.schoolTerm}</TableCell>
-                      <TableCell className="headerCell">CLASS TEACHER :{selectedStudent.class}</TableCell>
+                      <TableCell className="headerCell">
+                        ENROLMENT: {selectedStudent.enrolment}
+                      </TableCell>
+                      <TableCell className="headerCell">
+                        CLASS TEACHER: {selectedStudent.classTeacher}
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -178,19 +315,26 @@ const SchoolPerformance = () => {
                       </TableRow>
                     ))}
                   </TableBody>
+                </Table>
+                <TableRow>
                   <TableCell className="headerCell">OVERALL</TableCell>
                   <TableCell className="headerCell">{selectedStudent.total_marks}</TableCell>
                   <TableCell className="headerCell">{selectedStudent.overall_grade}</TableCell>
-                  <TableCell className="headerCell">{selectedStudent.failed}</TableCell>
-                  <TableCell className="headerCell">{}</TableCell>
-                </Table>
-                <TableRow>
-                  <TableCell className="headerCell"><strong>Class Teachers Comment</strong> :{selectedStudent.class_teacher_comment}</TableCell>
+                  <TableCell className="headerCell">{selectedStudent.failed ? "Fail" : "Pass"}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="headerCell"><strong>Head Teachers Comment</strong> :{selectedStudent.head_teacher_comment}</TableCell>
+                  <TableCell className="headerCell">
+                    <strong>Class Teacher's Comment:</strong> {selectedStudent.class_teacher_comment}
+                  </TableCell>
                 </TableRow>
-                <h3 className="grading">RANGE OF GRADES</h3>
+                <TableRow>
+                  <TableCell className="headerCell">
+                    <strong>Head Teacher's Comment:</strong> {selectedStudent.head_teacher_comment}
+                  </TableCell>
+                </TableRow>
+                <Typography variant="h6" gutterBottom className="grading">
+                  RANGE OF GRADES
+                </Typography>
                 <Table className="assessmentTable">
                   <TableHead>
                     <TableRow>
@@ -205,9 +349,9 @@ const SchoolPerformance = () => {
                     <TableRow>
                       <TableCell>80-100</TableCell>
                       <TableCell>70-79</TableCell>
-                      <TableCell>70-79</TableCell>
-                      <TableCell>70-79</TableCell>
-                      <TableCell>70-79</TableCell>
+                      <TableCell>60-69</TableCell>
+                      <TableCell>50-59</TableCell>
+                      <TableCell>0-49</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -220,4 +364,4 @@ const SchoolPerformance = () => {
   );
 };
 
-export default SchoolPerformance
+export default SchoolPerformance;
