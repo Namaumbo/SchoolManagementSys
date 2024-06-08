@@ -6,8 +6,8 @@ const Input = React.forwardRef(function CustomInput(props, ref) {
     return <BaseInput slots={{ input: InputElement }} {...props} ref={ref} />;
 });
 
-export default function InputComponent() {
-    return <Input aria-label="Demo input" placeholder="Type something…" />;
+export default function InputComponent({ type ,placeholder}) {
+    return <Input aria-label="Demo input" placeholder={placeholder} />;
 }
 
 const blue = {
