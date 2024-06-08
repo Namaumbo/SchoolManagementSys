@@ -31,14 +31,12 @@ class UserController extends Controller
         return  $this->userService->show($id);
     }
 
-    
     public function allocationSubject(Request $userService){
         return  $this->userService->Allocation($userService);
     }
     public function updateUser(Request $userService,int $id){
          return $this->userService->update($userService,$id);
     }
-
 
     public function deleteUser(int $id){
         return $this->userService->destroy($id);
@@ -48,11 +46,9 @@ class UserController extends Controller
     public function login(Request $userService){
     return $this->userService->login($userService);
 
-
     }
 
     public function logout(){
-
    return $this->userService->logout();
 
 

@@ -76,7 +76,7 @@ const SchoolPerformance = () => {
     table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
     th, td { border: 1px solid black; padding: 4px; text-align: left; }
     th { background-color: #f2f2f2; }
-    .h2,h3,h4{
+    .h2,h3,h4,h1{
       text-align:center;
     }
   `);
@@ -89,7 +89,7 @@ const SchoolPerformance = () => {
              
                 <div class="student-info">
 
-                <h1>PUTEYA DAY SECONDARY SCHOOL</h1>
+                <h1 >PUTEYA DAY SECONDARY SCHOOL</h1>
                 <h3>POST OFFICE BOX 177</h3>
                  <h3>Chilema</h3>
               

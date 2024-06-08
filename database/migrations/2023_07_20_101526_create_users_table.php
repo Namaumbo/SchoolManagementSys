@@ -33,6 +33,7 @@ return new class extends Migration
                 ->onUpdate('CASCADE');
 
             $table->string('password');
+
             $table->string('village');
             $table->string('district');
             $table->string('traditional_authority');

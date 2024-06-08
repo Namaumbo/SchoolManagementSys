@@ -7,7 +7,6 @@ import { userState } from "./User/userState";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 import Swal from "sweetalert2";
-
 import "../../css/login.css";
 
 export default function Login() {
@@ -84,7 +83,7 @@ export default function Login() {
                     email,
                     password,
                 });
-                console.log(res);
+
                 if (res.status === 200) {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
@@ -127,8 +126,11 @@ export default function Login() {
                             title: "Login Success!",
                             text: res.data.message || "Welcome!",
                         });
-
-                        navigate("/dashboard");
+                        if (res.data.user.login_count > 1) {
+                            navigate("/dashboard");
+                        } else {
+                            navigate("/initial-page");
+                        }
                     }
                 } else {
                     handleErrorResponse(res);
@@ -169,18 +171,23 @@ export default function Login() {
                         <input
                             type="password"
                             id="password"
-                            name="Password"
+                            namloginBtndive="Password"
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <button className="loginBtn" disabled={loading}>
-                        {loading ? (
-                            <span className="login-text">Logging in...</span>
-                        ) : (
-                            <span>Login</span>
-                        )}
-                    </button>
+                    <div className="loginBtndiv">
+                        <button className="loginBtn" disabled={loading}>
+                            {loading ? (
+                                <span className="login-text">
+                                    Logging in...
+                                </span>
+                            ) : (
+                                <span>Login</span>
+                            )}
+                        </button>
+                    </div>
+
                     {/* Link to the administrator contact page */}
                 </form>
                 <div className="admin-link">

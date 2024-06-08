@@ -209,33 +209,60 @@ use Psy\Util\Json;
      * @return JsonResponse
      */
 
+
+
+     /**
+      * Handle user login request.
+      *
+      * @param Request $request The request object containing email and password.
+      * @return JsonResponse The JSON response containing the access token and user details.
+      */
      public function login(Request $request): JsonResponse
      {
-         $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
+         // Validate the request data using Laravel Validator class.
+         $validator = Validator::make($request->all(), [
+             "email" => "required|string", // Email is required and must be a string.
+             "password" => "required", // Password is required.
+         ]);
+
+         // If validation fails, return a JSON response with validation errors.
          if ($validator->fails()) {
              return response()->json([
-                 "status" => "error",
-                 "message" => "Validation Error",
-                 "errors" => $validator->errors(),
+                 "status" => "error", // Set the status to error.
+                 "message" => "Validation Error", // Set the error message.
+                 "errors" => $validator->errors(), // Include the validation errors.
              ], 422);
          }
- 
+         
+         // Retrieve the user from the database using the email.
+         $user = User::where('email', $request->email)->first();
+         
+         // Increment the login count for the user, and the last_login
+         $user->login_count = $user->login_count + 1;
+         $user->last_login = now();
+         $user->save();
+         
+         // Attempt to authenticate the user using the provided email and password.
          if (!Auth::attempt($request->only("email", "password"))) {
              return response()->json([
-                 "status" => "error",
-                 "message" => "Invalid credentials",
+                 "status" => "error", // Set the status to error.
+                 "message" => "Invalid credentials", // Set the error message.
              ], 401);
          }
  
+         // Create a new access token for the authenticated user.
          $token = Auth::user()->createToken('Token')->plainTextToken;
+         
+         // Create a cookie with the access token and set it to expire in 30 days.
          $cookie = cookie('jwt', $token, 30 * 1);
  
+         // Return a JSON response with the access token, user details, and cookie.
          return response()->json([
-             "status" => "success",
-             "message" => "System successfully logged " . Auth::user()->first_name,
-             "access_token" => $token,
-             "token_type" => "bearer",
-             "user" => Auth::user(),
+             "status" => "success", // Set the status to success.
+             "message" => "System successfully logged " . Auth::user()->first_name, // Set the success message.
+             "access_token" => $token, // Include the access token.
+             "token_type" => "bearer", // Include the token type.
+             "user" => Auth::user(), // Include the authenticated user's details.
          ])->withCookie($cookie);
      }
  
