@@ -16,6 +16,10 @@ const bull = (
     </Box>
 );
 
+
+const handelSave = () =>{
+    alert("working");
+}
 export default function CardComponent() {
     return (
         <Card sx={{ minWidth: 275 }}>
@@ -58,7 +62,7 @@ export default function CardComponent() {
                 </div>
             </CardContent>
             <CardActions>
-                <Button size="large" variant="contained">
+                <Button size="large" variant="contained" onClick={() => {handelSave()}}>
                     Learn More
                 </Button>
             </CardActions>

@@ -146,8 +146,8 @@ export default function Login() {
 
     return (
         <>
-            <div className="logoScn">
-                <img src={logo} className="logo" alt="Logo" />
+            <div className="flex items-center justify-center">
+                <img src={logo} className=" text-center w-[20rem]" alt="Logo" />
             </div>
             <div className="login-wrapper">
                 <form onSubmit={handleSubmit}>

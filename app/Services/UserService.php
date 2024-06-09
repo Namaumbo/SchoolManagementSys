@@ -56,10 +56,7 @@ use Psy\Util\Json;
                 // Create a new user
                 $user = new User;
                 $this->userDetailsCommon($request, $user);
-        
-              
-
-        
+           
                 return response()->json([
                     'message' => 'User saved successfully',
                     'User' => $user,
