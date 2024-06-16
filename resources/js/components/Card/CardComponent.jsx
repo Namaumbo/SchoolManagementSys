@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -6,21 +6,49 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import InputComponent from "../Input/InputComponent";
+import { useNavigate } from "react-router-dom";
+import SchoolInformationService from "../../../services/SchoolInformationService";
 
 const bull = (
     <Box
         component="span"
         sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
     >
+        
         •
     </Box>
 );
 
-
-const handelSave = () =>{
-    alert("working");
-}
 export default function CardComponent() {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+
+    const handelSave = async () => {
+        try {
+            const response = {};
+            setLoading(true);
+            response = await SchoolInformationService.addSchoolDetails({
+                schoolDetails: {
+                    name: "School Name",
+                    address: "School Address",
+                    phone_number: "School Phone Number",
+                    logo_path : "logo path"
+                },
+            })
+
+            if (response.status === 201) {
+                alert("here")
+                setLoading(false);
+            }
+
+            // return response;
+
+            // navigate("/dashboard");
+
+        } catch (err) {}
+    
+    };
+
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
@@ -62,7 +90,13 @@ export default function CardComponent() {
                 </div>
             </CardContent>
             <CardActions>
-                <Button size="large" variant="contained" onClick={() => {handelSave()}}>
+                <Button
+                    size="large"
+                    variant="contained"
+                    onClick={() => {
+                        handelSave();
+                    }}
+                >
                     Learn More
                 </Button>
             </CardActions>

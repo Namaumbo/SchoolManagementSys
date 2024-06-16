@@ -23,9 +23,6 @@ return new class extends Migration
 //            foreing
             $table->string('role_name')->nullable();
 
-              
-
-
             $table->foreign('role_name')
                 ->references('role_name')
                 ->on('roles')

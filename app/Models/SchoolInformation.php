@@ -15,4 +15,11 @@ class SchoolInformation extends Model
         'phone_number',
         'logo_path',
     ];
+
+    protected $dates = [
+        
+        'created_at',
+        'updated_at',
+    ];
+    
 }

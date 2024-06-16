@@ -7,7 +7,7 @@ import { userState } from "./User/userState";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 import Swal from "sweetalert2";
-import "../../css/login.css";
+
 
 export default function Login() {
     const navigate = useNavigate();

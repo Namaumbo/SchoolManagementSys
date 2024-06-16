@@ -3,12 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use SchoolInformationService;
+use App\Services\SchoolInformationService;
 use Illuminate\Http\JsonResponse;
+
+use Illuminate\Support\Facades\Log;
+
 
 
 class SchoolInformationController extends Controller
 {
+
+    protected $schoolInformation;
+    public function __construct(SchoolInformationService $schoolInformation)
+    {
+        $this->schoolInformation = $schoolInformation;
+    }
+
 
     /**
      * Store the school information.
@@ -19,15 +29,18 @@ class SchoolInformationController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $school = new SchoolInformationService();
-            $school->save();
+            // Save the school information
+            $response = $this->schoolInformation->save();
 
-            return response()->json([
-                'message' => 'School information saved successfully',
-                'status' => 'success',
-                'school' => $school,
-            ],201);
+            $data = json_decode($response->getContent(), true);
+
+            if ($response->status() === 201) {
+            Log::debug("School information saved successfully" . print_r($data, true));
+            }
+            return $response;
+            
         } catch (\Exception $e) {
+            Log::error("Failed to save school information: " . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to save school information',
                 'status' => 'error',

@@ -9,8 +9,6 @@ use App\Models\Subject;
 use App\Models\Level;
 use App\Models\Allocationable;
 use App\Models\Department;
-
-
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -156,10 +154,6 @@ use Psy\Util\Json;
         }
     }
 
-
-
-    
-  
     public function destroy($id): JsonResponse
     {
         if (User::where('id', $id)->exists()) {
