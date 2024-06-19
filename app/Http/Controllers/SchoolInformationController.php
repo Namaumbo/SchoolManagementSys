@@ -35,7 +35,7 @@ class SchoolInformationController extends Controller
             $data = json_decode($response->getContent(), true);
 
             if ($response->status() === 201) {
-             Log::debug("School information saved successfully" . print_r($data, true));
+             Log::info("School information saved successfully" . print_r($data, true));
             }
             return $response;
             

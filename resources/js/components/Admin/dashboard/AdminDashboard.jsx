@@ -115,31 +115,35 @@ export default function AdminDashboard() {
 
     if (isAdminOrHeadTeacher) {
         return (
-            <div className="main">
-                <div className="heading">
-                    <FiHome />
-                    <span style={{ color: "white" }}>Dashboard - Home</span>
+            <div className="w-full">
+                <div className="bg-[#9a8644] flex  item-center p-3 w-[98%] m-[auto] rounded-md shadow-md m-3">
+                    <FiHome size="23px" />
+                    <span
+                        className="text-xl pl-2 "
+                        style={{ color: "white" }}
+                    >
+                        Dashboard - Home
+                    </span>
                 </div>
 
-                <div className="container text-center">
-                    <div className="row">
+                <div className="container ">
+                    <div className=" grid grid-cols-4 gap-4 p-4">
                         {statisticalData.map((stat) => {
-                            console.log(stat);
                             return (
-                                <div className="col" key={stat.menu}>
-                                    <div className="cardMn">
+                                <div key={stat.menu}>
+                                    <div className="border-1  p-3 border-t-4  rounded-md  flex flex-row items-center shadow-md">
                                         <div>
                                             <img
-                                                className="arts"
+                                                className="w-[50px] h-[50px] m-2"
                                                 src={stat.image}
                                                 alt="students"
                                             />
-                                            <span className="name-title">
+                                            <span className="">
                                                 {stat.title}
                                             </span>
                                         </div>
                                         <div className="figure">
-                                            <h4 className="numbers">
+                                            <h4 className="text-5xl">
                                                 {stat.number}
                                             </h4>
                                         </div>
@@ -150,13 +154,15 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="container">
-                    <div className="row">
-                        <div className="col-4">
+                {/* the first graphs card stykle */}
+                <div>
+                    <div className=" container grid grid-cols-2 gap-4 p-4">
+                        <div className="h-[95%]  border-1 shadow-md rounded-md ">
                             <p>Revenue Summary</p>
+                            {/* TODO : search for other components libraris */}
                             <Test />
                         </div>
-                        <div className="col-4">
+                        <div className="h-[95%] border-1 shadow-md rounded-md  ">
                             <p>Performance Summary</p>
                             <Test />
                         </div>

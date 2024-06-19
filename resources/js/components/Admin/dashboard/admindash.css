@@ -1,7 +1,4 @@
-.main {
-    height: calc(100% - 50px);
-    width: 100%;
-}
+
 
 .statistics {
     height: 100px;
@@ -11,18 +8,9 @@
     justify-content: space-around;
 }
 
-.arts {
-    width: 50px;
-}
 
 .cardMn {
-    display: flex;
-    background-color: white;
-    -webkit-box-shadow: 1px 2px 14px -5px #636363;
-    box-shadow: 1px 2px 14px -5px #5a5a5a;
-    align-items: center;
-    height: 7em;
-    border-radius: 5px;
+  
 
 }
 .cardMn:nth-child(1){
