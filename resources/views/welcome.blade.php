@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <div id="app" style="font-family: 'Roboto',sans-serif; ">
+    <div id="app" style="font-family: 'Roboto',sans-serif; background-color:#EBF1EF z-index:-2 ">
 
     </div>
 </body>

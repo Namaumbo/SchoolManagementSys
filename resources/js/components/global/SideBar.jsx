@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Logout } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link ,  useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "../User/userState";
 import {
@@ -22,6 +22,7 @@ import "./sidebar.css";
 import placeholder from "../../../assets/placeHolderLogo.png";
 
 const SideBar = () => {
+    const location = useLocation();
     const role = localStorage.getItem("role");
     const loggedIn = localStorage.getItem("loggedIn");
     const [theme, setTheme] = useState("light");
@@ -83,8 +84,14 @@ const SideBar = () => {
                         },
                         { path: "/subject", text: "Subjects", Icon: GoBook },
                     ].map(({ path, text, Icon }) => (
-                        <Link to={path} key={path}>
-                            <li className="link p-2 hover:bg-[#9A8644] rounder-md flex items-center text-gray-100 text-base pl-3 ">
+                        <Link
+                            to={path}
+                            key={path}
+                            
+                        >
+                            <li 
+                            id={location.pathname === path ? "active" : ""}
+                            className="link p-2 hover:bg-[#9a8644c2] rounder-md flex items-center text-gray-100 text-base pl-3 ">
                                 <Icon className="pr-1 text-[23px]" />
                                 <span className="text-[16px]">{text}</span>
                             </li>

@@ -1,3 +1,12 @@
 .link:hover {
   border-radius: 5px;
 }
+
+#active {
+  font-weight: bold;
+  color: white;
+  background-color: #a78824;
+  border-right: 4px solid #62edd1;
+  padding-left: 10px;
+  border-radius: 4px;
+}

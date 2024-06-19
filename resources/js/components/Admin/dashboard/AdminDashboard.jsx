@@ -12,7 +12,6 @@ import Test from "../../../Test";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import Grid from "@mui/material/Grid";
 
 export default function AdminDashboard() {
     // const [userInfo, setUserInfo] = useRecoilState(userDetails);
@@ -89,22 +88,22 @@ export default function AdminDashboard() {
 
     const statisticalData = [
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: students.length ? students.length : 0,
         },
         {
-            menu: "teachers",
+            menu: "Teachers",
             image: teachersPng,
             number: data.length ? data.length : 0,
         },
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: 0,
         },
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: 0,
         },
@@ -118,10 +117,7 @@ export default function AdminDashboard() {
             <div className="w-full">
                 <div className="bg-[#9a8644] flex  item-center p-3 w-[98%] m-[auto] rounded-md shadow-md m-3">
                     <FiHome size="23px" />
-                    <span
-                        className="text-xl pl-2 "
-                        style={{ color: "white" }}
-                    >
+                    <span className="text-xl pl-2 " style={{ color: "white" }}>
                         Dashboard - Home
                     </span>
                 </div>
@@ -131,19 +127,19 @@ export default function AdminDashboard() {
                         {statisticalData.map((stat) => {
                             return (
                                 <div key={stat.menu}>
-                                    <div className="border-1  p-3 border-t-4  rounded-md  flex flex-row items-center shadow-md">
+                                    <div className="card-list border-1 p-3 rounded-md  flex flex-row items-center shadow-sm">
                                         <div>
                                             <img
                                                 className="w-[50px] h-[50px] m-2"
                                                 src={stat.image}
                                                 alt="students"
                                             />
-                                            <span className="">
-                                                {stat.title}
+                                            <span className=" font-bold">
+                                                {stat.menu}
                                             </span>
                                         </div>
                                         <div className="figure">
-                                            <h4 className="text-5xl">
+                                            <h4 className="text-5xl border-l-4 pl-2">
                                                 {stat.number}
                                             </h4>
                                         </div>
