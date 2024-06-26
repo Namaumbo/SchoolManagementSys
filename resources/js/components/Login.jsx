@@ -8,7 +8,6 @@ import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 import Swal from "sweetalert2";
 
-
 export default function Login() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -176,14 +175,24 @@ export default function Login() {
                             required
                         />
                     </div>
-                    <div className="loginBtndiv">
-                        <button className="loginBtn" disabled={loading}>
+
+                    <div className="loginBtndiv border ml-[1.5rem]">
+                        <button className="loginBtn w-full" disabled={loading}>
                             {loading ? (
-                                <span className="login-text">
-                                    Logging in...
+                                <span className=" text-white">
+                                    <div
+                                        className="spinner-border"
+                                        role="status"
+                                    >
+                                        <span className="visually-hidden">
+                                            Loading...
+                                        </span>
+                                    </div>
                                 </span>
                             ) : (
-                                <span>Login</span>
+                                <span className=" text-white font-bold">
+                                    Login
+                                </span>
                             )}
                         </button>
                     </div>

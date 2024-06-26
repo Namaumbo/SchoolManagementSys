@@ -12,11 +12,12 @@ import Test from "../../../Test";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
+import TableComponent from "../../Table/TableComponent";
 
 export default function AdminDashboard() {
     // const [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [students, setStudents] = useState([]);
-    const [data, setData] = useState([]);
+    const [users, setUsers] = useState([]);
     const loggedIn = localStorage.getItem("loggedIn");
     const role = localStorage.getItem("role");
     const accessKey = localStorage.getItem("key");
@@ -45,7 +46,7 @@ export default function AdminDashboard() {
                 const userResponses = responses[0];
                 const studentsResponses = responses[1];
                 if (userResponses.status === "fulfilled") {
-                    setData(userResponses.value.data.users);
+                    setUsers(userResponses.value.data.users);
                 }
                 if (studentsResponses.status === "fulfilled") {
                     setStudents(studentsResponses.value.data);
@@ -54,7 +55,7 @@ export default function AdminDashboard() {
             .catch((err) => {
                 console.error(err);
             });
-    }, [accessKey, setData, setStudents]);
+    }, [accessKey, setUsers, setStudents]);
 
     const columns = [
         { field: "id", headerName: "ID", width: 50 },
@@ -95,7 +96,7 @@ export default function AdminDashboard() {
         {
             menu: "Teachers",
             image: teachersPng,
-            number: data.length ? data.length : 0,
+            number: users.length ? users.length : 0,
         },
         {
             menu: "Students",
@@ -163,32 +164,9 @@ export default function AdminDashboard() {
                             <Test />
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-12">
-                            <p>Users Available</p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {columns.map((column) => (
-                                            <th key={column.field}>
-                                                {column.headerName}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((user, index) => (
-                                        <tr key={user.firstname}>
-                                            {columns.map((column) => (
-                                                <td key={column.field}>
-                                                    {user[column.field]}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+
+                    <div className=" border-1 shadow-md">
+                        <TableComponent  data={users}/>
                     </div>
                 </div>
             </div>

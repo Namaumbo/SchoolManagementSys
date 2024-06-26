@@ -1,6 +1,7 @@
 
 .card-list{
-    border-top : 4px solid #1AB394
+    border-top : 4px solid #1AB394 !important;
+    border : 1px solid rgba(128, 128, 128, 0.235);
 }
 
 
