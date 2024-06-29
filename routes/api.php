@@ -13,7 +13,6 @@ use App\Models\Relationship;
 use App\Models\Allocationable;
 use App\Models\Payment;
 
-
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\RoleResource;
@@ -23,19 +22,17 @@ use App\Http\Resources\AssessmentResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\RelationshipResource;
-use App\Http\Controllers\AssessmentController;
 
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\SchoolReportController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LevelController;
-
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
-
 use App\Http\Controllers\PostController;
 use App\Models\Post;
 
@@ -50,94 +47,83 @@ use App\Models\Post;
 |
 */
 
-
-//UserController Routes
+// UserController Routes
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/exports', [UserController::class, 'exportIntoExcel']);
 
-
-//The following are protected routes
-//Route::middleware('auth:sanctum')->group(function () {
+// The following are protected routes
+    
 Route::controller(UserController::class)->group(function () {
     Route::get('/users', 'getUsers');
- 
+    Route::get('/department/{id}/users', 'getAllUsersFromEachDepartment');
 
     Route::post('/register-user', 'registerUser');
-    Route::post(
-        '/register-user/{id}',
-        'UserToRoles'
-    );
+    Route::post('/register-user/{id}', 'UserToRoles');
     Route::get('/user/{id}', 'show');
-    Route::put(
-        '/user/{id}',
-        'updateUser'
-    );
+    Route::put('/user/{id}', 'updateUser');
     Route::delete('/user/{id}', 'deleteUser');
-    Route::get(
-        '/search/{key}',
-        'Search'
-    );
+    Route::get('/search/{key}', 'Search');
     Route::post('/logout', 'logout');
+    Route::post('/allocations/{userId}', 'allocationSubject');
+    Route::get('/user/{id}/allocations','getAllocationsForTeacher');
 
-    Route::post('/allocations', 'allocationSubject');
 
 });
+
 Route::controller(DepartmentController::class)->group(function () {
-    // DepartmentS Routes 
+    // Department Routes 
     Route::get('/departments', 'getAll');
     Route::get('/department/{id}', 'show');
-    Route::post(
-        '/register-department',
-        'store'
-    );
+    Route::post('/register-department', 'store');
+    Route::get('/headOfDepartments', 'getHeadOfDepartments'); // Corrected route definition
 
-    Route::post('/department/{id}/users','registerUsersToDepartment');
+
     Route::put('/department/{id}', 'update');
     Route::delete('/department/{id}', 'destroy');
+    Route::post('/department/{id}/allocate', 'registerUsersToDepartment'); // New route
 });
-//Subjects Routes
+
+
+// Subjects Routes
 Route::controller(SubjectController::class)->group(function () {
     Route::post('/create-subject', 'store');
     Route::get('/subjects', 'getAll');
     Route::get('/subject/{id}', 'show');
-    Route::get('/subjectPerformance', 'subjectPerformance');
-
     Route::put('/update-subject/{id}', 'update');
 });
-//roles api
+
+// Roles API
 Route::controller(RoleController::class)->group(function () {
     $urlPrefix = '/role/{id}';
 
-    // whats the use?
     Route::get($urlPrefix, function ($role_name) {
-        return new
-            RoleResource(Role::findorFail($role_name));
+        return new RoleResource(Role::findorFail($role_name));
     });
 
     Route::put($urlPrefix, 'update');
     Route::delete($urlPrefix, 'destroy');
 });
-// classLevels Routes
+
+// Class Levels Routes
 Route::controller(LevelController::class)->group(function () {
     Route::get('/classes', 'getClass');
     Route::post('/create-class', 'store');
     Route::put('/update-class', 'classTeacher');
-
     Route::get('/class/{id}', 'getStudentsByClassAndSubject');
+});
 
-}); //Assessments
+// Assessments
 Route::controller(AssessmentController::class)->group(function () {
     Route::put('/update-assessment', 'UpdateAssessment');
     Route::delete('/assessment', 'deleteAssessment');
-
-
 });
+
+// School Report
 Route::controller(SchoolReportController::class)->group(function () {
     Route::get('/schoolReport', 'store');
-
-
 });
-//Messages
+
+// Messages
 Route::controller(MessageController::class)->group(function () {
     Route::get('/messages', 'getAllMessages');
     Route::post('/create-message', 'store');
@@ -145,29 +131,26 @@ Route::controller(MessageController::class)->group(function () {
     Route::delete('/message/{id}', 'destroy');
 });
 
+// Posts
 Route::controller(PostController::class)->group(function () {
     Route::get('/posts', 'getAll');
-
-
 });
-//});
-// Api for students
-Route::controller(StudentController::class)->group(function () {
 
+// Students API
+Route::controller(StudentController::class)->group(function () {
     Route::get('/students', 'getAll');
     Route::post('/create-student', 'registerStudent');
     Route::put('/student/{id}', 'updateStudent');
     Route::delete('/student/{id}', 'deleteStudent');
     Route::post('/register-subject', 'registerSubject');
-
 });
 
+// Payments
 Route::controller(PaymentController::class)->group(function () {
-    
     Route::post('/payments', 'feesToStudent');
-   
 });
 
 Route::get('/roles', function () {
     return RoleResource::collection(Role::all());
 });
+

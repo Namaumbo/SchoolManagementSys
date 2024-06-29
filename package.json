@@ -3,8 +3,6 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build"
-      
-
     },
     "devDependencies": {
         "@faker-js/faker": "^7.6.0",

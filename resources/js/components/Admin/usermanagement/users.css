@@ -1,31 +1,26 @@
-.noUser {
-    font-size: 20px;
-    font-weight: normal;
-}
-
 .user-tb {
-    margin-left: 20px;
-    margin-right: 20px;
-    padding: 0.7em;
-    -webkit-box-shadow: 5px 5px 7px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 5px 5px 7px 2px rgba(63, 62, 62, 0.3);
-    border-radius: 5px;
-    background-color: white;
-}
-
-th {
-    color: rgb(163, 162, 162);
-    font-size: 13px;
-}
-
-.list-title {
-    margin-left: 20px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .list-title {
     font-size: 24px;
-    font-weight: bolder;
-    color: black;
-
-}
-
-.searchForm {
-    margin-top: -1em;
-}
+    font-weight: bold;
+  }
+  
+  .mui-btn {
+    margin-top: 10px;
+  }
+  
+  .user-management-title {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .user-management-title .MuiSvgIcon-root {
+    margin-right: 10px;
+  }
+  

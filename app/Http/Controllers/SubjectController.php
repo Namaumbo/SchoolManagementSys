@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\StudentSubject;
@@ -79,21 +78,6 @@ class SubjectController extends Controller
         }
     }
 
-private function calculateAverageScore($students)
-{
-    $totalScore = 0;
-    $totalStudents = $students->count();
-
-    foreach ($students as $student) {
-        foreach ($student->assessments as $assessment) {
-            // Assuming 'averageScore' is the attribute name for the score
-            $totalScore += $assessment->averageScore;
-        }
-    }
-
-    return $totalStudents > 0 ? $totalScore / $totalStudents : 0;
-}
-
 
 
     public function create(Request $request, $subject): void
@@ -107,45 +91,45 @@ private function calculateAverageScore($students)
         $subject->save();
     }
 
-    public function store(Request $request): JsonResponse
-    {
-
-        try {
-            $subject = new Subject;
-            #TODO: check the name here 
-            $this->create($request, $subject);
-            $subject->students()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-
-            return response()->json([
-                'message' => 'Subject saved successfully',
-                'Student' => $subject,
-                'status' => 201,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Subject not saved',
-                'status' => 404,
-                'e' => $e->getMessage(),
-            ], 404);
+        public function store(Request $request): JsonResponse
+        {
+            try {
+                $response = [
+                    'message' => '',
+                    'status' => '',
+                    'subject' => null,
+                ];
+                $code = 200;
+                $subject = new Subject;
+                $subject->name = $request->name;
+                $subject->code = $request->code;
+                $subject->periodsPerWeek = $request->periodsPerWeek;
+                $subject->created_at = Carbon::now();
+                $subject->updated_at = Carbon::now();
+                $subject->save();
+    
+                // Register the new subject to all students in Form 1 and Form 2
+                $students = Student::where('className', 'like', 'Form 1%')
+                    ->orWhere('className', 'like', 'Form 2%')
+                    ->get();
+    
+                foreach ($students as $student) {
+                    $subject->students()->syncWithoutDetaching($student->id);
+                }
+    
+                $response['message'] = 'Subject saved successfully and registered to all students in Form 1 and Form 2';
+                $response['status'] = 'success';
+                $response['subject'] = $subject;
+                $code = 201;
+    
+            } catch (\Exception $e) {
+                $response['message'] = $e->getMessage();
+                $response['status'] = 'fail';
+                $code = 500;
+            }
+            return response()->json($response, $code);
         }
-    }
 
-
-    public function gradingSystem(Request $request, string $id): JsonResponse
-    {
-
-
-        $response = new StudentResource(Student::findorFail($id));
-
-
-        return response()->json([
-
-
-            'Score' => $response->assessments,
-
-
-        ], 400);
-    }
     public function update(Request $request, int $id): JsonResponse
     {
         if (Subject::where('id', $id)->exists()) {

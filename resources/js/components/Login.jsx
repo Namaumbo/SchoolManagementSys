@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { RiUserFill, RiLockPasswordFill } from "react-icons/ri";
-import "../../css/login.css";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { userState } from "./User/userState";
+import Swal from "sweetalert2";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
-import Swal from "sweetalert2";
-
+import { userState } from "./User/userState";
 import "../../css/login.css";
 
-export default function Login() {
+const Login = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
@@ -62,14 +60,6 @@ export default function Login() {
                 text: "An unexpected error occurred. Please contact the administrator.",
             });
         }
-
-        // Handle other status codes if needed
-        switch (status) {
-            // ... other cases
-            default:
-                // Handle other status codes
-                break;
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -80,11 +70,11 @@ export default function Login() {
 
             try {
                 const res = await UsersServices.userLogin({
-                    _token: "{{csrf_token()}}",
+                    _token: "{{csrf_token()}}", // Replace with your CSRF token if needed
                     email,
                     password,
                 });
-                console.log(res);
+
                 if (res.status === 200) {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
@@ -93,29 +83,19 @@ export default function Login() {
                     switch (res.data.user.role_name) {
                         case "Teacher":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem(
-                                "role",
-                                window.btoa("Teacher")
-                            );
+                            localStorage.setItem("role", window.btoa("Teacher"));
                             break;
                         case "Head teacher":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem(
-                                "role",
-                                window.btoa("Head teacher")
-                            );
+                            localStorage.setItem("role", window.btoa("Head teacher"));
                             break;
                         case "Student":
                             localStorage.setItem("loggedIn", window.btoa(true));
-                            localStorage.setItem(
-                                "role",
-                                window.btoa("Student")
-                            );
+                            localStorage.setItem("role", window.btoa("Student"));
                             break;
                         case "Admin":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("admin"));
-
                             break;
                         default:
                             break;
@@ -128,6 +108,7 @@ export default function Login() {
                             text: res.data.message || "Welcome!",
                         });
 
+                        // Navigate to dashboard upon successful login
                         navigate("/dashboard");
                     }
                 } else {
@@ -181,7 +162,6 @@ export default function Login() {
                             <span>Login</span>
                         )}
                     </button>
-                    {/* Link to the administrator contact page */}
                 </form>
                 <div className="admin-link">
                     <p>
@@ -192,4 +172,6 @@ export default function Login() {
             </div>
         </>
     );
-}
+};
+
+export default Login;

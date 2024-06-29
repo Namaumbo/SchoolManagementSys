@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DepartmentResource;
 use App\Models\Department;
 use App\Models\User;
-
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -20,8 +19,6 @@ class DepartmentController extends Controller
      *
      * @return Collection
      */
-   
-
     public function getAll()
     {
         return Department::all();
@@ -38,98 +35,79 @@ class DepartmentController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
-     */
-    public function store(Request $request): JsonResponse
-    {
+   /**
+ * Store a newly created resource in storage.
+ *
+ * @param Request $request
+ * @return JsonResponse
+ * @throws \Exception
+ */
+public function store(Request $request): JsonResponse
+{
+    $request->validate([
+        'departmentName' => 'required|max:255',
+        'headOfDepartment' => 'required|exists:users,email',
+    ]);
 
-        $request->validate([
-            'departmentName' => 'required|max:255',
-        ]);
+    $departmentName = $request->input('departmentName');
+    if (Department::where('departmentName', $departmentName)->first()) {
+        return response()->json(['message' => "Department already exists", $departmentName],
+            ResponseAlias::HTTP_CONFLICT);
+    } else {
+        try {
+            $headOfDepartment = User::where('email', $request->input('headOfDepartment'))
+                                    ->whereHas('role', function($query) {
+                                        $query->where('role_name', 'Head Of Department');
+                                    })->firstOrFail();
 
-        $departmentName = $request->input('departmentName');
-        if (Department::where('departmentName', $departmentName)->first()) {
-            return \response()->json(['message' => "department available", $departmentName],
-                ResponseAlias::HTTP_CONFLICT);
-        } else {
-            try {
-                $department = Department::create([
-                    'departmentName' => $request->input('departmentName'),
-                    'headOfDepartment' => $request->input('headOfDepartment'),
-                    'created_at' => carbon::now(),
-                    'updated_at' => carbon::now()
-                ]);
-                return response()->json([
-                    'message' => 'Department saved successfully',
-                    'Department' => $department,
-                    'status' => 201,
-                ],ResponseAlias::HTTP_CREATED);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'message' => 'Department not saved',
-                    'error' => $e,
-                    'status' => 201,
-                ]);
-            }
-        }
+            $department = Department::create([
+                'departmentName' => $request->input('departmentName'),
+                'head_of_department_id' => $headOfDepartment->id,
+                'description' => $request->input('description'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return DepartmentResource
-     */
-    public function show($id)
-    {
-//        return Department::find($id);
-
-        return new DepartmentResource(Department::findorFail($id));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response|null
-     */
-    public function edit(int $id): ?Response
-    {
-        return null;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function update(Request $request, $id)
-    {
-        if (Department::where('id', $id)->exists()) {
-            $department = Department::find($id);
-            $department->departmentName = $request->departmentName;
-            $department->headOfDepartment = $request->headOfDepartment;
-            $department->created_at = carbon::now();
-            $department->updated_at = carbon::now();
-            $department->save();
             return response()->json([
-                'message' => 'Department is updated successfully'
-
-            ], 400);
-        } else {
+                'message' => 'Department saved successfully',
+                'department' => $department,
+                'status' => ResponseAlias::HTTP_CREATED,
+            ], ResponseAlias::HTTP_CREATED);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'No Department found with that information '
-            ], 401);
+                'message' => 'Department not saved',
+                'error' => $e->getMessage(),
+                'status' => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR,
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+}
+
+/**
+ * Get all users with the role of Head Of Department.
+ *
+ * @return JsonResponse
+ */
+public function getHeadOfDepartments(): JsonResponse
+{
+    try {
+        $headOfDepartments = User::whereHas('role', function($query) {
+            $query->where('role_name', 'Head Of Department');
+        })->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Head Of Departments retrieved successfully',
+            'users' => $headOfDepartments,
+        ], ResponseAlias::HTTP_OK);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to retrieve Head Of Departments',
+            'error' => $e->getMessage(),
+        ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+    }
+}
 
 
     /**
@@ -144,40 +122,68 @@ class DepartmentController extends Controller
             $department = Department::find($id);
             $department->delete();
             return response()->json([
-                'message' => 'Department is deleted successfully'
-            ], 404);
-
+                'message' => 'Department deleted successfully'
+            ], ResponseAlias::HTTP_OK);
         } else {
             return response()->json([
-                'message' => 'No Department found with that information ',
-            ]);
+                'message' => 'No department found with that ID'
+            ], ResponseAlias::HTTP_NOT_FOUND);
         }
     }
 
+    /**
+     * Register users to a department.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     public function registerUsersToDepartment(Request $request, $id): JsonResponse
     {
-     
-
         try {
             $department = Department::findOrFail($id);
 
-            // Get user IDs by their emails
-            $user = User::where('email', $request->input('email'))->first();
+            // Get user by their email
+            $user = User::where('email', $request->input('email'))->firstOrFail();
 
             // Attach users to the department
             $department->users()->syncWithoutDetaching($user);
 
             return response()->json([
-                'message' => 'Users added to the department successfully',
+                'message' => 'User added to the department successfully',
                 'department' => $department->users,
             ], ResponseAlias::HTTP_CREATED);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to add users to the department',
+                'message' => 'Failed to add user to the department',
                 'error' => $e->getMessage(),
             ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Get users for a department.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getUsersForDepartment($id): JsonResponse
+    {
+        try {
+            $department = Department::findOrFail($id);
+            $users = $department->users;
 
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Users retrieved successfully for department ' . $department->departmentName,
+                'users' => $users,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve users for department',
+                'error' => $e->getMessage(),
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

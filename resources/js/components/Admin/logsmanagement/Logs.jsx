@@ -1,7 +1,6 @@
 import React from "react"
 import {FiBook, FiDelete} from "react-icons/fi";
 import {AiFillDelete, } from "react-icons/ai"
-import './logs.css'
 
 
 const Logs = () => {

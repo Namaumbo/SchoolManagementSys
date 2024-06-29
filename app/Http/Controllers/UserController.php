@@ -1,61 +1,73 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    
     protected $userService;
 
-     public function __construct(UserService $userService)
-
-     {
-        $this->userService = $userService;
-
-
-     }
-     //getting users from the database
-    public function getUsers()
+    public function __construct(UserService $userService)
     {
-      return  $this->userService->getAll();
-    }
-    //registering users to the database
-
-    public function registerUser(Request $userService){
-        return  $this->userService->store($userService);
-    }
-    public function show(Request $userService,int $id){
-        return  $this->userService->show($id);
+        $this->userService = $userService;
     }
 
-    
-    public function allocationSubject(Request $userService){
-        return  $this->userService->Allocation($userService);
-    }
-    public function updateUser(Request $userService,int $id){
-         return $this->userService->update($userService,$id);
+    // Getting users from the database
+    public function getUsers(): JsonResponse
+    {
+        return $this->userService->getAll();
     }
 
+    public function getAllUsersFromEachDepartment(int $id): JsonResponse
+    {
+        return $this->userService->getAllUsersFromEachDepartment($id);
+    }
 
-    public function deleteUser(int $id){
+    // Registering users to the database
+    public function registerUser(Request $request): JsonResponse
+    {
+        return $this->userService->store($request);
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        return $this->userService->show($id);
+    }
+
+    public function updateUser(Request $request, int $id): JsonResponse
+    {
+        return $this->userService->update($request, $id);
+    }
+
+    public function deleteUser(int $id): JsonResponse
+    {
         return $this->userService->destroy($id);
     }
-    //logging in the system
 
-    public function login(Request $userService){
-    return $this->userService->login($userService);
-
-
+    // Logging in the system
+    public function login(Request $request): JsonResponse
+    {
+        return $this->userService->login($request);
     }
 
-    public function logout(){
-
-   return $this->userService->logout();
-
-
+    public function logout(): JsonResponse
+    {
+        return $this->userService->logout();
     }
-  
+
+        
+    public function allocationSubject(Request $request, $userId)
+    {
+        return $this->userService->Allocation($request, $userId);
+    }
+    
+
+
+    public function getAllocationsForTeacher(int $id): JsonResponse
+    {
+        return $this->userService->getAllocationsForTeacher($id);
+    }
 }

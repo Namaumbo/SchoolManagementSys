@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use App\Models\User;
 use PhpParser\Node\Stmt\TryCatch;
@@ -18,7 +17,7 @@ class LevelController extends Controller
         {
             $class->className = $request->className;
             //user_id is the class teacher
-            $class->user_id = $request->user_id;
+           
 
             $class->created_at = carbon::now();
             $class->updated_at = carbon::now();

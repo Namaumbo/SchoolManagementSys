@@ -30,8 +30,7 @@ class Subject extends Model
     {
         return $this->morphedByMany(
             User::class,
-           'allocationables')->withTimeStamps();
-   // Include other columns from the assessments table
+           'allocationable')->withTimeStamps();
 
     }
 
@@ -39,14 +38,14 @@ class Subject extends Model
     {
         return $this->morphedByMany(
             Level::class,
-           'allocationables')->withTimeStamps();
+           'allocationable')->withTimeStamps();
     }
 
     public function departments()
     {
         return $this->morphedByMany(
             Department::class,
-           'allocationables')->withTimeStamps();
+           'allocationable')->withTimeStamps();
     }
 
 

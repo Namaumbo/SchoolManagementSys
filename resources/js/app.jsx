@@ -1,7 +1,6 @@
-// import './bootstrap'
+
 import React, {useEffect} from "react";
 import ReactDOM from "react-dom/client";
-
 import {RecoilRoot, useRecoilState} from "recoil";
 import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
 import Login from "./components/Login";
@@ -17,8 +16,8 @@ import Messages from "./components/Admin/messagemanagement/Messages";
 import Assessment from "./components/Admin/assementManagement/Assessment";
 import Students from "./components/Student/Students";
 import StudentsInfo from "./components/Student/StudentsInfo";
-import Department from "./components/Admin/DepartmentManagement/Department";
-import Science from "./components/Admin/DepartmentManagement/Department";
+import DepartmentManagement from "./components/Admin/DepartmentManagement/DepartmentManagement";
+import DepartmentUsers from "./components/Admin/DepartmentManagement/DepartmentUsers";
 import Subject from "./components/Admin/subjectManagement/Subject";
 
 import StudentPerformance from "./components/Student/StudentPerformance";
@@ -46,22 +45,21 @@ export default function Index (){
                         <Route exact path="/users" element={<UserManagement/>}/>
                         <Route path="/class-Performance" element={<ClassesPerformance/>}/>
                         <Route path="/messages" element={<Messages/>}/>
-                        <Route path="/department" element={<Department/>}/>
+                        <Route path="/department" element={<DepartmentManagement/>}/>
+                        <Route path="/department/:departmentId/users" element={<DepartmentUsers />} />
+
                         <Route path="/logout" element={<Login/>}/>
                         <Route path="/subject" element={<Subject />} />
 
                         <Route path="/students" element={<Students />} />
                         <Route path="/students-info" element={<StudentsInfo />} />
-                        <Route path="/department-performance" element={<Department />} />
                        <Route path="/student-performance" element={<StudentPerformance />} />
+
                     </Route>
                         </Routes> 
             </HashRouter> 
 
-                {/* <p>this is wor</p> */}
-            {/* <AdminDashboard/>*/}
-            {/*<Mines />*/}
-            {/*<SideBar/>*/}
+        
             
             
             

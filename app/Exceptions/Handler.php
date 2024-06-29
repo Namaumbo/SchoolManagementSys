@@ -1,7 +1,4 @@
 <?php
-// app/Exceptions/Handler.php
-
-// app/Exceptions/Handler.php
 
 namespace App\Exceptions;
 
@@ -25,21 +22,44 @@ class Handler extends ExceptionHandler
 
     private function handleSpecificExceptions($request, $exception): JsonResponse
     {
-        if ($request->is('api/user/*')) {
-            return response()->json([
-                'error' => 'User Not Found',
-                'message' => 'The user does not exist in the database.'
-            ], 404);
-        } elseif ($request->is('api/subjects/*')) {
-            return response()->json([
-                'error' => 'Subject Not Found',
-                'message' => 'Subject does not exist in the database.'
-            ], 404);
-        } elseif ($request->is('api/update-department/*')) {
-            return response()->json([
-                'error' => 'Department Not Found',
-                'message' => 'There is no such department in the database.'
-            ], 404);
+        if ($exception instanceof ModelNotFoundException) {
+            // Handle ModelNotFoundException specifically
+            if ($request->is('api/user/*')) {
+                return response()->json([
+                    'error' => 'User Not Found',
+                    'message' => 'The user does not exist in the database.'
+                ], 404);
+            } elseif ($request->is('api/subjects/*')) {
+                return response()->json([
+                    'error' => 'Subject Not Found',
+                    'message' => 'Subject does not exist in the database.'
+                ], 404);
+            } elseif ($request->is('api/update-department/*')) {
+                return response()->json([
+                    'error' => 'Department Not Found',
+                    'message' => 'There is no such department in the database.'
+                ], 404);
+            }
+        }
+
+        if ($exception instanceof NotFoundHttpException) {
+            // Handle NotFoundHttpException
+            if ($request->is('api/user/*')) {
+                return response()->json([
+                    'error' => 'User Not Found',
+                    'message' => 'The user does not exist in the database.'
+                ], 404);
+            } elseif ($request->is('api/subjects/*')) {
+                return response()->json([
+                    'error' => 'Subject Not Found',
+                    'message' => 'Subject does not exist in the database.'
+                ], 404);
+            } elseif ($request->is('api/update-department/*')) {
+                return response()->json([
+                    'error' => 'Department Not Found',
+                    'message' => 'There is no such department in the database.'
+                ], 404);
+            }
         }
 
         // If no specific condition matches, return a generic JSON response
@@ -49,4 +69,3 @@ class Handler extends ExceptionHandler
         ], 404);
     }
 }
-
