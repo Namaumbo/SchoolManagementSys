@@ -13,9 +13,9 @@ import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import Grid from "@mui/material/Grid";
+import { MaterialReactTable } from "material-react-table";
 
 export default function AdminDashboard() {
-    // const [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [students, setStudents] = useState([]);
     const [data, setData] = useState([]);
     const loggedIn = localStorage.getItem("loggedIn");
@@ -26,6 +26,7 @@ export default function AdminDashboard() {
         const headers = {
             Authorization: `Bearer ${accessKey}`,
         };
+
         function getUsers() {
             return axios({
                 method: "GET",
@@ -33,6 +34,7 @@ export default function AdminDashboard() {
                 headers: headers,
             });
         }
+
         function getStudents() {
             return axios({
                 method: "GET",
@@ -58,12 +60,12 @@ export default function AdminDashboard() {
     }, [accessKey, setData, setStudents]);
 
     const columns = [
-        { field: "id", headerName: "ID", width: 50 },
-        { field: "firstname", headerName: "First name", width: 130 },
-        { field: "surname", headerName: "Last name", width: 130 },
-        { field: "sex", headerName: "Sex", type: "String", width: 10 },
-        { field: "email", headerName: "Email", type: "String", width: 180 },
-        { field: "role_name", headerName: "Role", width: 100 },
+        { accessorKey: "id", header: "ID", size: 50 },
+        { accessorKey: "firstname", header: "First name", size: 130 },
+        { accessorKey: "surname", header: "Last name", size: 130 },
+        { accessorKey: "sex", header: "Sex", size: 50 },
+        { accessorKey: "email", header: "Email", size: 180 },
+        { accessorKey: "role_name", header: "Role", size: 100 },
     ];
 
     const cardData = [
@@ -109,145 +111,82 @@ export default function AdminDashboard() {
             number: 0,
         },
     ];
+
     const isAdminOrHeadTeacher =
         window.atob(loggedIn) && window.atob(role) === "admin";
     const isTeacher = loggedIn && role === "Teacher";
 
-    if (isAdminOrHeadTeacher) {
-        return (
-            <div className="main">
+    return (
+        <div className="main">
+            {isAdminOrHeadTeacher && (
                 <div className="heading">
                     <FiHome />
-                    <span style={{ color: "white" }}>Dashboard - Home</span>
+                    <span style={{ color: "white", marginLeft: "10px" }}>
+                        Admin Dashboard - Home
+                    </span>
                 </div>
+            )}
 
-                <div className="container text-center">
-                    <div className="row">
-                        {statisticalData.map((stat) => {
-                            console.log(stat);
-                            return (
-                                <div className="col" key={stat.menu}>
-                                    <div className="cardMn">
-                                        <div>
-                                            <img
-                                                className="arts"
-                                                src={stat.image}
-                                                alt="students"
-                                            />
-                                            <span className="name-title">
-                                                {stat.title}
-                                            </span>
-                                        </div>
-                                        <div className="figure">
-                                            <h4 className="numbers">
-                                                {stat.number}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className="container">
-                    <div className="row">
-                        <div className="col-4">
-                            <p>Revenue Summary</p>
-                            <Test />
-                        </div>
-                        <div className="col-4">
-                            <p>Performance Summary</p>
-                            <Test />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-12">
-                            <p>Users Available</p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {columns.map((column) => (
-                                            <th key={column.field}>
-                                                {column.headerName}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((user, index) => (
-                                        <tr key={user.firstname}>
-                                            {columns.map((column) => (
-                                                <td key={column.field}>
-                                                    {user[column.field]}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    } else if (isTeacher) {
-        return (
-            <>
+            {isTeacher && (
                 <div className="heading">
                     <FiHome />
-                    <span style={{ color: "white" }}>
+                    <span style={{ color: "white", marginLeft: "10px" }}>
                         Teacher Dashboard - Home
                     </span>
                 </div>
-                <Container>
-                    <Row>
-                        {cardData.map((card, index) => (
-                            <Col sm={4} key={index}>
-                                <Card
-                                    bg={card.color}
-                                    text="white"
-                                    style={{
-                                        width: "18rem",
-                                        cursor: "pointer",
-                                    }}
-                                    className="mb-2"
-                                    onClick={() =>
-                                        window.location.assign(card.link)
-                                    }
-                                >
-                                    <Card.Header>
-                                        <IconContext.Provider
-                                            value={{
-                                                size: "2em",
-                                                className: "mr-2",
-                                            }}
-                                        >
-                                            {card.icon}
-                                        </IconContext.Provider>
-                                        {card.title}
-                                    </Card.Header>
-                                    <Card.Body>
-                                        <Card.Text>
-                                            {/* Add relevant content for the Teacher dashboard */}
-                                        </Card.Text>
-                                        <p
-                                            style={{
-                                                textAlign: "center",
-                                                marginTop: "20px",
-                                            }}
-                                        >
-                                            More Info{" "}
-                                        </p>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </>
-        );
-    } else {
-        return <p>You do not have permission to access this dashboard.</p>;
-    }
+            )}
+
+            <div className="container text-center">
+                <div className="row">
+                    {statisticalData.map((stat) => (
+                        <div className="col" key={stat.menu}>
+                            <div className="cardMn">
+                                <div>
+                                    <img
+                                        className="arts"
+                                        src={stat.image}
+                                        alt="students"
+                                    />
+                                    <span className="name-title">
+                                        {stat.title}
+                                    </span>
+                                </div>
+                                <div className="figure">
+                                    <h4 className="numbers">{stat.number}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="container">
+                <div className="row">
+                    <div className="col-4">
+                        <p>Revenue Summary</p>
+                        <Test />
+                    </div>
+                    <div className="col-4">
+                        <p>Performance Summary</p>
+                        <Test />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12">
+                        <p>Users Available</p>
+                        <MaterialReactTable
+                            columns={columns}
+                            data={data}
+                            enableColumnOrdering
+                            enableRowSelection
+                            enableStickyHeader
+                            initialState={{
+                                showGlobalFilter: true,
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }

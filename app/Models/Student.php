@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,51 +8,38 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
+
     protected $table = "students";
-    protected $fillable=[
-        
+
+    protected $fillable = [
         'firstname',
         'surname',
-        "username",
-        "sex",
-        "village",
-        "traditional_authority",
-        "district",
-        "class"
-       
-
+        'username',
+        'sex',
+        'village',
+        'traditional_authority',
+        'district',
+        'level_id'
     ];
-    
-  
 
-    public function roles():\Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function roles()
     {
-        return $this->belongsToMany(
-            Role::class,
-            'students',
-            'id',
-            'role_name');
-    }
- 
-    public function subjects():\Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Subject::class, 'assessments' )
-        ->withPivot(['firstAssessment','secondAssessment','endOfTermAssessment','averageScore']); // Include other columns from the assessments table
-
+        return $this->belongsToMany(Role::class, 'student_role', 'student_id', 'role_id');
     }
 
-
-    public function levels(): BelongsTo
+    public function subjects()
     {
-        return $this->belongsTo(Level::class, 'class');
+        return $this->belongsToMany(Subject::class, 'assessments')
+            ->withPivot(['firstAssessment', 'secondAssessment', 'endOfTermAssessment', 'averageScore']);
     }
-    
+
+    public function level()
+    {
+        return $this->belongsTo(Level::class, 'level_id');
+    }
+
     public function assessments()
     {
         return $this->hasMany(Assessment::class);
     }
-   
-
 }
-  
-

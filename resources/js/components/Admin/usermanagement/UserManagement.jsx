@@ -27,7 +27,7 @@ import {
 } from "@mui/icons-material";
 import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
-import './Users.css'; // Import the CSS file
+import './users.css'; // Import the CSS file
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);

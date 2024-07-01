@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,25 +21,21 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
-            $table->string('className',50)->nullable();
+            $table->unsignedInteger('level_id')->nullable();
+            $table->string('role_name', 50)->nullable();
+            $table->timestamps();
 
-
-            $table->string('role_name',50)->nullable();
             $table->foreign('role_name')
                 ->references('role_name')
                 ->on('roles')
                 ->onDelete('NO ACTION')
                 ->onUpdate('CASCADE');
-                $table->timestamps();
 
-
-                
-                $table->foreign('className')
-                ->references('className')
+            $table->foreign('level_id')
+                ->references('id')
                 ->on('levels')
-                ->onDelete('NO ACTION')
+                ->onDelete('SET NULL')
                 ->onUpdate('CASCADE');
-
         });
     }
 

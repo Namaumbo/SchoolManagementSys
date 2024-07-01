@@ -88,54 +88,51 @@ return response()->json($response, $code);
 
 }
 
-    public function getStudentsByClassAndSubject($classId)
-    {
-        try {
-            // Get the logged-in user
- 
-        
-            // Get the logged-in user
-            $user = Auth::User();
+public function getStudentsByClassAndSubject($classId)
+{
+    try {
+        $user = auth()->user(); // Get the logged-in user
 
-            // Check if the user has the 'classTeacher' or 'Teacher' role
-            if ($user->first()->roles()->where('role_name', 'classTeacher')->orWhere('role_name', 'Teacher')->exists()) {
-                // Get the class by ID
-                $class = Level::findOrFail($classId);
+        // Check if the user has the 'classTeacher' or 'Teacher' role
+        if ($user->roles()->where('role_name', 'classTeacher')->orWhere('role_name', 'Teacher')->exists()) {
+            // Get the class by ID
+            $class = Level::findOrFail($classId);
 
-                // Check if the teacher is assigned to the class
-                if ($class->allocationable()->where('user_id', $user->first()->id)->exists()) {
-                    // Fetch students and subjects for the specified class
-                    $students = $class->student()->with(['role'])->get();
-                    $subjects = $class->subjects()->get();
+            // Check if the teacher is assigned to the class
+            if ($class->allocationable()->where('user_id', $user->id)->exists()) {
+                // Fetch students, subjects, and teacher for the specified class
+                $students = $class->student()->with(['role'])->get();
+                $subjects = $class->subjects()->get();
+                $teacher = $class->users; // Assuming you have a relation in Level model to get the teacher
 
-                    return response()->json([
-                        'message' => 'Students and Subjects fetched successfully',
-                        'students' => $students,
-                        'subjects' => $subjects,
-                        'status' => 200,
-                    ], 200);
-                } else {
-                    // Handle unauthorized access to the class
-                    return response()->json([
-                        'message' => 'Unauthorized access to the class',
-                        'status' => 403,
-                    ], 403);
-                }
-            } else {
-                // Handle if the user does not have the required role
                 return response()->json([
-                    'message' => 'User does not have the required role',
+                    'message' => 'Students, Subjects, and Teacher fetched successfully',
+                    'students' => $students,
+                    'subjects' => $subjects,
+                    'teacher' => $teacher,
+                    'status' => 200,
+                ], 200);
+            } else {
+                // Handle unauthorized access to the class
+                return response()->json([
+                    'message' => 'Unauthorized access to the class',
                     'status' => 403,
                 ], 403);
             }
-        } catch (\Exception $e) {
-            // Handle exceptions
+        } else {
+            // Handle if the user does not have the required role
             return response()->json([
-                'message' => 'Error fetching students and subjects',
-                'status' => 500,
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => 'User does not have the required role',
+                'status' => 403,
+            ], 403);
         }
+    } catch (\Exception $e) {
+        // Handle exceptions
+        return response()->json([
+            'message' => 'Error fetching students, subjects, and teacher',
+            'status' => 500,
+            'error' => $e->getMessage(),
+        ], 500);
     }
-
+}
 }

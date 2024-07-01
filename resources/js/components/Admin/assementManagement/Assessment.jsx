@@ -16,6 +16,7 @@ import {
     Paper,
     MenuItem,
 } from "@mui/material";
+import "./Assessment.css";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import EditIcon from "@mui/icons-material/Edit";

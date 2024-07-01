@@ -6,7 +6,9 @@ import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import AdminDashboard from "./components/Admin/dashboard/AdminDashboard";
-import Classes from "./components/Admin/classmanagement/Classes";
+import ClassManagement from "./components/Admin/classmanagement/ClassManagement";
+import ClassDetails from "./components/Admin/classmanagement/ClassDetails";
+
 import Logs from "./components/Admin/logsmanagement/Logs";
 import Profile from "./components/Admin/Profile";
 import Team from "./components/Admin/teammanagement/Team";
@@ -36,7 +38,7 @@ export default function Index (){
                     <Route path='/login' element={<Login/>}/> 
                     <Route path="/" element={<Home/>}> 
                         <Route path="/dashboard" element={<AdminDashboard/>}/>
-                        <Route path="/classes" element={<Classes/>}/>
+                        <Route path="/classes" element={<ClassManagement/>}/>
                         <Route path="/logs" element={<Logs/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                         <Route path="/teachers" element={<Team/>}/>
@@ -47,6 +49,7 @@ export default function Index (){
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<DepartmentManagement/>}/>
                         <Route path="/department/:departmentId/users" element={<DepartmentUsers />} />
+                        <Route path="/class/:id/students" element={<ClassDetails />} />
 
                         <Route path="/logout" element={<Login/>}/>
                         <Route path="/subject" element={<Subject />} />

@@ -1,8 +1,10 @@
 .user-tb {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 10px;
-  }
+  background-color: #9a8644; /* Background color */
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 5%; /* Adjusted margin-top to push the heading downwards */
+}
+
   
   .list-title {
     font-size: 24px;
@@ -18,7 +20,12 @@
     align-items: center;
     padding: 10px;
     border-radius: 8px;
-  }
+    margin-top: 30px;
+    color: white; /* Text color */
+    font-size: 24px; /* Font size */
+    font-weight: bold; /* Font weight */
+}
+
   
   .user-management-title .MuiSvgIcon-root {
     margin-right: 10px;

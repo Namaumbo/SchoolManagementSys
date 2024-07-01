@@ -89,7 +89,7 @@ const Login = () => {
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("Head teacher"));
                             break;
-                        case "Student":
+                        case "Class teacher":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("Student"));
                             break;
@@ -97,6 +97,11 @@ const Login = () => {
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("admin"));
                             break;
+
+                          case "Head Of Department":
+                                localStorage.setItem("loggedIn", window.btoa(true));
+                                localStorage.setItem("role", window.btoa("Head Of Department "));
+                                break;
                         default:
                             break;
                     }
