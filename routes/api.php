@@ -109,7 +109,9 @@ Route::controller(LevelController::class)->group(function () {
     Route::get('/classes', 'getClass');
     Route::post('/create-class', 'store');
     Route::put('/update-class', 'classTeacher');
-    Route::get('/class/{id}/details', 'getClassDetails');
+    Route::get('/class/{id}/students', 'getStudentsByClass');
+    Route::get('/class/{id}/usersAllocations', 'getUsersWithAllocations');
+
 });
 
 // Assessments

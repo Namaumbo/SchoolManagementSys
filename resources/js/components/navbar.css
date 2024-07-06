@@ -13,7 +13,6 @@
 
 .user {
     display: flex;
-    justify-content: space-between;
     width: 150px;
     align-items: center;
 }

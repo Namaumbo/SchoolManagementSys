@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Level extends Model
 {
@@ -13,23 +14,16 @@ class Level extends Model
 
     protected $fillable = [
         'className',
-        'user_id',
-        'created_at',
-        'updated_at'
+        'classTeacher'
     ];
 
-    public function subjects()
+    public function subjects(): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphToMany(Subject::class, 'allocationable');
     }
 
-    public function students()
+    public function students(): HasMany
     {
-        return $this->hasMany(Student::class, 'level_id');
-    }
-
-    public function classTeacher()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->hasMany(Student::class, 'className', 'className');
     }
 }
