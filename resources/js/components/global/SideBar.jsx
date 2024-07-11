@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Logout } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link ,  useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "../User/userState";
 import {
@@ -22,6 +22,7 @@ import "./sidebar.css";
 import placeholder from "../../../assets/placeHolderLogo.png";
 
 const SideBar = () => {
+    const location = useLocation();
     const role = localStorage.getItem("role");
     const loggedIn = localStorage.getItem("loggedIn");
     const [theme, setTheme] = useState("light");
@@ -32,150 +33,104 @@ const SideBar = () => {
 
     if (window.atob(loggedIn) && window.atob(role) === "admin") {
         return (
-            <div className="sideBarItems">
-                <div className="sidebar-img">
+            <div className="bg-[#1ab394] h-full ">
+                <div className="flex flex-row justify-center">
                     <img src={placeholder} alt="logo" width={100} />
                 </div>
-                <ul className="sideBarList">
-                    <Link to="/dashboard" className="link">
-                        <li className="itemList">
-                            <AiFillDashboard className="icon" />
-                            <span className="sideBarItemText">Home</span>
-                        </li>
-                    </Link>
+                <div className=" container  pt-4">
+                    {[
+                        {
+                            path: "/dashboard",
+                            text: "Home",
+                            Icon: AiFillDashboard,
+                        },
+                        {
+                            path: "/teachers",
+                            text: "Teachers",
+                            Icon: BiMaleFemale,
+                        },
+                        { path: "/users", text: "User", Icon: BiUser },
+                        {
+                            path: "/assessment",
+                            text: "Student Assessment",
+                            Icon: BiStats,
+                        },
+                        { path: "/students", text: "Students", Icon: BiChild },
+                        {
+                            path: "/logs",
+                            text: "Logs",
+                            Icon: BiMessageAltDetail,
+                        },
+                        {
+                            path: "/messages",
+                            text: "Messages",
+                            Icon: BiMessageRounded,
+                        },
+                        { path: "/classes", text: "Classes", Icon: BiHomeAlt2 },
+                        {
+                            path: "/performance",
+                            text: "Performance",
+                            Icon: BiBarChartAlt2,
+                        },
+                        {
+                            path: "/department",
+                            text: "Department",
+                            Icon: FiUmbrella,
+                        },
+                        {
+                            path: "/payments",
+                            text: "Fees Balances",
+                            Icon: BiDollar,
+                        },
+                        { path: "/subject", text: "Subjects", Icon: GoBook },
+                    ].map(({ path, text, Icon }) => (
+                        <Link
+                            to={path}
+                            key={path}
+                            
+                        >
+                            <li 
+                            id={location.pathname === path ? "active" : ""}
+                            className="link p-2 hover:bg-[#9a8644c2] rounder-md flex items-center text-gray-100 text-base pl-3 ">
+                                <Icon className="pr-1 text-[23px]" />
+                                <span className="text-[16px]">{text}</span>
+                            </li>
+                        </Link>
+                    ))}
+                </div>
 
-                    <Link to="teachers" className="link">
-                        <li className="itemList">
-                            <BiMaleFemale className="icon" />
-                            <span className="sideBarItemText">Teachers</span>
-                        </li>
-                    </Link>
-
-                    <Link to="users" className="link">
-                        <li className="itemList">
-                            <BiUser className="icon" />
-                            <span className="sideBarItemText">User</span>
-                        </li>
-                    </Link>
-
-                    <Link to="assessment" className="link">
-                        <li className="itemList">
-                            <BiStats className="icon" />
-                            <span className="sideBarItemText">
-                                Student Assessment
-                            </span>
-                        </li>
-                    </Link>
-
-                    <Link to="students" className="link">
-                        <li className="itemList">
-                            <BiChild className="icon" />
-                            <span className="sideBarItemText">Students</span>
-                        </li>
-                    </Link>
-
-                    <Link to="logs" className="link">
-                        <li className="itemList">
-                            <BiMessageAltDetail className="icon" />
-                            <span className="sideBarItemText">Logs</span>
-                        </li>
-                    </Link>
-                    <Link to="messages" className="link">
-                        <li className="itemList">
-                            <BiMessageRounded className="icon" />
-                            <span className="sideBarItemText">Messages</span>
-                        </li>
-                    </Link>
-
-                    <Link to="classes" className="link">
-                        <li className="itemList">
-                            <BiHomeAlt2 className="icon" />
-                            <span className="sideBarItemText">Classes</span>
-                        </li>
-                    </Link>
-
-                    <Link to="performance" className="link">
-                        <li className="itemList">
-                            <BiBarChartAlt2 className="icon" />
-                            <span className="sideBarItemText">Performance</span>
-                        </li>
-                    </Link>
-                    <Link to="department" className="link">
-                        <li className="itemList">
-                            <FiUmbrella className="icon" />
-                            <span className="sideBarItemText">Department</span>
-                        </li>
-                    </Link>
-
-                    <Link to="payments" className="link">
-                        <li className="itemList">
-                            <BiDollar className="icon" />
-                            <span className="sideBarItemText">
-                                Fees Balances{" "}
-                            </span>
-                        </li>
-                    </Link>
-                    <Link to="subject" className="link">
-                        <li className="itemList">
-                            <GoBook className="icon" />
-                            <span className="sideBarItemText">Subjects </span>
-                        </li>
-                    </Link>
-
-                    <button onClick={toggleTheme}>Toggle Theme</button>
-                </ul>
+                <button onClick={toggleTheme}>Toggle Theme</button>
             </div>
         );
     } else if (window.atob(loggedIn) && window.atob(role) === "Teacher") {
         return (
             <>
                 {/* <div className="sideBarItems"> */}
-                <ul className="sideBarList">
-                    <Link to="/dashboard" className="link">
-                        <li className="itemList">
-                            <AiFillDashboard className="icon" />
-                            <span className="sideBarItemText">Home</span>
+                {[
+                    { path: "/dashboard", text: "Home", Icon: AiFillDashboard },
+                    {
+                        path: "/assessment",
+                        text: "Student Assessment",
+                        Icon: BiStats,
+                    },
+                    { path: "/students", text: "Students", Icon: BiChild },
+                    { path: "/classes", text: "Classes", Icon: BiHomeAlt2 },
+                    {
+                        path: "/performance",
+                        text: "Performance",
+                        Icon: BiBarChartAlt2,
+                    },
+                    { path: "/subject", text: "Subjects", Icon: GoBook },
+                ].map(({ path, text, Icon }) => (
+                    <Link to={path}  key={path}>
+                        <li >
+                            <Icon className="icon" />
+                            <span className="sideBarItemText">{text}</span>
                         </li>
                     </Link>
-                    <Link to="/assessment" className="link">
-                        <li className="itemList">
-                            <BiStats className="icon" />
-                            <span className="sideBarItemText">
-                                Student Assessment
-                            </span>
-                        </li>
-                    </Link>
+                ))}
 
-                    <Link to="students" className="link">
-                        <li className="itemList">
-                            <BiChild className="icon" />
-                            <span className="sideBarItemText">Students</span>
-                        </li>
-                    </Link>
-
-                    <Link to="classes" className="link">
-                        <li className="itemList">
-                            <BiHomeAlt2 className="icon" />
-                            <span className="sideBarItemText">Classes</span>
-                        </li>
-                    </Link>
-
-                    <Link to="performance" className="link">
-                        <li className="itemList">
-                            <BiBarChartAlt2 className="icon" />
-                            <span className="sideBarItemText">Performance</span>
-                        </li>
-                    </Link>
-
-                    <Link to="subject" className="link">
-                        <li className="itemList">
-                            <GoBook className="icon" />
-                            <span className="sideBarItemText">Subjects </span>
-                        </li>
-                    </Link>
-
-                    <button onClick={toggleTheme}>Toggle Theme</button>
-                </ul>
+                <button onClick={toggleTheme}>Toggle Theme</button>
                 {/* </div> */}
             </>
         );

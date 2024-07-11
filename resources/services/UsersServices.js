@@ -5,14 +5,9 @@ class UserService {
     constructor() {}
 
     async userLogin(user) {
-        let res = null;
-        try {
-            let response = await axios.post(`${this.urlPrefix}/login`, user);
-            res = response;
-        } catch (e) {
-            res = e;
-        }
-        return res;
+        return axios.post(`${this.urlPrefix}/login`, user)
+            .then(response => response)
+            .catch(error => error);
     }
 
     async getAllUsers() {

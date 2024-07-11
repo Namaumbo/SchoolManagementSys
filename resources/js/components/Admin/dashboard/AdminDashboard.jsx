@@ -12,12 +12,12 @@ import Test from "../../../Test";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import Grid from "@mui/material/Grid";
+import TableComponent from "../../Table/TableComponent";
 
 export default function AdminDashboard() {
     // const [userInfo, setUserInfo] = useRecoilState(userDetails);
     const [students, setStudents] = useState([]);
-    const [data, setData] = useState([]);
+    const [users, setUsers] = useState([]);
     const loggedIn = localStorage.getItem("loggedIn");
     const role = localStorage.getItem("role");
     const accessKey = localStorage.getItem("key");
@@ -46,7 +46,7 @@ export default function AdminDashboard() {
                 const userResponses = responses[0];
                 const studentsResponses = responses[1];
                 if (userResponses.status === "fulfilled") {
-                    setData(userResponses.value.data.users);
+                    setUsers(userResponses.value.data.users);
                 }
                 if (studentsResponses.status === "fulfilled") {
                     setStudents(studentsResponses.value.data);
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
             .catch((err) => {
                 console.error(err);
             });
-    }, [accessKey, setData, setStudents]);
+    }, [accessKey, setUsers, setStudents]);
 
     const columns = [
         { field: "id", headerName: "ID", width: 50 },
@@ -89,22 +89,22 @@ export default function AdminDashboard() {
 
     const statisticalData = [
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: students.length ? students.length : 0,
         },
         {
-            menu: "teachers",
+            menu: "Teachers",
             image: teachersPng,
-            number: data.length ? data.length : 0,
+            number: users.length ? users.length : 0,
         },
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: 0,
         },
         {
-            menu: "students",
+            menu: "Students",
             image: studentsPng,
             number: 0,
         },
@@ -115,31 +115,32 @@ export default function AdminDashboard() {
 
     if (isAdminOrHeadTeacher) {
         return (
-            <div className="main">
-                <div className="heading">
-                    <FiHome />
-                    <span style={{ color: "white" }}>Dashboard - Home</span>
+            <div className="w-full">
+                <div className="bg-[#9a8644] flex  item-center p-3 w-[98%] m-[auto] rounded-md shadow-md m-3">
+                    <FiHome size="23px" />
+                    <span className="text-xl pl-2 " style={{ color: "white" }}>
+                        Dashboard - Home
+                    </span>
                 </div>
 
-                <div className="container text-center">
-                    <div className="row">
+                <div className="container ">
+                    <div className=" lg:grid lg:grid-cols-4 lg:gap-4 p-4">
                         {statisticalData.map((stat) => {
-                            console.log(stat);
                             return (
-                                <div className="col" key={stat.menu}>
-                                    <div className="cardMn">
+                                <div key={stat.menu}>
+                                    <div className="card-list border-1 p-3 rounded-md  flex flex-row items-center shadow-sm">
                                         <div>
                                             <img
-                                                className="arts"
+                                                className="w-[50px] h-[50px] m-2"
                                                 src={stat.image}
                                                 alt="students"
                                             />
-                                            <span className="name-title">
-                                                {stat.title}
+                                            <span className=" font-bold">
+                                                {stat.menu}
                                             </span>
                                         </div>
                                         <div className="figure">
-                                            <h4 className="numbers">
+                                            <h4 className="text-5xl border-l-4 pl-2">
                                                 {stat.number}
                                             </h4>
                                         </div>
@@ -150,43 +151,22 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="container">
-                    <div className="row">
-                        <div className="col-4">
+                {/* the first graphs card stykle */}
+                <div>
+                    <div className=" container grid grid-cols-2 gap-4 p-4">
+                        <div className="h-[95%]  border-1 shadow-md rounded-md ">
                             <p>Revenue Summary</p>
+                            {/* TODO : search for other components libraris */}
                             <Test />
                         </div>
-                        <div className="col-4">
+                        <div className="h-[95%] border-1 shadow-md rounded-md  ">
                             <p>Performance Summary</p>
                             <Test />
                         </div>
                     </div>
-                    <div className="row">
-                        <div className="col-12">
-                            <p>Users Available</p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {columns.map((column) => (
-                                            <th key={column.field}>
-                                                {column.headerName}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((user, index) => (
-                                        <tr key={user.firstname}>
-                                            {columns.map((column) => (
-                                                <td key={column.field}>
-                                                    {user[column.field]}
-                                                </td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+
+                    <div className=" border-1 shadow-md">
+                        <TableComponent  data={users}/>
                     </div>
                 </div>
             </div>

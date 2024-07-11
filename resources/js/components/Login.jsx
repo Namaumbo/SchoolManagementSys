@@ -8,8 +8,6 @@ import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 import Swal from "sweetalert2";
 
-import "../../css/login.css";
-
 export default function Login() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -84,7 +82,7 @@ export default function Login() {
                     email,
                     password,
                 });
-                console.log(res);
+
                 if (res.status === 200) {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
@@ -127,8 +125,11 @@ export default function Login() {
                             title: "Login Success!",
                             text: res.data.message || "Welcome!",
                         });
-
-                        navigate("/dashboard");
+                        if (res.data.user.login_count > 1) {
+                            navigate("/dashboard");
+                        } else {
+                            navigate("/initial-page");
+                        }
                     }
                 } else {
                     handleErrorResponse(res);
@@ -144,8 +145,8 @@ export default function Login() {
 
     return (
         <>
-            <div className="logoScn">
-                <img src={logo} className="logo" alt="Logo" />
+            <div className="flex items-center justify-center">
+                <img src={logo} className=" text-center w-[20rem]" alt="Logo" />
             </div>
             <div className="login-wrapper">
                 <form onSubmit={handleSubmit}>
@@ -169,18 +170,33 @@ export default function Login() {
                         <input
                             type="password"
                             id="password"
-                            name="Password"
+                            namloginBtndive="Password"
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <button className="loginBtn" disabled={loading}>
-                        {loading ? (
-                            <span className="login-text">Logging in...</span>
-                        ) : (
-                            <span>Login</span>
-                        )}
-                    </button>
+
+                    <div className="loginBtndiv border ml-[1.5rem]">
+                        <button className="loginBtn w-full" disabled={loading}>
+                            {loading ? (
+                                <span className=" text-white">
+                                    <div
+                                        className="spinner-border"
+                                        role="status"
+                                    >
+                                        <span className="visually-hidden">
+                                            Loading...
+                                        </span>
+                                    </div>
+                                </span>
+                            ) : (
+                                <span className=" text-white font-bold">
+                                    Login
+                                </span>
+                            )}
+                        </button>
+                    </div>
+
                     {/* Link to the administrator contact page */}
                 </form>
                 <div className="admin-link">

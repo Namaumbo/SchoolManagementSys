@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\SchoolInformationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -55,6 +56,9 @@ use App\Models\Post;
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/exports', [UserController::class, 'exportIntoExcel']);
 
+
+//school routes
+Route::post('/school-information', [SchoolInformationController::class, 'store']);
 
 //The following are protected routes
 //Route::middleware('auth:sanctum')->group(function () {
@@ -167,6 +171,9 @@ Route::controller(PaymentController::class)->group(function () {
     Route::post('/payments', 'feesToStudent');
    
 });
+
+
+
 
 Route::get('/roles', function () {
     return RoleResource::collection(Role::all());

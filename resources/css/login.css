@@ -1,63 +1,74 @@
 .login-wrapper {
-    border: 1px solid rgb(202, 202, 202);
-    width: 20em;
-    margin: auto;
-    margin-top: 3%;
-    border-bottom-left-radius: 0.5em;
-    border-bottom-right-radius: 0.5em;
-    -webkit-box-shadow: 5px 10px 0px -4px rgba(0, 0, 0, 0.13);
-    box-shadow: 5px 10px 0px -4px rgba(0, 0, 0, 0.13);
-  }
-  
-  form {
-    padding: 20px;
-  }
-  
-  .input-wrapper {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .input-wrapper label {
-    font-size: 1.2em;
-    margin-right: 10px;
-  }
-  
-  .input-wrapper input {
-    width: 100%;
-    height: 2.5em;
-    border: 1px solid rgb(202, 202, 202);
-    border-radius: 5px;
-    padding: 0.5em;
-  }
-  
-  .loginBtn {
-    width: 18em;
-    height: 2.5em;
-    border: 0.2px solid #021b62;
-    background-color: #021b62;
-    border-radius: 18px;
-  }
-  
-  .loginBtn:hover {
-    background-color: #032688;
-  }
-  
-  .login-text {
-    color: #9a8644;
-    font-size: 20px;
-    font-weight: bolder;
-  }
-  
-  .logo {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .logoScn {
-    margin-left: 38em;
-    margin-bottom: -2em;
-    margin-top: 3em;
-  }
-  
+  border: 1px solid rgb(202, 202, 202);
+  width: 30em;
+  text-align: center;
+  margin: auto;
+}
+
+form {
+  padding: 20px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.input-wrapper label {
+  font-size: 1.2em;
+  margin-right: 10px;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 2.5em;
+  border: 1px solid rgb(202, 202, 202);
+  border-radius: 5px;
+  padding: 0.5em;
+}
+
+.loginBtn {
+  width: 10em;
+  height: 3em;
+  border: 0.2px solid #021b62;
+  background-color: #021b62;
+  border-radius: 5px;
+
+}
+
+/* TODO: align this to the left */
+.loginBtndiv {
+  /* border:1px solid black; */
+
+}
+
+.loginBtn:hover {
+  background-color: #032688;
+}
+
+.login-text {
+  color: #9a8644;
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+}
+
+.logoScn {
+  text-align: center;
+
+}
+
+#email {
+  border-radius: 5px;
+  height: 3.0em;
+}
+
+#password {
+  border-radius: 5px;
+  height: 3.0em;
+}
