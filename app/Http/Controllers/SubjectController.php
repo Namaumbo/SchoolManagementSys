@@ -44,41 +44,40 @@ class SubjectController extends Controller
         ], 201);
     }
     public function subjectPerformance()
-{
-    try {
-        $subjects = Subject::with(['students', 'students.assessments'])
-                            ->get();
+    {
+        try {
+            $subjects = Subject::with(['students', 'students.assessments'])->get();
 
-        $subjectPerformance = [];
+            $subjectPerformance = [];
 
-        foreach ($subjects as $subject) {
-            $averageScore = $this->calculateAverageScore($subject->students);
-            
-            $subjectData = [
-                'subject_id' => $subject->id,
-                'subject_name' => $subject->name,
-                'performance' => [
-                    'average_score' => $averageScore,
-                    // You can add more performance metrics here
-                ]
-            ];
+            foreach ($subjects as $subject) {
+                $averageScore = $this->calculateAverageScore($subject->students);
+                
+                $subjectData = [
+                    'subject_id' => $subject->id,
+                    'subject_name' => $subject->name,
+                    'performance' => [
+                        'average_score' => $averageScore,
+                        // You can add more performance metrics here
+                    ]
+                ];
 
-            $subjectPerformance[] = $subjectData;
+                $subjectPerformance[] = $subjectData;
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Subject performance data retrieved successfully',
+                'data' => $subjectPerformance,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve subject performance data',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Subject performance data retrieved successfully',
-            'data' => $subjectPerformance,
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to retrieve subject performance data',
-            'error' => $e->getMessage(),
-        ], 500);
     }
-}
 
 private function calculateAverageScore($students)
 {
@@ -100,6 +99,8 @@ private function calculateAverageScore($students)
     public function create(Request $request, $subject): void
     {
         $subject->name = $request->name;
+        $subject->code = $request->code;
+        $subject->periodsPerWeek = $request->periodsPerWeek;
         $subject->created_at = carbon::now();
         $subject->updated_at = carbon::now();
 
@@ -113,9 +114,17 @@ private function calculateAverageScore($students)
         ]);
 
         try {
+<<<<<<< HEAD
             $subject = Subject::create([
                 'name' => $validatedData['name'],
             ]);
+=======
+            $subject = new Subject;
+            #TODO: check the name here 
+            $this->create($request, $subject);
+            $subject->students()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+
+>>>>>>> SchoolPerformanceReport
             return response()->json([
                 'message' => 'Subject saved successfully',
                 'Subject' => $subject,

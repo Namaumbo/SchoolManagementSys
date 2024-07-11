@@ -36,6 +36,9 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 
+use App\Http\Controllers\PostController;
+use App\Models\Post;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -140,6 +143,12 @@ Route::controller(MessageController::class)->group(function () {
     Route::post('/create-message', 'store');
     Route::put('/message/{id}', 'update');
     Route::delete('/message/{id}', 'destroy');
+});
+
+Route::controller(PostController::class)->group(function () {
+    Route::get('/posts', 'getAll');
+
+
 });
 //});
 // Api for students

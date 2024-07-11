@@ -45,7 +45,6 @@ class SubjectService {
             return error;
         }
     }
-
     async fetchSubjectPerformance() {
         try {
             const response = await axios.get(

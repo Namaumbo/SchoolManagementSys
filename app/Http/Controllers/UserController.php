@@ -27,6 +27,9 @@ class UserController extends Controller
     public function registerUser(Request $userService){
         return  $this->userService->store($userService);
     }
+    public function show(Request $userService,int $id){
+        return  $this->userService->show($id);
+    }
 
     
     public function allocationSubject(Request $userService){

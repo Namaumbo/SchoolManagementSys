@@ -41,6 +41,8 @@ const Subject = () => {
         "Life Skills",
         "Social and Developmental Studies",
         "Additional Mathematics",
+        "Biology",
+        "Agriculture"
     ];
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -103,6 +105,23 @@ const Subject = () => {
     useEffect(() => {
         fetchSubjects();
     }, []); // Fetch subjects on component mount
+
+    const renderCharts = (chartType) => {
+        // Implement rendering of charts based on the selected chartType
+        switch (chartType) {
+            case 'bar':
+                // Render bar chart
+                break;
+            case 'pie':
+                // Render pie chart
+                break;
+            case 'line':
+                // Render line chart
+                break;
+            default:
+                return null;
+        }
+    };
 
     return (
         <>
@@ -261,6 +280,16 @@ const Subject = () => {
                     </Box>
                 </Box>
             </Modal>
+
+            {/* Select chart type */}
+            <Box sx={{ mt: 2 }}>
+                <Typography variant="h6" align="center">Select Chart Type</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                    <Button variant="contained" color="primary" onClick={() => renderCharts('bar')}>Bar Chart</Button>
+                    <Button variant="contained" color="primary" onClick={() => renderCharts('pie')} sx={{ mx: 1 }}>Pie Chart</Button>
+                    <Button variant="contained" color="primary" onClick={() => renderCharts('line')}>Line Chart</Button>
+                </Box>
+            </Box>
 
             <TableContainer component={Paper} style={{ marginTop: 20 }}>
                 <Table>
