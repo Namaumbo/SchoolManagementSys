@@ -13,7 +13,7 @@ import Logs from "./components/Admin/logsmanagement/Logs";
 import Profile from "./components/Admin/Profile";
 import Team from "./components/Admin/teammanagement/Team";
 import SchoolPerformance from "./components/Admin/schoolmanagement/SchoolPerformance";
-import ClassesPerformance from "./components/Admin/classmanagement/ClassPerformance";
+import ClassPerformance from "./components/Admin/classmanagement/ClassPerformance";
 import Messages from "./components/Admin/messagemanagement/Messages";
 import Assessment from "./components/Admin/assementManagement/Assessment";
 import Students from "./components/Student/Students";
@@ -45,7 +45,7 @@ export default function Index (){
                         <Route path="/performance" element={<SchoolPerformance/>}/>
                         <Route path="/assessment" element={<Assessment/>}/>
                         <Route exact path="/users" element={<UserManagement/>}/>
-                        <Route path="/class-Performance" element={<ClassesPerformance/>}/>
+                        <Route path="/classPerformance" element={<ClassPerformance/>}/>
                         <Route path="/messages" element={<Messages/>}/>
                         <Route path="/department" element={<DepartmentManagement/>}/>
                         <Route path="/department/:departmentId/users" element={<DepartmentUsers />} />

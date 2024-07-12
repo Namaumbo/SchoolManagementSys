@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,5 +44,11 @@ class Student extends Model
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);
+    }
+
+    // Virtual attribute for full name
+    public function getFullNameAttribute()
+    {
+        return "{$this->firstname} {$this->surname}";
     }
 }

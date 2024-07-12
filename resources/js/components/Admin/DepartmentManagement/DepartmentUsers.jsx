@@ -111,7 +111,7 @@ const DepartmentUsers = () => {
 
       if (response.status === 201 && response.data.status === 'success') {
         handleCloseAllocateModal();
-        fetchUsers(); // Optional: Refresh user data after successful allocation
+        fetchUsers(); 
         setSnackbar({ open: true, message: response.data.message, severity: 'success' });
       } else {
         throw new Error(response.data.message || 'Allocation failed.');
@@ -237,8 +237,8 @@ const DepartmentUsers = () => {
                     <tbody>
                       {userAllocations.map((allocation, index) => (
                         <tr key={index}>
-                          <td>{allocation.subject}</td>
-                          <td>{allocation.class}</td>
+                          <td>{allocation.name}</td>
+                          <td>{allocation.className}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Level;
 use App\Models\Student;
+use App\Models\Assessment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -79,24 +80,29 @@ class LevelController extends Controller
     }
 
     public function getStudentsByClass($id)
-    {
-        try {
-            // Find the level (class) by ID with its students
-            $level = Level::with('students')->findOrFail($id);
+{
+    try {
+        // Find the level (class) by ID with its students
+        $level = Level::with('students')->findOrFail($id);
 
-            return response()->json([
-                'message' => 'Students fetched successfully for class ' . $level->className,
-                'students' => $level->students,
-                'status' => 200,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error fetching students',
-                'status' => 404,
-                'error' => $e->getMessage(),
-            ], 404);
-        }
+        $students = $level->students;
+        $studentCount = $students->count(); // Count the number of students
+
+        return response()->json([
+            'message' => 'Students fetched successfully for class ' . $level->className,
+            'student_count' => $studentCount,
+            'students' => $students,
+            'status' => 200,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error fetching students',
+            'status' => 404,
+            'error' => $e->getMessage(),
+        ], 404);
     }
+}
+
 
 
 /**
@@ -109,12 +115,23 @@ public function getUsersWithAllocations($id)
 {
     try {
         // Find the level (class) by ID with its users, allocated classes, and subjects
-        $level = Level::with(['subjects', 'subjects.levels', 'subjects.levels','subjects.users',])
+        $level = Level::with(['subjects', 'subjects.levels', 'subjects.users'])
                       ->findOrFail($id);
+
+        // Extract required data for each subject and its users
+        $details = $level->subjects->map(function ($subject) {
+            return [
+                'name' => $subject->name,
+                'teachers' => $subject->users->map(function ($user) {
+                    return $user->firstname . ' ' . $user->surname;
+                }),
+                'className' => $subject->levels->first()->className, // Assuming there's only one level per subject
+            ];
+        });
 
         return response()->json([
             'message' => 'Users fetched successfully for class ' . $level->className,
-            'details' => $level->subjects,
+            'details' => $details,
             'status' => 200,
         ]);
     } catch (\Exception $e) {
@@ -126,6 +143,49 @@ public function getUsersWithAllocations($id)
     }
 }
 
+public function getClassPerformance($id)
+{
+    try {
+        // Fetch class details including students and subjects through levels
+        $class = Level::with(['students' => function($query) {
+            $query->with(['subjects' => function($query) {
+                $query->select('subjects.id', 'subjects.name')
+                    ->withPivot('averageScore');
+            }]);
+        }])->findOrFail($id);
 
+        // Transform the data
+        $classDetails = [
+            'id' => $class->id,
+            'className' => $class->className,
+            'students' => $class->students->map(function($student) {
+                return [
+                    'id' => $student->id,
+                    'firstname' => $student->firstname,
+                    'surname' => $student->surname,
+                    'subjects' => $student->subjects->map(function($subject) {
+                        return [
+                            'id' => $subject->id,
+                            'name' => $subject->name,
+                            'averageScore' => $subject->pivot->averageScore
+                        ];
+                    })
+                ];
+            })
+        ];
+
+        return response()->json([
+            'message' => 'Performance fetched successfully for class',
+            'class' => $classDetails,
+            'status' => 200,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error fetching performance data',
+            'status' => 404,
+            'error' => $e->getMessage(),
+        ], 404);
+    }
+}
 
 }

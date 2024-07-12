@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Box,
@@ -18,14 +18,11 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { MaterialReactTable } from 'material-react-table';
-import { Tab } from 'semantic-ui-react';
 import axios from 'axios';
 import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
+import { Tab } from 'semantic-ui-react';
 
 const ClassDetails = () => {
   const { id } = useParams();
@@ -58,31 +55,17 @@ const ClassDetails = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/class/${id}/usersAllocations`);
-      console.log(response.data); // Log data received from the API
-
       const { message, details } = response.data;
-      console.log(message); // Log success message
 
-      // Assuming details is an array containing information about the class and users
-      if (details.length > 0) {
-        const users = details[0].users || []; // Assuming users array is within the first detail object
-        const teachersWithAllocations = users.map(user => ({
-          id: user.id,
-          firstname: user.firstname,
-          surname: user.surname,
-          email: user.email,
-          sex: user.sex,
-          subjects: details[0].levels.map(level => ({
-            id: level.id,
-            name: level.className,
-          }))
+      if (details && details.length > 0) {
+        const updatedTeachers = details.map(subject => ({
+          name: subject.teachers.join(', '), // Assuming teachers is an array of names
+          className: subject.className,
+          subjects: subject.name, // Assuming subjects is an array of subject names
         }));
 
-        console.log(teachersWithAllocations); // Log the transformed data
-
-        setTeachers(teachersWithAllocations);
+        setTeachers(updatedTeachers);
       } else {
-        // Handle case where no details are found
         setTeachers([]);
       }
     } catch (error) {
@@ -91,12 +74,12 @@ const ClassDetails = () => {
       setIsLoading(false);
     }
   };
-
+  
   const handleTabChange = (e, { activeIndex }) => {
     setTabValue(activeIndex);
   };
 
-  const handleTeacherClick = (teacher) => {
+  const handleViewUser = (teacher) => {
     setSelectedTeacher(teacher);
     setOpenModal(true);
   };
@@ -106,25 +89,10 @@ const ClassDetails = () => {
     setSelectedTeacher(null);
   };
 
-  const handleViewUser = (teacher) => {
-    setSelectedTeacher(teacher);
-    setOpenModal(true);
-  };
-
-  // Memoized columns definition for students
-  const studentColumns = useMemo(() => [
-    { accessorKey: 'firstname', header: 'First Name' },
-    { accessorKey: 'surname', header: 'Surname' },
-    { accessorKey: 'username', header: 'Username' },
-    { accessorKey: 'sex', header: 'Sex' },
-  ], []);
-
   // Memoized columns definition for teachers
-  const teacherColumns = useMemo(() => [
-    { accessorKey: 'firstname', header: 'First Name' },
-    { accessorKey: 'surname', header: 'Surname' },
-    { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'sex', header: 'Sex' },
+  const teacherColumns = [
+    { accessorKey: 'name', header: 'Teacher Name' },
+    { accessorKey: 'className', header: 'Class Name' },
     {
       header: "Actions",
       Cell: ({ row }) => (
@@ -134,20 +102,11 @@ const ClassDetails = () => {
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Edit">
-            <IconButton onClick={() => handleOpenModal(row.original)}>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton onClick={() => handleDeleteUser(row.original.id)}>
-              <DeleteIcon sx={{ color: "red" }} />
-            </IconButton>
-          </Tooltip>
+          {/* Add edit and delete icons here */}
         </Box>
       ),
     },
-  ], []);
+  ];
 
   if (isLoading) {
     return (
@@ -172,7 +131,28 @@ const ClassDetails = () => {
         <Tab.Pane>
           <Typography variant="h6">Students</Typography>
           {students.length > 0 ? (
-            <MaterialReactTable data={students} columns={studentColumns} />
+            <TableContainer component={Paper}>
+              <Table aria-label="students-table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>First Name</TableCell>
+                    <TableCell>Surname</TableCell>
+                    <TableCell>Username</TableCell>
+                    <TableCell>Sex</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {students.map((student) => (
+                    <TableRow key={student.id}>
+                      <TableCell>{student.firstname}</TableCell>
+                      <TableCell>{student.surname}</TableCell>
+                      <TableCell>{student.username}</TableCell>
+                      <TableCell>{student.sex}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           ) : (
             <Typography variant="body2" color="textSecondary">No students enrolled</Typography>
           )}
@@ -198,12 +178,40 @@ const ClassDetails = () => {
       ),
     },
     {
-      menuItem: { key: 'teachers', icon: 'user', content: 'Teachers' }, // Updated icon
+      menuItem: { key: 'teachers', icon: 'user', content: 'Teachers' },
       render: () => (
         <Tab.Pane>
           <Typography variant="h6">Teachers</Typography>
           {teachers.length > 0 ? (
-            <MaterialReactTable data={teachers} columns={teacherColumns} />
+            <TableContainer component={Paper}>
+              <Table aria-label="teachers-table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Teacher Name</TableCell>
+                    <TableCell>Class Name</TableCell>
+                    <TableCell>Subjects</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {teachers.map((teacher, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{teacher.name}</TableCell>
+                      <TableCell>{teacher.className}</TableCell>
+                      <TableCell>{teacher.subjects}</TableCell>
+                      <TableCell>
+                        <Tooltip title="View">
+                          <IconButton onClick={() => handleViewUser(teacher)}>
+                            <VisibilityIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {/* Add edit and delete icons here */}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           ) : (
             <Typography variant="body2" color="textSecondary">No teachers assigned</Typography>
           )}
@@ -225,26 +233,28 @@ const ClassDetails = () => {
           {selectedTeacher && (
             <>
               <Typography id="teacher-allocations-title" variant="h6" component="h2">
-                Allocations for {selectedTeacher.firstname} {selectedTeacher.surname}
+                Allocations for {selectedTeacher.name}
               </Typography>
-              <TableContainer component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Subject Name</TableCell>
-                      <TableCell>Class Name</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {selectedTeacher.subjects && selectedTeacher.subjects.map((subject) => (
-                      <TableRow key={subject.id}>
-                        <TableCell>{subject.name}</TableCell>
-                        <TableCell>{subject.levels.map(level => level.className).join(', ')}</TableCell>
+              {selectedTeacher.subjects ? (
+                <TableContainer component={Paper}>
+                  <Table aria-label="teacher-allocations-table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Subject Name</TableCell>
+                        <TableCell>Class Name</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>{selectedTeacher.subjects}</TableCell>
+                        <TableCell>{selectedTeacher.className}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography variant="body2" color="textSecondary">No subjects allocated</Typography>
+              )}
             </>
           )}
         </Box>
