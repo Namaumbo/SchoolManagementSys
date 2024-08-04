@@ -30,6 +30,7 @@ use Psy\Util\Json;
 class UserService
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use Illuminate\Support\Facades\Log;
 
     /**
      * Validate user input fields.
@@ -110,6 +111,7 @@ class UserService
             if ($request->has('departments')) {
                 $newUser->departments()->syncWithoutDetaching($request->input('departments'));
             }
+            Log::info('Failed to save user: ' . $e->getMessage());
 
             return response()->json([
                 'status' => 'success',
@@ -117,6 +119,7 @@ class UserService
                 'user' => $newUser,
             ], 201);
         } catch (\Exception $e) {
+            Log::error('Failed to save user: ' . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'User not saved',
@@ -291,6 +294,7 @@ class UserService
             ], 500);
         }
     }
+}
 
 public function Allocation(Request $request, int $id): JsonResponse
 {
