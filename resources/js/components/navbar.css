@@ -1,3 +1,5 @@
+/* ./src/navbar.css */
+
 .profile-name,
 .school-logo,
 .link,
@@ -7,6 +9,7 @@
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
 }
+
 .nav-dropdown-title > .nav-link {
     color: rgb(255, 255, 255) !important;
 }
@@ -19,7 +22,16 @@
 }
 
 .notification {
+    display: flex;
+    align-items: center;
     margin-right: 1em;
+    color: white;
+}
+
+.notification .icon {
+    color: white;
+    font-size: 20px;
+    margin-right: 5px;
 }
 
 .nav-items {
@@ -31,39 +43,28 @@
     height: 50px;
     color: white;
     font-family: 'Roboto', sans-serif;
-    width: calc(100% - 195px);
-    margin-left: 195px ;
+    width: calc(100% - 170px);
+    margin-left: 162px;
     -webkit-box-shadow: 2px 6px 8px -4px #000000; 
-    box-shadow: 2px 6px 8px -4px #000000;}
-.nav-dropdown-title{
+    box-shadow: 2px 6px 8px -4px #000000;
+}
+
+.nav-dropdown-title {
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
     color: white;
     font-weight: lighter;  
 }
-.nts{
+
+.nts {
     font-size: 14px;
     font-family: 'Roboto', sans-serif;
     color: white;
     font-weight: lighter;
-
 }
+
 .nav-logo {
     width: 70px;
     height: 40px;
     font-size: 17px;
 }
-.notification {
-    display: flex;
-    align-items: center;
-    margin-right: 1em;
-    color: white;
-  }
-  
-  .notification .icon {
-    color: white;
-    font-size: 20px;
-    margin-right: 5px;
-  }
-  
-

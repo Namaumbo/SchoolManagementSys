@@ -16,6 +16,7 @@ import {
     Paper,
     MenuItem,
 } from "@mui/material";
+import "./Assessment.css";
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import EditIcon from "@mui/icons-material/Edit";
@@ -32,23 +33,19 @@ const Assessments = () => {
     const [viewDetailsModalOpen, setViewDetailsModalOpen] = useState(false);
     const [saveMessage, setSaveMessage] = useState(null);
     const [subjects, setSubjects] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [selectedSubject, setSelectedSubject] = useState("");
-    const [selectedUsername, setSelectedUsername] = useState("");
+    const [selectedAssessmentType, setSelectedAssessmentType] = useState("");
+    const [schoolTerm, setSchoolTerm] = useState("");
     const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
-
-    const [endOfTermAssessmentFields, setEndOfTermAssessmentFields] = useState(
-        []
-    );
-    const [displayEndOfTermAssessments, setDisplayEndOfTermAssessments] =
-        useState(false);
+    const [endOfTermAssessmentFields, setEndOfTermAssessmentFields] = useState([]);
     const [paperCount, setPaperCount] = useState(0);
 
     useEffect(() => {
         const fetchAssessments = async () => {
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/students"
-                );
+                const response = await axios.get("http://127.0.0.1:8000/api/students");
                 console.log("Fetched Assessments:", response.data);
                 setFetchedAssessments(response.data);
             } catch (error) {
@@ -58,9 +55,7 @@ const Assessments = () => {
 
         const fetchSubjects = async () => {
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/subjects"
-                );
+                const response = await axios.get("http://127.0.0.1:8000/api/subjects");
                 console.log("Fetched Subjects:", response.data);
                 setSubjects(response.data);
             } catch (error) {
@@ -68,8 +63,24 @@ const Assessments = () => {
             }
         };
 
+        const fetchUsers = async () => {
+            try {
+              const response = await axios.get("http://127.0.0.1:8000/api/users");
+              if (response.data && response.data.users && Array.isArray(response.data.users)) {
+                setUsers(response.data.users);
+              } else {
+                setUsers([]);
+              }
+            } catch (error) {
+              setUsers([]);
+              setSnackbar({ open: true, message: "Error fetching users", severity: "error" });
+            }
+          };
+        
+
         fetchAssessments();
         fetchSubjects();
+        fetchUsers();
     }, []);
 
     const toggleDetails = (studentId) => {
@@ -87,27 +98,17 @@ const Assessments = () => {
     const handleEdit = (student) => {
         setEditModalOpen(true);
         setEditingStudent(student);
-        setEndOfTermAssessmentFields(
-            student.subjects.map(
-                (subject) => subject.pivot.endOfTermAssessment || ""
-            )
-        );
-        setSelectedSubject(student.subjects[0].id.toString()); // Assuming the student has at least one subject
-        setSelectedUsername(student.username);
-        setSaveMessage(null); // Clear any previous messages
+        setEndOfTermAssessmentFields(student.subjects.map((subject) => subject.pivot.endOfTermAssessment || ""));
+        setSelectedSubject(student.subjects[0].id.toString());
+        setSaveMessage(null);
     };
 
     const handleDelete = async (studentId) => {
         try {
-            await axios.delete(
-                `http://127.0.0.1:8000/api/assessments/${studentId}`
-            );
-            const updatedAssessments = fetchedAssessments.filter(
-                (assessment) => assessment.id !== studentId
-            );
+            await axios.delete(`http://127.0.0.1:8000/api/assessments/${studentId}`);
+            const updatedAssessments = fetchedAssessments.filter((assessment) => assessment.id !== studentId);
             setFetchedAssessments(updatedAssessments);
         } catch (error) {
-            // #TODO make a better error message to the user
             console.error("Error deleting assessment:", error.message);
         }
     };
@@ -116,7 +117,6 @@ const Assessments = () => {
         setEditingStudent(null);
         setEndOfTermAssessmentFields([]);
         setSelectedSubject("");
-        setSelectedUsername("");
         setEditModalOpen(false);
         setSaveMessage(null);
         setPaperCount(0);
@@ -126,72 +126,54 @@ const Assessments = () => {
         setSelectedStudentDetails(null);
         setViewDetailsModalOpen(false);
     };
-    const handleSaveEdit = async () => {
-        try {
-            // Assuming 'student' is fetched based on 'selectedUsername'
-            const student = fetchedAssessments.find(
-                (assessment) => assessment.username === selectedUsername
-            );
 
-            if (!student) {
-                console.error("Student not found.");
-                return;
-            }
-
-            const endOfTermAssessmentJson = JSON.stringify(
-                endOfTermAssessmentFields.filter(Boolean)
-            );
-
-            const updatedAssessment = {
-                username: selectedUsername,
-                name: selectedSubject,
-                student_id: student.id,
-                schoolTerm: document.getElementById("schoolTerm")?.value || "",
-                teacherEmail:
-                    document.getElementById("teacherEmail")?.value || "",
-                firstAssessment:
-                    document.getElementById("firstAssessment")?.value || "",
-                secondAssessment:
-                    document.getElementById("secondAssessment")?.value || "",
-                endOfTermAssessment: endOfTermAssessmentJson,
-            };
-
-            const response = await axios.put(
-                "http://127.0.0.1:8000/api/update-assessment",
-                updatedAssessment
-            );
-
-            // Display success message
-            setSaveMessage({ type: "success", text: response.data.message });
-
-            const updatedAssessments = fetchedAssessments.map((assessment) => {
-                if (assessment.id === student.id) {
-                    return { ...assessment, ...updatedAssessment };
-                }
-                return assessment;
-            });
-            setFetchedAssessments(updatedAssessments);
-
-            setEditingStudent(null);
-            setEditModalOpen(false);
-            setPaperCount(0); // Reset paperCount to 0 when saving the edit
-        } catch (error) {
-            console.error("Error saving edits:", error.message);
-
-            // Display error message from the backend
-            setSaveMessage({
-                type: "error",
-                text:
-                    error.response?.data?.message ||
-                    "An error occurred while saving edits.",
-            });
+ const handleSaveEdit = async () => {
+    try {
+        if (!editingStudent) {
+            console.error("No student selected for editing.");
+            return;
         }
-    };
+
+        // Prepare the data to be updated
+        const updatedAssessment = {
+            student_id: editingStudent.id,
+            username: editingStudent.username,
+            name: selectedSubject,
+            schoolTerm,
+            teacherEmail: selectedUser,
+            firstAssessment: selectedAssessmentType === "firstAssessment" ? document.getElementById("firstAssessment").value : "",
+            secondAssessment: selectedAssessmentType === "secondAssessment" ? document.getElementById("secondAssessment").value : "",
+            endOfTermAssessment: selectedAssessmentType === "endOfTermAssessment" ? JSON.stringify(endOfTermAssessmentFields.filter(Boolean)) : "",
+        };
+
+        // Make PUT request to update assessment
+        const response = await axios.put("http://127.0.0.1:8000/api/update-assessment", updatedAssessment);
+
+        // Handle success message
+        setSaveMessage({ type: "success", text: response.data.message });
+
+        // Update state with updated assessment
+        const updatedAssessments = fetchedAssessments.map((assessment) =>
+            assessment.id === editingStudent.id ? { ...assessment, ...updatedAssessment } : assessment
+        );
+        setFetchedAssessments(updatedAssessments);
+
+        // Reset edit state
+        setEditingStudent(null);
+        setEditModalOpen(false);
+        setPaperCount(0);
+    } catch (error) {
+        console.error("Error saving edits:", error.message);
+        setSaveMessage({
+            type: "error",
+            text: error.response?.data?.message || "Error saving edits.",
+        });
+    }
+};
 
     const handleAddPaper = () => {
         setPaperCount((prevCount) => prevCount + 1);
         setEndOfTermAssessmentFields((prevFields) => [...prevFields, ""]);
-        setDisplayEndOfTermAssessments(true);
     };
 
     const handlePaperChange = (index, value) => {
@@ -218,9 +200,7 @@ const Assessments = () => {
             {
                 accessorKey: "username",
                 header: "Username",
-                Cell: ({ row }) => (
-                    <Typography>{row.original.username}</Typography>
-                ),
+                Cell: ({ row }) => <Typography>{row.original.username}</Typography>,
                 enableEditing: false,
             },
             {
@@ -229,23 +209,17 @@ const Assessments = () => {
                 Cell: ({ row }) => (
                     <Box sx={{ display: "flex", gap: "1rem" }}>
                         <Tooltip title="View Details">
-                            <IconButton
-                                onClick={() => handleViewDetails(row.original)}
-                            >
+                            <IconButton onClick={() => handleViewDetails(row.original)}>
                                 <VisibilityIcon />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Edit">
-                            <IconButton
-                                onClick={() => handleEdit(row.original)}
-                            >
+                            <IconButton onClick={() => handleEdit(row.original)}>
                                 <EditIcon />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                            <IconButton
-                                onClick={() => handleDelete(row.original.id)}
-                            >
+                            <IconButton onClick={() => handleDelete(row.original.id)}>
                                 <DeleteIcon sx={{ color: "red" }} />
                             </IconButton>
                         </Tooltip>
@@ -259,258 +233,211 @@ const Assessments = () => {
     return (
         <React.Fragment>
             <div className="heading">
-                <AddIcon/>
+                <AddIcon />
                 <span style={{ color: "white" }}>Assessments</span>
             </div>
-            {/*TODO : descrease the size of table  */}
+
+            <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+                <TextField
+                    select
+                    label="School Term"
+                    fullWidth
+                    value={schoolTerm}
+                    onChange={(e) => setSchoolTerm(e.target.value)}
+                >
+                    <MenuItem value="Term 1">Term 1</MenuItem>
+                    <MenuItem value="Term 2">Term 2</MenuItem>
+                    <MenuItem value="Term 3">Term 3</MenuItem>
+                </TextField>
+
+                <TextField
+                    select
+                    label="Assessment Type"
+                    fullWidth
+                    value={selectedAssessmentType}
+                    onChange={(e) => setSelectedAssessmentType(e.target.value)}
+                >
+                    <MenuItem value="firstAssessment">First Assessment</MenuItem>
+                    <MenuItem value="secondAssessment">Second Assessment</MenuItem>
+                    <MenuItem value="endOfTermAssessment">End of Term Assessment</MenuItem>
+                </TextField>
+
+
+                <TextField
+                 select
+                 label="Email"
+                 fullWidth
+                 value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+                sx={{ mb: 2 }}
+                        >
+              {users.map((user) => (
+             <MenuItem key={user.id} value={user.email}>
+             {user.email}
+                </MenuItem>
+                     ))}
+                </TextField>
+
+                <TextField
+                 select
+                 label="Subject"
+                 fullWidth
+                 value={selectedSubject}
+                 onChange={(e) => setSelectedSubject(e.target.value)}
+                     sx={{ mb: 2 }}
+                     >
+                 {subjects.map((subject) => (
+                 <MenuItem key={subject.id} value={subject.id.toString()}>
+                  {subject.name}
+                     </MenuItem>
+                    ))}
+                        </TextField>
+            </Box>
 
             <MaterialReactTable
                 columns={columns}
                 data={fetchedAssessments}
-                renderTableRowSubComponent={({ row }) =>
-                    renderAssessmentDetails(row.original)
-                }
+                initialState={{
+                    columnVisibility: {
+                        id: true,
+                    },
+                }}
+                renderDetailPanel={({ row }) => (
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                        {row.original.subjects.map((subject) => (
+                            <Box key={subject.id} sx={{ display: "flex", gap: "1rem" }}>
+                                <Typography variant="body2">{subject.name}</Typography>
+                                <Typography variant="body2">{subject.pivot.endOfTermAssessment}</Typography>
+                            </Box>
+                        ))}
+                    </Box>
+                )}
             />
 
-            {/* View Details Modal */}
-            <Modal
-                open={viewDetailsModalOpen}
-                onClose={handleViewDetailsModalClose}
-                aria-labelledby="view-details-modal-title"
-                aria-describedby="view-details-modal-description"
-                closeAfterTransition
-            >
-            {/* modal for veiwing a student */}
-                <Fade in={viewDetailsModalOpen}>
-                    <Paper
-                        sx={{
-                            p: 3,
-                            width: "60%",
-                            maxWidth: 2500,
-                            maxHeight: "80vh",
-                            overflowY: "auto",
-                            position: "absolute",
-                            top: "40%",
-                            left: "60%",
-                            transform: "translate(-50%, -50%)",
-                        }}
-                    >
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                backgroundColor: "primary.main",
-                                color: "primary.contrastText",
-                                p: 2,
-                            }}
-                        >
-                            Assessment Details
-                        </Typography>
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Subject Name</th>
-                                    <th>Teacher Email</th>
-                                    <th>First Assessment</th>
-                                    <th>Second Assessment</th>
-                                    <th>Average Score</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {selectedStudentDetails?.subjects.map(
-                                    (subject) => (
-                                        <tr key={subject.pivot.id}>
-                                            <td>{subject.name}</td>
-                                            <td>
-                                                {subject.pivot.teacherEmail}
-                                            </td>
-
-                                            <td>
-                                                {subject.pivot.firstAssessment}
-                                            </td>
-                                            <td>
-                                                {subject.pivot.secondAssessment}
-                                            </td>
-                                            <td>
-                                                {subject.pivot.averageScore}
-                                            </td>
-                                        </tr>
-                                    )
-                                )}
-                            </tbody>
-                        </table>
-                        {/* Render student details here using selectedStudentDetails */}
-                    </Paper>
-                </Fade>
-            </Modal>
-
-            {/* Modal for editing a student */}
             <Modal
                 open={editModalOpen}
                 onClose={handleEditModalClose}
-                aria-labelledby="edit-modal-title"
-                aria-describedby="edit-modal-description"
                 closeAfterTransition
                 BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 0,
-                }}
+                BackdropProps={{ timeout: 500 }}
             >
                 <Fade in={editModalOpen}>
-                    <Paper
+                    <Box
                         sx={{
-                            p: 3,
-                            width: "60%",
-                            maxWidth: 500,
-                            maxHeight: "80vh",
-                            overflowY: "auto",
                             position: "absolute",
                             top: "50%",
                             left: "50%",
                             transform: "translate(-50%, -50%)",
+                            width: 600,
+                            bgcolor: "background.paper",
+                            boxShadow: 24,
+                            p: 4,
                         }}
                     >
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                backgroundColor: "primary.main",
-                                color: "primary.contrastText",
-                                p: 2,
-                            }}
-                        >
-                            Edit Student Assessment
+                        <Typography variant="h6" gutterBottom>
+                            Edit Assessment
                         </Typography>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{ mt: 3, fontSize: "15px" }}
-                        >
-                            (Student name and Username cannot be edited)
-                        </Typography>
+                        {selectedAssessmentType === "firstAssessment" && (
+                            <TextField
+                                label="First Assessment"
+                                fullWidth
+                                id="firstAssessment"
+                                sx={{ mb: 2 }}
+                            />
+                        )}
+                        {selectedAssessmentType === "secondAssessment" && (
+                            <TextField
+                                label="Second Assessment"
+                                fullWidth
+                                id="secondAssessment"
+                                sx={{ mb: 2 }}
+                            />
+                        )}
+                        {selectedAssessmentType === "endOfTermAssessment" && (
+                            <Box>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAddPaper}
+                                    sx={{ mb: 2 }}
+                                >
+                                    Add Paper
+                                </Button>
+                                {endOfTermAssessmentFields.map((field, index) => (
+                                    <TextField
+                                        key={index}
+                                        label={`Paper ${index + 1}`}
+                                        fullWidth
+                                        value={field}
+                                        onChange={(e) => handlePaperChange(index, e.target.value)}
+                                        sx={{ mb: 2 }}
+                                    />
+                                ))}
+                            </Box>
+                        )}
+
+                        <Button variant="contained" color="primary" onClick={handleSaveEdit}>
+                            Save
+                        </Button>
                         {saveMessage && (
                             <Typography
                                 variant="body2"
-                                sx={{
-                                    mt: 2,
-                                    backgroundColor:
-                                        saveMessage.type === "success"
-                                            ? "success.main"
-                                            : "error.main",
-                                    padding: 1,
-                                    borderRadius: 4,
-                                }}
+                                sx={{ mt: 2, color: saveMessage.type === "error" ? "red" : "green" }}
                             >
                                 {saveMessage.text}
                             </Typography>
                         )}
-                        <TextField
-                            label="Name"
-                            value={
-                                editingStudent &&
-                                `${editingStudent.firstname} ${editingStudent.surname}`
-                            }
-                            fullWidth
-                            disabled
-                            sx={{ fontSize: 16, mt: 1 }}
-                        />
-                        <TextField
-                            select
-                            label="Subject"
-                            fullWidth
-                            id="subject"
-                            value={selectedSubject}
-                            onChange={(e) => setSelectedSubject(e.target.value)}
-                            sx={{ mt: 2 }}
-                        >
-                            {subjects.map((subject) => (
-                                <MenuItem key={subject.id} value={subject.name}>
-                                    {subject.name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                        <TextField
-                            label="Username"
-                            fullWidth
-                            id="username"
-                            defaultValue={editingStudent?.username}
-                            disabled // Make the TextField disabled
-                            sx={{ mt: 2 }}
-                        />
-                        <TextField
-                            label="schoolTerm"
-                            fullWidth
-                            id="schoolTerm"
-                            defaultValue={editingStudent?.firstAssessment}
-                            sx={{ mt: 2 }}
-                        />
-                        <TextField
-                            label="teacherEmail"
-                            fullWidth
-                            id="teacherEmail"
-                            defaultValue={editingStudent?.firstAssessment}
-                            sx={{ mt: 2 }}
-                        />
+                    </Box>
+                </Fade>
+            </Modal>
 
-                        <TextField
-                            label="First Assessment"
-                            fullWidth
-                            id="firstAssessment"
-                            defaultValue={editingStudent?.firstAssessment}
-                            sx={{ mt: 2 }}
-                        />
-                        <TextField
-                            label="Second Assessment"
-                            fullWidth
-                            id="secondAssessment"
-                            defaultValue={editingStudent?.secondAssessment}
-                            sx={{ mt: 2 }}
-                        />
-                        <Typography variant="subtitle1" sx={{ mt: 3 }}>
-                            End of Term Assessments
-                        </Typography>
-                        {Array.from({ length: paperCount }).map((_, index) => (
-                            <TextField
-                                key={index}
-                                label={`Paper ${index + 1}`}
-                                fullWidth
-                                value={endOfTermAssessmentFields[index] || ""}
-                                onChange={(e) =>
-                                    handlePaperChange(index, e.target.value)
-                                }
-                                sx={{ mt: 1 }}
-                            />
-                        ))}
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                mt: 2,
-                            }}
-                        >
-                            <Button
-                                onClick={handleAddPaper}
-                                variant="contained"
-                                color="success"
-                                sx={{
-                                    textTransform: "none",
-                                    display: "flex",
-                                    alignItems: "center",
-                                }}
-                            >
-                                Add Paper
-                                <AddIcon sx={{ ml: 1 }} />
-                            </Button>
-                            <Button
-                                onClick={handleSaveEdit}
-                                variant="contained"
-                                color="primary"
-                                sx={{ textTransform: "none" }}
-                            >
-                                Save Changes
-                            </Button>
-                        </Box>
-                    </Paper>
+            <Modal
+                open={viewDetailsModalOpen}
+                onClose={handleViewDetailsModalClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{ timeout: 500 }}
+            >
+                <Fade in={viewDetailsModalOpen}>
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            width: 600,
+                            bgcolor: "background.paper",
+                            boxShadow: 24,
+                            p: 4,
+                        }}
+                    >
+                        {selectedStudentDetails && (
+                            <>
+                                <Typography variant="h6" gutterBottom>
+                                    {selectedStudentDetails.firstname} {selectedStudentDetails.surname}
+                                </Typography>
+                                <Typography variant="body2" gutterBottom>
+                                    Username: {selectedStudentDetails.username}
+                                </Typography>
+                                {selectedStudentDetails.subjects.map((subject) => (
+                                    <Paper key={subject.id} sx={{ p: 2, mb: 2 }}>
+                                        <Typography variant="subtitle1" gutterBottom>
+                                            Subject: {subject.name}
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            First Assessment: {subject.pivot.firstAssessment}
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            Second Assessment: {subject.pivot.secondAssessment}
+                                        </Typography>
+                                        <Typography variant="body2" gutterBottom>
+                                            End of Term Assessment: {subject.pivot.endOfTermAssessment}
+                                        </Typography>
+                                    </Paper>
+                                ))}
+                            </>
+                        )}
+                    </Box>
                 </Fade>
             </Modal>
         </React.Fragment>

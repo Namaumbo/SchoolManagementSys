@@ -16,9 +16,21 @@ class SubjectFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'name' => $this->faker->word,
+        $subjects = [
+            'Mathematics',
+            'Biology',
+            'Chichewa',
+            'English',
+            'Geography',
+            'Physics',
+            'Chemistry',
+            'Computer'
+        ];
 
+        return [
+            'name' => $this->faker->randomElement($subjects),
+            'code' => strtoupper($this->faker->bothify('???###')), // e.g., 'ABC123'
+            'periodsPerWeek' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

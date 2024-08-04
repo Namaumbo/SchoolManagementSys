@@ -22,10 +22,13 @@ return new class extends Migration
             $table->string('village');
             $table->string('traditional_authority');
             $table->string('district');
+            
             $table->string('className',50)->nullable();
-
-
             $table->string('role_name',50)->nullable();
+
+
+
+            
             $table->foreign('role_name')
                 ->references('role_name')
                 ->on('roles')

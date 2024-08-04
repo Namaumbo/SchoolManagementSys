@@ -12,10 +12,14 @@ class RoleFactory extends Factory
     public function definition()
     {
         return [
-            'role_name' => $this->faker->randomElement(['Admin', 'Teacher','HeadTeacher','Head Of Department','Principal','Deputy Headteacher']),
+            'role_name' => $this->faker->unique()->randomElement([
+                'Admin', 
+                'Class Teacher', 
+                'Teacher', 
+                'Head Of Department',
+            ]),
             'created_at' => now(),
             'updated_at' => now(),
         ];
     }
 }
-

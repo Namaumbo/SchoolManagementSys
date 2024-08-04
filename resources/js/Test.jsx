@@ -31,7 +31,7 @@ const data = [
     expenses: 1890,
     income: 4800,
     amt: 2181,
-  }
+  } 
 ];
 
 export default function Test(){

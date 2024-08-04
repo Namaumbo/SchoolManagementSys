@@ -48,4 +48,9 @@ class SchoolInformationController extends Controller
             ], 500);
         }
     }
+
+    public function getSchoolInformation(): JsonResponse
+    {
+        return $this->schoolInformation->getSchoolInformation();
+    }
 }

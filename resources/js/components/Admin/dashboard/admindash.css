@@ -24,8 +24,8 @@ thead {
 }
 
 .row {
-    /* height: 250px; */
-    /* border:1px solid/ blue; */
+    height: 250px;
+    border:1px solid/ blue; 
 
 }
 
@@ -55,8 +55,8 @@ thead tr th{
 
 
 .right-card {
-    /* box-shadow: 2px 2px 2px #c6c2c2; */
-    /* width: 50%; */
-    /* height: 30em; */
+     box-shadow: 2px 2px 2px #c6c2c2; 
+     width: 50%;
+     height: 30em; 
     background-color: white;
 }

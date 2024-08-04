@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { RiUserFill, RiLockPasswordFill } from "react-icons/ri";
-import "../../css/login.css";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { userState } from "./User/userState";
 import logo from "../../assets/logo.jpg";
 import UsersServices from "../../services/UsersServices";
 import Swal from "sweetalert2";
+import "../../css/login.css"; // Assuming this is for custom styles
 
 export default function Login() {
     const navigate = useNavigate();
@@ -23,50 +23,44 @@ export default function Login() {
             data?.status === "error" &&
             data?.message === "Validation Error"
         ) {
-            // Handle validation errors
             Swal.fire({
                 icon: "error",
                 title: "Validation Error",
                 text: Object.values(data.errors).flat().join("\n"),
+                customClass: {
+                    container: 'bg-red-100 text-red-800 rounded-md p-4',
+                    title: 'font-bold',
+                    icon: 'text-red-600',
+                },
             });
         } else if (status === 401 && data?.status === "error") {
-            // Handle other errors, including invalid credentials
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text:
                     data?.message ||
                     "An unexpected error occurred. Please contact the administrator.",
-            });
-            // Add a link to the administrator here (replace '/admin-contact' with the actual route)
-            Swal.fire({
-                icon: "info",
-                title: "Administrator Contact",
-                text: "If you're an administrator, please click below to contact support.",
-                showCancelButton: true,
-                confirmButtonText: "Contact Administrator",
-                cancelButtonText: "Cancel",
+                customClass: {
+                    container: 'bg-red-100 text-red-800 rounded-md p-4',
+                    title: 'font-bold',
+                    icon: 'text-red-600',
+                },
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Redirect to the administrator contact page
                     navigate("/admin-contact");
                 }
             });
         } else {
-            // Handle other errors
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "An unexpected error occurred. Please contact the administrator.",
+                customClass: {
+                    container: 'bg-red-100 text-red-800 rounded-md p-4',
+                    title: 'font-bold',
+                    icon: 'text-red-600',
+                },
             });
-        }
-
-        // Handle other status codes if needed
-        switch (status) {
-            // ... other cases
-            default:
-                // Handle other status codes
-                break;
         }
     };
 
@@ -113,7 +107,6 @@ export default function Login() {
                         case "Admin":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("admin"));
-                     
                             break;
                         default:
                             break;
@@ -135,7 +128,6 @@ export default function Login() {
                     handleErrorResponse(res);
                 }
             } catch (error) {
-                // Display error from the controller
                 handleErrorResponse(error.response);
             } finally {
                 setLoading(false);
@@ -144,68 +136,74 @@ export default function Login() {
     };
 
     return (
-        <>
-            <div className="flex items-center justify-center">
-                <img src={logo} className=" text-center w-[20rem]" alt="Logo" />
-            </div>
-            <div className="login-wrapper">
-                <form onSubmit={handleSubmit}>
-                    <div className="input-wrapper">
-                        <label htmlFor="email">
-                            <RiUserFill />
-                        </label>
-                        <input
-                            type="text"
-                            id="email"
-                            name="Username"
-                            value={email}
-                            placeholder="email@email.com"
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="text-center">
+                        <img src={logo} className="w-48 mx-auto" alt="Logo" />
                     </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="password">
-                            <RiLockPasswordFill />
+                    <div>
+                        <label
+                            className="block text-gray-700 text-sm font-bold mb-2"
+                            htmlFor="email"
+                        >
+                            Email
                         </label>
-                        <input
-                            type="password"
-                            id="password"
-                            namloginBtndive="Password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="flex items-center border border-gray-300 rounded-md shadow-sm">
+                            <span className="w-10 pl-2 text-center flex items-center justify-center text-gray-400">
+                                <RiUserFill />
+                            </span>
+                            <input
+                                className="appearance-none bg-transparent border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none"
+                                id="email"
+                                type="text"
+                                placeholder="email@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
                     </div>
-
-                    <div className="loginBtndiv border ml-[1.5rem]">
-                        <button className="loginBtn w-full" disabled={loading}>
-                            {loading ? (
-                                <span className=" text-white">
-                                    <div
-                                        className="spinner-border"
-                                        role="status"
-                                    >
-                                        <span className="visually-hidden">
-                                            Loading...
-                                        </span>
-                                    </div>
-                                </span>
-                            ) : (
-                                <span className=" text-white font-bold">
-                                    Login
-                                </span>
-                            )}
+                    <div>
+                        <label
+                            className="block text-gray-700 text-sm font-bold mb-2"
+                            htmlFor="password"
+                        >
+                            Password
+                        </label>
+                        <div className="flex items-center border border-gray-300 rounded-md shadow-sm">
+                            <span className="w-10 pl-2 text-center flex items-center justify-center text-gray-400">
+                                <RiLockPasswordFill />
+                            </span>
+                            <input
+                                className="appearance-none bg-transparent border-none w-full text-gray-700 py-2 px-3 leading-tight focus:outline-none"
+                                id="password"
+                                type="password"
+                                placeholder="******************"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex justify-center">
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-1/2"
+                            type="submit"
+                            disabled={loading}
+                        >
+                            {loading ? "Loading..." : "Sign In"}
                         </button>
                     </div>
-
-                    {/* Link to the administrator contact page */}
-                </form>
-                <div className="admin-link">
-                    <p>
-                        Don't have an account? Please
-                        <a href="/admin-contact"> Contact Administrator</a>
+                    <p className="text-center mt-4 text-gray-500 text-sm">
+                        Don't have an account?{" "}
+                        <a
+                            className="inline-block align-baseline font-bold text-blue-500 hover:text-blue-800"
+                            href="/admin-contact"
+                        >
+                            Contact Administrator
+                        </a>
                     </p>
-                </div>
+                </form>
             </div>
-        </>
+        </div>
     );
 }

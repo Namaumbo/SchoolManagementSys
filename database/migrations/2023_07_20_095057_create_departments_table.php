@@ -16,10 +16,15 @@ return new class extends Migration
         Schema::create('departments', function (Blueprint $table) {
             $table->increments('id');
             $table->string('departmentName')->unique();
-            $table->string('headOfDepartment')->unique();
-            $table->text('description')->nullable(false);
+            $table->text('description');
+            $table->unsignedInteger('head_of_department_id')->unique()->nullable(); // Nullable because initially no head of department
+
+            $table->foreign('head_of_department_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null');
+
             $table->timestamps();
- 
         });
     }
 
@@ -30,6 +35,10 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('departments', function (Blueprint $table) {
+            $table->dropForeign(['head_of_department_id']);
+        });
+
         Schema::dropIfExists('departments');
     }
 };

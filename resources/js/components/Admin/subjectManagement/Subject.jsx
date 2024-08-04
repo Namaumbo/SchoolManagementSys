@@ -1,24 +1,8 @@
 import React, { useState, useEffect } from "react";
 import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
-import {
-    Fab,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Modal,
-    TextField,
-    Button,
-    Typography,
-    Box,
-    Snackbar,
-} from "@mui/material";
+import { Fab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, TextField, Button, Typography, Box } from "@mui/material";
 import Swal from "sweetalert2";
-
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
 
@@ -26,7 +10,6 @@ const Subject = () => {
     const [subjectName, setSubjectName] = useState("");
     const [subjectCode, setSubjectCode] = useState("");
     const [periodsPerWeek, setPeriodsPerWeek] = useState("");
-    const [addedSubject, setAddedSubject] = useState(false);
     const [subjects, setSubjects] = useState([]);
     const allowedSubjects = [
         "Mathematics",
@@ -58,9 +41,9 @@ const Subject = () => {
     const handleSubmit = () => {
         if (!allowedSubjects.includes(subjectName)) {
             Swal.fire({
-                icon: "error",
-                title: "Invalid Subject Name",
-                text: "Please enter a valid subject name!",
+                icon: 'error',
+                title: 'Invalid Subject Name',
+                text: 'Please enter a valid subject name!',
             });
             return;
         }
@@ -68,12 +51,17 @@ const Subject = () => {
         const newSubject = {
             name: subjectName,
             code: subjectCode,
-            periodsPerWeek: periodsPerWeek,
+            periodsPerWeek: periodsPerWeek
         };
 
         SubjectService.addSubject(newSubject)
             .then((res) => {
-                setAddedSubject(true);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subject Added Successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 setModalOpen(false); // Close the modal
                 setSubjectName(""); // Clear input fields
                 setSubjectCode("");
@@ -82,22 +70,20 @@ const Subject = () => {
             })
             .catch((err) => {
                 Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Failed to add subject. Please try again later.",
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add subject. Please try again later.',
                 });
             });
     };
 
     const fetchSubjects = () => {
         // Fetch list of subjects from backend
-        axios
-            .get("api/subjects")
+        axios.get("api/subjects")
             .then((res) => {
                 setSubjects(res.data);
             })
             .catch((err) => {
-                // TODO: Error handling error UI
                 console.log(err);
             });
     };
@@ -130,79 +116,7 @@ const Subject = () => {
                 <span style={{ color: "white" }}>Subject Management</span>
             </div>
 
-            <Snackbar
-                open={addedSubject}
-                autoHideDuration={6000}
-                message="Subject Saved Successifuly 🙂"
-            />
-
-            <div
-                className="modal fade"
-                id="staticBackdrop"
-                data-bs-backdrop="static"
-                data-bs-keyboard="false"
-                tabindex="-1"
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
-            >
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1
-                                className="modal-title fs-5"
-                                id="staticBackdropLabel"
-                            >
-                                Add Subject Details
-                            </h1>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                            ></button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="gadgets">
-                                {/* Subject name */}
-                                <input
-                                    type="text"
-                                    aria-label="First name"
-                                    className="form-control"
-                                    placeholder="e.g. English"
-                                    id="subjectName"
-                                    onChange={(e) =>
-                                        setSubjectName(e.target.value)
-                                    }
-                                    value={subjectName}
-                                    name="subjectName"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                data-bs-dismiss="modal"
-                                onClick={handleSubmit}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <Fab
-                size="medium"
-                color="primary"
-                aria-label="add"
-                id="fab"
-                type="button"
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop"
-            >
+            <Fab size="medium" color="primary" aria-label="add" id="fab" onClick={handleModalOpen}>
                 <GoPlus size={25} />
             </Fab>
 
@@ -212,26 +126,8 @@ const Subject = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: 400,
-                        bgcolor: "background.paper",
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            mb: 2,
-                            bgcolor: "primary.main",
-                            color: "primary.contrastText",
-                            p: 2,
-                        }}
-                    >
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                    <Box sx={{ mb: 2, bgcolor: 'primary.main', color: 'primary.contrastText', p: 2 }}>
                         <Typography variant="h6" component="div" align="center">
                             Add Subject
                         </Typography>
@@ -260,23 +156,9 @@ const Subject = () => {
                         value={periodsPerWeek}
                         onChange={(e) => setPeriodsPerWeek(e.target.value)}
                     />
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginTop: 2,
-                        }}
-                    >
-                        <Button variant="contained" onClick={handleModalClose}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSubmit}
-                        >
-                            Save
-                        </Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                        <Button variant="contained" onClick={handleModalClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={handleSubmit}>Save</Button>
                     </Box>
                 </Box>
             </Modal>
@@ -310,15 +192,8 @@ const Subject = () => {
                                 <TableCell>{subject.code}</TableCell>
                                 <TableCell>{subject.periodsPerWeek}</TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="primary">
-                                        View
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                    >
-                                        Edit
-                                    </Button>
+                                    <Button variant="contained" color="primary">View</Button>
+                                    <Button variant="contained" color="secondary">Edit</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

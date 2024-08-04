@@ -1,7 +1,5 @@
 <?php
 
-// database/factories/LevelFactory.php
-
 namespace Database\Factories;
 
 use App\Models\Level;
@@ -13,10 +11,12 @@ class LevelFactory extends Factory
 
     public function definition()
     {
+        // Generate distinct class names
+        static $className = 1;
+        
         return [
-            'className' => $this->faker->unique()->word,
+            'className' => 'Form ' . $className++,
             'classTeacher' => $this->faker->name,
         ];
     }
 }
-

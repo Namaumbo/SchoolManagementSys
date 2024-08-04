@@ -79,11 +79,13 @@ const Students = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingCreate, setIsLoadingCreate] = useState(false);
 
+  const role = window.atob(localStorage.getItem('role'));
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         showLoadingAlert();
-        await new Promise((resolve) => setTimeout(resolve, 15000));
+        await new Promise((resolve) => setTimeout(resolve, 15));
         
         const usersResponse = await axios.get('http://127.0.0.1:8000/api/students');
         const classesResponse = await axios.get('http://127.0.0.1:8000/api/classes');
@@ -197,31 +199,35 @@ const Students = () => {
     data: fetchedUsers,
     createDisplayMode: 'modal',
     editDisplayMode: 'modal',
-    enableEditing: true,
+    enableEditing: role === 'admin',
     getRowId: (row) => row.id,
     renderRowActions: ({ row, table }) => (
-      <Box sx={{ display: 'flex', gap: '1rem' }}>
-        <Tooltip title="Edit">
-          <IconButton onClick={() => table.setEditingRow(row)}>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
+      role === 'admin' && (
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => table.setEditingRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )
     ),
     renderTopToolbarCustomActions: ({ table }) => (
-      <Button
-        variant="contained"
-        onClick={() => {
-          setCreatingUser(true);
-        }}
-      >
-        Create New User
-      </Button>
+      role === 'admin' && (
+        <Button
+          variant="contained"
+          onClick={() => {
+            setCreatingUser(true);
+          }}
+        >
+          Create New User
+        </Button>
+      )
     ),
   });
 
@@ -236,8 +242,7 @@ const Students = () => {
           height: '100vh',
         }}
       >
-          <span style={{ color: "black", fontSize:30 }}>Fetching Students....please wait</span>
-
+        <span style={{ color: 'black', fontSize: 30 }}>Fetching Students....please wait</span>
         <div className="loader"></div>
       </div>
     );
