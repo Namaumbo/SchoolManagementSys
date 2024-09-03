@@ -42,7 +42,7 @@ export default function NavBar() {
                 {schoolData ? (
                     <>
                         <span className="font-bold text-xl text-white">
-                            {getFirstName(schoolData.schools[0].name)} SECONDARY MANAGEMENT INFORMATION SYSTEM ({schoolData.schools[0].abbreviation})
+                            {/* {getFirstName(schoolData.schools[0].name)} SECONDARY MANAGEMENT INFORMATION SYSTEM ({schoolData.schools[0].abbreviation}) */}
                         </span>
                     </>
                 ) : (

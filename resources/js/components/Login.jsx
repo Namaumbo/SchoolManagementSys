@@ -28,9 +28,9 @@ export default function Login() {
                 title: "Validation Error",
                 text: Object.values(data.errors).flat().join("\n"),
                 customClass: {
-                    container: 'bg-red-100 text-red-800 rounded-md p-4',
-                    title: 'font-bold',
-                    icon: 'text-red-600',
+                    container: "bg-red-100 text-red-800 rounded-md p-4",
+                    title: "font-bold",
+                    icon: "text-red-600",
                 },
             });
         } else if (status === 401 && data?.status === "error") {
@@ -41,9 +41,9 @@ export default function Login() {
                     data?.message ||
                     "An unexpected error occurred. Please contact the administrator.",
                 customClass: {
-                    container: 'bg-red-100 text-red-800 rounded-md p-4',
-                    title: 'font-bold',
-                    icon: 'text-red-600',
+                    container: "bg-red-100 text-red-800 rounded-md p-4",
+                    title: "font-bold",
+                    icon: "text-red-600",
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -56,9 +56,9 @@ export default function Login() {
                 title: "Oops...",
                 text: "An unexpected error occurred. Please contact the administrator.",
                 customClass: {
-                    container: 'bg-red-100 text-red-800 rounded-md p-4',
-                    title: 'font-bold',
-                    icon: 'text-red-600',
+                    container: "bg-red-100 text-red-800 rounded-md p-4",
+                    title: "font-bold",
+                    icon: "text-red-600",
                 },
             });
         }
@@ -104,7 +104,7 @@ export default function Login() {
                                 window.btoa("Student")
                             );
                             break;
-                        case "Admin":
+                        case "Administrator":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("admin"));
                             break;
@@ -118,7 +118,7 @@ export default function Login() {
                             title: "Login Success!",
                             text: res.data.message || "Welcome!",
                         });
-                        if (res.data.user.login_count > 1) {
+                        if (res.data.user.login_count > 0) {
                             navigate("/dashboard");
                         } else {
                             navigate("/initial-page");

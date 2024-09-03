@@ -1,15 +1,16 @@
 import axios from "axios";
 
-
-class  SchoolInformationService {
-
+// TODO : remove the hard coded url get it from the env or config filee
+class SchoolInformationService {
     urlPrefix = "http://127.0.0.1:8000/api";
 
     async getSchoolInformation() {
         let res = null;
         try {
             let schoolInformation = new Array();
-            let schoolInformationAvailable = await axios.get(`${this.urlPrefix}/school-information`);
+            let schoolInformationAvailable = await axios.get(
+                `${this.urlPrefix}/school-information`
+            );
             if (schoolInformationAvailable.data.length > 0) {
                 schoolInformation = schoolInformationAvailable.data;
                 res = schoolInformation;
@@ -27,7 +28,7 @@ class  SchoolInformationService {
                 headers: { "Content-Type": "application/json" },
             };
             const response = await axios.post(
-                "http://127.0.0.1:8000/api/update-school-information",  
+                "http://127.0.0.1:8000/api/update-school-information",
                 schoolInformation,
                 headers
             );
@@ -54,7 +55,6 @@ class  SchoolInformationService {
         return res;
     }
 
-
     async addSchoolDetails(schoolDetails) {
         try {
             await this.creatNewEntry(schoolDetails);
@@ -71,20 +71,77 @@ class  SchoolInformationService {
         }
     }
 
-
+    // Function to sanitize headers before using them in the request
     async creatNewEntry(schoolDetails) {
         const headers = {
             headers: { "Content-Type": "application/json" },
         };
+        try {
+            // Ensure `headers` are properly defined and sanitized before using them in the request
+            const sanitizedHeaders = sanitizeHeaders(headers);
 
-        const response = await axios.post(
-            "http://127.0.0.1:8000/api/school-information", 
-            schoolDetails,
-            // headers
-        );
-        return response.data;
+            // TODO: remove the hardcoded url
+            if (validateSchoolDetails(schoolDetails)) {
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/api/school-information",
+                    schoolDetails,
+                    sanitizedHeaders
+                );
+                return response.data;
+            } else {
+                throw new Error("Invalid schoolDetails format");
+            }
+        } catch (error) {
+            console.error(
+                `Error in fetching school information: ${error.message}`
+            );
+            // Handle the error as needed
+        }
+        function validateSchoolDetails(schoolDetails) {
+            if (!schoolDetails || typeof schoolDetails !== "object") {
+                return false;
+            }
+
+            const requiredFields = ["name", "address", "phoneNumber", "email"];
+
+            for (const field of requiredFields) {
+                if (
+                    !schoolDetails.hasOwnProperty(field) ||
+                    typeof schoolDetails[field] !== "string" ||
+                    schoolDetails[field].trim() === ""
+                ) {
+                    return false;
+                }
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(schoolDetails.email)) {
+                return false;
+            }
+
+            // Validate phone number format (simple check for digits only)
+            const phoneRegex = /^\d+$/;
+            if (!phoneRegex.test(schoolDetails.phoneNumber)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function sanitizeHeaders(headers) {
+            const sanitizedHeaders = {};
+            for (const [key, value] of Object.entries(headers.headers)) {
+                const sanitizedKey = key.replace(/[^\w-]/g, "");
+                const sanitizedValue =
+                    typeof value === "string"
+                        ? value.replace(/[^\w-]/g, "")
+                        : value;
+                sanitizedHeaders[sanitizedKey] = sanitizedValue;
+            }
+            return { headers: sanitizedHeaders };
+        }
     }
-
 }
 
-export default new SchoolInformationService()
+export default new SchoolInformationService();

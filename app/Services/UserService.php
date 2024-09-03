@@ -20,17 +20,18 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+// use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+// use Illuminate\Foundation\Bus\DispatchesJobs;
+// use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
+use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+// use Illuminate\Support\Facades\Log;
+
 
 class UserService
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-    use Illuminate\Support\Facades\Log;
 
     /**
      * Validate user input fields.
@@ -188,7 +189,7 @@ class UserService
                 "message" => "Invalid credentials",
             ], 401);
         }
-        
+
 
         $token = Auth::user()->createToken('Token')->plainTextToken;
         $cookie = cookie('jwt', $token, 30 * 1);
@@ -294,61 +295,61 @@ class UserService
             ], 500);
         }
     }
-}
 
-public function Allocation(Request $request, int $id): JsonResponse
-{
-    try {
-        // Find the user
-        $user = User::findOrFail($id);
 
-        // Find or create the subject
-        $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
+    public function Allocation(Request $request, int $id): JsonResponse
+    {
+        try {
+            // Find the user
+            $user = User::findOrFail($id);
 
-        // Find or create the level
-        $level = Level::firstOrCreate(['className' => $request->input('className')]);
+            // Find or create the subject
+            $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
 
-        // Sync relationships
-        $subject->users()->sync([$user->id]);
-        $subject->levels()->sync([$level->id]);
+            // Find or create the level
+            $level = Level::firstOrCreate(['className' => $request->input('className')]);
 
-        // Return success response
-        return $this->handleAllocationSuccess($user, $level, $subject);
-    } catch (\Exception $e) {
-        // Handle any exceptions
-        return $this->handleAllocationError(
-            'Error allocating subject and class: ' . $e->getMessage(),
-            $user ?? null,
-            $level ?? null,
-            $subject ?? null
-        );
+            // Sync relationships
+            $subject->users()->sync([$user->id]);
+            $subject->levels()->sync([$level->id]);
+
+            // Return success response
+            return $this->handleAllocationSuccess($user, $level, $subject);
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return $this->handleAllocationError(
+                'Error allocating subject and class: ' . $e->getMessage(),
+                $user ?? null,
+                $level ?? null,
+                $subject ?? null
+            );
+        }
     }
-}
 
-        
-        private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
-        {
-            return response()->json([
-                'message' => 'Subject and class allocated successfully',
-                'status' => 'success',
-                'Teacher' => $user->firstname . ' ' . $user->surname,
-                'Email' => $user->email,
-                'Class' => $level->className,
-                'Subject' => $subject->name,
-            ], 201);
-        }
-        
-        private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
-        {
-            return response()->json([
-                'message' => $errorMessage,
-                'status' => 'fail',
-                'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
-                'Email' => $user ? $user->email : null,
-                'Class' => $level ? $level->className : null,
-                'Subject' => $subject ? $subject->name : null,
-            ]);
-        }
+
+    private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Subject and class allocated successfully',
+            'status' => 'success',
+            'Teacher' => $user->firstname . ' ' . $user->surname,
+            'Email' => $user->email,
+            'Class' => $level->className,
+            'Subject' => $subject->name,
+        ], 201);
+    }
+
+    private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => $errorMessage,
+            'status' => 'fail',
+            'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
+            'Email' => $user ? $user->email : null,
+            'Class' => $level ? $level->className : null,
+            'Subject' => $subject ? $subject->name : null,
+        ]);
+    }
 
     public function getAllocationsForTeacher(int $userId): JsonResponse
     {
@@ -392,5 +393,4 @@ public function Allocation(Request $request, int $id): JsonResponse
             ], 500);
         }
     }
-
 }
