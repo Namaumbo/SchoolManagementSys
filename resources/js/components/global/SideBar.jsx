@@ -82,8 +82,10 @@ const SideBar = () => {
             <ul className="space-y-2 p-4 ">
                 {menuItems.map((item, index) => (
                     <Link to={item.to} className="block" key={index}>
-                        <li className={`flex items-center space-x-3 p-2 rounded-lg transition duration-150 ease-in-out ${location.pathname === item.to ? 'bg-blue-100 text-blue-600' : 'hover:bg-[#2c3e52]'}`}>
-                            <i className={`text-xl ${location.pathname === item.to ? 'text-white font-bolder' : 'text-white'}`}>{item.icon}</i>
+                        <li className={`flex items-center space-x-3 p-1 rounded-lg transition duration-150 ease-in-out ${location.pathname === item.to ? 'bg-blue-100 text-blue-600' : 'hover:bg-[#2c3e52]'}`}>
+                            <div className={`p-2 rounded-full ${location.pathname === item.to ? 'bg-blue-600' : 'bg-[#1e2a38]'}`}>
+                                <i className={`text-xl text-white`}>{item.icon}</i>
+                            </div>
                             <p className={`font-medium ${location.pathname === item.to ? 'text-white font-bold' : 'text-white'}`}>{item.text}</p>
                         </li>
                     </Link>
