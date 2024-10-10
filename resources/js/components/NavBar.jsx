@@ -41,9 +41,9 @@ export default function NavBar() {
     };
     return (
         <div className="h-14 bg-white shadow-md border-bottom flex flex-row justify-between">
-            <div className="relative mt-1 ml-4">
+            <div className="relative mt-1 ml-4 w-[60%]">
                 <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input className="bg-gray-100 pl-10 pr-4 py-2.5 rounded-full w-64" />
+                <input className="bg-gray-100 pl-10 pr-4 py-2.5 rounded-full w-[60%] text-black" />
                 <button className="ml-2 py-2 px-6 rounded-full bg-blue-500 text-white border-none cursor-pointer">
                     Search
                 </button>

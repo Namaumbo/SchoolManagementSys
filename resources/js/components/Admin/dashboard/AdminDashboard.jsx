@@ -10,9 +10,13 @@ import { IconContext } from "react-icons";
 import Test from "../../../Test";
 import { MaterialReactTable } from "material-react-table";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, useMediaQuery, Switch } from "@mui/material";
+import { CssBaseline, useMediaQuery, Switch, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import CustomPaper from "../../Paper/CustomPaper";
+
+import NavbarComponent from "../../NavBarComponent/NavbarComponent";
+import NivoChartComponent from "../../NivoPieChartComponent/NivoChartComponent";
+import NivoLineChartComponent from "../../NivoLineChartComponent/NivoLineChartComponent";
 
 const lightTheme = createTheme({
     palette: {
@@ -36,7 +40,7 @@ export default function AdminDashboard() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
     useEffect(() => {
-        if (prefersDarkMode) setDarkMode(true);
+        if (prefersDarkMode) setDarkMode(false);
     }, [prefersDarkMode]);
 
     useEffect(() => {
@@ -65,11 +69,8 @@ export default function AdminDashboard() {
     }, [accessKey]);
 
     const columns = [
-        { accessorKey: "id", header: "ID", size: 50 },
         { accessorKey: "firstname", header: "First name", size: 130 },
         { accessorKey: "surname", header: "Last name", size: 130 },
-        { accessorKey: "sex", header: "Sex", size: 50 },
-        { accessorKey: "email", header: "Email", size: 180 },
         { accessorKey: "role_name", header: "Role", size: 100 },
     ];
 
@@ -104,49 +105,27 @@ export default function AdminDashboard() {
     const isAdminOrHeadTeacher = loggedIn && role === "admin";
     const isTeacher = loggedIn && role === "Teacher";
 
-    const theme = darkMode ? darkTheme : lightTheme;
+    const theme = lightTheme;
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <div
-                className={`w-full ${
-                    darkMode
-                        ? "bg-gray-800 text-white"
-                        : "bg-[#f1f2f6] text-gray-900"
-                }`}
+                className=""
+                // className={`w-full ${
+                //     darkMode
+                //         ? "bg-gray-800 text-white"
+                //         : "bg-[#f3f3f3] text-gray-900"
+                // }`}
             >
-                <div className="flex justify-between items-center p-3 w-[98%] m-auto rounded-md shadow-md mb-3">
-                    <div className="flex items-center">
-                        <FiHome size="23px" />
-                        <span className="text-xl pl-2">Dashboard - Home</span>
-                    </div>
-                    <div>
-                        <span>Dark Mode</span>
-                        <Switch
-                            checked={darkMode}
-                            onChange={() => setDarkMode(!darkMode)}
-                        />
-                    </div>
-                </div>
+                <NavbarComponent activePage="Dashboard" />
 
                 {isAdminOrHeadTeacher ? (
                     <>
-                        <div className="container">
+                        <div>
                             <div className="lg:grid lg:grid-cols-4 lg:gap-4 p-4">
                                 {statisticalData.map((stat) => (
-                                    // <div key={stat.menu}>
-                                    //     <div>
-                                    //       <img className="w-12 h-12 m-2" src={stat.image} alt={stat.menu} />
-                                    //       <span className="font-bold">{stat.menu}</span>
-                                    //     </div>
-                                    //     <div className="figure">
-                                    //       <h4 className="text-5xl border-l-4 pl-2">{stat.number}</h4>
-                                    //     </div>
-                                    //   </div>
-                                    // </div>
-                                    //TODO: put the icon in here
-                                    <div className="">
+                                    <div className="" key={stat.menu}>
                                         <CustomPaper
                                             count={stat.number}
                                             heading={stat.menu}
@@ -156,26 +135,59 @@ export default function AdminDashboard() {
                                 ))}
                             </div>
                         </div>
-                        <div className="px-4">
-                            <MaterialReactTable
-                                columns={columns}
-                                data={users}
-                                enableRowSelection
-                                enableStickyHeader
-                                enableStickyFooter
-                                muiTableContainerProps={{
-                                    className: "max-h-96",
-                                }}
-                            />
-                        </div>
-                        <div className="container grid grid-cols-2 gap-6 p-6">
-                          
-                            <div className="h-[95%] border-gray-200 shadow-lg rounded-lg ">
-                                <Test />
+
+                        <div className="flex gap-4 p-4">
+                            <div className="w-1/2 bg-white shadow-md rounded-lg p-4">
+                                <MaterialReactTable
+                                    columns={columns}
+                                    data={users}
+                                    enableRowSelection
+                                    enableStickyHeader
+                                    enableStickyFooter
+                                    muiTableContainerProps={{
+                                        className: "max-h-96",
+                                    }}
+                                    muiTableBodyRowProps={({ row }) => ({
+                                        sx: {
+                                            backgroundColor: `rgba(${Math.floor(
+                                                Math.random() * 256
+                                            )}, ${Math.floor(
+                                                Math.random() * 256
+                                            )}, ${Math.floor(
+                                                Math.random() * 256
+                                            )}, 0.1)`,
+                                        },
+                                    })}
+                                    renderTopToolbarCustomActions={() => (
+                                        <Typography
+                                            variant="h6"
+                                            component="div"
+                                            sx={{
+                                                fontWeight: "bold",
+                                                color: "#333",
+                                                marginBottom: "10px",
+                                            }}
+                                        >
+                                            Users Table
+                                        </Typography>
+                                    )}
+                                />
                             </div>
-                            <div className="h-[95%] border-gray-200 shadow-lg rounded-lg">
-                                <p>Performance Summary</p>
-                                <Test />
+                            <div className="w-1/2 bg-white shadow-md rounded-lg">
+                                <h2 className="text-2xl font-bold mt-4 ml-4">
+                                    Total students
+                                </h2>
+                                <NivoChartComponent />
+                            </div>
+                        </div>
+                        <div className=" mt-[-1%] ml-5 mr-5 ">
+                            <div className="w-full bg-white shadow-md rounded-lg">
+                                <h2 className="text-2xl font-bold m-3 px-4">
+                                    School performance
+                                </h2>
+                                <div className="px-4">
+                                    <NivoLineChartComponent />
+                                </div>
                             </div>
                         </div>
                     </>

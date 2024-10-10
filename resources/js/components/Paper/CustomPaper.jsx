@@ -21,14 +21,19 @@ export default function CustomPaper({ ...props }) {
         >
             <Paper elevation={2} sx={{ backgroundColor: 'grey' }}>
                 <Box sx={{ p: 2 }}>
-                    <Typography variant="h5" gutterBottom>
+                    <Typography
+                        variant="h6"
+                        gutterBottom
+                        fontWeight="bold"
+                        color="white"
+                    >
                     {heading}
                     </Typography>
                     <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                        <Typography variant="h4" sx={{ mr: 2 }}>
+                        <Typography variant="h4" sx={{ mr: 2, color: 'white' }}>
                         <BiBell />{count}
                         </Typography>
-                        <Typography variant="body2">
+                        <Typography variant="body2" sx={{ color: 'white' }}>
                             This is some example content inside the Paper
                             component
                         </Typography>

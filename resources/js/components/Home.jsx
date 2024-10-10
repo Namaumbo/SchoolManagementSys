@@ -9,10 +9,8 @@ const Home = () => {
         <div className="flex h-screen">
             <SideBar />
             <div className="flex flex-col flex-1">
-                <div className="">
-                    <Navbar />
-                </div>
-                <div className="flex-1 overflow-y-auto">
+             
+                <div className="flex-1 overflow-y-auto bg-[#f3f3f3]">
                     <Outlet />
                 </div>
             </div>

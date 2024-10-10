@@ -29,6 +29,7 @@ import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import "./users.css"; // Import the CSS file
 import { size } from "lodash";
+import NavbarComponent from "../../NavBarComponent/NavbarComponent";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -255,13 +256,8 @@ const UserManagement = () => {
     ];
 
     return (
-        <div className="bg-[#F1F8E9] w-full h-full">
-            {/* <div className="flex justify-between items-center p-3 w-[98%] m-auto rounded-md shadow-md ">
-                <div className="flex items-center justify-between w-full">
-                    <div></div>
-                    <div>{currentDateTime}</div>
-                </div>
-            </div> */}
+        <div>
+            <NavbarComponent activePage={"User Management"} />
             <Container>
                 <Box
                     mb={3}
@@ -270,23 +266,6 @@ const UserManagement = () => {
                     alignItems="center"
                     marginTop="15px"
                 >
-                    <Typography
-                        variant="h4"
-                        component="h5"
-                        fontWeight="bold"
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginTop: "16px",
-                        }}
-                    >
-                        <PeopleIcon fontSize="large" sx={{ mr: 1 }} />
-                        <strong>User Management</strong>
-                    </Typography>
-
-                 
-
                     <Button
                         variant="contained"
                         color="primary"
@@ -476,8 +455,9 @@ const UserManagement = () => {
                         }}
                         muiTableHeadCellProps={{
                             sx: {
-                                fontWeight: "bold",
-                                backgroundColor: "#f5f5f5",
+                                fontWeight: "bolder",
+                                backgroundColor: "",
+                                color: "black",
                             },
                         }}
                     />
@@ -485,13 +465,6 @@ const UserManagement = () => {
             </Container>
             {/* 
                
-                    
-            
-
-
-
-                  
-                </Container>
          */}
         </div>
     );
