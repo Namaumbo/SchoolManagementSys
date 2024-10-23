@@ -40,6 +40,7 @@
         "docxtemplater": "^3.49.1",
         "faker": "^6.6.6",
         "file-saver": "^2.0.5",
+        "flowbite-react": "^0.10.2",
         "framer-motion": "^7.6.12",
         "install": "^0.13.0",
         "jquery": "^3.6.1",

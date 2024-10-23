@@ -6,7 +6,7 @@ import {
 } from "material-react-table";
 import {
     Box,
-    Button,
+    // Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -29,6 +29,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import Swal from "sweetalert2";
 import * as IconSection from "react-icons/fi";
+import NavbarComponent from "../NavBarComponent/NavbarComponent";
+import { Button } from "flowbite-react";
+import { Spinner } from "flowbite-react";
+import { Table } from "flowbite-react";
+import CustomTableComponent from "../CustomTableComponent/CustomTableComponent";
+import StudentTableColumns from "../../../core/TableColumns";
+
 
 const showErrorAlert = (title, text) => {
     console.error(`${title}: ${text}`);
@@ -253,6 +260,11 @@ const Students = () => {
                 header: "Username",
                 enableEditing: false,
             },
+            {
+                accessorKey: "sex",
+                header: "Sex",
+                enableEditing: false,
+            },
             { accessorKey: "className", header: "Class", enableEditing: false },
         ],
         [validationErrors]
@@ -267,10 +279,12 @@ const Students = () => {
         getRowId: (row) => row.id,
         renderRowActions: ({ row, table }) =>
             role === "admin" && (
-                <Box sx={{ display: "flex", gap: "1rem" }}>
+                <Box sx={{ display: "flex", gap: "-1rem" }}>
                     <Tooltip title="Edit">
                         <IconButton onClick={() => table.setEditingRow(row)}>
-                            <EditIcon />
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded">
+                                <EditIcon sx={{ color: "white" }} />
+                            </button>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
@@ -278,7 +292,9 @@ const Students = () => {
                             color="error"
                             onClick={() => openDeleteConfirmModal(row)}
                         >
-                            <DeleteIcon />
+                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 rounded">
+                                <DeleteIcon sx={{ color: "white" }} />
+                            </button>
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -307,16 +323,16 @@ const Students = () => {
                     height: "100vh",
                 }}
             >
-                <span style={{ color: "black", fontSize: 30 }}>
-                    Fetching Students....please wait
-                </span>
-                <div className="loader"></div>
+                <div className="text-center">
+                    <Spinner aria-label="Fetching" size="xl" />
+                </div>
             </div>
         );
     }
     return (
-        <div className="bg-[#f1f2f6] w-full h-full">
-            <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+        <div className=" w-full h-full">
+            <NavbarComponent activePage={"Students"} />
+            <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}>
                 {successMessage && (
                     <Alert
                         severity="success"
@@ -415,7 +431,7 @@ const Students = () => {
                                 </FormControl>
                                 <FormControl
                                     component="fieldset"
-                                    sx={{ marginBottom: 2 }}
+                                    sx={{ marginBottom: 1 }}
                                 >
                                     <Typography
                                         variant="subtitle1"
@@ -527,19 +543,10 @@ const Students = () => {
                         </DialogActions>
                     </Dialog>
                 )}
-
-                <Typography
-                    variant="h4"
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "1rem",
-                    }}
-                >
-                    <IconSection.FiUsers style={{ marginRight: "0.5rem" }} />
-                    <strong>Students Available</strong>
-                </Typography>
-                <MaterialReactTable table={table} />
+                <div className="px-1 pr-2">
+                    {/* todo include the following here onClick={() => openDeleteConfirmModal(row) */}
+                    <CustomTableComponent data={fetchedUsers}  columns={StudentTableColumns}/>
+                </div>
             </Box>
         </div>
     );

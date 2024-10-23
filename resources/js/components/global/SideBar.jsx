@@ -86,13 +86,11 @@ const SideBar = () => {
                             <div className={`p-2 rounded-full ${location.pathname === item.to ? 'bg-blue-600' : 'bg-[#1e2a38]'}`}>
                                 <i className={`text-xl text-white`}>{item.icon}</i>
                             </div>
-                            <p className={`font-medium ${location.pathname === item.to ? 'text-white font-bold' : 'text-white'}`}>{item.text}</p>
+                            <p className={`font-medium text-sm ${location.pathname === item.to ? 'text-white font-bold' : 'text-white'}`}>{item.text}</p>
                         </li>
                     </Link>
                 ))}
-                <button onClick={toggleTheme} className="w-full mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out">
-                    Toggle Theme
-                </button>
+           
             </ul>
         </div>
     );

@@ -24,6 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
+import NavbarComponent from "../../NavBarComponent/NavbarComponent";
 
 const Assessments = () => {
     const [fetchedAssessments, setFetchedAssessments] = useState([]);
@@ -258,26 +259,32 @@ const Assessments = () => {
                 accessorKey: "actions",
                 header: "Actions",
                 Cell: ({ row }) => (
-                    <Box sx={{ display: "flex", gap: "1rem" }}>
+                    <Box sx={{ display: "flex" }}>
                         <Tooltip title="View Details">
                             <IconButton
                                 onClick={() => handleViewDetails(row.original)}
                             >
-                                <VisibilityIcon />
+                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold px-2 py-1 rounded">
+                                    <VisibilityIcon sx={{ color: "white" }} />
+                                </button>
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Edit">
                             <IconButton
                                 onClick={() => handleEdit(row.original)}
                             >
-                                <EditIcon />
+                                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded">
+                                    <EditIcon sx={{ color: "white" }} />
+                                </button>
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
                             <IconButton
                                 onClick={() => handleDelete(row.original.id)}
                             >
-                                <DeleteIcon sx={{ color: "red" }} />
+                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 py-1 rounded">
+                                    <DeleteIcon sx={{ color: "white" }} />
+                                </button>
                             </IconButton>
                         </Tooltip>
                     </Box>
@@ -288,31 +295,10 @@ const Assessments = () => {
     );
 
     return (
-        <div className="bg-[#f1f2f6] w-full h-full">
         <React.Fragment>
-            <Box
-                mb={3}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-            >
-                <Typography
-                    variant="h5"
-                    component="h5"
-                    fontWeight="bold"
-                    color="grey.800"
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        paddingLeft: "15px"
-                    }}
-                >
-                    Student Assessments
-                </Typography>
-            </Box>
+            <NavbarComponent activePage="Student Assessment" />
 
-            <Box sx={{ display: "flex", gap: 2, ml: 2, mr : 2 }}>
+            <Box sx={{ display: "flex", gap: 2, ml: 2, mr: 2 }}>
                 <TextField
                     select
                     label="School Term"
@@ -377,7 +363,7 @@ const Assessments = () => {
                 </TextField>
             </Box>
 
-            <div className="pr-5 pl-5" >
+            <div className="pr-5 pl-5">
                 <MaterialReactTable
                     columns={columns}
                     data={fetchedAssessments}
@@ -408,6 +394,20 @@ const Assessments = () => {
                                 </Box>
                             ))}
                         </Box>
+                    )}
+                    renderTopToolbarCustomActions={() => (
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontWeight: "bold",
+                                color: "#333",
+                                marginBottom: "1rem",
+                                marginLeft: "1rem",
+                            }}
+                        >
+                            Students Table
+                        </Typography>
                     )}
                 />
             </div>
@@ -580,7 +580,6 @@ const Assessments = () => {
                 </Fade>
             </Modal>
         </React.Fragment>
-        </div>
     );
 };
 

@@ -232,21 +232,27 @@ const UserManagement = () => {
                         <IconButton
                             onClick={() => handleViewUser(row.original)}
                         >
-                            <VisibilityIcon />
+                            <button className="bg-green-500 hover:bg-green-700 text-white font-bold px-2 rounded">
+                                <VisibilityIcon sx={{ color: "white" }} />
+                            </button>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Edit">
                         <IconButton
                             onClick={() => handleOpenModal(row.original)}
                         >
-                            <EditIcon />
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded">
+                                <EditIcon sx={{ color: "white" }} />
+                            </button>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
                         <IconButton
                             onClick={() => handleDeleteUser(row.original.id)}
                         >
-                            <DeleteIcon sx={{ color: "red" }} />
+                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 rounded">
+                                <DeleteIcon sx={{ color: "white" }} />
+                            </button>
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -259,24 +265,6 @@ const UserManagement = () => {
         <div>
             <NavbarComponent activePage={"User Management"} />
             <Container>
-                <Box
-                    mb={3}
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    marginTop="15px"
-                >
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleOpenModal()}
-                        startIcon={<AddIcon />}
-                        sx={{ borderRadius: "20px", textTransform: "none" }}
-                    >
-                        Add User
-                    </Button>
-                </Box>
-
                 <Modal open={isModalOpen} onClose={handleCloseModal}>
                     <Fade in={isModalOpen}>
                         <Paper
@@ -453,13 +441,37 @@ const UserManagement = () => {
                                 padding: "0",
                             },
                         }}
+                        muiTableBodyCellProps={{
+                            sx: {
+                                padding: "4px",
+                                fontSize: "0.85rem",
+                            },
+                        }}
                         muiTableHeadCellProps={{
                             sx: {
                                 fontWeight: "bolder",
                                 backgroundColor: "",
                                 color: "black",
+                                padding: "5px",
+                                fontSize: "0.9rem",
                             },
                         }}
+                        renderTopToolbarCustomActions={() => (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleOpenModal()}
+                                sx={{
+                                    borderRadius: "2px",
+                                    padding: "3px 8px",
+                                    fontSize: "0.8rem",
+                                    textTransform: "none",
+                                }}
+                            >
+                                <AddIcon /> Add User
+                            </Button>
+                        )}
+                        density="compact"
                     />
                 </Box>
             </Container>
