@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from "react";
 import * as IconSection from "react-icons/bi";
 import { GoPlus } from "react-icons/go";
-import { Fab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, TextField, Button, Typography, Box } from "@mui/material";
+import {
+    Fab,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Modal,
+    TextField,
+    Button,
+    Typography,
+    Box,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
+import NavbarComponent from "../../NavBarComponent/NavbarComponent";
+import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
 
 const Subject = () => {
     const [subjectName, setSubjectName] = useState("");
@@ -25,7 +41,7 @@ const Subject = () => {
         "Social and Developmental Studies",
         "Additional Mathematics",
         "Biology",
-        "Agriculture"
+        "Agriculture",
     ];
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -41,9 +57,9 @@ const Subject = () => {
     const handleSubmit = () => {
         if (!allowedSubjects.includes(subjectName)) {
             Swal.fire({
-                icon: 'error',
-                title: 'Invalid Subject Name',
-                text: 'Please enter a valid subject name!',
+                icon: "error",
+                title: "Invalid Subject Name",
+                text: "Please enter a valid subject name!",
             });
             return;
         }
@@ -51,16 +67,16 @@ const Subject = () => {
         const newSubject = {
             name: subjectName,
             code: subjectCode,
-            periodsPerWeek: periodsPerWeek
+            periodsPerWeek: periodsPerWeek,
         };
 
         SubjectService.addSubject(newSubject)
             .then((res) => {
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Subject Added Successfully',
+                    icon: "success",
+                    title: "Subject Added Successfully",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 });
                 setModalOpen(false); // Close the modal
                 setSubjectName(""); // Clear input fields
@@ -70,16 +86,17 @@ const Subject = () => {
             })
             .catch((err) => {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to add subject. Please try again later.',
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to add subject. Please try again later.",
                 });
             });
     };
 
     const fetchSubjects = () => {
         // Fetch list of subjects from backend
-        axios.get("api/subjects")
+        axios
+            .get("api/subjects")
             .then((res) => {
                 setSubjects(res.data);
             })
@@ -95,13 +112,13 @@ const Subject = () => {
     const renderCharts = (chartType) => {
         // Implement rendering of charts based on the selected chartType
         switch (chartType) {
-            case 'bar':
+            case "bar":
                 // Render bar chart
                 break;
-            case 'pie':
+            case "pie":
                 // Render pie chart
                 break;
-            case 'line':
+            case "line":
                 // Render line chart
                 break;
             default:
@@ -111,12 +128,19 @@ const Subject = () => {
 
     return (
         <>
-            <div className="heading">
-                <IconSection.BiBookOpen />
-                <span style={{ color: "white" }}>Subject Management</span>
+            <NavbarComponent activePage="Subject Management" />
+
+            <div className="pl-5">
+                <BreadcrumbComponent/>
             </div>
 
-            <Fab size="medium" color="primary" aria-label="add" id="fab" onClick={handleModalOpen}>
+            <Fab
+                size="medium"
+                color="primary"
+                aria-label="add"
+                id="fab"
+                onClick={handleModalOpen}
+            >
                 <GoPlus size={25} />
             </Fab>
 
@@ -126,8 +150,26 @@ const Subject = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                    <Box sx={{ mb: 2, bgcolor: 'primary.main', color: 'primary.contrastText', p: 2 }}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            mb: 2,
+                            bgcolor: "primary.main",
+                            color: "primary.contrastText",
+                            p: 2,
+                        }}
+                    >
                         <Typography variant="h6" component="div" align="center">
                             Add Subject
                         </Typography>
@@ -156,20 +198,55 @@ const Subject = () => {
                         value={periodsPerWeek}
                         onChange={(e) => setPeriodsPerWeek(e.target.value)}
                     />
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                        <Button variant="contained" onClick={handleModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={handleSubmit}>Save</Button>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: 2,
+                        }}
+                    >
+                        <Button variant="contained" onClick={handleModalClose}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                        >
+                            Save
+                        </Button>
                     </Box>
                 </Box>
             </Modal>
 
             {/* Select chart type */}
             <Box sx={{ mt: 2 }}>
-                <Typography variant="h6" align="center">Select Chart Type</Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
-                    <Button variant="contained" color="primary" onClick={() => renderCharts('bar')}>Bar Chart</Button>
-                    <Button variant="contained" color="primary" onClick={() => renderCharts('pie')} sx={{ mx: 1 }}>Pie Chart</Button>
-                    <Button variant="contained" color="primary" onClick={() => renderCharts('line')}>Line Chart</Button>
+                <Typography variant="h6" align="center">
+                    Select Chart Type
+                </Typography>
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => renderCharts("bar")}
+                    >
+                        Bar Chart
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => renderCharts("pie")}
+                        sx={{ mx: 1 }}
+                    >
+                        Pie Chart
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => renderCharts("line")}
+                    >
+                        Line Chart
+                    </Button>
                 </Box>
             </Box>
 
@@ -192,8 +269,15 @@ const Subject = () => {
                                 <TableCell>{subject.code}</TableCell>
                                 <TableCell>{subject.periodsPerWeek}</TableCell>
                                 <TableCell>
-                                    <Button variant="contained" color="primary">View</Button>
-                                    <Button variant="contained" color="secondary">Edit</Button>
+                                    <Button variant="contained" color="primary">
+                                        View
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                    >
+                                        Edit
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

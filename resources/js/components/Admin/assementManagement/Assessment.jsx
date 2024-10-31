@@ -25,6 +25,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 import NavbarComponent from "../../NavBarComponent/NavbarComponent";
+import CustomTableComponent from "../../CustomTableComponents/CustomTableComponent";
+import { StudentAssementTableColumns } from "../../../../core/TableColumns";
+import TableCaptionComponent from "../../TableCaptionComponent/TableCaptionComponent";
+import StudentAssessingTable from "../../CustomTableComponents/StudentAssessingTable";
 
 const Assessments = () => {
     const [fetchedAssessments, setFetchedAssessments] = useState([]);
@@ -363,7 +367,7 @@ const Assessments = () => {
                 </TextField>
             </Box>
 
-            <div className="pr-5 pl-5">
+            {/* <div className="pr-5 pl-5">
                 <MaterialReactTable
                     columns={columns}
                     data={fetchedAssessments}
@@ -409,6 +413,14 @@ const Assessments = () => {
                             Students Table
                         </Typography>
                     )}
+                />
+            </div> */}
+
+            <div className="pr-5 pl-5">
+                <TableCaptionComponent role={"Students"} />
+                <StudentAssessingTable
+                    columns={StudentAssementTableColumns}
+                    data={fetchedAssessments}
                 />
             </div>
 

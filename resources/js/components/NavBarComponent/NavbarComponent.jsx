@@ -2,6 +2,10 @@ import React from "react";
 import { Typography, Switch } from "@mui/material";
 import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineWbSunny, MdOutlineDarkMode } from "react-icons/md";
+import { Dropdown } from "flowbite-react";
+import { HiCog, HiLogout, HiUser, HiViewGrid } from "react-icons/hi";
+import { Avatar } from "flowbite-react";
+
 const NavbarComponent = ({ activePage }) => {
     const [darkMode, setDarkMode] = React.useState(false);
     const [currentTime, setCurrentTime] = React.useState(
@@ -39,6 +43,7 @@ const NavbarComponent = ({ activePage }) => {
                         </Typography>
                     </div>
                 </div>
+
                 <div className="flex items-center gap-0">
                     <MdOutlineWbSunny />
                     <Switch
@@ -46,12 +51,27 @@ const NavbarComponent = ({ activePage }) => {
                         onChange={() => setDarkMode(!darkMode)}
                     />
                     <MdOutlineDarkMode />
-                    <div className="flex items-center pl-6">
-                        <FaUserCircle className="text-3xl mr-2" />
-                        <span>Lorem Ipsum</span>
-                    </div>
+
+                    <Dropdown
+                        label={<Avatar placeholderInitials="RR" rounded />}
+                        inline
+                    >
+                        <Dropdown.Header>
+                            <span className="block text-sm">Bonnie Green</span>
+                            <span className="block truncate text-sm font-medium">
+                                bonnie@flowbite.com
+                            </span>
+                        </Dropdown.Header>
+                        <Dropdown.Item icon={HiViewGrid}>
+                            Dashboard
+                        </Dropdown.Item>
+                        <Dropdown.Item icon={HiCog}>Settings</Dropdown.Item>
+                        <Dropdown.Item icon={HiUser}>Profile</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item icon={HiLogout}>Sign out</Dropdown.Item>
+                    </Dropdown>
                 </div>
-            </div>{" "}
+            </div>
         </nav>
     );
 };

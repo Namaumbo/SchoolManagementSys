@@ -33,9 +33,10 @@ import NavbarComponent from "../NavBarComponent/NavbarComponent";
 import { Button } from "flowbite-react";
 import { Spinner } from "flowbite-react";
 import { Table } from "flowbite-react";
-import CustomTableComponent from "../CustomTableComponent/CustomTableComponent";
-import StudentTableColumns from "../../../core/TableColumns";
-
+import CustomTableComponent from "../CustomTableComponents/CustomTableComponent";
+import { StudentTableColumns } from "../../../core/TableColumns";
+import { BreadcrumbComponent } from "../BreadcrumbComponent/BreadcrumbComponent";
+import TableCaptionComponent from "../TableCaptionComponent/TableCaptionComponent";
 
 const showErrorAlert = (title, text) => {
     console.error(`${title}: ${text}`);
@@ -314,24 +315,30 @@ const Students = () => {
 
     if (isLoadingInitialData) {
         return (
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                }}
-            >
-                <div className="text-center">
-                    <Spinner aria-label="Fetching" size="xl" />
+            <>
+                <NavbarComponent activePage={"Students"} />
+                <BreadcrumbComponent />
+
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "60vh",
+                    }}
+                >
+                    <div className="text-center">
+                        <Spinner aria-label="Fetching" size="xl" />
+                    </div>
                 </div>
-            </div>
+            </>
         );
     }
     return (
         <div className=" w-full h-full">
             <NavbarComponent activePage={"Students"} />
+            <BreadcrumbComponent />
             <Box sx={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}>
                 {successMessage && (
                     <Alert
@@ -543,9 +550,13 @@ const Students = () => {
                         </DialogActions>
                     </Dialog>
                 )}
+                <TableCaptionComponent role={"Students"} />
                 <div className="px-1 pr-2">
                     {/* todo include the following here onClick={() => openDeleteConfirmModal(row) */}
-                    <CustomTableComponent data={fetchedUsers}  columns={StudentTableColumns}/>
+                    <CustomTableComponent
+                        data={fetchedUsers}
+                        columns={StudentTableColumns}
+                    />
                 </div>
             </Box>
         </div>

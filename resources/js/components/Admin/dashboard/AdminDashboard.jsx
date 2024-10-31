@@ -17,6 +17,7 @@ import CustomPaper from "../../Paper/CustomPaper";
 import NavbarComponent from "../../NavBarComponent/NavbarComponent";
 import NivoChartComponent from "../../NivoPieChartComponent/NivoChartComponent";
 import NivoLineChartComponent from "../../NivoLineChartComponent/NivoLineChartComponent";
+import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
 
 const lightTheme = createTheme({
     palette: {
@@ -119,6 +120,10 @@ export default function AdminDashboard() {
                 // }`}
             >
                 <NavbarComponent activePage="Dashboard" />
+
+                <div className="pl-5">
+                    <BreadcrumbComponent activePage="Home" />
+                </div>
 
                 {isAdminOrHeadTeacher ? (
                     <>

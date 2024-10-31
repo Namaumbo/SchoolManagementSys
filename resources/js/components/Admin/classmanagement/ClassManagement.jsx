@@ -6,6 +6,8 @@ import { Add as AddIcon } from '@mui/icons-material';
 import axios from 'axios';
 import ClassCard from './ClassCard';
 import { useNavigate } from 'react-router-dom';
+import NavbarComponent from '../../NavBarComponent/NavbarComponent';
+import { BreadcrumbComponent } from '../../BreadcrumbComponent/BreadcrumbComponent';
 
 const ClassManagement = () => {
   const [classes, setClasses] = useState([]);
@@ -83,102 +85,106 @@ const ClassManagement = () => {
   };
 
   return (
-    <Container sx={{ backgroundColor: '#f5f5f5', p: 4, borderRadius: 2 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">Class Management</Typography>
-        <Button variant="contained" color="primary" onClick={handleOpenModal}>
-          <AddIcon /> Add Class
-        </Button>
-      </Box>
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Box display="flex" flexWrap="wrap" gap={2}>
-          {classes.map((classItem) => (
-            <ClassCard
-              key={classItem.id}
-              classItem={classItem}
-              onCardClick={() => handleViewStudents(classItem.id)}
-            />
-          ))}
-        </Box>
-      )}
+    // <Container sx={{ backgroundColor: '#f5f5f5', p: 4, borderRadius: 2 }}>
+    //   <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+    //     <Typography variant="h5">Class Management</Typography>
+    //     <Button variant="contained" color="primary" onClick={handleOpenModal}>
+    //       <AddIcon /> Add Class
+    //     </Button>
+    //   </Box>
+    //   {isLoading ? (
+    //     <Box display="flex" justifyContent="center" mt={4}>
+    //       <CircularProgress />
+    //     </Box>
+    //   ) : (
+    //     <Box display="flex" flexWrap="wrap" gap={2}>
+    //       {classes.map((classItem) => (
+    //         <ClassCard
+    //           key={classItem.id}
+    //           classItem={classItem}
+    //           onCardClick={() => handleViewStudents(classItem.id)}
+    //         />
+    //       ))}
+    //     </Box>
+    //   )}
 
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Fade in={isModalOpen}>
-          <Paper
-            sx={{
-              p: 3,
-              width: '600px',
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          >
-            <Typography variant="h5">Add Class</Typography>
-            <Box component="form" mt={2}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    name="className"
-                    label="Class Name"
-                    value={formValues.className}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth required>
-                    <InputLabel>Head Teacher</InputLabel>
-                    <Select
-                      name="headTeacher"
-                      value={formValues.headTeacher}
-                      onChange={handleChange}
-                    >
-                      {teachers.map(teacher => (
-                        <MenuItem key={teacher.id} value={teacher.email}>
-                          {teacher.firstname}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    name="classMonitor"
-                    label="Class Monitor"
-                    value={formValues.classMonitor}
-                    onChange={handleChange}
-                    fullWidth
-                    required
-                  />
-                </Grid>
-              </Grid>
-              <Box mt={2} display="flex" justifyContent="flex-end">
-                <Button variant="contained" color="primary" onClick={handleSaveClass}>
-                  Save
-                </Button>
-              </Box>
-            </Box>
-          </Paper>
-        </Fade>
-      </Modal>
+    //   <Modal open={isModalOpen} onClose={handleCloseModal}>
+    //     <Fade in={isModalOpen}>
+    //       <Paper
+    //         sx={{
+    //           p: 3,
+    //           width: '600px',
+    //           position: 'absolute',
+    //           top: '50%',
+    //           left: '50%',
+    //           transform: 'translate(-50%, -50%)',
+    //         }}
+    //       >
+    //         <Typography variant="h5">Add Class</Typography>
+    //         <Box component="form" mt={2}>
+    //           <Grid container spacing={2}>
+    //             <Grid item xs={12}>
+    //               <TextField
+    //                 name="className"
+    //                 label="Class Name"
+    //                 value={formValues.className}
+    //                 onChange={handleChange}
+    //                 fullWidth
+    //                 required
+    //               />
+    //             </Grid>
+    //             <Grid item xs={12}>
+    //               <FormControl fullWidth required>
+    //                 <InputLabel>Head Teacher</InputLabel>
+    //                 <Select
+    //                   name="headTeacher"
+    //                   value={formValues.headTeacher}
+    //                   onChange={handleChange}
+    //                 >
+    //                   {teachers.map(teacher => (
+    //                     <MenuItem key={teacher.id} value={teacher.email}>
+    //                       {teacher.firstname}
+    //                     </MenuItem>
+    //                   ))}
+    //                 </Select>
+    //               </FormControl>
+    //             </Grid>
+    //             <Grid item xs={12}>
+    //               <TextField
+    //                 name="classMonitor"
+    //                 label="Class Monitor"
+    //                 value={formValues.classMonitor}
+    //                 onChange={handleChange}
+    //                 fullWidth
+    //                 required
+    //               />
+    //             </Grid>
+    //           </Grid>
+    //           <Box mt={2} display="flex" justifyContent="flex-end">
+    //             <Button variant="contained" color="primary" onClick={handleSaveClass}>
+    //               Save
+    //             </Button>
+    //           </Box>
+    //         </Box>
+    //       </Paper>
+    //     </Fade>
+    //   </Modal>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+    //   <Snackbar
+    //     open={snackbar.open}
+    //     autoHideDuration={6000}
+    //     onClose={() => setSnackbar({ ...snackbar, open: false })}
+    //     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    //   >
+    //     <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+    //       {snackbar.message}
+    //     </Alert>
+    //   </Snackbar>
+    // </Container>
+    <>
+    <NavbarComponent activePage={"Class Management"}/>
+    <BreadcrumbComponent/>
+    </>
   );
 };
 

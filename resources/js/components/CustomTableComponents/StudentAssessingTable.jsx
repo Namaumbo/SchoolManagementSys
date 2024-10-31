@@ -1,16 +1,14 @@
 import React from "react";
 import { Table, Checkbox, Button } from "flowbite-react";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiEye } from "react-icons/fi";
 
-const CustomTableComponent = (props) => {
+const StudentAssessingTable = (props) => {
     const { data, columns } = props;
-
-
 
     return (
         <div className="overflow-x-auto">
-            <Table>
+            <Table striped>
                 <Table.Head>
                     <Table.HeadCell>
                         <Checkbox />
@@ -44,6 +42,12 @@ const CustomTableComponent = (props) => {
                             <Table.Cell>{row.sex}</Table.Cell>
                             <Table.Cell>{row.className}</Table.Cell>
                             <Table.Cell className="flex gap-2">
+                                <Button size="sm" pill>
+                                    <FiEye className="h-4 w-4" />
+                                </Button>
+                                <Button color="blue" size="sm" pill>
+                                    <FiEdit className="h-4 w-4" />
+                                </Button>
                                 <Button
                                     color="failure"
                                     size="sm"
@@ -51,9 +55,6 @@ const CustomTableComponent = (props) => {
                                     onClick={() => openDeleteConfirmModal(row)}
                                 >
                                     <MdDeleteOutline className="h-4 w-4" />
-                                </Button>
-                                <Button size="sm" pill>
-                                    <FiEdit className="h-4 w-4" />
                                 </Button>
                             </Table.Cell>
                         </Table.Row>
@@ -63,4 +64,4 @@ const CustomTableComponent = (props) => {
         </div>
     );
 };
-export default CustomTableComponent;
+export default StudentAssessingTable;

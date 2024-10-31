@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
     Box,
-    Button,
     Typography,
     IconButton,
     Tooltip,
@@ -30,6 +29,11 @@ import axios from "axios";
 import "./users.css"; // Import the CSS file
 import { size } from "lodash";
 import NavbarComponent from "../../NavBarComponent/NavbarComponent";
+import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
+import CustomTableComponent from "../../CustomTableComponents/CustomTableComponent";
+import { UserManagementTableColumns } from "../../../../core/TableColumns";
+import { Button } from "flowbite-react";
+import TableCaptionComponent from "../../TableCaptionComponent/TableCaptionComponent";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -264,6 +268,9 @@ const UserManagement = () => {
     return (
         <div>
             <NavbarComponent activePage={"User Management"} />
+            <div className=" pb-4">
+                <BreadcrumbComponent />
+            </div>
             <Container>
                 <Modal open={isModalOpen} onClose={handleCloseModal}>
                     <Fade in={isModalOpen}>
@@ -427,7 +434,7 @@ const UserManagement = () => {
                     </Alert>
                 </Snackbar>
 
-                <Box sx={{ height: 600, width: "100%" }}>
+                {/* <Box sx={{ height: 600, width: "100%" }}>
                     <MaterialReactTable
                         columns={columns}
                         data={users}
@@ -473,7 +480,13 @@ const UserManagement = () => {
                         )}
                         density="compact"
                     />
-                </Box>
+                </Box> */}
+                <TableCaptionComponent role={"User"} />
+
+                <CustomTableComponent
+                    columns={UserManagementTableColumns}
+                    data={users}
+                />
             </Container>
             {/* 
                
