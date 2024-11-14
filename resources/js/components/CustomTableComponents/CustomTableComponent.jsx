@@ -27,22 +27,22 @@ const CustomTableComponent = (props) => {
                     {data.map((row) => (
                         <Table.Row
                             key={row.id}
-                            className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                            className="bg-white dark:border-gray-700 dark:bg-gray-800 py-[0.9rem]"
                         >
-                            <Table.Cell>
+                            <Table.Cell className="py-[0.9rem]">
                                 <Checkbox />
                             </Table.Cell>
-                            <Table.Cell>{row.id}</Table.Cell>
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                            <Table.Cell className="py-[0.9rem]">{row.id}</Table.Cell>
+                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem]">
                                 {row.firstname}
                             </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem]">
                                 {row.surname}
                             </Table.Cell>
-                            <Table.Cell>{row.username}</Table.Cell>
-                            <Table.Cell>{row.sex}</Table.Cell>
-                            <Table.Cell>{row.className}</Table.Cell>
-                            <Table.Cell className="flex gap-2">
+                            <Table.Cell className="py-[0.9rem]">{row.username}</Table.Cell>
+                            <Table.Cell className="py-[0.9rem]">{row.sex}</Table.Cell>
+                            <Table.Cell className="py-[0.9rem]">{row.className}</Table.Cell>
+                            <Table.Cell className="flex gap-2 py-[0.9rem]">
                                 <Button
                                     color="failure"
                                     size="sm"

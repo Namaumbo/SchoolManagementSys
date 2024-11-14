@@ -80,6 +80,7 @@ const UserManagement = () => {
                 response.data.users &&
                 Array.isArray(response.data.users)
             ) {
+                // console.log(response.data.users);
                 setUsers(response.data.users);
             } else {
                 setUsers([]);
@@ -481,7 +482,7 @@ const UserManagement = () => {
                         density="compact"
                     />
                 </Box> */}
-                <TableCaptionComponent role={"User"} />
+                <TableCaptionComponent role={"Users"} />
 
                 <CustomTableComponent
                     columns={UserManagementTableColumns}
