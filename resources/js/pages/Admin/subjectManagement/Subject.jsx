@@ -19,8 +19,8 @@ import {
 import Swal from "sweetalert2";
 import axios from "axios";
 import SubjectService from "../../../../services/SubjectService";
-import NavbarComponent from "../../NavBarComponent/NavbarComponent";
-import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
+import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
+import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 
 const Subject = () => {
     const [subjectName, setSubjectName] = useState("");

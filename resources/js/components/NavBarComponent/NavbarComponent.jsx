@@ -5,6 +5,8 @@ import { MdOutlineWbSunny, MdOutlineDarkMode } from "react-icons/md";
 import { Dropdown } from "flowbite-react";
 import { HiCog, HiLogout, HiUser, HiViewGrid } from "react-icons/hi";
 import { Avatar } from "flowbite-react";
+import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { FiSearch } from "react-icons/fi";
 
 const NavbarComponent = ({ activePage }) => {
     const [darkMode, setDarkMode] = React.useState(false);
@@ -33,18 +35,21 @@ const NavbarComponent = ({ activePage }) => {
                                 {currentTime}
                             </Typography>
                         </div>
-                        <Typography
-                            variant="h5"
-                            component="h5"
-                            gutterBottom
-                            fontWeight="bold"
-                        >
-                            {page}
-                        </Typography>
+                        <h2 className="text-[2rem] font-bold"> {page}</h2>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-0">
+                <div className="flex items-center gap-1">
+                    <TextInput
+                        id="email1"
+                        type="email"
+                        placeholder="search here"
+                        required
+                        className="w-64"
+                    />
+                    <Button className="bg-blue-600">
+                        <FiSearch />
+                    </Button>
                     <MdOutlineWbSunny />
                     <Switch
                         checked={darkMode}

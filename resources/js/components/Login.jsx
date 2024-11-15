@@ -80,7 +80,11 @@ export default function Login() {
                 if (res.status === 200) {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
-                    localStorage.setItem("vitals", user);
+                 
+
+                    console.log("user => role", res.data.user.role_name);
+
+
 
                     switch (res.data.user.role_name) {
                         case "Teacher":
@@ -104,7 +108,7 @@ export default function Login() {
                                 window.btoa("Student")
                             );
                             break;
-                        case "Administrator":
+                        case "administrator":
                             localStorage.setItem("loggedIn", window.btoa(true));
                             localStorage.setItem("role", window.btoa("admin"));
                             break;

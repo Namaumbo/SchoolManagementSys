@@ -12,7 +12,7 @@ import {
 import { MaterialReactTable } from "material-react-table";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import "./SchoolPerformance.css";
-import SchoolReportComponent from "../../schoolReportComponent/SchoolReportComponent";
+import SchoolReportComponent from "../../../components/schoolReportComponent/SchoolReportComponent";
 
 const SchoolPerformance = () => {
     const [reportData, setReportData] = useState([]);

@@ -24,11 +24,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
-import NavbarComponent from "../../NavBarComponent/NavbarComponent";
-import CustomTableComponent from "../../CustomTableComponents/CustomTableComponent";
+import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
+import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
 import { StudentAssementTableColumns } from "../../../../core/TableColumns";
-import TableCaptionComponent from "../../TableCaptionComponent/TableCaptionComponent";
-import StudentAssessingTable from "../../CustomTableComponents/StudentAssessingTable";
+import TableCaptionComponent from "../../../components/TableCaptionComponent/TableCaptionComponent";
+import StudentAssessingTable from "../../../components/CustomTableComponents/StudentAssessingTable";
 
 const Assessments = () => {
     const [fetchedAssessments, setFetchedAssessments] = useState([]);

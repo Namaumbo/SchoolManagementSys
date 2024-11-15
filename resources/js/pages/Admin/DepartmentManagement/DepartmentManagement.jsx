@@ -23,8 +23,8 @@ import DepartmentCard from "./DepartmentCard";
 import DepartmentUsers from "./DepartmentUsers";
 import { useNavigate } from "react-router-dom";
 import "./department.css";
-import NavbarComponent from "../../NavBarComponent/NavbarComponent";
-import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
+import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
+import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 
 const DepartmentManagement = () => {
     const [departments, setDepartments] = useState([]);

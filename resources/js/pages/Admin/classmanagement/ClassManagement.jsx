@@ -6,8 +6,8 @@ import { Add as AddIcon } from '@mui/icons-material';
 import axios from 'axios';
 import ClassCard from './ClassCard';
 import { useNavigate } from 'react-router-dom';
-import NavbarComponent from '../../NavBarComponent/NavbarComponent';
-import { BreadcrumbComponent } from '../../BreadcrumbComponent/BreadcrumbComponent';
+import NavbarComponent from '../../../components/NavBarComponent/NavbarComponent';
+import { BreadcrumbComponent } from '../../../components/BreadcrumbComponent/BreadcrumbComponent';
 
 const ClassManagement = () => {
   const [classes, setClasses] = useState([]);

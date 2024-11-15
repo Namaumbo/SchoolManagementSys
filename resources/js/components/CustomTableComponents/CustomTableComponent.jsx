@@ -8,7 +8,6 @@ const CustomTableComponent = (props) => {
 
     return (
         <div className="overflow-x-auto">
-            
             <Table striped>
                 <Table.Head>
                     <Table.HeadCell>
@@ -17,7 +16,7 @@ const CustomTableComponent = (props) => {
                     {columns.map((column) => (
                         <Table.HeadCell
                             key={column.Header}
-                            className="text-black dark:text-black font-bold"
+                            className="text-black dark:text-black font-bold text-[1rem]"
                         >
                             {column.Header}
                         </Table.HeadCell>
@@ -32,29 +31,37 @@ const CustomTableComponent = (props) => {
                             <Table.Cell className="py-[0.9rem]">
                                 <Checkbox />
                             </Table.Cell>
-                            <Table.Cell className="py-[0.9rem]">{row.id}</Table.Cell>
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem]">
+                            <Table.Cell className="py-[0.9rem]">
+                                {row.id}
+                            </Table.Cell>
+                            <Table.Cell className="whitespace-nowrap  text-gray-900 dark:text-white py-[0.9rem] text-[1rem]">
                                 {row.firstname}
                             </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem]">
+                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem] text-[1rem]">
                                 {row.surname}
                             </Table.Cell>
-                            <Table.Cell className="py-[0.9rem]">{row.username}</Table.Cell>
-                            <Table.Cell className="py-[0.9rem]">{row.sex}</Table.Cell>
-                            <Table.Cell className="py-[0.9rem]">{row.className}</Table.Cell>
-                            <Table.Cell className="flex gap-2 py-[0.9rem]">
-                                <Button
-                                    color="failure"
-                                    size="sm"
-                                    pill
-                                    onClick={() => openDeleteConfirmModal(row)}
-                                >
-                                    <MdDeleteOutline className="h-4 w-4" />
-                                </Button>
-                                <Button size="sm" pill>
-                                    <FiEdit className="h-4 w-4" />
-                                </Button>
+                            <Table.Cell className="py-[0.9rem] text-[1rem]">
+                                {row.username}
                             </Table.Cell>
+                            <Table.Cell className="py-[0.9rem] text-[1rem]">
+                                {row.sex}
+                            </Table.Cell>
+                            <Table.Cell className="py-[0.9rem] text-[1rem]">
+                                {row.className}
+                            </Table.Cell>
+                            {/* <Table.Cell className="flex gap-2 py-[0.9rem] ">
+                                <Button size="sm" className="bg-blue-600" pill>
+                                    <FiEdit size={20} />
+                                </Button>
+                                <Button
+                                    className="bg-red-700"
+                                    size="sm"
+                                    onClick={() => openDeleteConfirmModal(row)}
+                                    pill
+                                >
+                                    <MdDeleteOutline size={20} />
+                                </Button>
+                            </Table.Cell> */}
                         </Table.Row>
                     ))}
                 </Table.Body>

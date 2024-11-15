@@ -29,14 +29,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import Swal from "sweetalert2";
 import * as IconSection from "react-icons/fi";
-import NavbarComponent from "../NavBarComponent/NavbarComponent";
+import NavbarComponent from "../../components/NavBarComponent/NavbarComponent";
 import { Button } from "flowbite-react";
 import { Spinner } from "flowbite-react";
-import { Table } from "flowbite-react";
-import CustomTableComponent from "../CustomTableComponents/CustomTableComponent";
+import CustomTableComponent from "../../components/CustomTableComponents/CustomTableComponent";
 import { StudentTableColumns } from "../../../core/TableColumns";
-import { BreadcrumbComponent } from "../BreadcrumbComponent/BreadcrumbComponent";
-import TableCaptionComponent from "../TableCaptionComponent/TableCaptionComponent";
+import { BreadcrumbComponent } from "../../components/BreadcrumbComponent/BreadcrumbComponent";
+import TableCaptionComponent from "../../components/TableCaptionComponent/TableCaptionComponent";
 
 const showErrorAlert = (title, text) => {
     console.error(`${title}: ${text}`);
@@ -550,6 +549,9 @@ const Students = () => {
                         </DialogActions>
                     </Dialog>
                 )}
+            </Box>
+
+            <div className="pr-4 pl-4">
                 <TableCaptionComponent role={"Students"} />
                 <div className="px-1 pr-2">
                     {/* todo include the following here onClick={() => openDeleteConfirmModal(row) */}
@@ -558,7 +560,7 @@ const Students = () => {
                         columns={StudentTableColumns}
                     />
                 </div>
-            </Box>
+            </div>
         </div>
     );
 };

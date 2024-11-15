@@ -1,45 +1,25 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import { BiBell } from "react-icons/bi";
-
 
 export default function CustomPaper({ ...props }) {
     const { heading, count } = props;
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                "& > :not(style)": {
-                    m: 1,
-                    width: 250,
-                    height: 128,
-                },
-            }}
-        >
-            <Paper elevation={2} sx={{ backgroundColor: 'grey' }}>
-                <Box sx={{ p: 2 }}>
-                    <Typography
-                        variant="h6"
-                        gutterBottom
-                        fontWeight="bold"
-                        color="white"
-                    >
-                    {heading}
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                        <Typography variant="h4" sx={{ mr: 2, color: 'white' }}>
-                        <BiBell />{count}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: 'white' }}>
-                            This is some example content inside the Paper
-                            component
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
-        </Box>
+        <>
+            <div className="bg-white p-3 rounded-2xl flex flex-col justify-start">
+                <div className="flex flex-row items-center p-2">
+                    <div className="bg-blue-100 p-[0.65rem] w-fit rounded-full">
+                        <BiBell size={23} color="blue" />
+                    </div>
+                    <div className="ml-2">
+                        <p className="text-[18px] font-bold"> {heading}</p>
+                    </div>
+                </div>
+                <div className>
+                    <p className=" text-5xl font-medium pl-4">{count}</p>
+                </div>
+                <hr className="p-1" />
+                <p>This is the total of registered users in the system</p>
+            </div>
+        </>
     );
 }

@@ -7,17 +7,16 @@ import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import { FaUser, FaInfo, FaFolderOpen } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import Test from "../../../Test";
-import { MaterialReactTable } from "material-react-table";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, Switch, Typography } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import CustomPaper from "../../Paper/CustomPaper";
-
-import NavbarComponent from "../../NavBarComponent/NavbarComponent";
-import NivoChartComponent from "../../NivoPieChartComponent/NivoChartComponent";
-import NivoLineChartComponent from "../../NivoLineChartComponent/NivoLineChartComponent";
-import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
+import CustomPaper from "../../../components/Paper/CustomPaper";
+import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
+import NivoChartComponent from "../../../components/NivoPieChartComponent/NivoChartComponent";
+import NivoLineChartComponent from "../../../components/NivoLineChartComponent/NivoLineChartComponent";
+import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
+import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
+import { DashbordUsersColumns } from "../../../../core/TableColumns";
+import { DashboardUsersDummyData } from "../../../../core/DashbordUsersDummydata";
 
 const lightTheme = createTheme({
     palette: {
@@ -143,39 +142,9 @@ export default function AdminDashboard() {
 
                         <div className="flex gap-4 p-4">
                             <div className="w-1/2 bg-white shadow-md rounded-lg p-4">
-                                <MaterialReactTable
-                                    columns={columns}
-                                    data={users}
-                                    enableRowSelection
-                                    enableStickyHeader
-                                    enableStickyFooter
-                                    muiTableContainerProps={{
-                                        className: "max-h-96",
-                                    }}
-                                    muiTableBodyRowProps={({ row }) => ({
-                                        sx: {
-                                            backgroundColor: `rgba(${Math.floor(
-                                                Math.random() * 256
-                                            )}, ${Math.floor(
-                                                Math.random() * 256
-                                            )}, ${Math.floor(
-                                                Math.random() * 256
-                                            )}, 0.1)`,
-                                        },
-                                    })}
-                                    renderTopToolbarCustomActions={() => (
-                                        <Typography
-                                            variant="h6"
-                                            component="div"
-                                            sx={{
-                                                fontWeight: "bold",
-                                                color: "#333",
-                                                marginBottom: "10px",
-                                            }}
-                                        >
-                                            Users Table
-                                        </Typography>
-                                    )}
+                                <CustomTableComponent
+                                    columns={DashbordUsersColumns}
+                                    data={DashboardUsersDummyData}
                                 />
                             </div>
                             <div className="w-1/2 bg-white shadow-md rounded-lg">

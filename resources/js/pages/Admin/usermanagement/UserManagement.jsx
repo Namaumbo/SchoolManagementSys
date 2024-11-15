@@ -28,12 +28,12 @@ import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import "./users.css"; // Import the CSS file
 import { size } from "lodash";
-import NavbarComponent from "../../NavBarComponent/NavbarComponent";
-import { BreadcrumbComponent } from "../../BreadcrumbComponent/BreadcrumbComponent";
-import CustomTableComponent from "../../CustomTableComponents/CustomTableComponent";
+import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
+import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
+import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
 import { UserManagementTableColumns } from "../../../../core/TableColumns";
 import { Button } from "flowbite-react";
-import TableCaptionComponent from "../../TableCaptionComponent/TableCaptionComponent";
+import TableCaptionComponent from "../../../components/TableCaptionComponent/TableCaptionComponent";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -482,13 +482,15 @@ const UserManagement = () => {
                         density="compact"
                     />
                 </Box> */}
-                <TableCaptionComponent role={"Users"} />
+            </Container>
 
+            <div className="pl-4 pr-4">
+                <TableCaptionComponent role={"Users"} />
                 <CustomTableComponent
                     columns={UserManagementTableColumns}
                     data={users}
                 />
-            </Container>
+            </div>
             {/* 
                
          */}
