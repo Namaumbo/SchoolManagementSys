@@ -27,6 +27,7 @@ import Test from "./Test";
 import Information from "./commonPages/informationPage/Information";
 import "../css/app.css";
 import { Flowbite } from "flowbite-react";
+import {Chart as ChartJS}  from "chart.js/auto"
 
 export default function Index() {
     return (

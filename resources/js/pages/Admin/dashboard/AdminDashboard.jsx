@@ -17,6 +17,8 @@ import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/Bre
 import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
 import { DashbordUsersColumns } from "../../../../core/TableColumns";
 import { DashboardUsersDummyData } from "../../../../core/DashbordUsersDummydata";
+import { Doughnut, Bar, Line } from "react-chartjs-2";
+import { defaults } from "chart.js/auto";
 
 const lightTheme = createTheme({
     palette: {
@@ -30,6 +32,12 @@ const darkTheme = createTheme({
     },
 });
 
+defaults.maintainAspectRatio = false;
+defaults.responsive = true;
+defaults.plugins.title.font.size = 20;
+defaults.plugins.title.color = "black";
+defaults.plugins.title.align = "start";
+defaults.plugins.title.display = true;
 export default function AdminDashboard() {
     const [students, setStudents] = useState([]);
     const [users, setUsers] = useState([]);
@@ -67,12 +75,6 @@ export default function AdminDashboard() {
                 console.error(err);
             });
     }, [accessKey]);
-
-    const columns = [
-        { accessorKey: "firstname", header: "First name", size: 130 },
-        { accessorKey: "surname", header: "Last name", size: 130 },
-        { accessorKey: "role_name", header: "Role", size: 100 },
-    ];
 
     const cardData = [
         {
@@ -140,6 +142,117 @@ export default function AdminDashboard() {
                             </div>
                         </div>
 
+                        <div className="flex flex-row gap-3">
+                            <div className="bg-white rounded-xl ml-[2rem] p-4 h-[30rem] w-[55%]">
+                                {/* TODO: make this a component later */}
+                                <Line
+                                    key="line-chart"
+                                    data={{
+                                        labels: [
+                                            "2020",
+                                            "2021",
+                                            "2022",
+                                            "2023",
+                                            "2024",
+                                            "2025",
+                                        ],
+                                        datasets: [
+                                            {
+                                                label: "Boys Pass Rate",
+                                                data: [30, 45, 48, 50, 43, 40],
+                                                fill: true,
+                                                backgroundColor:
+                                                    "rgba(75,192,192,0.2)",
+                                                borderColor:
+                                                    "rgba(75,192,192,1)",
+                                            },
+                                            {
+                                                label: "Girls Pass Rate",
+                                                data: [35, 40, 65, 20, 55, 20],
+                                                fill: true,
+                                                backgroundColor:
+                                                    "rgba(255,99,132,0.2)",
+                                                borderColor:
+                                                    "rgba(255,99,132,1)",
+                                            },
+                                        ],
+                                    }}
+                                    options={{
+                                        elements: {
+                                            line: {
+                                                tension: 0.4,
+                                            },
+                                        },
+                                        plugins: {
+                                            title: {
+                                                text: "Boys & Girls Passing Rates ",
+                                            },
+                                        },
+                                        scales: {
+                                            x: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Year",
+                                                },
+                                            },
+                                            y: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Pass Rate (%)",
+                                                },
+                                            },
+                                        },
+                                    }}
+                                />
+                            </div>
+                            <div className="flex flex-row gap-3">
+                                <div className="bg-white rounded-xl h-[30rem] p-6">
+                                    <Doughnut
+                                        data={{
+                                            labels: ["boys", "girls"],
+                                            datasets: [
+                                                {
+                                                    label: "Boys Pass Rate",
+                                                    data: [45, 55],
+                                                    fill: true,
+                                                },
+                                            ],
+                                        }}
+                                        options={{
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Gender Statistics",
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                                <div className="bg-white rounded-xl h-[30rem] p-6">
+                                    <Doughnut
+                                        data={{
+                                            labels: ["boys", "girls"],
+                                            datasets: [
+                                                {
+                                                    label: "Boys Pass Rate",
+                                                    data: [45, 55],
+                                                    fill: true,
+                                                },
+                                            ],
+                                        }}
+                                        options={{
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Gender Statistics",
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="flex gap-4 p-4">
                             <div className="w-1/2 bg-white shadow-md rounded-lg p-4">
                                 <CustomTableComponent
@@ -148,12 +261,20 @@ export default function AdminDashboard() {
                                 />
                             </div>
                             <div className="w-1/2 bg-white shadow-md rounded-lg">
-                                <h2 className="text-2xl font-bold mt-4 ml-4">
-                                    Total students
-                                </h2>
-                                <NivoChartComponent />
+                                <Line
+                                    data={{
+                                        labels: ["A", "B", "C"],
+                                        datasets: [
+                                            {
+                                                lable: "No. students",
+                                                data: [0, 55, 50],
+                                            },
+                                        ],
+                                    }}
+                                />
                             </div>
                         </div>
+
                         <div className=" mt-[-1%] ml-5 mr-5 ">
                             <div className="w-full bg-white shadow-md rounded-lg">
                                 <h2 className="text-2xl font-bold m-3 px-4">
