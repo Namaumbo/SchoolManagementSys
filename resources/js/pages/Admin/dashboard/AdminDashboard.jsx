@@ -11,8 +11,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery, Switch, Typography } from "@mui/material";
 import CustomPaper from "../../../components/Paper/CustomPaper";
 import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
-import NivoChartComponent from "../../../components/NivoPieChartComponent/NivoChartComponent";
-import NivoLineChartComponent from "../../../components/NivoLineChartComponent/NivoLineChartComponent";
 import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
 import { DashbordUsersColumns } from "../../../../core/TableColumns";
@@ -206,7 +204,7 @@ export default function AdminDashboard() {
                                 />
                             </div>
                             <div className="flex flex-row gap-3">
-                                <div className="bg-white rounded-xl h-[30rem] p-6">
+                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[20rem] p-6">
                                     <Doughnut
                                         data={{
                                             labels: ["boys", "girls"],
@@ -225,10 +223,12 @@ export default function AdminDashboard() {
                                                     text: "Gender Statistics",
                                                 },
                                             },
+                                            responsive: true,
+                                            maintainAspectRatio: true,
                                         }}
                                     />
                                 </div>
-                                <div className="bg-white rounded-xl h-[30rem] p-6">
+                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[20rem] p-6">
                                     <Doughnut
                                         data={{
                                             labels: ["boys", "girls"],
@@ -280,9 +280,7 @@ export default function AdminDashboard() {
                                 <h2 className="text-2xl font-bold m-3 px-4">
                                     School performance
                                 </h2>
-                                <div className="px-4">
-                                    <NivoLineChartComponent />
-                                </div>
+                                <div className="px-4"></div>
                             </div>
                         </div>
                     </>
