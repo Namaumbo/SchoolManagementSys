@@ -133,39 +133,43 @@ const StudentAssementTableColumns = [
     },
 ];
 
-
 const DashbordUsersColumns = [
     {
-            Header: "First Name",
-            accessorKey: "firstName",
+            Header: "ID",
+            accessorKey: "id",
             enableColumnFilter: true,
             enableSorting: true,
         },
-        {
-            Header: "Last Name",
-            accessorKey: "lastName",
-            enableColumnFilter: true,
-            enableSorting: true,
-        },
-        {
-            Header: "Role",
-            accessorKey: "role",
-            enableColumnFilter: true,
-            enableSorting: true,
-        },
-        {
-            Header: "Email",
-            accessorKey: "email",
-            enableColumnFilter: true,
-            enableSorting: true,
-        }
     
-]
-
+    {
+        Header: "First Name",
+        accessorKey: "firstName",
+        enableColumnFilter: true,
+        enableSorting: true,
+    },
+    {
+        Header: "Last Name",
+        accessorKey: "lastName",
+        enableColumnFilter: true,
+        enableSorting: true,
+    },
+    {
+        Header: "Role",
+        accessorKey: "role",
+        enableColumnFilter: true,
+        enableSorting: true,
+    },
+    {
+        Header: "Email",
+        accessorKey: "email",
+        enableColumnFilter: true,
+        enableSorting: true,
+    },
+];
 
 export {
     StudentTableColumns,
     UserManagementTableColumns,
     StudentAssementTableColumns,
-    DashbordUsersColumns
+    DashbordUsersColumns,
 };

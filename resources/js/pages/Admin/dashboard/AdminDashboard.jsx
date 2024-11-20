@@ -17,6 +17,7 @@ import { DashbordUsersColumns } from "../../../../core/TableColumns";
 import { DashboardUsersDummyData } from "../../../../core/DashbordUsersDummydata";
 import { Doughnut, Bar, Line } from "react-chartjs-2";
 import { defaults } from "chart.js/auto";
+import UserTableComponent from "../../../components/TablesComponents/UserTableComponent";
 
 const lightTheme = createTheme({
     palette: {
@@ -231,11 +232,11 @@ export default function AdminDashboard() {
                                 <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[20rem] p-6">
                                     <Doughnut
                                         data={{
-                                            labels: ["boys", "girls"],
+                                            labels: ["Men", "Women"],
                                             datasets: [
                                                 {
-                                                    label: "Boys Pass Rate",
-                                                    data: [45, 55],
+                                                    label: "Staff Statistics",
+                                                    data: [57, 43],
                                                     fill: true,
                                                 },
                                             ],
@@ -244,7 +245,7 @@ export default function AdminDashboard() {
                                             plugins: {
                                                 title: {
                                                     display: true,
-                                                    text: "Gender Statistics",
+                                                    text: "Staff Statistics",
                                                 },
                                             },
                                         }}
@@ -254,8 +255,8 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex gap-4 p-4">
-                            <div className="w-1/2 bg-white shadow-md rounded-lg p-4">
-                                <CustomTableComponent
+                            <div className="w-1/2 bg-white rounded-lg p-4">
+                                <UserTableComponent
                                     columns={DashbordUsersColumns}
                                     data={DashboardUsersDummyData}
                                 />
@@ -275,12 +276,72 @@ export default function AdminDashboard() {
                             </div>
                         </div>
 
-                        <div className=" mt-[-1%] ml-5 mr-5 ">
-                            <div className="w-full bg-white shadow-md rounded-lg">
-                                <h2 className="text-2xl font-bold m-3 px-4">
-                                    School performance
-                                </h2>
-                                <div className="px-4"></div>
+                        <div className=" mt-3 ">
+                            <div className="bg-white shadow-md rounded-lg p-4 h-[30rem]">
+                                <Bar
+                                    data={{
+                                        labels: [
+                                            "2018",
+                                            "2019",
+                                            "2020",
+                                            "2021",
+                                            "2022",
+                                            "2023",
+                                            "2024",
+                                        ],
+                                        datasets: [
+                                            {
+                                                lable: "No. students",
+                                                data: [
+                                                    72, 77, 83, 60, 80, 90, 60,
+                                                ],
+                                                backgroundColor: [
+                                                    "rgba(128,128,128,0.2)",
+                                                    "rgba(0,0,0,0.2)",
+                                                    "rgba(128,128,128,0.3)",
+                                                    "rgba(255,99,132,0.4)",
+                                                    "rgba(128,128,128,0.5)",
+                                                    "rgba(75,192,192,0.6)",
+                                                    "rgba(128,128,128,0.7)",
+                                                ],
+                                                borderColor: [
+                                                    "#808080",
+                                                    "#000000",
+                                                    "#808080",
+                                                    "#FF6384",
+                                                    "#808080",
+                                                    "#4BC0C0",
+                                                    "#808080",
+                                                ],
+                                                borderWidth: 1,
+                                            },
+                                        ],
+                                    }}
+                                    options={{
+                                        plugins: {
+                                            title: {
+                                                display: true,
+                                                text: "Students pass Rate",
+                                            },
+                                        },
+                                        responsive: true,
+                                        maintainAspectRatio: true,
+                                        scales: {
+                                            x: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Year",
+                                                },
+                                            },
+                                            y: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Pass Rate (%)",
+                                                },
+                                            },
+                                        },
+                                    }}
+                                />
                             </div>
                         </div>
                     </>

@@ -24,7 +24,6 @@ import {
     Visibility as VisibilityIcon,
     People as PeopleIcon,
 } from "@mui/icons-material";
-import { MaterialReactTable } from "material-react-table";
 import axios from "axios";
 import "./users.css"; // Import the CSS file
 import { size } from "lodash";
@@ -296,6 +295,8 @@ const UserManagement = () => {
                             >
                                 {selectedUser ? "Edit User" : "Add User"}
                             </Typography>
+                            
+                            
                             <Box component="form" mt={2}>
                                 <Grid container spacing={3}>
                                     {[
@@ -491,9 +492,6 @@ const UserManagement = () => {
                     data={users}
                 />
             </div>
-            {/* 
-               
-         */}
         </div>
     );
 };

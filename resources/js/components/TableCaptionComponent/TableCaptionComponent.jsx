@@ -2,6 +2,7 @@ import React from "react";
 import { HiPlus } from "react-icons/hi";
 import { Button } from "flowbite-react";
 import { roRO } from "@mui/x-date-pickers";
+import { ModalComponent } from "../ModalComponent/ModalComponent";
 const TableCaptionComponent = (props) => {
     const { role } = props;
     return (
@@ -13,18 +14,7 @@ const TableCaptionComponent = (props) => {
                 </p>
             </div>
             <div className="p-3">
-                <Button
-                    color="blue"
-                    size="sm"
-                    className="w-max p-1 flex items-center gap-2"
-                >
-                    <div className="flex flex-row items-center ">
-                        <HiPlus size={25} />
-                        <span className="font-semibold text-[1rem]">
-                            New {role}
-                        </span>
-                    </div>
-                </Button>
+                <ModalComponent />
             </div>
         </div>
     );
