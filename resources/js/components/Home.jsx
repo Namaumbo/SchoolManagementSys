@@ -6,12 +6,10 @@ import { Outlet } from "react-router-dom";
 
 const Home = () => {
     return (
-        
         <div className="flex h-screen">
             <SideBar />
-            <div className="flex flex-col flex-1">
-             
-                <div className="flex-1 overflow-y-auto bg-[#f3f3f3]">
+            <div className="flex flex-col flex-1 border">
+                <div className="flex-1 overflow-y-auto bg-gray-100">
                     <Outlet />
                 </div>
             </div>

@@ -142,7 +142,7 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex flex-row gap-3">
-                            <div className="bg-white rounded-xl ml-[2rem] p-4 h-[30rem] w-[55%]">
+                            <div className="bg-white rounded-xl ml-[2rem] p-4 h-[30rem] w-[45%]">
                                 {/* TODO: make this a component later */}
                                 <Line
                                     key="line-chart"
@@ -204,8 +204,34 @@ export default function AdminDashboard() {
                                     }}
                                 />
                             </div>
-                            <div className="flex flex-row gap-3">
-                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[20rem] p-6">
+                            <div className="flex flex-col md:flex-row gap-3 w-full md:w-[40%]">
+                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[10rem] p-6">
+                                    <Doughnut
+                                        data={{
+                                            labels: ["boys", "girls"],
+                                            datasets: [
+                                                {
+                                                    label: "Boys Pass Rate",
+                                                    data: [45, 55],
+                                                    fill: true,
+                                                },
+                                            ],
+                                        }}
+                                        options={{
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: "Gender Statistics",
+                                                },
+                                            },
+                                            responsive: true,
+                                         
+                                            maintainAspectRatio: true,
+                                            // radius: "70%",
+                                        }}
+                                    />
+                                </div>
+                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[10rem] p-6">
                                     <Doughnut
                                         data={{
                                             labels: ["boys", "girls"],
@@ -226,28 +252,6 @@ export default function AdminDashboard() {
                                             },
                                             responsive: true,
                                             maintainAspectRatio: true,
-                                        }}
-                                    />
-                                </div>
-                                <div className="bg-white rounded-xl h-[30rem] md:h-[25rem] sm:h-[20rem] p-6">
-                                    <Doughnut
-                                        data={{
-                                            labels: ["Men", "Women"],
-                                            datasets: [
-                                                {
-                                                    label: "Staff Statistics",
-                                                    data: [57, 43],
-                                                    fill: true,
-                                                },
-                                            ],
-                                        }}
-                                        options={{
-                                            plugins: {
-                                                title: {
-                                                    display: true,
-                                                    text: "Staff Statistics",
-                                                },
-                                            },
                                         }}
                                     />
                                 </div>

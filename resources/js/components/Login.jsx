@@ -80,11 +80,8 @@ export default function Login() {
                 if (res.status === 200) {
                     const user = window.btoa(JSON.stringify(res.data["user"]));
                     localStorage.setItem("key", res.data.access_token);
-                 
 
                     console.log("user => role", res.data.user.role_name);
-
-
 
                     switch (res.data.user.role_name) {
                         case "Teacher":
@@ -140,7 +137,13 @@ export default function Login() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div
+            className="flex flex-col items-center justify-center min-h-screen bg-gray-100"
+            style={{
+                backgroundColor: "#aff97f",
+                backgroundImage: `url("https://www.transparenttextures.com/patterns/absurdity.png")`,
+            }}
+        >
             <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="text-center">

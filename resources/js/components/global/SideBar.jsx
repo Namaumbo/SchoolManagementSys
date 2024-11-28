@@ -29,7 +29,7 @@ const SideBar = () => {
         { to: "/dashboard", icon: <AiFillDashboard />, text: "Home" },
         { to: "users", icon: <BiUser />, text: "Teachers" },
         // { to: " ", icon: <BiMaleFemale />, text: "Supporting Staffs" },
-        { to: "assessment", icon: <BiStats />, text: "Student Assessment" },
+        { to: "assessment", icon: <BiStats />, text: "Assessment" },
         { to: "students", icon: <BiChild />, text: "Students" },
         // { to: "logs", icon: <BiMessageAltDetail />, text: "Logs" },
         { to: "messages", icon: <BiMessageRounded />, text: "Messages" },
@@ -42,7 +42,7 @@ const SideBar = () => {
 
     const headOfDepartmentMenuItems = [
         { to: "/dashboard", icon: <AiFillDashboard />, text: "Home" },
-        { to: "/assessment", icon: <BiStats />, text: "Student Assessment" },
+        { to: "/assessment", icon: <BiStats />, text: "Assessment" },
         { to: "students", icon: <BiChild />, text: "Students" },
         { to: "classes", icon: <BiHomeAlt2 />, text: "Classes" },
         { to: "performance", icon: <BiBarChartAlt2 />, text: "Performance" },
@@ -52,7 +52,7 @@ const SideBar = () => {
 
     const teacherMenuItems = [
         { to: "/dashboard", icon: <AiFillDashboard />, text: "Home" },
-        { to: "/assessment", icon: <BiStats />, text: "Student Assessment" },
+        { to: "/assessment", icon: <BiStats />, text: "SAssessment" },
         { to: "students", icon: <BiChild />, text: "Students" },
         { to: "classes", icon: <BiHomeAlt2 />, text: "Classes" },
         { to: "performance", icon: <BiBarChartAlt2 />, text: "Performance" },
