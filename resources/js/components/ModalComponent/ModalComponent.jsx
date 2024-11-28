@@ -7,15 +7,43 @@ import {
     Modal,
     TextInput,
     Radio,
-    Spinner
+    Spinner,
 } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
+import { set } from "lodash";
 
 export function ModalComponent() {
-    const [openModal, setOpenModal] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [saving, setSaving] = useState(false);
     const emailInputRef = useRef();
+    const firstNameInputRef = useRef();
+    const surnameInputRef = useRef();
+    const villageInputRef = useRef();
+    const traditionalAuthorityInputRef = useRef();
+    const districtInputRef = useRef();
 
+    const PersistUser = () => {
+        setSaving(true);
+        const user = {
+            email: emailInputRef.current.value,
+            firstname: firstNameInputRef.current.value,
+            surname: surnameInputRef.current.value,
+            village: villageInputRef.current.value,
+            traditional_authority: traditionalAuthorityInputRef.current.value,
+            district: districtInputRef.current.value,
+        };
+        // try {
+        //     setTimeout(() => {}, 2000);
+        // } catch (error) {
+        // } finally {
+        //     setSaving(false);
+        // }
+        setTimeout(() => {
+            setSaving(false);
+            setOpenModal(false);
+        }, 2000);
+    };
     return (
         <>
             {/* {showAlert && (
@@ -27,11 +55,10 @@ export function ModalComponent() {
                 </Alert>
             )} */}
 
-
             <Button onClick={() => setOpenModal(true)} className="w-[10rem]">
                 <div className="flex items-center justify-center">
                     <HiPlus size={22} />
-                    <span className="font-bold">Add Teacher</span> 
+                    <span className="font-bold">Add Teacher</span>
                 </div>
             </Button>
             <Modal
@@ -77,6 +104,7 @@ export function ModalComponent() {
                                     <TextInput
                                         id="firstName"
                                         placeholder="John"
+                                        ref={firstNameInputRef}
                                         required
                                     />
                                 </div>
@@ -89,6 +117,7 @@ export function ModalComponent() {
                                     <TextInput
                                         id="surname"
                                         placeholder="Doe"
+                                        ref={surnameInputRef}
                                         required
                                     />
                                 </div>
@@ -111,6 +140,7 @@ export function ModalComponent() {
                             <TextInput
                                 id="village"
                                 placeholder="Enter village"
+                                ref={villageInputRef}
                                 required
                             />
                             <div className="mb-2 mt-4 block">
@@ -122,6 +152,7 @@ export function ModalComponent() {
                             <TextInput
                                 id="district"
                                 placeholder="Enter district"
+                                ref={districtInputRef}
                                 required
                             />
                             <div className="mb-2 mt-4 block">
@@ -133,6 +164,7 @@ export function ModalComponent() {
                             <TextInput
                                 id="traditional_authority"
                                 placeholder="Enter traditional authority"
+                                ref={traditionalAuthorityInputRef}
                                 required
                             />
                         </div>
@@ -148,12 +180,26 @@ export function ModalComponent() {
                                 </Button>
                                 <Button
                                     color="success"
-                                    onClick={() => {
-                                        setOpenModal(false);
-                                        setShowAlert(true);
-                                    }}
+                                    // onClick={() => {
+                                    //     setOpenModal(false);
+                                    //     setShowAlert(true);
+                                    // }}
+
+                                    onClick={PersistUser}
                                 >
-                                    <span className="font-bold">Save</span>
+                                    <span className="font-bold">
+                                        {saving ? (
+                                            <h1>
+                                                {" "}
+                                                <Spinner
+                                                    color="success"
+                                                    aria-label="Success spinner example"
+                                                />
+                                            </h1>
+                                        ) : (
+                                            <h1>save</h1>
+                                        )}
+                                    </span>
                                 </Button>
                             </div>
                         </div>

@@ -26,7 +26,6 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import "./users.css"; // Import the CSS file
-import { size } from "lodash";
 import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
 import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
