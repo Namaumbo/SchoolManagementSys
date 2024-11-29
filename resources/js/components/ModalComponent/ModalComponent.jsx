@@ -1,8 +1,7 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
     Button,
-    Checkbox,
     Label,
     Modal,
     TextInput,
@@ -10,35 +9,60 @@ import {
     Spinner,
 } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
-import { set } from "lodash";
+import axios from "axios";
 
 export function ModalComponent() {
     const [openModal, setOpenModal] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [saving, setSaving] = useState(false);
-    const emailInputRef = useRef();
-    const firstNameInputRef = useRef();
-    const surnameInputRef = useRef();
-    const villageInputRef = useRef();
-    const traditionalAuthorityInputRef = useRef();
-    const districtInputRef = useRef();
+    const [formData, setFormData] = useState({
+        email: "",
+        firstname: "",
+        surname: "",
+        village: "",
+        traditional_authority: "",
+        district: "",
+        gender: "",
+    });
 
-    const PersistUser = () => {
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handleGenderChange = (e) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            gender: e.target.value,
+        }));
+    };
+
+    const PersistUser = async () => {
         setSaving(true);
         const user = {
-            email: emailInputRef.current.value,
-            firstname: firstNameInputRef.current.value,
-            surname: surnameInputRef.current.value,
-            village: villageInputRef.current.value,
-            traditional_authority: traditionalAuthorityInputRef.current.value,
-            district: districtInputRef.current.value,
+            ...formData,
         };
-        // try {
-        //     setTimeout(() => {}, 2000);
-        // } catch (error) {
-        // } finally {
-        //     setSaving(false);
-        // }
+        const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
+        // console.log(apiUrl);
+        await axios
+            .post(`${apiUrl}register-user`, user, {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    "Access-Control-Allow-Credentials": true,
+                },
+            })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
         setTimeout(() => {
             setSaving(false);
             setOpenModal(false);
@@ -46,18 +70,9 @@ export function ModalComponent() {
     };
     return (
         <>
-            {/* {showAlert && (
-                <Alert color="success" onDismiss={() => setShowAlert(false)}>
-                    <p className="font-medium">
-                        <span className="font-medium">Info alert!</span> User
-                        Successfully saved
-                    </p>
-                </Alert>
-            )} */}
-
             <Button onClick={() => setOpenModal(true)} className="w-[10rem]">
                 <div className="flex items-center justify-center">
-                    <HiPlus size={22} />
+                    <HiPlus size={18} className="mr-1" />
                     <span className="font-bold">Add Teacher</span>
                 </div>
             </Button>
@@ -66,12 +81,11 @@ export function ModalComponent() {
                 size="4xl"
                 popup
                 onClose={() => setOpenModal(false)}
-                initialFocus={emailInputRef}
             >
                 <Modal.Header />
                 <Modal.Body>
                     <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white t">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white ">
                             Add user
                         </h3>
                         <div>
@@ -79,32 +93,37 @@ export function ModalComponent() {
                                 <span className="font-bold">Choose Gender</span>
                                 <div className="flex items-center gap-1">
                                     <Radio
-                                        id="germany"
-                                        name="countries"
-                                        value="Germany"
+                                        id="maleGender"
+                                        name="gender"
+                                        value="male"
+                                        onChange={handleGenderChange}
+                                        checked={formData.gender === "male"}
                                     />
-                                    <Label htmlFor="germany">Male</Label>
+                                    <Label htmlFor="maleGender">Male</Label>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Radio
-                                        id="spain"
-                                        name="countries"
-                                        value="Spain"
+                                        id="femaleGender"
+                                        name="gender"
+                                        value="female"
+                                        onChange={handleGenderChange}
+                                        checked={formData.gender === "female"}
                                     />
-                                    <Label htmlFor="spain">Female</Label>
+                                    <Label htmlFor="femaleGender">Female</Label>
                                 </div>
                             </fieldset>
                             <div className=" flex flex-row  gap-2">
                                 <div className="mb-2 mt-4 block flex-1/2 w-full ">
                                     <Label
-                                        htmlFor="firstName"
+                                        htmlFor="firstname"
                                         value="Enter First Name"
                                     />
-
                                     <TextInput
-                                        id="firstName"
+                                        id="firstname"
+                                        name="firstname"
                                         placeholder="John"
-                                        ref={firstNameInputRef}
+                                        value={formData.firstname}
+                                        onChange={handleInputChange}
                                         required
                                     />
                                 </div>
@@ -113,11 +132,12 @@ export function ModalComponent() {
                                         htmlFor="surname"
                                         value="Enter Surname"
                                     />
-
                                     <TextInput
                                         id="surname"
+                                        name="surname"
                                         placeholder="Doe"
-                                        ref={surnameInputRef}
+                                        value={formData.surname}
+                                        onChange={handleInputChange}
                                         required
                                     />
                                 </div>
@@ -127,8 +147,10 @@ export function ModalComponent() {
                             </div>
                             <TextInput
                                 id="email"
-                                ref={emailInputRef}
+                                name="email"
                                 placeholder="name@company.com"
+                                value={formData.email}
+                                onChange={handleInputChange}
                                 required
                             />
                             <div className="mb-2 mt-4 block">
@@ -139,8 +161,10 @@ export function ModalComponent() {
                             </div>
                             <TextInput
                                 id="village"
+                                name="village"
                                 placeholder="Enter village"
-                                ref={villageInputRef}
+                                value={formData.village}
+                                onChange={handleInputChange}
                                 required
                             />
                             <div className="mb-2 mt-4 block">
@@ -151,8 +175,10 @@ export function ModalComponent() {
                             </div>
                             <TextInput
                                 id="district"
+                                name="district"
                                 placeholder="Enter district"
-                                ref={districtInputRef}
+                                value={formData.district}
+                                onChange={handleInputChange}
                                 required
                             />
                             <div className="mb-2 mt-4 block">
@@ -163,8 +189,10 @@ export function ModalComponent() {
                             </div>
                             <TextInput
                                 id="traditional_authority"
+                                name="traditional_authority"
                                 placeholder="Enter traditional authority"
-                                ref={traditionalAuthorityInputRef}
+                                value={formData.traditional_authority}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
@@ -178,15 +206,7 @@ export function ModalComponent() {
                                         No, cancel
                                     </span>
                                 </Button>
-                                <Button
-                                    color="success"
-                                    // onClick={() => {
-                                    //     setOpenModal(false);
-                                    //     setShowAlert(true);
-                                    // }}
-
-                                    onClick={PersistUser}
-                                >
+                                <Button color="success" onClick={PersistUser}>
                                     <span className="font-bold">
                                         {saving ? (
                                             <h1>
