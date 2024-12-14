@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import {
-    Button,
     Label,
     Modal,
     TextInput,
     Radio,
     Spinner,
+    Button,
 } from "flowbite-react";
 import { HiPlus } from "react-icons/hi";
 import axios from "axios";
@@ -68,6 +68,8 @@ export function ModalComponent({ ...props }) {
             setOpenModal(false);
         }, 2000);
     };
+
+ 
     return (
         <>
             <Button onClick={() => setOpenModal(true)} className="w-[11rem]">

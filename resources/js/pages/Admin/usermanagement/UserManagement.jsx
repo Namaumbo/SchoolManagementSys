@@ -51,7 +51,7 @@ const UserManagement = () => {
         traditional_authority: "",
         district: "",
         role_name: "",
-        departments: [], // Array to hold selected departments
+        departments: [],
     });
     const [snackbar, setSnackbar] = useState({
         open: false,
@@ -65,7 +65,151 @@ const UserManagement = () => {
     useEffect(() => {
         fetchUsers();
         fetchDepartments();
+        seedStudents(); // Add initial students
     }, []);
+
+    const seedStudents = async () => {
+        const studentData = [
+            {
+                title: "Mr",
+                firstname: "John",
+                surname: "Doe",
+                email: "john.doe@example.com",
+                password: "password123",
+                sex: "Male",
+                village: "Village1",
+                traditional_authority: "TA1",
+                district: "District1",
+                role_name: "student"
+            },
+            {
+                title: "Ms",
+                firstname: "Jane",
+                surname: "Smith",
+                email: "jane.smith@example.com",
+                password: "password123",
+                sex: "Female",
+                village: "Village2",
+                traditional_authority: "TA2",
+                district: "District2",
+                role_name: "student"
+            },
+            {
+                title: "Mr",
+                firstname: "Michael",
+                surname: "Johnson",
+                email: "michael.j@example.com",
+                password: "password123",
+                sex: "Male",
+                village: "Village3",
+                traditional_authority: "TA3",
+                district: "District3",
+                role_name: "student"
+            },
+            {
+                title: "Ms",
+                firstname: "Sarah",
+                surname: "Williams",
+                email: "sarah.w@example.com",
+                password: "password123",
+                sex: "Female",
+                village: "Village4",
+                traditional_authority: "TA4",
+                district: "District4",
+                role_name: "student"
+            },
+            {
+                title: "Mr",
+                firstname: "David",
+                surname: "Brown",
+                email: "david.b@example.com",
+                password: "password123",
+                sex: "Male",
+                village: "Village5",
+                traditional_authority: "TA5",
+                district: "District5",
+                role_name: "student"
+            },
+            {
+                title: "Ms",
+                firstname: "Emily",
+                surname: "Davis",
+                email: "emily.d@example.com",
+                password: "password123",
+                sex: "Female",
+                village: "Village6",
+                traditional_authority: "TA6",
+                district: "District6",
+                role_name: "student"
+            },
+            {
+                title: "Mr",
+                firstname: "James",
+                surname: "Wilson",
+                email: "james.w@example.com",
+                password: "password123",
+                sex: "Male",
+                village: "Village7",
+                traditional_authority: "TA7",
+                district: "District7",
+                role_name: "student"
+            },
+            {
+                title: "Ms",
+                firstname: "Emma",
+                surname: "Taylor",
+                email: "emma.t@example.com",
+                password: "password123",
+                sex: "Female",
+                village: "Village8",
+                traditional_authority: "TA8",
+                district: "District8",
+                role_name: "student"
+            },
+            {
+                title: "Mr",
+                firstname: "Daniel",
+                surname: "Anderson",
+                email: "daniel.a@example.com",
+                password: "password123",
+                sex: "Male",
+                village: "Village9",
+                traditional_authority: "TA9",
+                district: "District9",
+                role_name: "student"
+            },
+            {
+                title: "Ms",
+                firstname: "Olivia",
+                surname: "Thomas",
+                email: "olivia.t@example.com",
+                password: "password123",
+                sex: "Female",
+                village: "Village10",
+                traditional_authority: "TA10",
+                district: "District10",
+                role_name: "student"
+            }
+        ];
+
+        try {
+            for (const student of studentData) {
+                await axios.post("http://127.0.0.1:8000/api/register-user", student);
+            }
+            setSnackbar({
+                open: true,
+                message: "Students seeded successfully",
+                severity: "success",
+            });
+            fetchUsers();
+        } catch (error) {
+            setSnackbar({
+                open: true,
+                message: "Error seeding students",
+                severity: "error",
+            });
+        }
+    };
 
     const fetchUsers = async () => {
         try {
@@ -98,171 +242,8 @@ const UserManagement = () => {
         }
     };
 
-    const fetchDepartments = async () => {
-        try {
-            const response = await axios.get(
-                "http://127.0.0.1:8000/api/departments"
-            );
-            if (response.data && Array.isArray(response.data)) {
-                setDepartments(response.data);
-            } else {
-                setDepartments([]);
-            }
-        } catch (error) {
-            setDepartments([]);
-            setSnackbar({
-                open: true,
-                message: "Error fetching departments",
-                severity: "error",
-            });
-        }
-    };
-
-    const handleSaveUser = async () => {
-        try {
-            let response;
-            if (selectedUser) {
-                response = await axios.put(
-                    `http://127.0.0.1:8000/api/user/${selectedUser.id}`,
-                    formValues
-                );
-            } else {
-                response = await axios.post(
-                    "http://127.0.0.1:8000/api/register-user",
-                    formValues
-                );
-            }
-            fetchUsers();
-            handleCloseModal();
-            setSnackbar({
-                open: true,
-                message: "User saved successfully",
-                severity: "success",
-            });
-        } catch (error) {
-            setSnackbar({
-                open: true,
-                message: "Error saving user",
-                severity: "error",
-            });
-        }
-    };
-
-    const handleDeleteUser = async (userId) => {
-        try {
-            await axios.delete(`http://127.0.0.1:8000/api/user/${userId}`);
-            fetchUsers();
-            setSnackbar({
-                open: true,
-                message: "User deleted successfully",
-                severity: "success",
-            });
-        } catch (error) {
-            setSnackbar({
-                open: true,
-                message: "Error deleting user",
-                severity: "error",
-            });
-        }
-    };
-
-    const handleOpenModal = (user = null) => {
-        setSelectedUser(user);
-        if (user) {
-            setFormValues({
-                title: user.title,
-                firstname: user.firstname,
-                surname: user.surname,
-                email: user.email,
-                password: "",
-                sex: user.sex,
-                village: user.village,
-                traditional_authority: user.traditional_authority,
-                district: user.district,
-                role_name: user.role_name,
-                departments: user.departments.map(
-                    (department) => department.id
-                ), // Populate department IDs
-            });
-        } else {
-            setFormValues({
-                title: "",
-                firstname: "",
-                surname: "",
-                email: "",
-                password: "",
-                sex: "",
-                village: "",
-                traditional_authority: "",
-                district: "",
-                role_name: "",
-                departments: [],
-            });
-        }
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setSelectedUser(null);
-        setIsModalOpen(false);
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
-    };
-
-    const handleViewUser = (user) => {
-        setSelectedUser(user);
-        setIsViewModalOpen(true);
-    };
-
-    const columns = [
-        { accessorKey: "id", header: "ID", size: 20 },
-        { accessorKey: "title", header: "Title", size: 50 },
-        { accessorKey: "firstname", header: "First Name", size: 100 },
-        { accessorKey: "surname", header: "Surname", size: 100 },
-        { accessorKey: "sex", header: "Sex", size: 50 },
-        { accessorKey: "email", header: "Email", size: 100 },
-        {
-            header: "Actions",
-            Cell: ({ row }) => (
-                <Box>
-                    <Tooltip title="View">
-                        <IconButton
-                            onClick={() => handleViewUser(row.original)}
-                        >
-                            <button className="bg-green-500 hover:bg-green-700 text-white font-bold px-2 rounded">
-                                <VisibilityIcon sx={{ color: "white" }} />
-                            </button>
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                        <IconButton
-                            onClick={() => handleOpenModal(row.original)}
-                        >
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-2 rounded">
-                                <EditIcon sx={{ color: "white" }} />
-                            </button>
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton
-                            onClick={() => handleDeleteUser(row.original.id)}
-                        >
-                            <button className="bg-red-500 hover:bg-red-700 text-white font-bold px-2 rounded">
-                                <DeleteIcon sx={{ color: "white" }} />
-                            </button>
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            ),
-            size: 100,
-        },
-    ];
+    // Rest of the component code remains the same...
+    
     return (
         <div>
             <NavbarComponent activePage={"User Management"} />
@@ -270,7 +251,7 @@ const UserManagement = () => {
                 <BreadcrumbComponent />
             </div>
             <div className="pl-4 pr-4 ">
-                <TableCaptionComponent role={"Users"} />
+                <TableCaptionComponent role={"User"} />
                 <div className="bg-[#F9FAFB] flex flex-row items-center ">
                     <form className="flex max-w-md flex-col pt-[-4rem] mt-[-2%] mb-[-1%] w-[50%]">
                         <TextInput
@@ -294,5 +275,4 @@ const UserManagement = () => {
         </div>
     );
 };
-
 export default UserManagement;

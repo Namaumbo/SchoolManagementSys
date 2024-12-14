@@ -11,6 +11,8 @@ use App\Models\Assessment;
 use App\Models\SchoolInformation;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class StudentService
 {
@@ -103,30 +105,60 @@ class StudentService
                 'message' => '',
                 'status' => '',
                 'student' => null,
+                'description' => ''
             ];
             $code = 200;
+
+            $validator = Validator::make($request->all(), [
+                'firstname' => 'required|string|max:255',
+                'surname' => 'required|string|max:255',
+                'className' => 'required|string',
+                'sex' => 'required|in:Male,Female',
+                'village' => 'required|string',
+                'traditional_authority' => 'required|string',
+                'district' => 'required|string',
+                'role_name' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                $response['message'] = 'Validation failed';
+                $response['status'] = 'error';
+                $response['description'] = $validator->errors();
+                return response()->json($response, 422);
+            }
+
             $student = Student::where('username', $request->input('username'))->first();
             if ($student) {
                 $response['message'] = 'Student already exists';
-                $response['status'] = 'fail';
+                $response['status'] = 'error';
                 $response['student'] = $student;
+                $response['description'] = 'A student with this username already exists in the system';
                 $code = 409;
             } else {
-                $student = new Student;
-                $this->create($request, $student);
-                $response['message'] = 'Student saved successfully';
-                $response['status'] = 'success';
-                $response['student'] = $student;
-                $code = 201;
+                DB::beginTransaction();
+                try {
+                    $student = new Student;
+                    $this->create($request, $student);
+                    DB::commit();
+
+                    $response['message'] = 'Student saved successfully';
+                    $response['status'] = 'success';
+                    $response['student'] = $student;
+                    $response['description'] = 'Student has been registered successfully';
+                    $code = 201;
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    throw $e;
+                }
             }
         } catch (\Exception $e) {
-            $response['message'] = $e->getMessage();
-            $response['status'] = 'fail';
+            $response['message'] = 'An error occurred while processing your request';
+            $response['status'] = 'error';
+            $response['description'] = config('app.debug') ? $e->getMessage() : 'Please contact system administrator';
             $code = 500;
         }
         return response()->json($response, $code);
     }
-
     /**
      * Register a subject to a student.
      *
@@ -136,39 +168,61 @@ class StudentService
     public function registerSubjectToStudent(Request $request): JsonResponse
     {
         try {
-            $response = [];
-            $code = 200;
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string',
+                'name' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'description' => $validator->errors()
+                ], 422);
+            }
+
             $student = Student::where('username', $request->input('username'))->first();
             $subject = Subject::where('name', $request->input('name'))->first();
 
             if (!$student) {
-                $response['status'] = 'error';
-                $response['message'] = 'No student found';
-                $response['description'] = 'Please select a student from the list';
-                $code = 404;
-            } elseif (!$subject) {
-                $response['status'] = 'error';
-                $response['message'] = 'No subject found';
-                $response['description'] = 'Please select a subject from the list';
-                $code = 404;
-            } else {
-                if ($student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name])) {
-                    $response['status'] = 'success';
-                    $response['message'] = 'Subject added successfully';
-                    $response['describedAs'] = $subject->name;
-                    $response['records'] = $subject->students;
-                    $code = 200;
-                }
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No student found',
+                    'description' => 'Please select a student from the list'
+                ], 404);
+            }
+
+            if (!$subject) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No subject found',
+                    'description' => 'Please select a subject from the list'
+                ], 404);
+            }
+
+            DB::beginTransaction();
+            try {
+                $student->subjects()->syncWithoutDetaching([$subject->id => ['name' => $subject->name]]);
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Subject added successfully',
+                    'describedAs' => $subject->name,
+                    'records' => $subject->students
+                ], 200);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
         } catch (\Exception $e) {
-            $response['status'] = 'fail';
-            $response['message'] = $e->getMessage();
-            $code = 500;
-            $response['description'] = 'Error encountered contact IT support';
+            return response()->json([
+                'status' => 'error',
+                'message' => config('app.debug') ? $e->getMessage() : 'Error encountered contact IT support',
+                'description' => 'Error encountered contact IT support'
+            ], 500);
         }
-        return response()->json($response, $code);
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -179,20 +233,35 @@ class StudentService
     public function update(Request $request, $id): JsonResponse
     {
         try {
-            if (Student::where('id', $id)->exists()) {
-                $student = Student::find($id);
-                $this->create($request, $student);
+            $student = Student::find($id);
+
+            if (!$student) {
                 return response()->json([
-                    'message' => 'Student is updated successfully'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'No Student found with that information '
+                    'status' => 'error',
+                    'message' => 'No Student found with that information',
+                    'description' => 'Please ensure the student exists'
                 ], 404);
+            }
+
+            DB::beginTransaction();
+            try {
+                $this->create($request, $student);
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Student updated successfully',
+                    'data' => $student
+                ], 200);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
         } catch (\Exception $e) {
             return response()->json([
-                'message' => $e->getMessage()
+                'status' => 'error',
+                'message' => config('app.debug') ? $e->getMessage() : 'Error updating student',
+                'description' => 'Error encountered, please contact IT support'
             ], 500);
         }
     }
@@ -208,7 +277,16 @@ class StudentService
         try {
             $student = Student::find($id);
 
-            if ($student) {
+            if (!$student) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No Student found with that information',
+                    'description' => 'Please ensure the student exists'
+                ], 404);
+            }
+
+            DB::beginTransaction();
+            try {
                 // Delete associated assessments
                 Assessment::where('student_id', $student->id)->delete();
 
@@ -218,17 +296,22 @@ class StudentService
                 // Delete the student
                 $student->delete();
 
+                DB::commit();
+
                 return response()->json([
-                    'message' => 'Student and associated records deleted successfully'
+                    'status' => 'success',
+                    'message' => 'Student and associated records deleted successfully',
+                    'data' => null
                 ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'No Student found with that information',
-                ], 404);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
         } catch (\Exception $e) {
             return response()->json([
-                'message' => $e->getMessage(),
+                'status' => 'error',
+                'message' => config('app.debug') ? $e->getMessage() : 'Error deleting student',
+                'description' => 'Error encountered, please contact IT support'
             ], 500);
         }
     }
