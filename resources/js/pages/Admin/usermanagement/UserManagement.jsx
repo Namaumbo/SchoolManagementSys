@@ -30,8 +30,9 @@ import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent
 import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
 import { UserManagementTableColumns } from "../../../../core/TableColumns";
-import { Button } from "flowbite-react";
+import { TextInput } from "flowbite-react";
 import TableCaptionComponent from "../../../components/TableCaptionComponent/TableCaptionComponent";
+import { FiSearch } from "react-icons/fi";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -69,22 +70,25 @@ const UserManagement = () => {
     const fetchUsers = async () => {
         try {
             const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
-            const response = await axios.get(`${apiUrl}users`);
-            console.log("hie")
-            console.log(response)
-            // if (
-            //     response.data &&
-            //     response.data.users &&
-            //     Array.isArray(response.data.users)
-            // ) {
-            //     console.log("am here poot")
-            //     console.log("____" ,response.data.users);
-            //     setUsers(response.data.users);
-            // } else {
-            //     setUsers([]);
-            // }
+            const response = await axios.get(`${apiUrl}users`, {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    "Access-Control-Allow-Credentials": true,
+                },
+            });
+            if (
+                response.data &&
+                response.data.users &&
+                Array.isArray(response.data.users)
+            ) {
+                console.log(response.data.users);
+                setUsers(response.data.users);
+            } else {
+                setUsers([]);
+            }
         } catch (error) {
-            console.log(error)
             setUsers([]);
             setSnackbar({
                 open: true,
@@ -216,7 +220,6 @@ const UserManagement = () => {
         setIsViewModalOpen(true);
     };
 
-
     const columns = [
         { accessorKey: "id", header: "ID", size: 20 },
         { accessorKey: "title", header: "Title", size: 50 },
@@ -260,23 +263,29 @@ const UserManagement = () => {
             size: 100,
         },
     ];
-
-    // console.log(users);
     return (
         <div>
             <NavbarComponent activePage={"User Management"} />
             <div className=" pb-4">
                 <BreadcrumbComponent />
             </div>
-        
-            {/* 
-            
-            
-            */}
-
-            <div className="pl-4 pr-4">
-            
+            <div className="pl-4 pr-4 ">
                 <TableCaptionComponent role={"Users"} />
+                <div className="bg-[#F9FAFB] flex flex-row items-center ">
+                    <form className="flex max-w-md flex-col pt-[-4rem] mt-[-2%] mb-[-1%] w-[50%]">
+                        <TextInput
+                            id="email1"
+                            type="email"
+                            placeholder="search for a user by first / last / full name "
+                            required
+                        />
+                    </form>
+                    <FiSearch
+                        className="mb-3 cursor-pointer hover:scale-110"
+                        size={25}
+                    />
+                </div>
+
                 <CustomTableComponent
                     columns={UserManagementTableColumns}
                     data={users}

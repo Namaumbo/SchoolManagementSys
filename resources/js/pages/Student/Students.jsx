@@ -36,7 +36,8 @@ import CustomTableComponent from "../../components/CustomTableComponents/CustomT
 import { StudentTableColumns } from "../../../core/TableColumns";
 import { BreadcrumbComponent } from "../../components/BreadcrumbComponent/BreadcrumbComponent";
 import TableCaptionComponent from "../../components/TableCaptionComponent/TableCaptionComponent";
-
+import { TextInput } from "flowbite-react";
+import { FiSearch } from "react-icons/fi";
 const showErrorAlert = (title, text) => {
     console.error(`${title}: ${text}`);
 };
@@ -552,8 +553,22 @@ const Students = () => {
             </Box>
 
             <div className="pr-4 pl-4">
-                <TableCaptionComponent role={"Students"} />
+                <TableCaptionComponent role={"Student"} />
                 <div className="px-1 pr-2">
+                    <div className="bg-[#F9FAFB] flex flex-row items-center ">
+                        <form className="flex max-w-md flex-col pt-[-4rem] mt-[-2%] mb-[-1%] w-[50%]">
+                            <TextInput
+                                id="email1"
+                                type="email"
+                                placeholder="search for a user by first / last / full name "
+                                required
+                            />
+                        </form>
+                        <FiSearch
+                            className="mb-3 cursor-pointer hover:scale-110"
+                            size={25}
+                        />
+                    </div>
                     {/* todo include the following here onClick={() => openDeleteConfirmModal(row) */}
                     <CustomTableComponent
                         data={fetchedUsers}

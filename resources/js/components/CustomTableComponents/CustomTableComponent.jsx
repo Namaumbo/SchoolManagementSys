@@ -1,7 +1,7 @@
 import React from "react";
-import { Table, Checkbox, Button } from "flowbite-react";
+import { Table, Checkbox } from "flowbite-react";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiEdit } from "react-icons/fi";
+import { CiEdit } from "react-icons/ci";
 
 const CustomTableComponent = (props) => {
     const { data, columns } = props;
@@ -23,47 +23,66 @@ const CustomTableComponent = (props) => {
                     ))}
                 </Table.Head>
                 <Table.Body className="divide-y">
-                    {data.map((row) => (
-                        <Table.Row
-                            key={row.id}
-                            className="bg-white dark:border-gray-700 dark:bg-gray-800 py-[0.9rem]"
-                        >
-                            <Table.Cell className="py-[0.9rem]">
-                                <Checkbox />
+                    {data.length === 0 ? (
+                        <Table.Row>
+                            <Table.Cell colSpan={columns.length + 1}>
+                                <h1 className="text-xl text-center">No data</h1>
                             </Table.Cell>
-                            <Table.Cell className="py-[0.9rem]">
-                                {row.id}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap  text-gray-900 dark:text-white py-[0.9rem] text-[1rem]">
-                                {row.firstname}
-                            </Table.Cell>
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white py-[0.9rem] text-[1rem]">
-                                {row.surname}
-                            </Table.Cell>
-                            <Table.Cell className="py-[0.9rem] text-[1rem]">
-                                {row.username}
-                            </Table.Cell>
-                            <Table.Cell className="py-[0.9rem] text-[1rem]">
-                                {row.sex}
-                            </Table.Cell>
-                            <Table.Cell className="py-[0.9rem] text-[1rem]">
-                                {row.className}
-                            </Table.Cell>
-                            {/* <Table.Cell className="flex gap-2 py-[0.9rem] ">
-                                <Button size="sm" className="bg-blue-600" pill>
-                                    <FiEdit size={20} />
-                                </Button>
-                                <Button
-                                    className="bg-red-700"
-                                    size="sm"
-                                    onClick={() => openDeleteConfirmModal(row)}
-                                    pill
-                                >
-                                    <MdDeleteOutline size={20} />
-                                </Button>
-                            </Table.Cell> */}
                         </Table.Row>
-                    ))}
+                    ) : (
+                        data.map((row) => (
+                            <Table.Row
+                                key={row.id}
+                                className="bg-white dark:border-gray-700 dark:bg-gray-800 py-[0.9rem]"
+                            >
+                                <Table.Cell className="">
+                                    <Checkbox />
+                                </Table.Cell>
+                                <Table.Cell className="">{row.id}</Table.Cell>
+                                <Table.Cell className="whitespace-nowrap  text-gray-900 dark:text-white py-[0.9rem] text-base">
+                                    {row.title}
+                                </Table.Cell>
+                                <Table.Cell className="whitespace-nowrap  dark:text-white py-[0.9rem] text-base">
+                                    {row.firstname}
+                                </Table.Cell>
+                                <Table.Cell className=" font-medium text-base">
+                                    {row.surname}
+                                </Table.Cell>
+                                <Table.Cell className=" text-base">
+                                    <span
+                                        className={`px-2 py-2 font-bold rounded-full ${
+                                            row.role_name === "Teacher"
+                                                ? "bg-orange-400 text-white"
+                                                : row.role_name ===
+                                                  "Administrator"
+                                                ? "bg-green-400 text-white"
+                                                : "bg-blue-500 text-white"
+                                        }`}
+                                    >
+                                        {row.role_name}
+                                    </span>
+                                </Table.Cell>
+                                <Table.Cell className=" text-gray-900 text-base">
+                                    {row.email}
+                                </Table.Cell>
+                                <Table.Cell className="flex gap-2 py-[0.9rem] ">
+                                    <CiEdit
+                                        color="blue"
+                                        className="cursor-pointer hover:scale-110"
+                                        size={25}
+                                    />
+                                    <MdDeleteOutline
+                                        color="red"
+                                        className="cursor-pointer hover:scale-110"
+                                        size={25}
+                                        onClick={() =>
+                                            openDeleteConfirmModal(row)
+                                        }
+                                    />
+                                </Table.Cell>
+                            </Table.Row>
+                        ))
+                    )}
                 </Table.Body>
             </Table>
         </div>

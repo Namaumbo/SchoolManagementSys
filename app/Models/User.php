@@ -52,10 +52,10 @@ class User extends Authenticatable
         return $this->morphToMany(Subject::class, 'allocationable');
     }
 
-    // public function departments()
-    // {
-    //     return $this->belongsToMany(Department::class);
-    // }
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class);
+    }
 
     public function departmentHead()
     {

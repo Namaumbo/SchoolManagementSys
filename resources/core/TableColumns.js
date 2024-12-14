@@ -45,7 +45,7 @@ const StudentTableColumns = [
 
 const UserManagementTableColumns = [
     {
-        Header: "ID",
+        Header: "Id",
         accessorKey: "id",
         enableColumnFilter: false,
         enableSorting: false,
@@ -86,7 +86,6 @@ const UserManagementTableColumns = [
         enableColumnFilter: true,
     },
 ];
-
 const StudentAssementTableColumns = [
     {
         Header: "Student ID",

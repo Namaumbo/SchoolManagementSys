@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography, Switch } from "@mui/material";
-import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineWbSunny, MdOutlineDarkMode } from "react-icons/md";
 import { Dropdown } from "flowbite-react";
 import { HiCog, HiLogout, HiUser, HiViewGrid } from "react-icons/hi";

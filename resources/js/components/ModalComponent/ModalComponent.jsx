@@ -11,7 +11,7 @@ import {
 import { HiPlus } from "react-icons/hi";
 import axios from "axios";
 
-export function ModalComponent() {
+export function ModalComponent({ ...props }) {
     const [openModal, setOpenModal] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -70,10 +70,10 @@ export function ModalComponent() {
     };
     return (
         <>
-            <Button onClick={() => setOpenModal(true)} className="w-[10rem]">
+            <Button onClick={() => setOpenModal(true)} className="w-[11rem]">
                 <div className="flex items-center justify-center">
                     <HiPlus size={18} className="mr-1" />
-                    <span className="font-bold">Add Teacher</span>
+                    <span className="font-bold">Add {props.role}</span>
                 </div>
             </Button>
 
