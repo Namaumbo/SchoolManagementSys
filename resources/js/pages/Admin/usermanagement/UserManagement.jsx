@@ -64,26 +64,27 @@ const UserManagement = () => {
     useEffect(() => {
         fetchUsers();
         fetchDepartments();
-        const timer = setInterval(() => {
-            setCurrentDateTime(new Date().toLocaleString());
-        }, 1000);
-        return () => clearInterval(timer);
     }, []);
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/users");
-            if (
-                response.data &&
-                response.data.users &&
-                Array.isArray(response.data.users)
-            ) {
-                // console.log(response.data.users);
-                setUsers(response.data.users);
-            } else {
-                setUsers([]);
-            }
+            const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
+            const response = await axios.get(`${apiUrl}users`);
+            console.log("hie")
+            console.log(response)
+            // if (
+            //     response.data &&
+            //     response.data.users &&
+            //     Array.isArray(response.data.users)
+            // ) {
+            //     console.log("am here poot")
+            //     console.log("____" ,response.data.users);
+            //     setUsers(response.data.users);
+            // } else {
+            //     setUsers([]);
+            // }
         } catch (error) {
+            console.log(error)
             setUsers([]);
             setSnackbar({
                 open: true,
@@ -215,10 +216,6 @@ const UserManagement = () => {
         setIsViewModalOpen(true);
     };
 
-    const handleCloseViewModal = () => {
-        setSelectedUser(null);
-        setIsViewModalOpen(false);
-    };
 
     const columns = [
         { accessorKey: "id", header: "ID", size: 20 },
@@ -264,227 +261,21 @@ const UserManagement = () => {
         },
     ];
 
+    // console.log(users);
     return (
         <div>
             <NavbarComponent activePage={"User Management"} />
             <div className=" pb-4">
                 <BreadcrumbComponent />
             </div>
-            <Container>
-                <Modal open={isModalOpen} onClose={handleCloseModal}>
-                    <Fade in={isModalOpen}>
-                        <Paper
-                            sx={{
-                                p: 4,
-                                width: "600px",
-                                maxWidth: "90%",
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                borderRadius: 2,
-                                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.15)",
-                            }}
-                        >
-                            <Typography
-                                variant="h5"
-                                component="h2"
-                                fontWeight="bold"
-                                mb={3}
-                            >
-                                {selectedUser ? "Edit User" : "Add User"}
-                            </Typography>
-                            
-                            
-                            <Box component="form" mt={2}>
-                                <Grid container spacing={3}>
-                                    {[
-                                        "title",
-                                        "firstname",
-                                        "surname",
-                                        "email",
-                                        "password",
-                                        "sex",
-                                        "village",
-                                        "traditional_authority",
-                                        "district",
-                                        "role_name",
-                                    ].map((field) => (
-                                        <Grid item xs={12} sm={6} key={field}>
-                                            <TextField
-                                                name={field}
-                                                label={
-                                                    field
-                                                        .replace("_", " ")
-                                                        .charAt(0)
-                                                        .toUpperCase() +
-                                                    field
-                                                        .replace("_", " ")
-                                                        .slice(1)
-                                                }
-                                                value={formValues[field]}
-                                                onChange={handleChange}
-                                                fullWidth
-                                                required={
-                                                    field !== "sex" &&
-                                                    field !== "village" &&
-                                                    field !==
-                                                        "traditional_authority" &&
-                                                    field !== "district" &&
-                                                    field !== "role_name"
-                                                }
-                                                type={
-                                                    field === "password"
-                                                        ? "password"
-                                                        : "text"
-                                                }
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                    ))}
-                                    <Grid item xs={12}>
-                                        <FormControl
-                                            fullWidth
-                                            variant="outlined"
-                                        >
-                                            <InputLabel>Departments</InputLabel>
-                                            <Select
-                                                name="departments"
-                                                value={formValues.departments}
-                                                onChange={(e) =>
-                                                    setFormValues({
-                                                        ...formValues,
-                                                        departments:
-                                                            e.target.value,
-                                                    })
-                                                }
-                                                multiple
-                                                required
-                                                label="Departments"
-                                            >
-                                                {departments.map(
-                                                    (department) => (
-                                                        <MenuItem
-                                                            key={department.id}
-                                                            value={
-                                                                department.id
-                                                            }
-                                                        >
-                                                            {
-                                                                department.departmentName
-                                                            }
-                                                        </MenuItem>
-                                                    )
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                                <Box
-                                    mt={4}
-                                    display="flex"
-                                    justifyContent="flex-end"
-                                >
-                                    <Button
-                                        variant="outlined"
-                                        color="secondary"
-                                        onClick={handleCloseModal}
-                                        sx={{
-                                            mr: 2,
-                                            borderRadius: "20px",
-                                            textTransform: "none",
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleSaveUser}
-                                        sx={{
-                                            borderRadius: "20px",
-                                            textTransform: "none",
-                                        }}
-                                    >
-                                        Save
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Paper>
-                    </Fade>
-                </Modal>
-
-                <Snackbar
-                    open={snackbar.open}
-                    autoHideDuration={6000}
-                    onClose={() => setSnackbar({ ...snackbar, open: false })}
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
-                >
-                    <Alert
-                        severity={snackbar.severity}
-                        onClose={() =>
-                            setSnackbar({ ...snackbar, open: false })
-                        }
-                        variant="filled"
-                        elevation={6}
-                    >
-                        {snackbar.message}
-                    </Alert>
-                </Snackbar>
-
-                {/* <Box sx={{ height: 600, width: "100%" }}>
-                    <MaterialReactTable
-                        columns={columns}
-                        data={users}
-                        enableColumnFilters
-                        enableGlobalFilter
-                        enablePagination
-                        enableSorting
-                        muiTableProps={{
-                            sx: {
-                                tableLayout: "fixed",
-                                padding: "0",
-                            },
-                        }}
-                        muiTableBodyCellProps={{
-                            sx: {
-                                padding: "4px",
-                                fontSize: "0.85rem",
-                            },
-                        }}
-                        muiTableHeadCellProps={{
-                            sx: {
-                                fontWeight: "bolder",
-                                backgroundColor: "",
-                                color: "black",
-                                padding: "5px",
-                                fontSize: "0.9rem",
-                            },
-                        }}
-                        renderTopToolbarCustomActions={() => (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleOpenModal()}
-                                sx={{
-                                    borderRadius: "2px",
-                                    padding: "3px 8px",
-                                    fontSize: "0.8rem",
-                                    textTransform: "none",
-                                }}
-                            >
-                                <AddIcon /> Add User
-                            </Button>
-                        )}
-                        density="compact"
-                    />
-                </Box> */}
-            </Container>
+        
+            {/* 
+            
+            
+            */}
 
             <div className="pl-4 pr-4">
+            
                 <TableCaptionComponent role={"Users"} />
                 <CustomTableComponent
                     columns={UserManagementTableColumns}

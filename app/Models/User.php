@@ -40,10 +40,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class, 'role_name', 'role_name');
-    }
+    // public function role()
+    // {
+    //     return $this->belongsTo(Role::class, 'role_name', 'role_name');
+    // }
 
   
 
@@ -52,10 +52,10 @@ class User extends Authenticatable
         return $this->morphToMany(Subject::class, 'allocationable');
     }
 
-    public function departments()
-    {
-        return $this->belongsToMany(Department::class);
-    }
+    // public function departments()
+    // {
+    //     return $this->belongsToMany(Department::class);
+    // }
 
     public function departmentHead()
     {

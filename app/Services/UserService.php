@@ -109,16 +109,16 @@ class UserService
             $newUser->save();
 
             // Attach departments to the newly created user using syncWithoutDetaching
-            if ($request->has('departments')) {
-                $newUser->departments()->syncWithoutDetaching($request->input('departments'));
-            }
-            Log::info('Failed to save user: ' . $e->getMessage());
+            // if ($request->has('departments')) {
+            //     $newUser->departments()->syncWithoutDetaching($request->input('departments'));
+            // }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'User saved successfully',
                 'user' => $newUser,
             ], 201);
+            
         } catch (\Exception $e) {
             Log::error('Failed to save user: ' . $e->getMessage());
             return response()->json([

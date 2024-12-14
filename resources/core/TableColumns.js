@@ -69,8 +69,8 @@ const UserManagementTableColumns = [
         enableSorting: true,
     },
     {
-        Header: "Sex",
-        accessorKey: "sex",
+        Header: "Role",
+        accessorKey: "role",
         enableColumnFilter: true,
         enableSorting: true,
     },
@@ -135,12 +135,12 @@ const StudentAssementTableColumns = [
 
 const DashbordUsersColumns = [
     {
-            Header: "ID",
-            accessorKey: "id",
-            enableColumnFilter: true,
-            enableSorting: true,
-        },
-    
+        Header: "ID",
+        accessorKey: "id",
+        enableColumnFilter: true,
+        enableSorting: true,
+    },
+
     {
         Header: "First Name",
         accessorKey: "firstName",

@@ -46,7 +46,7 @@ export function ModalComponent() {
             ...formData,
         };
         const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
-        // console.log(apiUrl);
+
         await axios
             .post(`${apiUrl}register-user`, user, {
                 withCredentials: true,
@@ -76,6 +76,7 @@ export function ModalComponent() {
                     <span className="font-bold">Add Teacher</span>
                 </div>
             </Button>
+
             <Modal
                 show={openModal}
                 size="4xl"
@@ -86,7 +87,13 @@ export function ModalComponent() {
                 <Modal.Body>
                     <div className="space-y-6">
                         <h3 className="text-2xl font-bold text-gray-900 dark:text-white ">
-                            Add user
+                            <span className="relative flex justify-center">
+                                <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-75"></div>
+
+                                <span className="relative z-10 bg-white px-6 font-extrabold text-2xl">
+                                    Add user
+                                </span>
+                            </span>
                         </h3>
                         <div>
                             <fieldset className="flex max-w-md flex-col gap-4">

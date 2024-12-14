@@ -27,16 +27,13 @@ const SideBar = () => {
 
     const adminMenuItems = [
         { to: "/dashboard", icon: <AiFillDashboard />, text: "Home" },
-        { to: "users", icon: <BiUser />, text: "Teachers" },
-        // { to: " ", icon: <BiMaleFemale />, text: "Supporting Staffs" },
+        { to: "users", icon: <BiUser />, text: "Users" },
         { to: "assessment", icon: <BiStats />, text: "Assessment" },
         { to: "students", icon: <BiChild />, text: "Students" },
-        // { to: "logs", icon: <BiMessageAltDetail />, text: "Logs" },
         { to: "messages", icon: <BiMessageRounded />, text: "Messages" },
         { to: "classes", icon: <BiHomeAlt2 />, text: "Classes" },
         { to: "performance", icon: <BiBarChartAlt2 />, text: "Performance" },
         { to: "department", icon: <FiUmbrella />, text: "Department" },
-        // { to: "payments", icon: <BiDollar />, text: "Fees Balances" },
         { to: "subject", icon: <GoBook />, text: "Subjects" },
     ];
 
