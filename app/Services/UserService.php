@@ -27,7 +27,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
 use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-// use Illuminate\Support\Facades\Log;
+ use Illuminate\Support\Facades\Log;
 
 
 class UserService
