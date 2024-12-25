@@ -30,7 +30,6 @@ class UserResource extends JsonResource
             'role_id' => $this->role_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'roles' => RoleResource::collection($this->roles),
             'departments' => DepartmentResource::collection($this->departments),
 
 

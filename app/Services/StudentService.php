@@ -23,7 +23,7 @@ class StudentService
      */
     public function getStudents(): JsonResponse
     {
-        $students = Student::with('subjects')->get();
+        $students = Student::with('subjects')->paginate(10);
         return response()->json($students, 200);
     }
 
