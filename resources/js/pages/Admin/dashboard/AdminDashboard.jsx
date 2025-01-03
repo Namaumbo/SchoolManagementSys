@@ -284,8 +284,8 @@ export default function AdminDashboard() {
                             </div>
                         </div>
 
-                        <div className=" mt-3 ">
-                            <div className="bg-white shadow-md rounded-lg p-4 h-[30rem]">
+                        <div className=" pl-4 pr-4">
+                            <div className="bg-white shadow-md rounded-lg p-4 h-[30rem] w-1/2 text-left">
                                 <Bar
                                     data={{
                                         labels: [
