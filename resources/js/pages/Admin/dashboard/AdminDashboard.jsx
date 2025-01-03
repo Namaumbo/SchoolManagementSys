@@ -97,12 +97,15 @@ export default function AdminDashboard() {
     ];
 
     const statisticalData = [
-        { menu: "Students", image: studentsPng, number: students.length },
-        { menu: "Teachers", image: teachersPng, number: users.length },
+        {
+            menu: "Students",
+            image: studentsPng,
+            number: students?.data?.length,
+        },
+        { menu: "Teachers", image: teachersPng, number: users?.length },
         { menu: "Students", image: studentsPng, number: 0 },
         { menu: "Students", image: studentsPng, number: 0 },
     ];
-
     const isAdminOrHeadTeacher = loggedIn && role === "admin";
     const isTeacher = loggedIn && role === "Teacher";
 
@@ -225,7 +228,7 @@ export default function AdminDashboard() {
                                                 },
                                             },
                                             responsive: true,
-                                         
+
                                             maintainAspectRatio: true,
                                             // radius: "70%",
                                         }}

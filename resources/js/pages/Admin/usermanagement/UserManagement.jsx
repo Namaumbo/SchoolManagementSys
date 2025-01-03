@@ -1,31 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-    Box,
-    Typography,
-    IconButton,
-    Tooltip,
-    Snackbar,
-    Alert,
-    Modal,
-    Paper,
-    Fade,
-    TextField,
-    Grid,
-    Container,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
-} from "@mui/material";
-import {
-    Add as AddIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Visibility as VisibilityIcon,
-    People as PeopleIcon,
-} from "@mui/icons-material";
 import axios from "axios";
-import "./users.css"; // Import the CSS file
+import "./users.css";
 import NavbarComponent from "../../../components/NavBarComponent/NavbarComponent";
 import { BreadcrumbComponent } from "../../../components/BreadcrumbComponent/BreadcrumbComponent";
 import CustomTableComponent from "../../../components/CustomTableComponents/CustomTableComponent";
@@ -64,8 +39,8 @@ const UserManagement = () => {
 
     useEffect(() => {
         fetchUsers();
-        fetchDepartments();
-        seedStudents(); // Add initial students
+        // fetchDepartments();
+        // seedStudents(); // Add initial students
     }, []);
 
     const seedStudents = async () => {
@@ -80,7 +55,7 @@ const UserManagement = () => {
                 village: "Village1",
                 traditional_authority: "TA1",
                 district: "District1",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Ms",
@@ -92,7 +67,7 @@ const UserManagement = () => {
                 village: "Village2",
                 traditional_authority: "TA2",
                 district: "District2",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Mr",
@@ -104,7 +79,7 @@ const UserManagement = () => {
                 village: "Village3",
                 traditional_authority: "TA3",
                 district: "District3",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Ms",
@@ -116,7 +91,7 @@ const UserManagement = () => {
                 village: "Village4",
                 traditional_authority: "TA4",
                 district: "District4",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Mr",
@@ -128,7 +103,7 @@ const UserManagement = () => {
                 village: "Village5",
                 traditional_authority: "TA5",
                 district: "District5",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Ms",
@@ -140,7 +115,7 @@ const UserManagement = () => {
                 village: "Village6",
                 traditional_authority: "TA6",
                 district: "District6",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Mr",
@@ -152,7 +127,7 @@ const UserManagement = () => {
                 village: "Village7",
                 traditional_authority: "TA7",
                 district: "District7",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Ms",
@@ -164,7 +139,7 @@ const UserManagement = () => {
                 village: "Village8",
                 traditional_authority: "TA8",
                 district: "District8",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Mr",
@@ -176,7 +151,7 @@ const UserManagement = () => {
                 village: "Village9",
                 traditional_authority: "TA9",
                 district: "District9",
-                role_name: "student"
+                role_name: "student",
             },
             {
                 title: "Ms",
@@ -188,14 +163,14 @@ const UserManagement = () => {
                 village: "Village10",
                 traditional_authority: "TA10",
                 district: "District10",
-                role_name: "student"
-            }
+                role_name: "student",
+            },
         ];
 
         try {
-            for (const student of studentData) {
-                await axios.post("http://127.0.0.1:8000/api/register-user", student);
-            }
+            // for (const student of studentData) {
+            //     await axios.post("http://127.0.0.1:8000/api/register-user", student);
+            // }
             setSnackbar({
                 open: true,
                 message: "Students seeded successfully",
@@ -214,20 +189,20 @@ const UserManagement = () => {
     const fetchUsers = async () => {
         try {
             const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
+
             const response = await axios.get(`${apiUrl}users`, {
-                withCredentials: true,
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
                     "Access-Control-Allow-Credentials": true,
                 },
             });
+
             if (
                 response.data &&
                 response.data.users &&
                 Array.isArray(response.data.users)
             ) {
-                console.log(response.data.users);
                 setUsers(response.data.users);
             } else {
                 setUsers([]);
@@ -241,9 +216,6 @@ const UserManagement = () => {
             });
         }
     };
-
-    // Rest of the component code remains the same...
-    
     return (
         <div>
             <NavbarComponent activePage={"User Management"} />
@@ -255,8 +227,8 @@ const UserManagement = () => {
                 <div className="bg-[#F9FAFB] flex flex-row items-center ">
                     <form className="flex max-w-md flex-col pt-[-4rem] mt-[-2%] mb-[-1%] w-[50%]">
                         <TextInput
-                            id="email1"
-                            type="email"
+                            id="name"
+                            type="text"
                             placeholder="search for a user by first / last / full name "
                             required
                         />
@@ -266,7 +238,7 @@ const UserManagement = () => {
                         size={25}
                     />
                 </div>
-
+            {console.log(users)}
                 <CustomTableComponent
                     columns={UserManagementTableColumns}
                     data={users}
