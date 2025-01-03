@@ -98,7 +98,7 @@ const Panel = ({ severity, onClose, children }) => {
 
 const Students = () => {
     const [validationErrors, setValidationErrors] = useState({});
-    const [fetchedUsers, setFetchedUsers] = useState([]);
+    const [students, setStudents] = useState([]);
     const [classOptions, setClassOptions] = useState([]);
     const [isLoadingInitialData, setIsLoadingInitialData] = useState(true);
     const [creatingUser, setCreatingUser] = useState(false);
@@ -117,6 +117,7 @@ const Students = () => {
     const [isLoadingCreate, setIsLoadingCreate] = useState(false);
 
     const role = window.atob(localStorage.getItem("role"));
+    const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -124,15 +125,10 @@ const Students = () => {
                 showLoadingAlert();
                 await new Promise((resolve) => setTimeout(resolve, 15));
 
-                const usersResponse = await axios.get(
-                    "http://127.0.0.1:8000/api/students"
-                );
-                const classesResponse = await axios.get(
-                    "http://127.0.0.1:8000/api/classes"
-                );
-
-                setFetchedUsers(usersResponse.data);
-                setClassOptions(classesResponse.data);
+                const usersResponse = await axios.get(`${apiUrl}students`);
+                const classesResponse = await axios.get(`${apiUrl}classes`);
+                setStudents(usersResponse?.data?.data);
+                setClassOptions(classesResponse?.data);
             } catch (error) {
                 showErrorAlert(
                     "Error",
@@ -196,7 +192,7 @@ const Students = () => {
                 );
                 if (response.status === 200) {
                     console.log("Student deleted successfully");
-                    setFetchedUsers((prevUsers) =>
+                    setStudents((prevUsers) =>
                         prevUsers.filter((user) => user.id !== id)
                     );
                     setSuccessMessage(
@@ -226,7 +222,7 @@ const Students = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/students"
             );
-            setFetchedUsers(response.data);
+            setStudents(response.data);
         } catch (error) {
             console.error("Error refreshing students:", error.message);
         }
@@ -273,7 +269,7 @@ const Students = () => {
 
     const table = useMaterialReactTable({
         columns,
-        data: fetchedUsers,
+        data: students,
         createDisplayMode: "modal",
         editDisplayMode: "modal",
         enableEditing: role === "admin",
@@ -336,6 +332,8 @@ const Students = () => {
         );
     }
     return (
+        // TODO Here is the student page
+
         <div className=" w-full h-full">
             <NavbarComponent activePage={"Students"} />
             <BreadcrumbComponent />
@@ -569,11 +567,12 @@ const Students = () => {
                             size={25}
                         />
                     </div>
+                    {}
                     {/* todo include the following here onClick={() => openDeleteConfirmModal(row) */}
                     <CustomTableComponent
-                        data={fetchedUsers}
+                        data={students}
                         columns={StudentTableColumns}
-                    />
+                    /> 
                 </div>
             </div>
         </div>
