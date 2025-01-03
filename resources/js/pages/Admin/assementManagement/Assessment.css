@@ -1,0 +1,43 @@
+.main-btns {
+  float: right;
+  clear: left;
+}
+
+.user-tb {
+  overflow: auto;
+}
+
+.highlighted-row {
+  border: 1px solid green;
+  background-color: #f0f0f0; 
+  margin-top: 60px; 
+
+}
+
+.form-control {
+  width: 100%;
+}
+
+/* Add spacing between input fields */
+.form-control.mb-2 {
+  margin-bottom: 10px; /* Adjust the value as needed */
+}
+.assessment-teacher{
+
+  color: white;
+}
+
+.heading {
+  display: flex;
+  justify-content: left; /* Center aligns the content horizontally */
+  align-items: center; /* Centers vertically */
+  background-color: #9a8644;
+  width: 99%;
+  height: 50px;
+  padding-left: 1em;
+  border-radius: 5px;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 50px; /* Adjusted margin as per previous request */
+}

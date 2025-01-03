@@ -1,0 +1,62 @@
+
+.card-list{
+    border-top : 4px solid #1AB394 !important;
+    border : 1px solid rgba(128, 128, 128, 0.235);
+}
+
+
+
+
+thead {
+    border-bottom: 1px solid rgb(155, 155, 155);
+}
+
+
+.col-4 p {
+    font-weight: bolder;
+    font-size: 18px;
+}
+
+.col-12 p {
+    font-weight: bolder;
+    font-size: 18px;
+
+}
+
+.row {
+    height: 250px;
+    border:1px solid/ blue; 
+
+}
+
+tr:nth-child(even) {
+    background-color: #cecece;
+}
+
+table {
+    background-color: white;
+    width: 98%;
+    margin: auto;
+}
+
+table td {
+    font-weight: 500;
+
+}
+
+thead tr  {
+    background-color: #1AB394;
+}
+
+thead tr th{
+    color:white
+
+}
+
+
+.right-card {
+     box-shadow: 2px 2px 2px #c6c2c2; 
+     width: 50%;
+     height: 30em; 
+    background-color: white;
+}

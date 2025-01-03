@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,66 +16,50 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
     protected $table = "users";
 
     protected $fillable = [
         'title',
         'firstname',
         'surname',
-        "email",
-        "password",
-        "sex",
-        "village",
-        "traditional_authority",
-        "district"
-
+        'email',
+        'password',
+        'sex',
+        'village',
+        'traditional_authority',
+        'district'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-
-    public function role(): BelongsTo
+    public function role()
     {
         return $this->belongsTo(Role::class, 'role_name', 'role_name');
     }
 
- 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+  
+
+    public function subjects()
     {
-        return $this->belongsToMany(User::class);
+        return $this->morphToMany(Subject::class, 'allocationable');
     }
 
-
-
-    public function classes():\Illuminate\Database\Eloquent\Relations\HasOne
-
+    public function departments()
     {
-        return $this->hasOne(Level::class);
-    }
-        public function subjects(){
-            return $this->morphToMany(
-                Subject::class,
-                'allocationables');
-        }
-
-
-
+        return $this->belongsToMany(Department::class);
     }
 
+    public function departmentHead()
+    {
+        return $this->hasOne(Department::class, 'head_of_department_id');
+    }
+
+}

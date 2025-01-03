@@ -1,6 +1,7 @@
 <?php
+
 namespace App\Services;
-use App\Exceptions\Handler;
+use App\Exceptions\GeneralException;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -17,255 +18,449 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
+use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+use Illuminate\Support\Facades\Log;
 
-      class UserService {
-        use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-       public $response = [];
-        public$code = 404;
-        public function getAll()
-        {
-            // Get the logged-in user
-            $user = User::all();
-             
-        
+class UserService
+{
+    private function validateUser(Request $request, bool $isUpdate = false, ?int $id = null)
+    {
+        $rules = [
+            'title' => 'required|string',
+            'firstname' => 'required|string',
+            'surname' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'sex' => 'required|string',
+            'village' => 'required|string',
+            'traditional_authority' => 'required|string',
+            'district' => 'required|string',
+            'role_name' => 'required|string',
+            'departments' => 'array',
+            'departments.*' => 'exists:departments,id', 
+        ];
+
+        if ($isUpdate) {
+            $rules['email'] .= ',' . $id;
+            unset($rules['password']); // Remove password rule for update
+        }
+
+        return Validator::make($request->all(), $rules);
+    }
+
+    public function getAll(): JsonResponse
+    {
+        try {
+            $users = User::with(['departments'])->paginate(10);
+
+            Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
+
             return response()->json([
                 'message' => 'User details retrieved successfully',
                 'status' => 'success',
-                'users' => $user,
+                'users' => UserResource::collection($users),
             ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to retrieve users', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Failed to retrieve users',
+                'status' => 'error',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        
-        public function store(Request $request): JsonResponse
-        {
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            $validator = $this->validateUser($request);
+
+            if ($validator->fails()) {
+                Log::warning('User validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
             $user = User::where('email', $request->input('email'))->first();
-        
-            // Check if the user already exists
+
             if ($user) {
+                Log::info('User already exists', ['email' => $user->email]);
                 return response()->json(['message' => 'User already exists', 'email' => $user], 409);
             }
-        
-            try {
-                // Create a new user
-                $user = new User;
-                $this->userDetailsCommon($request, $user);
-           
-                return response()->json([
-                    'message' => 'User saved successfully',
-                    'User' => $user,
-                    'status' => 201,
-                ], 201);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'message' => 'User not saved',
-                    'status' => 404,
-                    'error' => $e->getMessage(),
-                ], 404);
-            }
-        }
-        
 
-        public function Allocation(Request $request): JsonResponse
-        {
-            try {
-                $user = User::where('email', $request->input('email'))->first();
-                $subject = Subject::where('name', $request->input('name'))->first();
-                $level = Level::where('className', $request->input('className'))->first();
-        
-                if (!$user || !$level || !$subject) {
-                    return $this->handleAllocationError(
-                        'Information provided doesn\'t exist in the database',
-                        $user,
-                        $level,
-                        $subject
-                    );
-                }
-        
-                // Allocate users with subject and class
-                $subject->users()->syncWithoutDetaching($user);
-                $subject->levels()->syncWithoutDetaching($level);
-                $subject->save();
-        
-                return $this->handleAllocationSuccess($user, $level, $subject);
-            } catch (\Exception $e) {
-                return $this->handleAllocationError(
-                    'Error allocating subject and class: ' . $e->getMessage(),
-                    $user ?? null,
-                    $level ?? null,
-                    $subject ?? null
-                );
+            $newUser = new User();
+            $this->fillUserDetails($request, $newUser);
+            $newUser->save();
+
+            Log::info('User created successfully', ['user_id' => $newUser->id]);
+
+            if ($request->has('departments')) {
+                $newUser->departments()->syncWithoutDetaching($request->input('departments'));
+                Log::info('Departments assigned to user', ['user_id' => $newUser->id, 'departments' => $request->input('departments')]);
             }
-        }
-        
-        private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
-        {
+
             return response()->json([
-                'message' => 'Subject and class allocated successfully',
                 'status' => 'success',
-                'Teacher' => $user->firstname . ' ' . $user->surname,
-                'Email' => $user->email,
-                'Class' => $level->className,
-                'Subject' => $subject->name,
+                'message' => 'User saved successfully',
+                'user' => $newUser,
             ], 201);
-        }
-        
-        private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
-        {
+        } catch (\Exception $e) {
+            Log::error('Failed to save user', ['error' => $e->getMessage()]);
             return response()->json([
-                'message' => $errorMessage,
-                'status' => 'fail',
-                'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
-                'Email' => $user ? $user->email : null,
-                'Class' => $level ? $level->className : null,
-                'Subject' => $subject ? $subject->name : null,
-            ]);
+                'status' => 'error',
+                'message' => 'User not saved',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        
-    public function show(int $id){
-        try{
-      $user=User::findorfail($id);
-      return $user;
-
-     } catch (\Exception $e) {
-        $response['message'] = $e->getMessage();
-      
-    
-
-    return response()->json($response);
-}
-
     }
-    public function update(Request $request, int $id): JsonResponse
+
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $user = User::with('departments')->findOrFail($id);
+            Log::info('Fetched user details successfully', ['user_id' => $id]);
+
+            return response()->json([
+                'message' => 'User details retrieved successfully',
+                'status' => 'success',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('User not found', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'User not found',
+                'status' => 'error',
+                'error' => $e->getMessage(),
+            ], 404);
+        }
+    }
+
+    public function destroy(int $id): JsonResponse
     {
         try {
             $user = User::findOrFail($id);
-            $this->userDetailsCommon($request, $user);
+
+            // Detach user from all departments
+            $user->departments()->detach();
+            Log::info('User detached from all departments', ['user_id' => $id]);
+
+            // Delete the user
+            $user->delete();
+            Log::info('User deleted successfully', ['user_id' => $id]);
+
             return response()->json([
-                'message' => 'Success',
-                'user' => $user,
+                'message' => 'User deleted successfully',
+                'status' => 'success',
             ], 200);
         } catch (\Exception $e) {
-            throw $e;
+            Log::error('Failed to delete user', ['error' => $e->getMessage(), 'user_id' => $id]);
+            return response()->json([
+                'message' => 'Failed to delete user',
+                'status' => 'error',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
-    public function destroy($id): JsonResponse
+    public function login(Request $request): JsonResponse
     {
-        if (User::where('id', $id)->exists()) {
-            $user = User::find($id);
+        $validator = Validator::make($request->all(), ["email" => "required|string", "password" => "required"]);
 
-            $user->delete();
-
-
+        if ($validator->fails()) {
+            Log::warning('Login validation failed', ['errors' => $validator->errors()]);
             return response()->json([
-                'message' => 'The User is deleted successfully'
-            ], 404);
-        } else {
-            return response()->json([
-                'message' => 'No  User found with that information ',
-            ]);
+                "status" => "error",
+                "message" => "Validation Error",
+                "errors" => $validator->errors(),
+            ], 422);
         }
-    }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @param $user
-     * @return void
-     */
-    public function userDetailsCommon(Request $request, $user): void
-    {
 
-        $user->title = $request->title;
-        $user->firstname = $request->firstname;
-        $user->surname = $request->surname;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->input('password'));
-        $user->sex = $request->sex;
-        $user->village = $request->village;
-        $user->traditional_authority = $request->traditional_authority;
-        $user->district = $request->district;
-        $user->role_name = $request->role_name;
-        $user->created_at = carbon::now();
-        $user->updated_at = carbon::now();
-        $user->save();
+        if (!Auth::attempt($request->only("email", "password"))) {
+            Log::warning('Invalid login attempt', ['email' => $request->input('email')]);
+            return response()->json([
+                "status" => "error",
+                "message" => "Invalid credentials",
+            ], 401);
+        }
+
+        $token = Auth::user()->createToken('Token')->plainTextToken;
+        $cookie = cookie('jwt', $token, 30 * 1);
+
+        Log::info('User logged in successfully', ['user_id' => Auth::user()->id]);
+
+        return response()->json([
+            "status" => "success",
+            "message" => "System successfully logged " . Auth::user()->first_name,
+            "access_token" => $token,
+            "token_type" => "bearer",
+            "user" => Auth::user(),
+        ])->withCookie($cookie);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-
-
-
-     /**
-      * Handle user login request.
-      *
-      * @param Request $request The request object containing email and password.
-      * @return JsonResponse The JSON response containing the access token and user details.
-      */
-     public function login(Request $request): JsonResponse
-     {
-         // Validate the request data using Laravel Validator class.
-         $validator = Validator::make($request->all(), [
-             "email" => "required|string", // Email is required and must be a string.
-             "password" => "required", // Password is required.
-         ]);
-
-         // If validation fails, return a JSON response with validation errors.
-         if ($validator->fails()) {
-             return response()->json([
-                 "status" => "error", // Set the status to error.
-                 "message" => "Validation Error", // Set the error message.
-                 "errors" => $validator->errors(), // Include the validation errors.
-             ], 422);
-         }
-         
-         // Retrieve the user from the database using the email.
-         $user = User::where('email', $request->email)->first();
-         
-         // Increment the login count for the user, and the last_login
-         $user->login_count = $user->login_count + 1;
-         $user->last_login = now();
-         $user->save();
-         
-         // Attempt to authenticate the user using the provided email and password.
-         if (!Auth::attempt($request->only("email", "password"))) {
-             return response()->json([
-                 "status" => "error", // Set the status to error.
-                 "message" => "Invalid credentials", // Set the error message.
-             ], 401);
-         }
- 
-         // Create a new access token for the authenticated user.
-         $token = Auth::user()->createToken('Token')->plainTextToken;
-         
-         // Create a cookie with the access token and set it to expire in 30 days.
-         $cookie = cookie('jwt', $token, 30 * 1);
- 
-         // Return a JSON response with the access token, user details, and cookie.
-         return response()->json([
-             "status" => "success", // Set the status to success.
-             "message" => "System successfully logged " . Auth::user()->first_name, // Set the success message.
-             "access_token" => $token, // Include the access token.
-             "token_type" => "bearer", // Include the token type.
-             "user" => Auth::user(), // Include the authenticated user's details.
-         ])->withCookie($cookie);
-     }
- 
-
-
-    public function logout()
+    public function logout(): JsonResponse
     {
         Auth::logout();
+        Log::info('User logged out successfully', ['user_id' => Auth::user()->id]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
     }
-    
+
+    private function fillUserDetails(Request $request, User $user): void
+    {
+        $user->title = $request->title;
+        $user->firstname = $request->firstname;
+        $user->surname = $request->surname;
+        $user->email = $request->email;
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+        $user->sex = $request->sex;
+        $user->village = $request->village;
+        $user->traditional_authority = $request->traditional_authority;
+        $user->district = $request->district;
+        $user->role_name = $request->role_name;
+        $user->created_at = Carbon::now();
+        $user->updated_at = Carbon::now();
+    }
+
+    public function update(Request $request, int $id): JsonResponse
+    {
+        try {
+            $validator = $this->validateUser($request, true, $id);
+
+            if ($validator->fails()) {
+                Log::warning('User update validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $user = User::findOrFail($id);
+            $this->fillUserDetails($request, $user);
+            $user->save();
+
+            // Sync departments for the updated user
+            if ($request->has('departments')) {
+                $user->departments()->sync($request->input('departments'));
+                Log::info('Departments updated for user', ['user_id' => $user->id, 'departments' => $request->input('departments')]);
+            }
+
+            Log::info('User updated successfully', ['user_id' => $user->id]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User updated successfully',
+                'user' => $user,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to update user', ['error' => $e->getMessage(), 'user_id' => $id]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not updated',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+
+public function allocateSubjectToUser(Request $request, int $userId): JsonResponse
+{
+    try {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'subject_ids' => 'required|array',
+            'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Subject allocation validation failed', ['errors' => $validator->errors()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Fetch the user and subjects
+        $user = User::findOrFail($userId);
+        $subjects = Subject::find($request->input('subject_ids'));
+
+        // Attach subjects to the user (this will add them to the pivot table)
+        $user->subjects()->syncWithoutDetaching($subjects);
+
+        Log::info('Subjects allocated to user', [
+            'user_id' => $user->id,
+            'subject_ids' => $subjects->pluck('id'),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Subjects allocated successfully to the user',
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Failed to allocate subjects to user', [
+            'error' => $e->getMessage(),
+            'user_id' => $userId,
+        ]);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to allocate subjects to user',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+public function allocateDepartmentToUser(Request $request, int $userId): JsonResponse
+{
+    try {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'department_ids' => 'required|array',
+            'department_ids.*' => 'exists:departments,id', // Validate each department ID
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Department allocation validation failed', ['errors' => $validator->errors()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Fetch the user and departments
+        $user = User::findOrFail($userId);
+        $departments = Department::find($request->input('department_ids'));
+
+        // Attach departments to the user (this will add them to the pivot table)
+        $user->departments()->syncWithoutDetaching($departments);
+
+        Log::info('Departments allocated to user', [
+            'user_id' => $user->id,
+            'department_ids' => $departments->pluck('id'),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Departments allocated successfully to the user',
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Failed to allocate departments to user', [
+            'error' => $e->getMessage(),
+            'user_id' => $userId,
+        ]);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to allocate departments to user',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+public function getUserAllocations(int $userId): JsonResponse
+{
+    try {
+        // Fetch user along with their allocations (subjects and departments)
+        $user = User::with(['subjects', 'departments'])->findOrFail($userId);
+
+        Log::info('Fetched user allocations successfully', [
+            'user_id' => $user->id,
+            'subject_count' => $user->subjects->count(),
+            'department_count' => $user->departments->count(),
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User allocations retrieved successfully',
+            'user_allocations' => [
+                'subjects' => $user->subjects,
+                'departments' => $user->departments,
+            ],
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Failed to fetch user allocations', [
+            'error' => $e->getMessage(),
+            'user_id' => $userId,
+        ]);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to fetch user allocations',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+public function removeAllocationFromUser(Request $request, int $userId): JsonResponse
+{
+    try {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'subject_ids' => 'array',
+            'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
+            'department_ids' => 'array',
+            'department_ids.*' => 'exists:departments,id', // Validate each department ID
+        ]);
+
+        if ($validator->fails()) {
+            Log::warning('Allocation removal validation failed', ['errors' => $validator->errors()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Fetch the user
+        $user = User::findOrFail($userId);
+
+        // Remove the specified allocations
+        if ($request->has('subject_ids')) {
+            $user->subjects()->detach($request->input('subject_ids'));
+            Log::info('Removed subjects from user', [
+                'user_id' => $user->id,
+                'subject_ids' => $request->input('subject_ids'),
+            ]);
+        }
+
+        if ($request->has('department_ids')) {
+            $user->departments()->detach($request->input('department_ids'));
+            Log::info('Removed departments from user', [
+                'user_id' => $user->id,
+                'department_ids' => $request->input('department_ids'),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Allocations removed successfully from the user',
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Failed to remove allocations from user', [
+            'error' => $e->getMessage(),
+            'user_id' => $userId,
+        ]);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to remove allocations from user',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
+
+
+
 }

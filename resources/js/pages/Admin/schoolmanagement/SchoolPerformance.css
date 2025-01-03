@@ -1,0 +1,131 @@
+/* General styling for the component wrapper */
+.school-performance-wrapper {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Modal styling */
+.modalPaper {
+  width: 90%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid black;
+}
+
+/* Student table styling */
+.studentTable {
+  width: 100%;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 20px;
+  border-collapse: collapse;
+}
+
+.studentTable th,
+.studentTable td {
+  width: 50%;
+  padding: 10px;
+  border: 1px solid black;
+  font-size: 15px;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  text-align: center;
+}
+
+/* Header cell styling */
+.headerCell {
+  font-weight: bold;
+  padding: 10px;
+}
+
+/* Assessment table styling */
+.assessmentTable {
+  width: 100%;
+  margin-top: 5px;
+  border-collapse: collapse;
+}
+
+.assessmentTable th,
+.assessmentTable td {
+  padding: 10px;
+  font-size: 15px;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  text-align: left;
+  border: 1px solid black;
+}
+
+.assessmentTable th {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Grading section styling */
+.grading {
+  text-align: center;
+  font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  margin-top: 20px;
+}
+
+/* Print button positioning */
+.print-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* CSS for print */
+@media print {
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  .modalPaper {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    border: none;
+  }
+  .studentTable {
+    width: 100%;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    border-collapse: collapse;
+  }
+  .studentTable th,
+  .studentTable td {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  }
+  .headerCell {
+    font-weight: bold;
+    padding: 10px;
+  }
+  .studentTable td,
+  .studentTable th {
+    text-align: center;
+  }
+  .assessmentTable {
+    width: 100%;
+    margin-top: 5px;
+  }
+  .assessmentTable th,
+  .assessmentTable td {
+    padding: 15px;
+    text-align: left;
+    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+    text-align: left;
+    border: 1px solid black;
+  }
+  .grading {
+    text-align: center;
+    font-family: "Palatino", "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+  }
+}

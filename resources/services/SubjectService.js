@@ -8,28 +8,40 @@ class SubjectService {
     headers = HttpService.setHeaders();
 
     async addSubject(subject) {
-        
-        try {
-            const wordNormalizer = utils.wordNormalizer(subject);
-            console.info(`adding ${wordNormalizer} to database`);
-            if (this.availableSubjectNames.includes(wordNormalizer)) {
+    
+            let res = null;
+            try {
+                const headers = {
+                    headers: { "Content-Type": "application/json" },
+                };
+    
                 const response = await axios.post(
-                    `${this.urlPrefix}/create-subject`,
-                    { name: wordNormalizer },
-                    {
-                        headers: this.headers,
-                    }
+                    "http://127.0.0.1:8000/api/create-subject",
+                    subject,
+                    headers
                 );
-                return response.data;
-            } else {
-                throw new Error("Invalid subject name");
+    
+                res = {
+                    message: "Successfully registered",
+                    data: response.data,
+                    status: response.status,
+                };
+            } catch (err) {
+                if (err.response) {
+                    res = {
+                        message: "Error registering",
+                        status: err.response.status,
+                        error: err.response.data.message,
+                    };
+                } else {
+                    res = {
+                        message: "Error encountered. Please contact the IT support",
+                        status: 500,
+                        error: err.message,
+                    };
+                }
             }
-        } catch (error) {
-            console.log(error);
-            throw new Error("Failed to create subject", error.message);
         }
-    }
-
     /**
      * Retrieves all subjects from the server.
      * @returns {Promise<Array>} A promise that resolves with an array of subjects.
@@ -45,6 +57,7 @@ class SubjectService {
             return error;
         }
     }
+
     async fetchSubjectPerformance() {
         try {
             const response = await axios.get(

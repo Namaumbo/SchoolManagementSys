@@ -6,32 +6,14 @@ import { Outlet } from "react-router-dom";
 
 const Home = () => {
     return (
-        <>
-           
-            <div className="flex w-full">
-                <div className="w-[15%]">
-                    <SideBar />
-                </div>
-                <div className="w-[85%]">
-                  {/* <Navbar /> */}
+        <div className="flex h-screen">
+            <SideBar />
+            <div className="flex flex-col flex-1 border">
+                <div className="flex-1 overflow-y-auto bg-gray-100">
                     <Outlet />
                 </div>
             </div>
-        </>
-
-        // <div className="home">
-        //     <div className="innerHome">
-        //         <Navbar/>
-        //         <div className='content-wrapper'>
-        //             <div className='sideBar'>
-        //                 <SideBar/>
-        //             </div>
-        //             <div className='outlet'>
-        //                 <Outlet/>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
+        </div>
     );
 };
 export default Home;

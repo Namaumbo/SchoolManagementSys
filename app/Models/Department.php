@@ -1,34 +1,32 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-/**
- * @method static where(string $string, mixed $input)
- * @method static create(array $array)
- */
 class Department extends Model
 {
     use HasFactory;
-    /**
-     * @var \Carbon\Carbon|mixed
 
-     */
-    public mixed $created_at;
-    public mixed $updated_at;
-
+    // Define the fillable properties
     protected $fillable = [
         'departmentName',
-        'headOfDepartment',
-
+        'head_of_department_id',
+        'description',
     ];
 
+    // Define the relationship with the head of the department (a single user)
+    public function headOfDepartment()
+    {
+        return $this->belongsTo(User::class, 'head_of_department_id');
+    }
 
-    public function subjects(){
-        return $this->morphToMany(
-            Subject::class,
-            'allocationables');
+    // Define the many-to-many relationship with users
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 }
