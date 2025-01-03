@@ -238,7 +238,6 @@ const UserManagement = () => {
                         size={25}
                     />
                 </div>
-            {console.log(users)}
                 <CustomTableComponent
                     columns={UserManagementTableColumns}
                     data={users}

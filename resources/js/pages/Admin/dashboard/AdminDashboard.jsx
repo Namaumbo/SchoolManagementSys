@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./admindash.css";
 import axios from "axios";
-import { FiHome } from "react-icons/fi";
+import { FiHome , FiDollarSign } from "react-icons/fi";
 import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import { Card, Container, Row, Col } from "react-bootstrap";
@@ -46,19 +46,20 @@ export default function AdminDashboard() {
     const accessKey = localStorage.getItem("key");
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-    useEffect(() => {
-        if (prefersDarkMode) setDarkMode(false);
-    }, [prefersDarkMode]);
+    // useEffect(() => {
+    //     if (prefersDarkMode) setDarkMode(false);
+    // }, [prefersDarkMode]);
 
+    const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
     useEffect(() => {
         const headers = {
             Authorization: `Bearer ${accessKey}`,
         };
 
         const getUsers = () =>
-            axios.get("http://127.0.0.1:8000/api/users", { headers });
+            axios.get(`${apiUrl}users`, { headers });
         const getStudents = () =>
-            axios.get("http://127.0.0.1:8000/api/students", { headers });
+            axios.get(`${apiUrl}students`, { headers });
 
         Promise.allSettled([getUsers(), getStudents()])
             .then((responses) => {
@@ -102,8 +103,8 @@ export default function AdminDashboard() {
             image: studentsPng,
             number: students?.data?.length,
         },
-        { menu: "Teachers", image: teachersPng, number: users?.length },
-        { menu: "Students", image: studentsPng, number: 0 },
+        { menu: "Staff", image: teachersPng, number: users?.length },
+        { menu: "Revenue", image: <FiDollarSign/>, number: 54000 },
         { menu: "Students", image: studentsPng, number: 0 },
     ];
     const isAdminOrHeadTeacher = loggedIn && role === "admin";

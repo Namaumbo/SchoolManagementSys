@@ -48,15 +48,13 @@ const Assessments = () => {
         []
     );
     const [paperCount, setPaperCount] = useState(0);
+    const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
 
     useEffect(() => {
         const fetchAssessments = async () => {
             try {
-                const response = await axios.get(
-                    "http://127.0.0.1:8000/api/students"
-                );
-                console.log("Fetched Assessments:", response.data);
-                setFetchedAssessments(response.data);
+                const response = await axios.get(`${apiUrl}students`);
+                setFetchedAssessments(response?.data?.data);
             } catch (error) {
                 console.error("Error loading assessments:", error.message);
             }
@@ -187,7 +185,7 @@ const Assessments = () => {
 
             // Make PUT request to update assessment
             const response = await axios.put(
-                "http://127.0.0.1:8000/api/update-assessment",
+                `${apiUrl}update-assessment`,
                 updatedAssessment
             );
 
