@@ -56,6 +56,7 @@ export default function AdminDashboard() {
             Authorization: `Bearer ${accessKey}`,
         };
 
+        // FIXME: the results gotten here must not be paginated
         const getUsers = () =>
             axios.get(`${apiUrl}users`, { headers });
         const getStudents = () =>

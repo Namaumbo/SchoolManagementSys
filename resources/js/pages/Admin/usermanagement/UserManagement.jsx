@@ -267,7 +267,7 @@ const UserManagement = () => {
                 />
 
                 {/* navigation */}
-                <div className="flex overflow-x-auto sm:justify-center">
+                <div className="flex overflow-x-auto sm:justify-center pb-4">
                     <Pagination
                         currentPage={pagination.current_page}
                         totalPages={pagination.total_pages}
