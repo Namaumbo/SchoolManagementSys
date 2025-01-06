@@ -55,15 +55,16 @@ class UserService
     public function getAll(): JsonResponse
     {
         try {
-            $users = User::with(['departments'])->simplePaginate(2);
+            $users = User::with(['departments'])->paginate(10);
 
             // since the users are returned in a collection then we have to have a separate pagination
+            $data = $users->items();            
             $currentPage = $users->currentPage(); 
-            $perPage = $users->perPage(); 
-            $nextPageUrl = $users->nextPageUrl();
+            $lastPage = $users->lastPage();      
+            $total = $users->total();           
+            $nextPageUrl = $users->nextPageUrl(); 
             $prevPageUrl = $users->previousPageUrl();
-            $from = $users->firstItem(); 
-            $to = $users->lastItem();
+            $perPage = $users->perPage();
 
             Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
 
@@ -72,12 +73,14 @@ class UserService
                 'status' => 'success',
                 'users' => UserResource::collection($users),
                 'pagination' => [
+                
                     'current_page' => $currentPage,
-                    'per_page' => $perPage,
+                    // 'per_page' => $perPage,
                     'next_page_url' => $nextPageUrl,
                     'prev_page_url' => $prevPageUrl,
-                    'from' => $from,
-                    'to' => $to,
+                    'total_pages' => $lastPage,
+                    // 'from' => $from,
+                    // 'to' => $to,
                 ]
             ]);
         } catch (\Exception $e) {

@@ -8,9 +8,12 @@ import { UserManagementTableColumns } from "../../../../core/TableColumns";
 import { TextInput } from "flowbite-react";
 import TableCaptionComponent from "../../../components/TableCaptionComponent/TableCaptionComponent";
 import { FiSearch } from "react-icons/fi";
+import { Pagination } from "flowbite-react";
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const [departments, setDepartments] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,8 +40,20 @@ const UserManagement = () => {
         new Date().toLocaleString()
     );
 
+    const [pagination, setPagination] = useState({
+        current_page: 0,
+        next_page_url: "",
+        prev_page_url: "",
+        total_pages: 0,
+    });
+    const onPageChange = (page) => {
+        setPagination((prev) => ({ ...prev, current_page: page }));
+        fetchUsers(page);
+      };
+    
+
     useEffect(() => {
-        fetchUsers();
+        fetchUsers(pagination.current_page);
         // fetchDepartments();
         // seedStudents(); // Add initial students
     }, []);
@@ -176,7 +191,7 @@ const UserManagement = () => {
                 message: "Students seeded successfully",
                 severity: "success",
             });
-            fetchUsers();
+            fetchUsers(1);
         } catch (error) {
             setSnackbar({
                 open: true,
@@ -186,11 +201,11 @@ const UserManagement = () => {
         }
     };
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (page) => {
         try {
             const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
 
-            const response = await axios.get(`${apiUrl}users?page=1`, {
+            const response = await axios.get(`${apiUrl}users?page=${page}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
@@ -205,10 +220,17 @@ const UserManagement = () => {
             ) {
                 console.log(response);
                 setUsers(response?.data?.users);
+                setPagination({
+                    current_page: response?.data?.pagination?.current_page,
+                    next_page_url: response?.data?.pagination?.next_page_url,
+                    prev_page_url: response?.data?.pagination?.prev_page_url,
+                    total_pages: response?.data?.pagination?.total_pages,
+                });
             } else {
                 setUsers([]);
             }
         } catch (error) {
+            console.log(error);
             setUsers([]);
             setSnackbar({
                 open: true,
@@ -243,6 +265,15 @@ const UserManagement = () => {
                     columns={UserManagementTableColumns}
                     data={users}
                 />
+
+                {/* navigation */}
+                <div className="flex overflow-x-auto sm:justify-center">
+                    <Pagination
+                        currentPage={pagination.current_page}
+                        totalPages={pagination.total_pages}
+                        onPageChange={onPageChange}
+                    />
+                </div>
             </div>
         </div>
     );
