@@ -190,7 +190,7 @@ const UserManagement = () => {
         try {
             const apiUrl = import.meta.env.VITE_BASE_ENDPOINT;
 
-            const response = await axios.get(`${apiUrl}users`, {
+            const response = await axios.get(`${apiUrl}users?page=1`, {
                 headers: {
                     "Content-Type": "application/json",
                     Accept: "application/json",
@@ -203,7 +203,8 @@ const UserManagement = () => {
                 response.data.users &&
                 Array.isArray(response.data.users)
             ) {
-                setUsers(response.data.users);
+                console.log(response);
+                setUsers(response?.data?.users);
             } else {
                 setUsers([]);
             }
