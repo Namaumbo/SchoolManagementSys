@@ -24,6 +24,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
 use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class UserService
 {
@@ -165,26 +167,58 @@ class UserService
     {
         try {
             $user = User::findOrFail($id);
+            // FIXME: replace findOrFail() with the below code
+            // if (!$user) {
+            //     Log::error('User not found', ['user_id' => $id]);
+            //     return response()->json([
+            //         'message' => 'User not found',
+            //         'status' => 'error',
+            //     ], 404);
+            // }
 
-            // Detach user from all departments
-            $user->departments()->detach();
-            Log::info('User detached from all departments', ['user_id' => $id]);
+            // TODO you need to authenticate the user before deleting kuti we should run way from security breaches
+            // if (!Auth::user()->can('delete', $user)) {
+            //     Log::warning('Unauthorized delete attempt', ['user_id' => $id]);
+            //     return response()->json([
+            //         'message' => 'Unauthorized',
+            //         'status' => 'error',
+            //     ], 403);
+            // }
 
-            // Delete the user
-            $user->delete();
-            Log::info('User deleted successfully', ['user_id' => $id]);
+            DB::transaction(function () use ($user, $id) {
+                // Detach user from all departments
+                $user->departments()->detach();
+                Log::info('User detached from all departments', ['user_id' => $id]);
+
+                // Delete the user
+                $user->delete();
+                Log::info('User deleted successfully', ['user_id' => $id]);
+            });
 
             return response()->json([
                 'message' => 'User deleted successfully',
                 'status' => 'success',
-            ], 200);
+            ], Response::HTTP_OK);
+        } catch (QueryException $e) {
+            Log::error('Database query error', [
+                'error' => $e->getMessage(),
+                'user_id' => $id
+            ]);
+            return response()->json([
+                'message' => 'Database query error',
+                'status' => 'error',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (\Exception $e) {
-            Log::error('Failed to delete user', ['error' => $e->getMessage(), 'user_id' => $id]);
+            Log::error('Failed to delete user', [
+                'error' => $e->getMessage(),
+                'user_id' => $id
+            ]);
             return response()->json([
                 'message' => 'Failed to delete user',
                 'status' => 'error',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

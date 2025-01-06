@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./admindash.css";
 import axios from "axios";
-import { FiHome , FiDollarSign } from "react-icons/fi";
+import { FiHome, FiDollarSign } from "react-icons/fi";
 import studentsPng from "../../../../assets/icons8-students-94.png";
 import teachersPng from "../../../../assets/icons8-teacher-64.png";
 import { Card, Container, Row, Col } from "react-bootstrap";
@@ -57,10 +57,8 @@ export default function AdminDashboard() {
         };
 
         // FIXME: the results gotten here must not be paginated
-        const getUsers = () =>
-            axios.get(`${apiUrl}users`, { headers });
-        const getStudents = () =>
-            axios.get(`${apiUrl}students`, { headers });
+        const getUsers = () => axios.get(`${apiUrl}users`, { headers });
+        const getStudents = () => axios.get(`${apiUrl}students`, { headers });
 
         Promise.allSettled([getUsers(), getStudents()])
             .then((responses) => {
@@ -105,7 +103,7 @@ export default function AdminDashboard() {
             number: students?.data?.length,
         },
         { menu: "Staff", image: teachersPng, number: users?.length },
-        { menu: "Revenue", image: <FiDollarSign/>, number: 54000 },
+        { menu: "Revenue", image: <FiDollarSign />, number: 54000 },
         { menu: "Students", image: studentsPng, number: 0 },
     ];
     const isAdminOrHeadTeacher = loggedIn && role === "admin";
