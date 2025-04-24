@@ -1,0 +1,33 @@
+.user-tb {
+  background-color: #9a8644; /* Background color */
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 5%; /* Adjusted margin-top to push the heading downwards */
+}
+
+  
+  .list-title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .mui-btn {
+    margin-top: 10px;
+  }
+  
+  .user-management-title {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 30px;
+    color: white; /* Text color */
+    font-size: 24px; /* Font size */
+    font-weight: bold; /* Font weight */
+}
+
+  
+  .user-management-title .MuiSvgIcon-root {
+    margin-right: 10px;
+  }
+  
