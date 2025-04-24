@@ -9,6 +9,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;  
 
 class AssessmentService
 {
@@ -18,7 +19,7 @@ class AssessmentService
         $code = 200;
 
         try {
-            // Validate and sanitize input
+          
             $this->validateInput($request);
 
             $subject = Subject::where('name', $request->input('name'))->firstOrFail();
@@ -32,13 +33,13 @@ class AssessmentService
             $secondAssessment = $this->validateNumeric($request->input('secondAssessment'));
             $endOfTermAssessment = $request->input('endOfTermAssessment', '[]');
 
-            // Decode endOfTermAssessment
+
             $endOfTermAssessmentArray = json_decode($endOfTermAssessment, true);
             if (!is_array($endOfTermAssessmentArray)) {
                 throw new \InvalidArgumentException('Invalid endOfTermAssessment format.');
             }
 
-            // Calculate average score
+
             $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray);
 
             $endOfTermAssessmentJson = !empty($endOfTermAssessmentArray) ? json_encode($endOfTermAssessmentArray) : null;
@@ -76,7 +77,7 @@ class AssessmentService
             throw new \InvalidArgumentException('Invalid assessment value. Values must be between 0 and 100.');
         }
 
-        return (float) $value; // Ensure the value is numeric
+        return (float) $value; 
     }
 
     private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray)
@@ -108,5 +109,34 @@ class AssessmentService
             'secondAssessment' => 'required|numeric|min:0|max:100',
             'endOfTermAssessment' => 'sometimes|json',
         ]);
+    }
+
+    // Fetch all assessments with student and subject relations
+    public function getAllAssessments(): JsonResponse
+    {
+        try {
+
+            DB::beginTransaction();
+
+
+            $assessments = Assessment::with(['student', 'subject'])->get();
+
+    
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $assessments,
+            ], 200);
+        } catch (\Exception $e) {
+    
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Error retrieving assessments',
+                'description' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
