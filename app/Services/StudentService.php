@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
 
 class StudentService
 {
@@ -53,12 +55,15 @@ class StudentService
     public function create(Request $request, Student $student): void
     {
         // Fetch the school information
+        Log::info('Fetching school information');
         $schoolInfo = SchoolInformation::first();
         if (!$schoolInfo) {
+            Log::error('School information not found');
             throw new Exception('School information not found');
         }
 
         // Generate the school abbreviation
+        Log::info('Generating school abbreviation', ['school_name' => $schoolInfo->name]);
         $schoolAbbreviation = $this->generateSchoolAbbreviation($schoolInfo->name);
 
         $student->firstname = $request->firstname;
@@ -70,8 +75,19 @@ class StudentService
         // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
         $classAbbreviation = 'F' . $classNumber;
 
+        // Log student creation attempt
+        Log::info('Creating new student record', [
+            'firstname' => $request->firstname,
+            'surname' => $request->surname,
+            'className' => $request->className,
+            'school_abbreviation' => $schoolAbbreviation,
+            'class_abbreviation' => $classAbbreviation
+        ]);
+
         // Generate the student username in the format "SCHOOL_ABBR/F1/001", "SCHOOL_ABBR/F2/001", etc.
+        Log::info('Generating student username');
         $student->username = Helper::StudentIdGenerator(new Student, 'username', 3, $schoolAbbreviation . '/' . $classAbbreviation . '/');
+        Log::info('Generated username', ['username' => $student->username]);
 
         $student->sex = $request->sex;
         $student->village = $request->village;
@@ -80,15 +96,23 @@ class StudentService
         $student->role_name = $request->role_name;
         $student->created_at = Carbon::now();
         $student->updated_at = Carbon::now();
+
+        Log::info('Saving student record', ['student_data' => $student->toArray()]);
         $student->save();
 
         // Check if the student is in Form 1 or Form 2
         if ($classNumber === '1' || $classNumber === '2') {
+            Log::info('Registering subjects for Form 1/2 student', ['class_number' => $classNumber]);
             // Register all subjects for Form 1 and Form 2
             $allSubjects = Subject::all();
             foreach ($allSubjects as $subject) {
+                Log::debug('Registering subject for student', [
+                    'student_id' => $student->id,
+                    'subject' => $subject->name
+                ]);
                 $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
             }
+            Log::info('Completed subject registration for student');
         }
     }
 
@@ -113,12 +137,14 @@ class StudentService
                 'firstname' => 'required|string|max:255',
                 'surname' => 'required|string|max:255',
                 'className' => 'required|string',
-                'sex' => 'required|in:Male,Female',
+                'sex' => 'required|in:Male,Female,MALE,FEMALE,male,female',
                 'village' => 'required|string',
                 'traditional_authority' => 'required|string',
                 'district' => 'required|string',
                 'role_name' => 'required|string'
             ]);
+
+            Log::info('Validating student registration request', ['request' => $request->all()]);
 
             if ($validator->fails()) {
                 $response['message'] = 'Validation failed';
@@ -127,16 +153,24 @@ class StudentService
                 return response()->json($response, 422);
             }
 
-            $student = Student::where('username', $request->input('username'))->first();
+            Log::info('Done validating and Processing student registration request', ['request' => $request->all()]);
+
+
+            $student = Student::where('firstname', $request->input('firstname'))
+                ->where('surname', $request->input('surname'))->where('className', $request->input('className'))
+                ->first();
             if ($student) {
                 $response['message'] = 'Student already exists';
                 $response['status'] = 'error';
                 $response['student'] = $student;
                 $response['description'] = 'A student with this username already exists in the system';
                 $code = 409;
+                Log::warning('Student already exists', ['username' => $request->input('username')]);
             } else {
                 DB::beginTransaction();
                 try {
+
+                    Log::info('Creating a new student', ['request' => $request->all()]);
                     $student = new Student;
                     $this->create($request, $student);
                     DB::commit();
@@ -146,7 +180,13 @@ class StudentService
                     $response['student'] = $student;
                     $response['description'] = 'Student has been registered successfully';
                     $code = 201;
+                    Log::info('Student created successfully', ['student' => $student]);
                 } catch (\Exception $e) {
+                    Log::error('Failed to create student', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+
                     DB::rollBack();
                     throw $e;
                 }

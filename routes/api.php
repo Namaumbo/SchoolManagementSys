@@ -122,7 +122,7 @@ Route::post('/login', [UserController::class, 'login']);
 
     Route::controller(StudentController::class)->group(function () {
         Route::get('/students', 'getAll');
-        Route::post('/create-student', 'registerStudent');
+        Route::post('/ create-student', 'registerStudent');
         Route::put('/student/{id}', 'updateStudent');
         Route::delete('/student/{id}', 'deleteStudent');
         Route::post('/register-subject', 'registerSubject');

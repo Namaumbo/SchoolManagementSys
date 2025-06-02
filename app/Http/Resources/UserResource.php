@@ -21,9 +21,9 @@ class UserResource extends JsonResource
             'title' => $this->title,
             'firstname' => $this->firstname,
             'surname' => $this->surname,
-            'phoneNumber'=>$this->phoneNumber,
+            'phoneNumber' => $this->phoneNumber,
             'email' => $this->email,
-            'password' =>$this->password,
+            'password' => $this->password,
             'village' => $this->village,
             'traditional_authority' => $this->traditional_authority,
             'district' => $this->district,
@@ -31,12 +31,10 @@ class UserResource extends JsonResource
             'role_name' => $this->role_name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'subjects' => $this->subjects,
             'departments' => DepartmentResource::collection($this->departments),
 
 
         ];
     }
-
-
-
 }

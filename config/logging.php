@@ -63,6 +63,27 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => \Monolog\Handler\StreamHandler::class,
+            'formatter' => env('LOG_STDOUT_FORMATTER', \Monolog\Formatter\LineFormatter::class),
+            'with' => [
+                'stream' => 'php://stdout',
+            ],
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'handler' => \Monolog\Handler\StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER', \Monolog\Formatter\LineFormatter::class),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+            'level' => 'error',
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),

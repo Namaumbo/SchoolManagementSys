@@ -13,7 +13,8 @@ class Student extends Model
     use HasFactory;
 
     protected $table = "students";
-    
+    protected $hidden = ['pivot'];
+
     protected $fillable = [
         'firstname',
         'surname',
