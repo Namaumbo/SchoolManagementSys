@@ -118,9 +118,7 @@ class AssessmentService
 
             DB::beginTransaction();
 
-
             $assessments = Assessment::with(['student', 'subject'])->get();
-
     
             DB::commit();
 
@@ -128,6 +126,7 @@ class AssessmentService
                 'status' => 'success',
                 'data' => $assessments,
             ], 200);
+            
         } catch (\Exception $e) {
     
             DB::rollBack();

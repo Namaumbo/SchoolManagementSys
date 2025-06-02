@@ -14,7 +14,7 @@ class Assessment extends Model
     protected $fillable = [
         'schoolTerm',
         'subject_id',
-        'firstAssessment',
+       'firstAssessment',
         'secondAssessment',
         'endOfTermAssessment', // Include endOfTermAssessment in fillable
         'averageScore',
@@ -35,4 +35,10 @@ class Assessment extends Model
             'student_id'
         );
     }
+
+    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+        {
+            return $this->belongsTo(Subject::class);
+        }
+    
 }

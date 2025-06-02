@@ -52,4 +52,9 @@ class Student extends Model
     {
         return "{$this->firstname} {$this->surname}";
     }
+
+       /**
+     * Define many-to-many relationship with subjects
+     */
+
 }
