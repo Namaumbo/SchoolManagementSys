@@ -1,31 +1,37 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Services\AssessmentService;
 
+use App\Services\AssessmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AssessmentController extends Controller
 {
+    protected $assessmentService;
 
-   protected $assessmentService ;
-    public function __construct(AssessmentService $AssessmentService)
-
+    // Constructor to inject AssessmentService
+    public function __construct(AssessmentService $assessmentService)
     {
-       $this->assessmentService = $AssessmentService;
+        $this->assessmentService = $assessmentService;
     }
-   
-   public function updateAssessment(Request $AssessmentService)
-   {
-    return $this->assessmentService->updateAssessment($AssessmentService);
-      }
 
-      public function deleteAssessment(int $id){
-         return $this->AssessmentService->deleteAssessmentsForStudentAndSubject($id);
-     }
+    // Update assessment for a specific student and subject
+    public function updateAssessment(Request $request): JsonResponse
+    {
+        return $this->assessmentService->updateAssessment($request);
+    }
 
-   }
-   
+    // Delete assessment for a specific ID (student and subject)
+    public function deleteAssessment(int $id): JsonResponse
+    {
+        return $this->assessmentService->deleteAssessmentsForStudentAndSubject($id);
+    }
 
-
+    // Get all assessments with associated student and subject data
+    public function getAllAssessments(): JsonResponse
+    {
+ 
+        return $this->assessmentService->getAllAssessments();
+    }
+}
