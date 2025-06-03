@@ -125,6 +125,8 @@ class StudentService
     public function store(Request $request): JsonResponse
     {
         try {
+            Log::info('Starting student registration process');
+            
             $response = [
                 'message' => '',
                 'status' => '',
@@ -133,6 +135,7 @@ class StudentService
             ];
             $code = 200;
 
+            Log::debug('Preparing validation rules');
             $validator = Validator::make($request->all(), [
                 'firstname' => 'required|string|max:255',
                 'surname' => 'required|string|max:255',
@@ -147,6 +150,7 @@ class StudentService
             Log::info('Validating student registration request', ['request' => $request->all()]);
 
             if ($validator->fails()) {
+                Log::warning('Validation failed', ['errors' => $validator->errors()]);
                 $response['message'] = 'Validation failed';
                 $response['status'] = 'error';
                 $response['description'] = $validator->errors();
@@ -155,48 +159,63 @@ class StudentService
 
             Log::info('Done validating and Processing student registration request', ['request' => $request->all()]);
 
-
+            Log::debug('Checking for existing student');
             $student = Student::where('firstname', $request->input('firstname'))
-                ->where('surname', $request->input('surname'))->where('className', $request->input('className'))
+                ->where('surname', $request->input('surname'))
+                ->where('className', $request->input('className'))
                 ->first();
+
             if ($student) {
+                Log::warning('Student already exists', [
+                    'firstname' => $request->input('firstname'),
+                    'surname' => $request->input('surname'),
+                    'className' => $request->input('className')
+                ]);
                 $response['message'] = 'Student already exists';
                 $response['status'] = 'error';
                 $response['student'] = $student;
                 $response['description'] = 'A student with this username already exists in the system';
                 $code = 409;
-                Log::warning('Student already exists', ['username' => $request->input('username')]);
             } else {
+                Log::info('Starting database transaction');
                 DB::beginTransaction();
                 try {
-
                     Log::info('Creating a new student', ['request' => $request->all()]);
                     $student = new Student;
                     $this->create($request, $student);
+                    
+                    Log::info('Committing database transaction');
                     DB::commit();
 
+                    Log::info('Student created successfully', ['student' => $student]);
                     $response['message'] = 'Student saved successfully';
                     $response['status'] = 'success';
                     $response['student'] = $student;
                     $response['description'] = 'Student has been registered successfully';
                     $code = 201;
-                    Log::info('Student created successfully', ['student' => $student]);
                 } catch (\Exception $e) {
                     Log::error('Failed to create student', [
                         'error' => $e->getMessage(),
                         'trace' => $e->getTraceAsString()
                     ]);
 
+                    Log::info('Rolling back database transaction');
                     DB::rollBack();
                     throw $e;
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Unhandled exception occurred', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $response['message'] = 'An error occurred while processing your request';
             $response['status'] = 'error';
             $response['description'] = config('app.debug') ? $e->getMessage() : 'Please contact system administrator';
             $code = 500;
         }
+        
+        Log::info('Sending response', ['response' => $response, 'code' => $code]);
         return response()->json($response, $code);
     }
     /**

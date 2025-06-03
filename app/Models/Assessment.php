@@ -26,7 +26,7 @@ class Assessment extends Model
         'endOfTermAssessment' => 'json', // Cast endOfTermAssessment to JSON
     ];
 
-    public function students(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Student::class,
