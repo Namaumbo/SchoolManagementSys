@@ -2,7 +2,8 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start": "php artisan serve --host=0.0.0.0 --port=8000"
     },
     "devDependencies": {
         "@faker-js/faker": "^7.6.0",
