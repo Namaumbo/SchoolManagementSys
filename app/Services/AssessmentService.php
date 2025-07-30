@@ -42,19 +42,16 @@ class AssessmentService
                 ? $this->validateNumeric($request->input('secondAssessment'))
                 : null;
 
-            $endOfTermAssessment = $request->input('endOfTermAssessment', '[]');
-            $endOfTermAssessmentArray = json_decode($endOfTermAssessment, true) ?? [];
+            $endOfTermAssessment = $request->has('endOfTermAssessment')
+                ? $this->validateNumeric($request->input('endOfTermAssessment'))
+                : null;
+            
+            Log::info('End of term assessment validated successfully');
 
-            if (!is_array($endOfTermAssessmentArray)) {
-                Log::error('Invalid endOfTermAssessment format', ['endOfTermAssessment' => $endOfTermAssessment]);
-                throw new \InvalidArgumentException('Invalid endOfTermAssessment format. Expected JSON array.');
-            }
-            Log::info('End of term assessment array decoded successfully');
-
-            $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray);
+            $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment);
             Log::info('Average score calculated', ['averageScore' => $averageScore]);
 
-            $endOfTermAssessmentJson = !empty($endOfTermAssessmentArray) ? json_encode($endOfTermAssessmentArray) : null;
+
 
             $assessmentSearchAttributes = [
                 'subject_id' => $subject->id,
