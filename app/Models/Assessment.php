@@ -23,7 +23,7 @@ class Assessment extends Model
     ];
 
     protected $casts = [
-        'endOfTermAssessment' => 'double', // Cast endOfTermAssessment to JSON
+        'endOfTermAssessment' => 'double', 
     ];
 
     public function student(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
