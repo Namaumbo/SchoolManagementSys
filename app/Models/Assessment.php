@@ -16,14 +16,14 @@ class Assessment extends Model
         'subject_id',
        'firstAssessment',
         'secondAssessment',
-        'endOfTermAssessment', // Include endOfTermAssessment in fillable
+        'endOfTermAssessment', 
         'averageScore',
         'user_id',
         'student_id',
     ];
 
     protected $casts = [
-        'endOfTermAssessment' => 'json', // Cast endOfTermAssessment to JSON
+        'endOfTermAssessment' => 'double', // Cast endOfTermAssessment to JSON
     ];
 
     public function student(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

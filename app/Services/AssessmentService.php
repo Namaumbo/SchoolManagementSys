@@ -45,8 +45,8 @@ class AssessmentService
             $endOfTermAssessment = $request->has('endOfTermAssessment')
                 ? $this->validateNumeric($request->input('endOfTermAssessment'))
                 : null;
-            
-            Log::info('End of term assessment validated successfully');
+
+            Log::info('End of term assessment processed successfully');
 
             $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment);
             Log::info('Average score calculated', ['averageScore' => $averageScore]);
@@ -73,8 +73,8 @@ class AssessmentService
                 $assessmentDataToUpdateOrCreate['secondAssessment'] = $secondAssessment;
             }
 
-            if (!is_null($endOfTermAssessmentJson)) {
-                $assessmentDataToUpdateOrCreate['endOfTermAssessment'] = $endOfTermAssessmentJson;
+            if (!is_null($endOfTermAssessment)) {
+                $assessmentDataToUpdateOrCreate['endOfTermAssessment'] = $endOfTermAssessment;
             }
 
             $assessmentDataToUpdateOrCreate['averageScore'] = $averageScore;
@@ -115,7 +115,7 @@ class AssessmentService
 
         return response()->json($response, $code);
     }
-  private function validateNumeric($value)
+    private function validateNumeric($value)
     {
         if (!is_numeric($value) || $value < 0 || $value > 100) {
             throw new \InvalidArgumentException('Invalid assessment value. Values must be between 0 and 100.');
@@ -134,11 +134,11 @@ class AssessmentService
             'teacherEmail' => 'required|email',
             'firstAssessment' => 'sometimes|numeric|min:0|max:100',
             'secondAssessment' => 'sometimes|numeric|min:0|max:100',
-            'endOfTermAssessment' => 'sometimes|json',
+            'endOfTermAssessment' => 'sometimes|numeric|min:0|max:100',
         ]);
     }
 
-    private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray)
+    private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment)
     {
         $components = [];
 
@@ -150,9 +150,8 @@ class AssessmentService
             $components[] = $secondAssessment;
         }
 
-        if (!empty($endOfTermAssessmentArray)) {
-            $endAverage = array_sum($endOfTermAssessmentArray) / count($endOfTermAssessmentArray);
-            $components[] = $endAverage;
+        if (!is_null($endOfTermAssessment)) {
+            $components[] = $endOfTermAssessment;
         }
 
         if (empty($components)) {
