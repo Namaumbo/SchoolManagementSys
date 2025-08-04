@@ -17,8 +17,14 @@ class SubjectResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'code' => $this->code,
+            'periodsPerWeek' => $this->periodsPerWeek,
+            'department' => $this->department,
+            'description' => $this->description,
+            'status' => $this->status,
             'departments' => DepartmentResource::collection($this->departments),
-          
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

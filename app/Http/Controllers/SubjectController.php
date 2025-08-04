@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\StudentSubject;
@@ -27,20 +28,21 @@ class SubjectController extends Controller
 
     public function getAll()
     {
-        return Subject::all();
+        $subjects = Subject::all();
+        return SubjectResource::collection($subjects);
     }
 
     public function show(int $id)
     {
-
         $subject = Subject::with('students', 'users')->findorFail($id);
         $relatedStudents = $subject->students;
         $relatedTeachers = $subject->users;
-        return response()->json([
 
+        return response()->json([
+            'subject' => new SubjectResource($subject),
             'Students' => $relatedStudents,
             'Teachers' => $relatedTeachers,
-        ], 201);
+        ], 200);
     }
     public function subjectPerformance()
     {
@@ -51,7 +53,7 @@ class SubjectController extends Controller
 
             foreach ($subjects as $subject) {
                 $averageScore = $this->calculateAverageScore($subject->students);
-                
+
                 $subjectData = [
                     'subject_id' => $subject->id,
                     'subject_name' => $subject->name,
@@ -85,63 +87,115 @@ class SubjectController extends Controller
         $subject->name = $request->name;
         $subject->code = $request->code;
         $subject->periodsPerWeek = $request->periodsPerWeek;
-        $subject->created_at = carbon::now();
-        $subject->updated_at = carbon::now();
+        $subject->department = $request->department ?? null;
+        $subject->description = $request->description ?? null;
+        $subject->status = $request->status ?? 'active';
+        $subject->created_at = Carbon::now();
+        $subject->updated_at = Carbon::now();
 
         $subject->save();
     }
 
-        public function store(Request $request): JsonResponse
-        {
-            try {
-                $response = [
-                    'message' => '',
-                    'status' => '',
-                    'subject' => null,
-                ];
-                $code = 200;
-                $subject = new Subject;
-                $subject->name = $request->name;
-                $subject->code = $request->code;
-                $subject->periodsPerWeek = $request->periodsPerWeek;
-                $subject->created_at = Carbon::now();
-                $subject->updated_at = Carbon::now();
-                $subject->save();
-    
-                // Register the new subject to all students in Form 1 and Form 2
-                $students = Student::where('className', 'like', 'Form 1%')
-                    ->orWhere('className', 'like', 'Form 2%')
-                    ->get();
-    
-                foreach ($students as $student) {
-                    $subject->students()->syncWithoutDetaching($student->id);
-                }
-    
-                $response['message'] = 'Subject saved successfully and registered to all students in Form 1 and Form 2';
-                $response['status'] = 'success';
-                $response['subject'] = $subject;
-                $code = 201;
-    
-            } catch (\Exception $e) {
-                $response['message'] = $e->getMessage();
-                $response['status'] = 'fail';
-                $code = 500;
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            // Validate the request
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255|unique:subjects,name',
+                'code' => 'required|integer|unique:subjects,code',
+                'periodsPerWeek' => 'required|integer|min:1|max:50',
+                'department' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'status' => 'nullable|in:active,inactive',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                    'status' => 'fail'
+                ], 422);
             }
-            return response()->json($response, $code);
+
+            $response = [
+                'message' => '',
+                'status' => '',
+                'subject' => null,
+            ];
+            $code = 200;
+            $subject = new Subject;
+            $subject->name = $request->name;
+            $subject->code = $request->code;
+            $subject->periodsPerWeek = $request->periodsPerWeek;
+            $subject->department = $request->department ?? null;
+            $subject->description = $request->description ?? null;
+            $subject->status = $request->status ?? 'active';
+            $subject->created_at = Carbon::now();
+            $subject->updated_at = Carbon::now();
+            $subject->save();
+
+            // Register the new subject to all students in Form 1 and Form 2
+            $students = Student::where('className', 'like', 'Form 1%')
+                ->orWhere('className', 'like', 'Form 2%')
+                ->get();
+
+            foreach ($students as $student) {
+                $subject->students()->syncWithoutDetaching($student->id);
+            }
+
+            $response['message'] = 'Subject saved successfully and registered to all students in Form 1 and Form 2';
+            $response['status'] = 'success';
+            $response['subject'] = $subject;
+            $code = 201;
+        } catch (\Exception $e) {
+            $response['message'] = $e->getMessage();
+            $response['status'] = 'fail';
+            $code = 500;
         }
+        return response()->json($response, $code);
+    }
 
     public function update(Request $request, int $id): JsonResponse
     {
-        if (Subject::where('id', $id)->exists()) {
-            $subject = Subject::find($id);
-            $this->create($request, $subject);
+        try {
+            if (Subject::where('id', $id)->exists()) {
+                $subject = Subject::find($id);
+
+                // Validate the request
+                $validator = Validator::make($request->all(), [
+                    'name' => 'required|string|max:255|unique:subjects,name,' . $id,
+                    'code' => 'required|integer|unique:subjects,code,' . $id,
+                    'periodsPerWeek' => 'required|integer|min:1|max:50',
+                    'department' => 'nullable|string|max:255',
+                    'description' => 'nullable|string',
+                    'status' => 'nullable|in:active,inactive',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => $validator->errors(),
+                        'status' => 'fail'
+                    ], 422);
+                }
+
+                $this->create($request, $subject);
+                return response()->json([
+                    'message' => 'Subject is updated successfully',
+                    'status' => 'success'
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'No Subject found with that information',
+                    'status' => 'fail'
+                ], 404);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Subject is updated successfully'
-            ], 400);
-        } else {
-            return response()->json([
-                'message' => 'No Subject found with that information '
-            ], 401);
+                'message' => 'An error occurred while updating the subject',
+                'error' => $e->getMessage(),
+                'status' => 'fail'
+            ], 500);
         }
     }
 

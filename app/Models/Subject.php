@@ -16,6 +16,9 @@ class Subject extends Model
         'name',
         'code',
         'periodsPerWeek',
+        'department',
+        'description',
+        'status',
     ];
 
     public function students(): BelongsToMany
@@ -30,23 +33,23 @@ class Subject extends Model
     {
         return $this->morphedByMany(
             User::class,
-           'allocationable')->withTimeStamps();
-
+            'allocationable'
+        )->withTimeStamps();
     }
 
     public function levels()
     {
         return $this->morphedByMany(
             Level::class,
-           'allocationable')->withTimeStamps();
+            'allocationable'
+        )->withTimeStamps();
     }
 
     public function departments()
     {
         return $this->morphedByMany(
             Department::class,
-           'allocationable')->withTimeStamps();
+            'allocationable'
+        )->withTimeStamps();
     }
-
-
 }
