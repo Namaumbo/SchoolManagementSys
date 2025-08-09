@@ -38,6 +38,7 @@ class DepartmentController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // FIX ME : Start from here 
         try {
             $validatedData = $request->validate([
                 'departmentName' => 'required|max:255',

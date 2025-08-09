@@ -52,6 +52,8 @@ Route::post('/login', [UserController::class, 'login']);
 //Route::middleware('auth:sanctum')->group(function () {
     Route::post('/school-information', [SchoolInformationController::class, 'store']);
 
+
+    // 70% of the code is done
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getUsers');
         Route::get('/department/{id}/users', 'getAllUsersFromEachDepartment');
@@ -66,6 +68,8 @@ Route::post('/login', [UserController::class, 'login']);
         Route::get('/user/{id}/allocations', 'getAllocationsForTeacher');
     });
 
+
+
     Route::controller(DepartmentController::class)->group(function () {
         Route::get('/departments', 'getAll');
         Route::get('/department/{id}', 'show');
@@ -75,6 +79,8 @@ Route::post('/login', [UserController::class, 'login']);
         Route::delete('/department/{id}', 'destroy');
         Route::post('/department/{id}/allocate', 'registerUsersToDepartment');
     });
+
+
 
     Route::controller(SubjectController::class)->group(function () {
         Route::post('/create-subject', 'store');
