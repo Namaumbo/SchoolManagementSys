@@ -58,14 +58,12 @@ class UserController extends Controller
         return $this->userService->logout();
     }
 
-        
+
     public function allocationSubject(Request $request, $userId)
     {
         return $this->userService->Allocation($request, $userId);
     }
     
-
-
     public function getAllocationsForTeacher(int $id): JsonResponse
     {
         return $this->userService->getAllocationsForTeacher($id);
