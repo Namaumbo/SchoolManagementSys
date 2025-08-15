@@ -29,7 +29,8 @@ class User extends Authenticatable
         'village',
         'traditional_authority',
         'district',
-        'subjects'
+        'subjects',
+        'is_in_department'
     ];
 
     protected $hidden = [
@@ -56,7 +57,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_name', 'role_name');
     }
 
-  
+
 
     public function subjects()
     {
@@ -72,5 +73,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(Department::class, 'head_of_department_id');
     }
-
 }
