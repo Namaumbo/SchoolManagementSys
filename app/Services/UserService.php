@@ -472,6 +472,100 @@ class UserService
         }
     }
 
-    
+    public function Allocation(Request $request, int $id): JsonResponse
+    {
+        try {
+            // Find the user
+            $user = User::findOrFail($id);
+
+            // Find or create the subject
+            $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
+
+            // Find or create the level
+            $level = Level::firstOrCreate(['className' => $request->input('className')]);
+
+            // Sync relationships
+            $subject->users()->sync([$user->id]);
+            $subject->levels()->sync([$level->id]);
+
+            // Return success response
+            return $this->handleAllocationSuccess($user, $level, $subject);
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return $this->handleAllocationError(
+                'Error allocating subject and class: ' . $e->getMessage(),
+                $user ?? null,
+                $level ?? null,
+                $subject ?? null
+            );
+        }
+    }
+
+    private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Subject and class allocated successfully',
+            'status' => 'success',
+            'Teacher' => $user->firstname . ' ' . $user->surname,
+            'Email' => $user->email,
+            'Class' => $level->className,
+            'Subject' => $subject->name,
+        ], 201);
+    }
+
+    private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => $errorMessage,
+            'status' => 'fail',
+            'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
+            'Email' => $user ? $user->email : null,
+            'Class' => $level ? $level->className : null,
+            'Subject' => $subject ? $subject->name : null,
+        ]);
+    }
+
+    public function getAllocationsForTeacher(int $userId): JsonResponse
+    {
+        try {
+            // Find the user (teacher) by ID
+            $teacher = User::findOrFail($userId);
+
+            // Load subjects and levels allocated to the teacher
+            $allocatedSubjects = $teacher->subjects()->with('levels')->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocated subjects and classes retrieved successfully for teacher ' . $teacher->firstname . ' ' . $teacher->surname,
+                'teacher' => $teacher,
+                'allocations' => $allocatedSubjects,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations for teacher',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getHeadOfDepartments(): JsonResponse
+    {
+        try {
+            $headOfDepartments = User::where('role_name', 'Head Of Department')->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Head of departments retrieved successfully',
+                'head_of_departments' => $headOfDepartments,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve head of departments',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     
 }
