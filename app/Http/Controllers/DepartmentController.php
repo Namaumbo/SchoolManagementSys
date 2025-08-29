@@ -170,4 +170,83 @@ class DepartmentController extends Controller
             ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        if (Department::where('id', $id)->exists()) {
+            $department = Department::find($id);
+            $department->delete();
+            return response()->json([
+                'message' => 'Department deleted successfully'
+            ], ResponseAlias::HTTP_OK);
+        } else {
+            return response()->json([
+                'message' => 'No department found with that ID'
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Register users to a department.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function registerUsersToDepartment(Request $request, $id): JsonResponse
+    {
+        try {
+            $department = Department::findOrFail($id);
+
+            // Get user by their email
+            $user = User::where('email', $request->input('email'))->firstOrFail();
+
+            // Attach users to the department
+            $department->users()->syncWithoutDetaching($user);
+
+            return response()->json([
+                'message' => 'User added to the department successfully',
+                'department' => $department->users,
+            ], ResponseAlias::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to add user to the department',
+                'error' => $e->getMessage(),
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get users for a department.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getUsersForDepartment($id): JsonResponse
+    {
+        try {
+            $department = Department::findOrFail($id);
+            $users = $department->users;
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Users retrieved successfully for department ' . $department->departmentName,
+                'users' => $users,
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve users for department',
+                'error' => $e->getMessage(),
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
