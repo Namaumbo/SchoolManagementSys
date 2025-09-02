@@ -126,7 +126,7 @@ class StudentService
     {
         try {
             Log::info('Starting student registration process');
-            
+
             $response = [
                 'message' => '',
                 'status' => '',
@@ -183,7 +183,7 @@ class StudentService
                     Log::info('Creating a new student', ['request' => $request->all()]);
                     $student = new Student;
                     $this->create($request, $student);
-                    
+
                     Log::info('Committing database transaction');
                     DB::commit();
 
@@ -214,7 +214,7 @@ class StudentService
             $response['description'] = config('app.debug') ? $e->getMessage() : 'Please contact system administrator';
             $code = 500;
         }
-        
+
         Log::info('Sending response', ['response' => $response, 'code' => $code]);
         return response()->json($response, $code);
     }
@@ -333,10 +333,17 @@ class StudentService
      */
     public function destroy($id): JsonResponse
     {
+        Log::info('Student deletion initiated', ['student_id' => $id]);
+
         try {
             $student = Student::find($id);
 
             if (!$student) {
+                Log::warning('Student deletion failed - student not found', [
+                    'student_id' => $id,
+                    'timestamp' => now()
+                ]);
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No Student found with that information',
@@ -344,18 +351,41 @@ class StudentService
                 ], 404);
             }
 
+            Log::info('Student found for deletion', [
+                'student_id' => $student->id,
+                'student_name' => $student->firstname . ' ' . $student->surname,
+                'student_username' => $student->username,
+                'student_class' => $student->className
+            ]);
+
             DB::beginTransaction();
+            Log::info('Database transaction started for student deletion', ['student_id' => $student->id]);
+
             try {
                 // Delete associated assessments
+                $assessmentsCount = Assessment::where('student_id', $student->id)->count();
                 Assessment::where('student_id', $student->id)->delete();
+                Log::info('Student assessments deleted', [
+                    'student_id' => $student->id,
+                    'assessments_deleted' => $assessmentsCount
+                ]);
 
                 // Detach subjects from the pivot table
+                $subjectsCount = $student->subjects()->count();
                 $student->subjects()->detach();
 
                 // Delete the student
                 $student->delete();
+                Log::info('Student record deleted successfully', [
+                    'student_id' => $student->id,
+                    'student_name' => $student->firstname . ' ' . $student->surname
+                ]);
 
                 DB::commit();
+                Log::info('Database transaction committed for student deletion', [
+                    'student_id' => $student->id,
+                    'total_records_affected' => $assessmentsCount + $subjectsCount + 1
+                ]);
 
                 return response()->json([
                     'status' => 'success',
@@ -364,9 +394,21 @@ class StudentService
                 ], 200);
             } catch (\Exception $e) {
                 DB::rollBack();
+                Log::error('Database transaction rolled back during student deletion', [
+                    'student_id' => $student->id,
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString()
+                ]);
                 throw $e;
             }
         } catch (\Exception $e) {
+            Log::error('Student deletion failed with exception', [
+                'student_id' => $id,
+                'error' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString(),
+                'timestamp' => now()
+            ]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => config('app.debug') ? $e->getMessage() : 'Error deleting student',
