@@ -364,18 +364,40 @@ class StudentService
             try {
                 // Delete associated assessments
                 $assessmentsCount = Assessment::where('student_id', $student->id)->count();
-                Assessment::where('student_id', $student->id)->delete();
+                if ($assessmentsCount > 0) {
+                    Assessment::where('student_id', $student->id)->delete();
+                }
                 Log::info('Student assessments deleted', [
                     'student_id' => $student->id,
                     'assessments_deleted' => $assessmentsCount
                 ]);
 
-                // Detach subjects from the pivot table
+                // Detach subjects from the student the pivot table
                 $subjectsCount = $student->subjects()->count();
-                $student->subjects()->detach();
+                if ($subjectsCount > 0) {
+                        $student->subjects()->detach();
+                }
 
-                // Delete the student
+// Delete associated assessments
+$assessmentsCount = Assessment::where('student_id', $student->id)->count();
+Assessment::where('student_id', $student->id)->delete();
+Log::info('Student assessments deleted', [
+    'student_id' => $student->id,
+    'assessments_deleted' => $assessmentsCount
+]);
+
+// Detach subjects from the pivot table
+$subjectsCount = $student->subjects()->count();
+$student->subjects()->detach();
+
+// Delete the student
+$student->delete();
+Log::info('Student record deleted successfully', [
+                
+
+                // Delete the student have a SOFT DELETE HERE
                 $student->delete();
+                
                 Log::info('Student record deleted successfully', [
                     'student_id' => $student->id,
                     'student_name' => $student->firstname . ' ' . $student->surname
@@ -389,7 +411,7 @@ class StudentService
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Student and associated records deleted successfully',
+                    'message' => 'Student marked as deleted successfully',
                     'data' => null
                 ], 200);
             } catch (\Exception $e) {
