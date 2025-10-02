@@ -21,11 +21,22 @@ class StudentService
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getStudents(): JsonResponse
+    public function getStudents(Request $request): JsonResponse
     {
-        $students = Student::with('subjects')->paginate(10);
+        $query = Student::with('subjects');
+
+        // Filter by class if provided
+        if ($request->has('class') && $request->input('class')) {
+            $query->where('className', $request->input('class'));
+        }
+
+        // Only show non-deleted students
+        $query->where('is_deleted', false);
+
+        $students = $query->paginate(20);
         return response()->json($students, 200);
     }
 
@@ -375,29 +386,29 @@ class StudentService
                 // Detach subjects from the student the pivot table
                 $subjectsCount = $student->subjects()->count();
                 if ($subjectsCount > 0) {
-                        $student->subjects()->detach();
+                    $student->subjects()->detach();
                 }
 
-// Delete associated assessments
-$assessmentsCount = Assessment::where('student_id', $student->id)->count();
-Assessment::where('student_id', $student->id)->delete();
-Log::info('Student assessments deleted', [
-    'student_id' => $student->id,
-    'assessments_deleted' => $assessmentsCount
-]);
+                // Delete associated assessments
+                $assessmentsCount = Assessment::where('student_id', $student->id)->count();
+                Assessment::where('student_id', $student->id)->delete();
+                Log::info('Student assessments deleted', [
+                    'student_id' => $student->id,
+                    'assessments_deleted' => $assessmentsCount
+                ]);
 
-// Detach subjects from the pivot table
-$subjectsCount = $student->subjects()->count();
-$student->subjects()->detach();
+                // Detach subjects from the pivot table
+                $subjectsCount = $student->subjects()->count();
+                $student->subjects()->detach();
 
-// Delete the student
-$student->delete();
-Log::info('Student record deleted successfully', [
-                
+                // Delete the student
+                $student->delete();
+                Log::info('Student record deleted successfully');
+
 
                 // Delete the student have a SOFT DELETE HERE
                 $student->delete();
-                
+
                 Log::info('Student record deleted successfully', [
                     'student_id' => $student->id,
                     'student_name' => $student->firstname . ' ' . $student->surname
