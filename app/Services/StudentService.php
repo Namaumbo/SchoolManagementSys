@@ -26,10 +26,16 @@ class StudentService
      */
     public function getStudents(Request $request): JsonResponse
     {
+        Log::info('Fetching students', [
+            'class_filter' => $request->input('class', null),
+            'page' => $request->input('page', 1)
+        ]);
+
         $query = Student::with('subjects');
 
         // Filter by class if provided
         if ($request->has('class') && $request->input('class')) {
+            Log::info('Applying class filter', ['class' => $request->input('class')]);
             $query->where('className', $request->input('class'));
         }
 
