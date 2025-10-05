@@ -163,23 +163,73 @@ class AssessmentService
 
 
     // Fetch all assessments with student and subject relations
-    public function getAllAssessments(): JsonResponse
+    public function getAllAssessments(Request $request): JsonResponse
     {
         try {
+            Log::info('Fetching assessments', [
+                'class_filter' => $request->input('class', null),
+                'student_filter' => $request->input('student', null),
+                'subject_filter' => $request->input('subject', null)
+            ]);
 
             DB::beginTransaction();
 
-            $assessments = Assessment::with(['student', 'subject'])->get();
+            $query = Assessment::with(['student', 'subject']);
+
+            // Filter by class if provided (via student's level relation)
+            if ($request->has('class') && $request->input('class')) {
+                Log::info('Applying class filter', ['class' => $request->input('class')]);
+                $query->whereHas('student.level', function ($q) use ($request) {
+                    $q->where('className', $request->input('class'));
+                });
+            }
+
+            // Filter by student username if provided
+            if ($request->has('student') && $request->input('student')) {
+                Log::info('Applying student filter', ['student' => $request->input('student')]);
+                $query->whereHas('student', function ($q) use ($request) {
+                    $q->where('username', $request->input('student'));
+                });
+            }
+
+            // Filter by subject name if provided
+            if ($request->has('subject') && $request->input('subject')) {
+                Log::info('Applying subject filter', ['subject' => $request->input('subject')]);
+                $query->whereHas('subject', function ($q) use ($request) {
+                    $q->where('name', $request->input('subject'));
+                });
+            }
+
+            $assessments = $query->get();
 
             DB::commit();
+
+            Log::info('Assessments retrieved successfully', [
+                'total_count' => $assessments->count(),
+                'filters_applied' => [
+                    'class' => $request->input('class'),
+                    'student' => $request->input('student'),
+                    'subject' => $request->input('subject')
+                ]
+            ]);
 
             return response()->json([
                 'status' => 'success',
                 'data' => $assessments,
+                'total' => $assessments->count(),
+                'filters' => [
+                    'class' => $request->input('class'),
+                    'student' => $request->input('student'),
+                    'subject' => $request->input('subject')
+                ]
             ], 200);
         } catch (\Exception $e) {
-
             DB::rollBack();
+
+            Log::error('Error retrieving assessments', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
 
             return response()->json([
                 'status' => 'fail',

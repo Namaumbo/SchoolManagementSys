@@ -13,9 +13,9 @@ class RoleFactory extends Factory
     {
         return [
             'role_name' => $this->faker->unique()->randomElement([
-                'Admin', 
-                'Class Teacher', 
-                'Teacher', 
+                'Admin',
+                'Class Teacher',
+                'Teacher',
                 'Head Of Department',
             ]),
             'created_at' => now(),

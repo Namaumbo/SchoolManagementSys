@@ -491,8 +491,8 @@ class StudentSeeder extends Seeder
                     'traditional_authority' => $traditionalAuthorities[array_rand($traditionalAuthorities)],
                     'district' => $districts[array_rand($districts)],
                     'className' => $className,
+                    'level_id' => \App\Models\Level::where('className', $className)->value('id'),
                     'role_name' => 'Student',
-                    'is_deleted' => false,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
@@ -511,7 +511,9 @@ class StudentSeeder extends Seeder
         // Show final distribution
         $this->command->info("\nFinal distribution:");
         foreach ($classDistribution as $className => $expected) {
-            $actual = Student::where('className', $className)->count();
+            $actual = Student::whereHas('level', function ($q) use ($className) {
+                $q->where('className', $className);
+            })->count();
             $this->command->info("  - {$className}: {$actual} students");
         }
     }

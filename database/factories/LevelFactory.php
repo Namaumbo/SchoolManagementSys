@@ -13,7 +13,7 @@ class LevelFactory extends Factory
     {
         // Generate distinct class names
         static $className = 1;
-        
+
         return [
             'className' => 'Form ' . $className++,
             'classTeacher' => $this->faker->name,

@@ -88,6 +88,7 @@ Route::post('/login', [UserController::class, 'login']);
         Route::get('/subject/{id}', 'show');
         Route::put('/update-subject/{id}', 'update');
     });
+    // http://127.0.0.1:8000/api/assessments?class=Form+3
 
     Route::controller(RoleController::class)->group(function () {
         Route::get('/role/{id}', function ($role_name) {

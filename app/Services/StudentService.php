@@ -31,19 +31,22 @@ class StudentService
             'page' => $request->input('page', 1)
         ]);
 
-        $query = Student::with('subjects');
+        $query = Student::with(['subjects', 'level']);
 
         // Filter by class if provided
         if ($request->has('class') && $request->input('class')) {
             Log::info('Applying class filter', ['class' => $request->input('class')]);
-            $query->where('className', $request->input('class'));
+            $query->whereHas('level', function ($q) use ($request) {
+                $q->where('className', $request->input('class'));
+            });
         }
 
-        // Only show non-deleted students
-        $query->where('is_deleted', false);
-
-        $students = $query->paginate(20);
-        return response()->json($students, 200);
+        $students = $query->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $students,
+            'total' => $students->count()
+        ], 200);
     }
 
     /**

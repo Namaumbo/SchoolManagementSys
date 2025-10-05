@@ -108,8 +108,7 @@ class UserService
                 Log::info('Departments assigned to user', ['user_id' => $newUser->id, 'departments' => $request->input('departments')]);
             }
 
-            return response()->json([
-                'status' => 'success',
+            return response()->json([ 
                 'message' => 'User saved successfully',
                 'user' => $newUser,
             ], 201);

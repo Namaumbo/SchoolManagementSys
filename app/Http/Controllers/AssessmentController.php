@@ -29,9 +29,8 @@ class AssessmentController extends Controller
     }
 
     // Get all assessments with associated student and subject data
-    public function getAllAssessments(): JsonResponse
+    public function getAllAssessments(Request $request): JsonResponse
     {
- 
-        return $this->assessmentService->getAllAssessments();
+        return $this->assessmentService->getAllAssessments($request);
     }
 }

@@ -23,7 +23,8 @@ class Student extends Model
         'village',
         'traditional_authority',
         'district',
-        'class'
+        'class',
+        'level_id'
     ];
 
     public function roles(): BelongsToMany
@@ -39,7 +40,7 @@ class Student extends Model
 
     public function level(): BelongsTo
     {
-        return $this->belongsTo(Level::class, 'className');
+        return $this->belongsTo(Level::class, 'level_id');
     }
 
     public function assessments(): HasMany
@@ -53,8 +54,7 @@ class Student extends Model
         return "{$this->firstname} {$this->surname}";
     }
 
-       /**
+    /**
      * Define many-to-many relationship with subjects
      */
-
 }
