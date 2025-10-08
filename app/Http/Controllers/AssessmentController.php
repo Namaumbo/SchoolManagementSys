@@ -33,4 +33,9 @@ class AssessmentController extends Controller
     {
         return $this->assessmentService->getAllAssessments($request);
     }
+
+    public function getAssessmentsByClass(Request $request): JsonResponse
+    {
+        return $this->assessmentService->getAssessmentsByClass($request);
+    }
 }

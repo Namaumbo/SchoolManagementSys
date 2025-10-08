@@ -111,6 +111,7 @@ Route::post('/login', [UserController::class, 'login']);
         Route::get('/assessments', 'getAllAssessments');
         Route::put('/update-assessment', 'UpdateAssessment');
         Route::delete('/assessment', 'deleteAssessment');
+        Route::get('/assessments/class', 'getAssessmentsByClass');
     });
 
     Route::controller(SchoolReportController::class)->group(function () {

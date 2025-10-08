@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\Assessment;
+use App\Models\Level;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -237,5 +238,43 @@ class AssessmentService
                 'description' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getAssessmentsByClass(Request $request): JsonResponse
+    {
+        try {
+
+            // Get the 'class' parameter from the URL (request)
+            $className = $request->input('className');
+            
+            Log::info('Fetching assessments by class', ['class' => $request->input('className')]);
+
+            $level = Level::where('className', $className)->first();
+            $level_id = $level ? $level->id : null;
+
+            $assessments = Assessment::whereHas('student.class', function ($query) use ($level_id) {
+                $query->where('id', $level_id);
+            })
+            ->with(['student', 'subject'])
+            ->get();
+            return response()->json([
+                'status' => 'success',
+                'data' => $assessments,
+                'total' => $assessments->count(),
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving assessments by class', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Error retrieving assessments by class',
+                'description' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $assessments,
+            'total' => $assessments->count(),
+        ], 200);
     }
 }
