@@ -168,76 +168,132 @@ class AssessmentService
     {
         try {
             Log::info('Fetching assessments', [
-                'class_filter' => $request->input('class', null),
-                'student_filter' => $request->input('student', null),
-                'subject_filter' => $request->input('subject', null)
+                'class_filter' => $request->input('class'),
+                'student_filter' => $request->input('student'),
+                'subject_filter' => $request->input('subject')
             ]);
-
-            DB::beginTransaction();
-
-            $query = Assessment::with(['student', 'subject']);
-
-            // Filter by class if provided (via student's level relation)
-            if ($request->has('class') && $request->input('class')) {
-                Log::info('Applying class filter', ['class' => $request->input('class')]);
-                $query->whereHas('student.level', function ($q) use ($request) {
-                    $q->where('className', $request->input('class'));
-                });
+        
+            $className = $request->input('class');
+        
+            // Get level ID based on class name
+            $level = Level::where('className', $className)->first();
+            $level_id = $level ? $level->id : null;
+        
+            if (!$level_id) {
+                Log::warning('No level found for class', ['class' => $className]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Class not found'
+                ], 404);
             }
+        
+            // Fetch only assessments where the student's level matches the class
+            $assessments = DB::select("
+                SELECT 
+                    a.*,
+                    s.id as student_id, s.firstname, s.surname, s.username, s.sex, s.village, s.traditional_authority, s.district, s.level_id, s.created_at as student_created_at, s.updated_at as student_updated_at,
+                    sub.id as subject_id, sub.name as subject_name, sub.code, sub.periodsPerWeek, sub.department, sub.description, sub.status, sub.created_at as subject_created_at, sub.updated_at as subject_updated_at
+                FROM assessments a
+                INNER JOIN students s ON a.student_id = s.id
+                INNER JOIN levels l ON s.level_id = l.id
+                INNER JOIN subjects sub ON a.subject_id = sub.id
+                WHERE l.id = ?
+            ", [$level_id]);
 
-            // Filter by student username if provided
-            if ($request->has('student') && $request->input('student')) {
-                Log::info('Applying student filter', ['student' => $request->input('student')]);
-                $query->whereHas('student', function ($q) use ($request) {
-                    $q->where('username', $request->input('student'));
-                });
-            }
+        // old structure
+            // {
+            //     "id": 1,
+            //     "schoolTerm": "First Term",
+            //     "teacherEmail": null,
+            //     "subject_id": 1,
+            //     "student_id": 17,
+            //     "firstAssessment": 77,
+            //     "secondAssessment": 87,
+            //     "endOfTermAssessment": 33,
+            //     "averageScore": 66,
+            //     "created_at": null,
+            //     "updated_at": "2025-07-31T20:06:25.000000Z",
+            //     "student": [
+            //         {
+            //             "id": 17,
+            //             "is_deleted": 0,
+            //             "firstname": "Martin",
+            //             "surname": "Chunga",
+            //             "username": "CPS/F1/014",
+            //             "sex": "male",
+            //             "village": "Chemboma",
+            //             "traditional_authority": "Chikumbu",
+            //             "district": "Dedza",
+            //             "level_id": 1,
+            //             "role_name": "Student",
+            //             "created_at": "2025-07-30T19:44:15.000000Z",
+            //             "updated_at": "2025-07-30T19:44:15.000000Z"
+            //         }
+            //     ],
+            //     "subject": {
+            //         "id": 1,
+            //         "name": "English",
+            //         "code": 1,
+            //         "periodsPerWeek": 4,
+            //         "department": "Language",
+            //         "description": "Reading comprehension and basic grammar\t",
+            //         "status": "active",
+            //         "created_at": "2025-04-06T00:00:00.000000Z",
+            //         "updated_at": "2025-04-06T00:00:00.000000Z"
+            //     }
+            // },
 
-            // Filter by subject name if provided
-            if ($request->has('subject') && $request->input('subject')) {
-                Log::info('Applying subject filter', ['subject' => $request->input('subject')]);
-                $query->whereHas('subject', function ($q) use ($request) {
-                    $q->where('name', $request->input('subject'));
-                });
-            }
+            // new strcuture
+            // {
+            //     "id": 12,
+            //     "schoolTerm": "First Term",
+            //     "teacherEmail": null,
+            //     "subject_id": 1,
+            //     "student_id": 18,
+            //     "firstAssessment": 70,
+            //     "secondAssessment": 67,
+            //     "endOfTermAssessment": 0,
+            //     "averageScore": 46,
+            //     "created_at": null,
+            //     "updated_at": "2025-07-31 20:14:34",
+            //     "firstname": "Daniel",
+            //     "surname": "Lembani",
+            //     "username": "CPS/F2/001",
+            //     "sex": "male",
+            //     "village": "Msanjama",
+            //     "traditional_authority": "kabudula",
+            //     "district": "Kasungu",
+            //     "level_id": 2,
+            //     "student_created_at": "2025-07-31 20:09:44",
+            //     "student_updated_at": "2025-07-31 20:09:44",
+            //     "subject_name": "English",
+            //     "code": 1,
+            //     "periodsPerWeek": 4,
+            //     "department": "Language",
+            //     "description": "Reading comprehension and basic grammar\t",
+            //     "status": "active",
+            //     "subject_created_at": "2025-04-06 00:00:00",
+            //     "subject_updated_at": "2025-04-06 00:00:00"
+            // },
 
-            $assessments = $query->get();
 
-            DB::commit();
-
-            Log::info('Assessments retrieved successfully', [
-                'total_count' => $assessments->count(),
-                'filters_applied' => [
-                    'class' => $request->input('class'),
-                    'student' => $request->input('student'),
-                    'subject' => $request->input('subject')
-                ]
-            ]);
-
+            Log::info('Assessments found', ['count' => count($assessments)]);
+        
             return response()->json([
                 'status' => 'success',
-                'data' => $assessments,
-                'total' => $assessments->count(),
-                'filters' => [
-                    'class' => $request->input('class'),
-                    'student' => $request->input('student'),
-                    'subject' => $request->input('subject')
-                ]
+                'data' => collect($assessments),
+                // 'total' => $assessments->count(),
             ], 200);
+        
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Error retrieving assessments', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
+            Log::error('Error fetching assessments', ['error' => $e->getMessage()]);
             return response()->json([
-                'status' => 'fail',
-                'message' => 'Error retrieving assessments',
-                'description' => $e->getMessage(),
+                'status' => 'error',
+                'message' => 'Something went wrong'
             ], 500);
         }
+
+       
     }
 
     public function getAssessmentsByClass(Request $request): JsonResponse
@@ -246,17 +302,19 @@ class AssessmentService
 
             // Get the 'class' parameter from the URL (request)
             $className = $request->input('className');
-            
+
             Log::info('Fetching assessments by class', ['class' => $request->input('className')]);
 
             $level = Level::where('className', $className)->first();
             $level_id = $level ? $level->id : null;
 
-            $assessments = Assessment::whereHas('student.class', function ($query) use ($level_id) {
+            $assessments = Assessment::whereHas('student.level', function ($query) use ($level_id) {
                 $query->where('id', $level_id);
             })
-            ->with(['student', 'subject'])
-            ->get();
+                ->with(['student', 'subject'])
+                ->get();
+
+                
             return response()->json([
                 'status' => 'success',
                 'data' => $assessments,
