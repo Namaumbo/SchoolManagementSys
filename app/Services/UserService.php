@@ -484,8 +484,8 @@ class UserService
             $level = Level::firstOrCreate(['className' => $request->input('className')]);
 
             // Sync relationships
-            $subject->users()->sync([$user->id]);
-            $subject->levels()->sync([$level->id]);
+            $subject->users()->attach([$user->id]);
+            $subject->levels()->attach([$level->id]);
 
             // Return success response
             return $this->handleAllocationSuccess($user, $level, $subject);
