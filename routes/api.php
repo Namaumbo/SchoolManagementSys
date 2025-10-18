@@ -64,7 +64,7 @@ Route::post('/login', [UserController::class, 'login']);
         Route::delete('/user/{id}', 'deleteUser');
         Route::get('/search/{key}', 'Search');
         Route::post('/logout', 'logout');
-        Route::post('/allocations/{userId}', 'allocationSubject');
+        Route::post('/allocation-subject-and-class/{userId}', 'allocationSubjectAndClass');
         Route::get('/user/{id}/allocations', 'getAllocationsForTeacher');
     });
 

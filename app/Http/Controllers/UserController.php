@@ -59,9 +59,9 @@ class UserController extends Controller
     }
 
 
-    public function allocationSubject(Request $request, $userId)
+    public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
     {
-        return $this->userService->Allocation($request, $userId);
+        return $this->userService->allocationSubjectAndClass($request, $userId);
     }
     
     public function getAllocationsForTeacher(int $id): JsonResponse

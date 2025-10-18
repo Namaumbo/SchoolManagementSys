@@ -108,7 +108,7 @@ class UserService
                 Log::info('Departments assigned to user', ['user_id' => $newUser->id, 'departments' => $request->input('departments')]);
             }
 
-            return response()->json([ 
+            return response()->json([
                 'message' => 'User saved successfully',
                 'user' => $newUser,
             ], 201);
@@ -287,6 +287,7 @@ class UserService
 
 
 
+    //allocate subject to user
     public function allocateSubjectToUser(Request $request, int $userId): JsonResponse
     {
         try {
@@ -334,6 +335,7 @@ class UserService
         }
     }
 
+    //allocate department to user
     public function allocateDepartmentToUser(Request $request, int $userId): JsonResponse
     {
         try {
@@ -471,32 +473,104 @@ class UserService
         }
     }
 
-    public function Allocation(Request $request, int $id): JsonResponse
+    //allocate subject and class to user
+    public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
     {
         try {
+
+            // { userId: '1', classLabel: 'Form 2', subjectIds: [ 1, 7, 2 ] }
+            // LOG
+            Log::info('Allocation request', ['request' => $request->all()]);
+
+            // Prefer route param $userId; allow body override only if provided (but validate)
+            $bodyUserId = $request->input('userId');
+            $effectiveUserId = is_numeric($bodyUserId) ? (int)$bodyUserId : $userId;
+
+            $classId = $request->input('classId');
+            $className = $request->input('className');
+            $subjectIds = $request->input('subjectIds');
+
+            // Validate inputs
+            $validator = Validator::make($request->all(), [
+                'subjectIds' => 'required|array|min:1',
+                'subjectIds.*' => 'integer|exists:subjects,id',
+                'classId' => 'nullable|integer|exists:levels,id',
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('Allocation validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
             // Find the user
-            $user = User::findOrFail($id);
+            $user = User::findOrFail($effectiveUserId);
 
-            // Find or create the subject
-            $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
+            // Find the class
+            $class = null;
+            if ($classId) {
+                $class = Level::findOrFail((int)$classId);
+            } elseif ($className) {
+                $class = Level::where('className', $className)->firstOrFail();
+            }
 
-            // Find or create the level
-            $level = Level::firstOrCreate(['className' => $request->input('className')]);
+            // Find the subjects
+            $subjects = Subject::whereIn('id', $subjectIds)->get();
+            if ($subjects->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No valid subjects found for provided IDs',
+                ], 404);
+            }
 
-            // Sync relationships
-            $subject->users()->attach([$user->id]);
-            $subject->levels()->attach([$level->id]);
+            // console log the user, class, and subjects
+            Log::info('User', ['user_id' => $user->id]);
+            Log::info('Class', ['class' => $class ? $class->only(['id', 'className']) : null]);
+            Log::info('Subjects', ['subject_ids' => $subjects->pluck('id')]);
 
-            // Return success response
-            return $this->handleAllocationSuccess($user, $level, $subject);
+
+
+            // Find the user
+            // $user = User::findOrFail($id);
+
+            // // Find or create the subject
+            // $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
+
+            // // Find or create the level
+            // $level = Level::firstOrCreate(['className' => $request->input('className')]);
+
+            // // Sync relationships
+            // $subject->users()->attach([$user->id]);
+            // $subject->levels()->attach([$level->id]);
+
+            // // Return success response
+            // return $this->handleAllocationSuccess($user, $level, $subject);
+            // Attach subjects to the user
+            $user->subjects()->syncWithoutDetaching($subjects->pluck('id')->all());
+
+            // If class provided, attach class to each subject (subject -> levels)
+            if ($class) {
+                foreach ($subjects as $subject) {
+                    $subject->levels()->syncWithoutDetaching([$class->id]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Subjects allocated to user' . ($class ? ' and class linked to subjects' : ''),
+                'user_id' => $user->id,
+                'subject_ids' => $subjects->pluck('id'),
+                'class' => $class ? ['id' => $class->id, 'className' => $class->className] : null,
+            ]);
         } catch (\Exception $e) {
             // Handle any exceptions
-            return $this->handleAllocationError(
-                'Error allocating subject and class: ' . $e->getMessage(),
-                $user ?? null,
-                $level ?? null,
-                $subject ?? null
-            );
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error allocating subject and class: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -524,6 +598,7 @@ class UserService
         ]);
     }
 
+    //get allocations for teacher
     public function getAllocationsForTeacher(int $userId): JsonResponse
     {
         try {
@@ -548,6 +623,7 @@ class UserService
         }
     }
 
+    //get head of departments
     public function getHeadOfDepartments(): JsonResponse
     {
         try {
@@ -566,5 +642,4 @@ class UserService
             ], 500);
         }
     }
-    
 }
