@@ -91,57 +91,58 @@ class StudentService
 
 
         // Generate the school abbreviation
-        // Log::info('Generating school abbreviation', ['school_name' => $schoolInfo->name]);
-        // $schoolAbbreviation = $this->generateSchoolAbbreviation($schoolInfo->name);
+        Log::info('Generating school abbreviation', ['school_name' => $schoolInfo->name]);
+        $schoolAbbreviation = $this->generateSchoolAbbreviation($schoolInfo->name);
 
-        // $student->firstname = $request->firstname;
-        // $student->surname = $request->surname;
-        // $student->className = $request->className;
+        $student->firstname = $request->firstname;
+        $student->surname = $request->surname;
+      
 
-        // // Extract the numeric part from the className (e.g., "Form 1" => "1")
-        // $classNumber = preg_replace('/[^0-9]/', '', $student->className);
-        // // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
-        // $classAbbreviation = 'F' . $classNumber;
+        // Extract the numeric part from the className (e.g., "Form 1" => "1")
+        $classNumber = preg_replace('/[^0-9]/', '', $student->level_id);
+        // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
+        $classAbbreviation = 'F' . $classNumber;
+        $student->level_id = $request->level_id;
 
         // Log student creation attempt
-        // Log::info('Creating new student record', [
-        //     'firstname' => $request->firstname,
-        //     'surname' => $request->surname,
-        //     'className' => $request->className,
-        //     'school_abbreviation' => $schoolAbbreviation,
-        //     'class_abbreviation' => $classAbbreviation
-        // ]);
+        Log::info('Creating new student record', [
+            'firstname' => $request->firstname,
+            'surname' => $request->surname,
+            'level_id' => $request->level_id,
+            'school_abbreviation' => $schoolAbbreviation,
+            'class_abbreviation' => $classAbbreviation
+        ]);
 
         // Generate the student username in the format "SCHOOL_ABBR/F1/001", "SCHOOL_ABBR/F2/001", etc.
         Log::info('Generating student username');
-        // $student->username = Helper::StudentIdGenerator(new Student, 'username', 3, $schoolAbbreviation . '/' . $classAbbreviation . '/');
+        $student->username = Helper::StudentIdGenerator(new Student, 'username', 3, $schoolAbbreviation . '/' . $classAbbreviation . '/');
         Log::info('Generated username', ['username' => $student->username]);
 
-        // $student->sex = $request->sex;
-        // $student->village = $request->village;
-        // $student->traditional_authority = $request->traditional_authority;
-        // $student->district = $request->district;
-        // $student->role_name = $request->role_name;
-        // $student->created_at = Carbon::now();
-        // $student->updated_at = Carbon::now();
+        $student->sex = $request->sex;
+        $student->village = $request->village;
+        $student->traditional_authority = $request->traditional_authority;
+        $student->district = $request->district;
+        $student->role_name = $request->role_name;
+        $student->created_at = Carbon::now();
+        $student->updated_at = Carbon::now();
 
         Log::info('Saving student record', ['student_data' => $student->toArray()]);
         $student->save();
 
         // Check if the student is in Form 1 or Form 2
-        // if ($classNumber === '1' || $classNumber === '2') {
-        //     Log::info('Registering subjects for Form 1/2 student', ['class_number' => $classNumber]);
-        //     // Register all subjects for Form 1 and Form 2
-        //     $allSubjects = Subject::all();
-        //     foreach ($allSubjects as $subject) {
-        //         Log::debug('Registering subject for student', [
-        //             'student_id' => $student->id,
-        //             'subject' => $subject->name
-        //         ]);
-        //         $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
-        //     }
-        //     Log::info('Completed subject registration for student');
-        // }
+        if ($student->level_id === 1 || $student->level_id === 2) {
+            Log::info('Registering subjects for Form 1/2 student', ['level_id' => $student->level_id]);
+            // Register all subjects for Form 1 and Form 2
+            $allSubjects = Subject::all();
+            foreach ($allSubjects as $subject) {
+                Log::debug('Registering subject for student', [
+                    'student_id' => $student->id,
+                    'subject' => $subject->name
+                ]);
+                $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+            }
+            Log::info('Completed subject registration for student');
+        }
     }
 
     /**
