@@ -12,25 +12,20 @@ class StudentFactory extends Factory
 
     public function definition()
     {
-        // Ensure we have at least 10 levels created before running StudentFactory
-        Level::factory()->count(10)->create();
-
-        // Get all available class names from levels
-        $classNames = Level::pluck('className')->toArray();
-
-        // Select a random class name from the available ones
-        $className = $this->faker->randomElement($classNames);
+        // Pick a random existing level (assumes levels are seeded beforehand)
+        $level = Level::inRandomOrder()->first();
+        $className = $level ? $level->className : 'Form 1';
 
         // Generate username based on class abbreviation
         $classNumber = preg_replace('/[^0-9]/', '', $className);
-        $classAbbreviation = 'F' . $classNumber;
+        $classAbbreviation = 'F' . ($classNumber ?: '1');
         $usernamePrefix = 'SIMS/' . $classAbbreviation . '/';
         $uniqueUsername = $this->faker->unique()->numerify($usernamePrefix . '###');
 
         return [
             'firstname' => $this->faker->firstName,
             'surname' => $this->faker->lastName,
-            'className' => $className,
+            'level_id' => $level ? $level->id : null,
             'sex' => $this->faker->randomElement(['male', 'female']),
             'village' => $this->faker->city,
             'traditional_authority' => $this->faker->state,

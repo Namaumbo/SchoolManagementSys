@@ -128,6 +128,8 @@ Route::post('/login', [UserController::class, 'login']);
         Route::get('/posts', 'getAll');
     });
 
+
+    // DONE FOR STUDENTs
     Route::controller(StudentController::class)->group(function () {
         Route::get('/students', 'getAll');
         Route::post('/create-student', 'registerStudent');

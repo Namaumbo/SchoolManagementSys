@@ -17,7 +17,8 @@ class UserFactory extends Factory
             'title' => $this->faker->title,
             'firstname' => $this->faker->firstName,
             'surname' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
+            // Ensure uniqueness across large seed runs and repeated seeding
+            'email' => Str::uuid().'@example.com',
             'password' => Hash::make('password'),
             'sex' => $this->faker->randomElement(['male', 'female']),
             'village' => $this->faker->city,

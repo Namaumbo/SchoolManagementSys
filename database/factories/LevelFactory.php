@@ -16,7 +16,7 @@ class LevelFactory extends Factory
 
         return [
             'className' => 'Form ' . $className++,
-            'classTeacher' => $this->faker->name,
+            'user_id' => null,
         ];
     }
 }

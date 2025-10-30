@@ -28,8 +28,8 @@ class SubjectFactory extends Factory
         ];
 
         return [
-            'name' => $this->faker->randomElement($subjects),
-            'code' => strtoupper($this->faker->bothify('???###')), // e.g., 'ABC123'
+            'name' => $this->faker->unique()->randomElement($subjects),
+            'code' => $this->faker->unique()->numberBetween(100, 9999),
             'periodsPerWeek' => $this->faker->numberBetween(1, 10),
         ];
     }
