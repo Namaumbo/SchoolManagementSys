@@ -473,6 +473,8 @@ class UserService
         }
     }
 
+
+
     //allocate subject and class to user
     public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
     {
@@ -509,6 +511,7 @@ class UserService
             // Find the user
             $user = User::findOrFail($effectiveUserId);
 
+            Log::info('User', ['user' => $user]);
             // Find the class
             $class = null;
             if ($classId) {
@@ -531,23 +534,6 @@ class UserService
             Log::info('Class', ['class' => $class ? $class->only(['id', 'className']) : null]);
             Log::info('Subjects', ['subject_ids' => $subjects->pluck('id')]);
 
-
-
-            // Find the user
-            // $user = User::findOrFail($id);
-
-            // // Find or create the subject
-            // $subject = Subject::firstOrCreate(['name' => $request->input('name')]);
-
-            // // Find or create the level
-            // $level = Level::firstOrCreate(['className' => $request->input('className')]);
-
-            // // Sync relationships
-            // $subject->users()->attach([$user->id]);
-            // $subject->levels()->attach([$level->id]);
-
-            // // Return success response
-            // return $this->handleAllocationSuccess($user, $level, $subject);
             // Attach subjects to the user
             $user->subjects()->syncWithoutDetaching($subjects->pluck('id')->all());
 

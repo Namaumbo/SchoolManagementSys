@@ -69,7 +69,6 @@ Route::post('/login', [UserController::class, 'login']);
     });
 
 
-
     Route::controller(DepartmentController::class)->group(function () {
         Route::get('/departments', 'getAll');
         Route::get('/department/{id}', 'show');
@@ -81,15 +80,14 @@ Route::post('/login', [UserController::class, 'login']);
     });
 
 
-
     Route::controller(SubjectController::class)->group(function () {
         Route::post('/create-subject', 'store');
         Route::get('/subjects', 'getAll');
         Route::get('/subject/{id}', 'show');
         Route::put('/update-subject/{id}', 'update');
     });
-    // http://127.0.0.1:8000/api/assessments?class=Form+3
 
+    // http://127.0.0.1:8000/api/assessments?class=Form+3
     Route::controller(RoleController::class)->group(function () {
         Route::get('/role/{id}', function ($role_name) {
             return new RoleResource(Role::findOrFail($role_name));
