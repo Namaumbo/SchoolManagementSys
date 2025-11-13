@@ -68,4 +68,14 @@ class UserController extends Controller
     {
         return $this->userService->getAllocationsForTeacher($id);
     }
+
+    public function getAllocationsForUser(): JsonResponse
+    {
+        return $this->userService->getAllocationsForUser();
+    }
+
+    public function getAllocationsInDatabase(): JsonResponse
+    {
+        return $this->userService->getAllocationsInDatabase();
+    }
 }

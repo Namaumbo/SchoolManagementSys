@@ -66,6 +66,8 @@ Route::post('/login', [UserController::class, 'login']);
         Route::post('/logout', 'logout');
         Route::post('/allocation-subject-and-class/{userId}', 'allocationSubjectAndClass');
         Route::get('/user/{id}/allocations', 'getAllocationsForTeacher');
+        Route::get('/get-all-allocations', 'getAllocationsForUser');
+        Route::get('/get-allocations-in-database', 'getAllocationsInDatabase');
     });
 
 

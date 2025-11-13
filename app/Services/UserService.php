@@ -24,6 +24,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
 use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {
@@ -474,7 +475,6 @@ class UserService
     }
 
 
-
     //allocate subject and class to user
     public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
     {
@@ -560,6 +560,48 @@ class UserService
         }
     }
 
+    public function getAllocationsForUser(int $userId): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+
+            $allocations = DB::table('allocationables')
+                ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
+                ->where('allocationables.allocationable_type', User::class)
+                ->where('allocationables.allocationable_id', $user->id)
+                ->select([
+                    'allocationables.allocationable_id as user_id',
+                    'allocationables.subject_id',
+                    'subjects.name as subject_name',
+                    'allocationables.allocationable_type',
+                    'allocationables.created_at',
+                    'allocationables.updated_at',
+                ])
+                ->get()
+                ->map(function ($allocation) use ($user) {
+                    $allocation->user_name = trim($user->firstname . ' ' . $user->surname);
+                    return $allocation;
+                });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocations retrieved successfully',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => trim($user->firstname . ' ' . $user->surname),
+                    'email' => $user->email,
+                ],
+                'allocations' => $allocations,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations for user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
     {
         return response()->json([
@@ -624,6 +666,25 @@ class UserService
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to retrieve head of departments',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    //get allocations in the database
+    public function getAllocationsInDatabase(): JsonResponse
+    {
+        try {
+            $allocations = Allocationable::all();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocations retrieved successfully',
+                'allocations' => $allocations,
+            ]); 
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations in database',
                 'error' => $e->getMessage(),
             ], 500);
         }
