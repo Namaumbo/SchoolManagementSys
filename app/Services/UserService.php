@@ -286,8 +286,6 @@ class UserService
         }
     }
 
-
-
     //allocate subject to user
     public function allocateSubjectToUser(Request $request, int $userId): JsonResponse
     {
@@ -481,13 +479,12 @@ class UserService
         try {
 
             // { userId: '1', classLabel: 'Form 2', subjectIds: [ 1, 7, 2 ] }
-            // LOG
+            
             Log::info('Allocation request', ['request' => $request->all()]);
 
             // Prefer route param $userId; allow body override only if provided (but validate)
             $bodyUserId = $request->input('userId');
             $effectiveUserId = is_numeric($bodyUserId) ? (int)$bodyUserId : $userId;
-
             $classId = $request->input('classId');
             $className = $request->input('className');
             $subjectIds = $request->input('subjectIds');
@@ -537,7 +534,6 @@ class UserService
             // Attach subjects to the user
             $user->subjects()->syncWithoutDetaching($subjects->pluck('id')->all());
 
-            // If class provided, attach class to each subject (subject -> levels)
             if ($class) {
                 foreach ($subjects as $subject) {
                     $subject->levels()->syncWithoutDetaching([$class->id]);
@@ -675,7 +671,16 @@ class UserService
     public function getAllocationsInDatabase(): JsonResponse
     {
         try {
-            $allocations = Allocationable::all();
+            $allocations = DB::table('allocationables')
+                ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
+                ->join('users', 'users.id', '=', 'allocationables.allocationable_id')
+                ->select(
+                    'allocationables.*',
+                    'subjects.name as subject',
+                    DB::raw("CONCAT(users.firstname, ' ', users.surname) as teacher"),
+                    'users.email as email'
+                )
+                ->get();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Allocations retrieved successfully',
@@ -688,5 +693,26 @@ class UserService
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function getTeachers(): JsonResponse
+    {
+        try {
+            $teachers = User::where('role_name', 'Teacher')->get();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Teachers retrieved successfully',
+                'teachers' => $teachers,
+            ]);
+        }
+    
+    catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to retrieve teachers',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
     }
 }
