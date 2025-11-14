@@ -56,8 +56,8 @@ class UserService
     public function getAll(): JsonResponse
     {
         try {
-            $users = User::with(['departments'])->paginate(10);
-
+            $users = User::with(['departments'])->get();
+            
             Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
 
             return response()->json([
