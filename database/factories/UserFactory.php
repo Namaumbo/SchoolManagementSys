@@ -17,14 +17,15 @@ class UserFactory extends Factory
             'title' => $this->faker->title,
             'firstname' => $this->faker->firstName,
             'surname' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
-            'password' => Hash::make('password'), 
+            // Ensure uniqueness across large seed runs and repeated seeding
+            'email' => Str::uuid().'@example.com',
+            'password' => Hash::make('password'),
             'sex' => $this->faker->randomElement(['male', 'female']),
             'village' => $this->faker->city,
             'traditional_authority' => $this->faker->state,
             'district' => $this->faker->state,
             'remember_token' => Str::random(10),
-            'role_name' => $this->faker->randomElement(['Teacher', 'Head Of Department', 'Admin','Class Teacher']),
+            'role_name' => $this->faker->randomElement(['Teacher', 'Head Of Department', 'Admin', 'Class Teacher']),
             'created_at' => now(),
             'updated_at' => now(),
         ];

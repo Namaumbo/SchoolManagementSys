@@ -52,6 +52,8 @@ Route::post('/login', [UserController::class, 'login']);
 //Route::middleware('auth:sanctum')->group(function () {
     Route::post('/school-information', [SchoolInformationController::class, 'store']);
 
+
+    // 70% of the code is done
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'getUsers');
         Route::get('/department/{id}/users', 'getAllUsersFromEachDepartment');
@@ -62,9 +64,13 @@ Route::post('/login', [UserController::class, 'login']);
         Route::delete('/user/{id}', 'deleteUser');
         Route::get('/search/{key}', 'Search');
         Route::post('/logout', 'logout');
-        Route::post('/allocations/{userId}', 'allocationSubject');
+        Route::post('/allocation-subject-and-class/{userId}', 'allocationSubjectAndClass');
         Route::get('/user/{id}/allocations', 'getAllocationsForTeacher');
+        Route::get('/get-all-allocations', 'getAllocationsForUser');
+        Route::get('/get-allocations-in-database', 'getAllocationsInDatabase');
+        Route::get('/get-teachers', 'getTeachers');
     });
+
 
     Route::controller(DepartmentController::class)->group(function () {
         Route::get('/departments', 'getAll');
@@ -83,6 +89,7 @@ Route::post('/login', [UserController::class, 'login']);
         Route::put('/update-subject/{id}', 'update');
     });
 
+    // http://127.0.0.1:8000/api/assessments?class=Form+3
     Route::controller(RoleController::class)->group(function () {
         Route::get('/role/{id}', function ($role_name) {
             return new RoleResource(Role::findOrFail($role_name));
@@ -101,6 +108,7 @@ Route::post('/login', [UserController::class, 'login']);
     });
 
     Route::controller(AssessmentController::class)->group(function () {
+        Route::get('/assessments', 'getAllAssessments');
         Route::put('/update-assessment', 'UpdateAssessment');
         Route::delete('/assessment', 'deleteAssessment');
     });
@@ -120,6 +128,8 @@ Route::post('/login', [UserController::class, 'login']);
         Route::get('/posts', 'getAll');
     });
 
+
+    // DONE FOR STUDENTs
     Route::controller(StudentController::class)->group(function () {
         Route::get('/students', 'getAll');
         Route::post('/create-student', 'registerStudent');

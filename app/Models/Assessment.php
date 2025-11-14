@@ -14,19 +14,19 @@ class Assessment extends Model
     protected $fillable = [
         'schoolTerm',
         'subject_id',
-        'firstAssessment',
+       'firstAssessment',
         'secondAssessment',
-        'endOfTermAssessment', // Include endOfTermAssessment in fillable
+        'endOfTermAssessment', 
         'averageScore',
         'user_id',
         'student_id',
     ];
 
     protected $casts = [
-        'endOfTermAssessment' => 'json', // Cast endOfTermAssessment to JSON
+        'endOfTermAssessment' => 'double', 
     ];
 
-    public function students(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             Student::class,
@@ -35,4 +35,10 @@ class Assessment extends Model
             'student_id'
         );
     }
+
+    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+        {
+            return $this->belongsTo(Subject::class);
+        }
+    
 }

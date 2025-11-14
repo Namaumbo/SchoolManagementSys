@@ -8,9 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DepartmentResource extends JsonResource
 {
-    private mixed $departmentName;
-    private mixed $headOfDepartment;
-
     /**
      * Transform the resource into an array.
      *
@@ -20,11 +17,22 @@ class DepartmentResource extends JsonResource
     public function toArray($request)
     {
         return [
-        'departmentName' => $this->departmentName,
-        'headOfDepartment' => $this->headOfDepartment,
-
-    ];
-
-
+            'id' => $this->id,
+            'departmentName' => $this->departmentName,
+            'departmentCode' => $this->departmentCode,
+            'description' => $this->description,
+            'headOfDepartment' => $this->whenLoaded('headOfDepartment', function () {
+                return [
+                    'id' => $this->headOfDepartment->id,
+                    'title' => $this->headOfDepartment->title,
+                    'firstname' => $this->headOfDepartment->firstname,
+                    'surname' => $this->headOfDepartment->surname,
+                    'email' => $this->headOfDepartment->email,
+                    'fullName' => $this->headOfDepartment->title . ' ' .
+                        $this->headOfDepartment->firstname . ' ' .
+                        $this->headOfDepartment->surname,
+                ];
+            }),          
+        ];
     }
 }

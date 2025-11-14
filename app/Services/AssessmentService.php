@@ -5,63 +5,110 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Models\Subject;
 use App\Models\Assessment;
+use App\Models\Level;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AssessmentService
 {
     public function updateAssessment(Request $request): JsonResponse
     {
         $response = [];
-        $code = 200;
+        $code = 200; // Default success code
 
         try {
-            // Validate and sanitize input
+            Log::info('Starting assessment update/create process', ['request' => $request->all()]);
+            DB::beginTransaction();
+
+            // Relaxed validation to allow partial updates
             $this->validateInput($request);
+            Log::info('Input validation passed');
 
             $subject = Subject::where('name', $request->input('name'))->firstOrFail();
+            Log::info('Subject found', ['subject_id' => $subject->id, 'name' => $subject->name]);
+
             $student = Student::where('username', $request->input('username'))->firstOrFail();
+            Log::info('Student found', ['student_id' => $student->id, 'username' => $student->username]);
 
-            $assessment = Assessment::where('subject_id', $subject->id)
-                ->where('student_id', $student->id)
-                ->firstOrFail();
+            // Optional assessments
+            $firstAssessment = $request->has('firstAssessment')
+                ? $this->validateNumeric($request->input('firstAssessment'))
+                : null;
 
-            $firstAssessment = $this->validateNumeric($request->input('firstAssessment'));
-            $secondAssessment = $this->validateNumeric($request->input('secondAssessment'));
-            $endOfTermAssessment = $request->input('endOfTermAssessment', '[]');
+            $secondAssessment = $request->has('secondAssessment')
+                ? $this->validateNumeric($request->input('secondAssessment'))
+                : null;
 
-            // Decode endOfTermAssessment
-            $endOfTermAssessmentArray = json_decode($endOfTermAssessment, true);
-            if (!is_array($endOfTermAssessmentArray)) {
-                throw new \InvalidArgumentException('Invalid endOfTermAssessment format.');
-            }
+            $endOfTermAssessment = $request->has('endOfTermAssessment')
+                ? $this->validateNumeric($request->input('endOfTermAssessment'))
+                : null;
 
-            // Calculate average score
-            $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray);
+            Log::info('End of term assessment processed successfully');
 
-            $endOfTermAssessmentJson = !empty($endOfTermAssessmentArray) ? json_encode($endOfTermAssessmentArray) : null;
+            $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment);
+            Log::info('Average score calculated', ['averageScore' => $averageScore]);
 
-            // Update the assessment record
-            $assessment->update([
+
+
+            $assessmentSearchAttributes = [
+                'subject_id' => $subject->id,
+                'student_id' => $student->id,
+            ];
+
+            // Only update fields that were provided
+            $assessmentDataToUpdateOrCreate = [
                 'schoolTerm' => $request->input('schoolTerm'),
                 'teacherEmail' => $request->input('teacherEmail'),
-                'firstAssessment' => $firstAssessment,
-                'secondAssessment' => $secondAssessment,
-                'endOfTermAssessment' => $endOfTermAssessmentJson,
-                'averageScore' => $averageScore,
-            ]);
+                'updated_at' => Carbon::now(),
+            ];
+
+            if (!is_null($firstAssessment)) {
+                $assessmentDataToUpdateOrCreate['firstAssessment'] = $firstAssessment;
+            }
+
+            if (!is_null($secondAssessment)) {
+                $assessmentDataToUpdateOrCreate['secondAssessment'] = $secondAssessment;
+            }
+
+            if (!is_null($endOfTermAssessment)) {
+                $assessmentDataToUpdateOrCreate['endOfTermAssessment'] = $endOfTermAssessment;
+            }
+
+            $assessmentDataToUpdateOrCreate['averageScore'] = $averageScore;
+
+            $assessment = Assessment::updateOrCreate(
+                $assessmentSearchAttributes,
+                $assessmentDataToUpdateOrCreate
+            );
+
+            Log::info('Assessment updated/created successfully', ['assessment_id' => $assessment->id]);
+
+            DB::commit();
 
             $response['message'] = 'Assessment updated successfully';
-            $response['status'] = 'Success';
+            $response['status'] = 'success';
+            $response['data'] = $assessment->fresh();
         } catch (\InvalidArgumentException | ValidationException $e) {
+            DB::rollBack();
+            Log::error('Validation or Invalid Argument error occurred', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $response['message'] = $e->getMessage();
             $response['description'] = 'Invalid data provided. Please check your input and try again.';
             $response['status'] = 'fail';
             $code = 400;
         } catch (\Exception $e) {
-            $response['message'] = 'An error occurred while updating the assessment.';
+            DB::rollBack();
+            Log::error('Unexpected error occurred', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            $response['message'] = 'An error occurred while processing the assessment.';
             $response['description'] = 'Please contact the IT officer.';
             $response['status'] = 'fail';
             $code = 500;
@@ -69,33 +116,15 @@ class AssessmentService
 
         return response()->json($response, $code);
     }
-
     private function validateNumeric($value)
     {
         if (!is_numeric($value) || $value < 0 || $value > 100) {
             throw new \InvalidArgumentException('Invalid assessment value. Values must be between 0 and 100.');
         }
 
-        return (float) $value; // Ensure the value is numeric
+        return (float) $value;
     }
 
-    private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessmentArray)
-    {
-        if ($firstAssessment < 0 || $secondAssessment < 0) {
-            throw new \InvalidArgumentException('Assessment values cannot be negative.');
-        }
-
-        if (!empty($firstAssessment) && empty($secondAssessment) && empty($endOfTermAssessmentArray)) {
-            return $firstAssessment;
-        } elseif (!empty($firstAssessment) && !empty($secondAssessment) && empty($endOfTermAssessmentArray)) {
-            return ($firstAssessment + $secondAssessment) / 2;
-        } elseif (!empty($firstAssessment) && !empty($secondAssessment) && !empty($endOfTermAssessmentArray)) {
-            $endOfTermAssessmentAverage = array_sum($endOfTermAssessmentArray) / count($endOfTermAssessmentArray);
-            return ($firstAssessment + $secondAssessment) * 0.2 + $endOfTermAssessmentAverage * 0.6;
-        } else {
-            return 0;
-        }
-    }
 
     private function validateInput(Request $request)
     {
@@ -104,9 +133,130 @@ class AssessmentService
             'username' => 'required|string',
             'schoolTerm' => 'required|string',
             'teacherEmail' => 'required|email',
-            'firstAssessment' => 'required|numeric|min:0|max:100',
-            'secondAssessment' => 'required|numeric|min:0|max:100',
-            'endOfTermAssessment' => 'sometimes|json',
+            'firstAssessment' => 'sometimes|numeric|min:0|max:100',
+            'secondAssessment' => 'sometimes|numeric|min:0|max:100',
+            'endOfTermAssessment' => 'sometimes|numeric|min:0|max:100',
         ]);
+    }
+
+    private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment)
+    {
+        $components = [];
+
+        if (!is_null($firstAssessment)) {
+            $components[] = $firstAssessment;
+        }
+
+        if (!is_null($secondAssessment)) {
+            $components[] = $secondAssessment;
+        }
+
+        if (!is_null($endOfTermAssessment)) {
+            $components[] = $endOfTermAssessment;
+        }
+
+        if (empty($components)) {
+            return 0;
+        }
+
+        return array_sum($components) / count($components);
+    }
+
+
+    // Fetch all assessments with student and subject relations
+    public function getAllAssessments(Request $request): JsonResponse
+    {
+        try {
+            Log::info('Fetching assessments', [
+                'class_filter' => $request->input('class'),
+                'student_filter' => $request->input('student'),
+                'subject_filter' => $request->input('subject')
+            ]);
+        
+            $className = $request->input('class');
+        
+            // Get level ID based on class name
+            $level = Level::where('className', $className)->first();
+            $level_id = $level ? $level->id : null;
+        
+            if (!$level_id) {
+                Log::warning('No level found for class', ['class' => $className]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Class not found'
+                ], 404);
+            }
+        
+            // Fetch only assessments where the student's level matches the class
+            $assessments = DB::select("
+                SELECT 
+                    a.*,
+                    s.id as student_id, s.firstname, s.surname, s.username, s.sex, s.village, s.traditional_authority, s.district, s.level_id, s.created_at as student_created_at, s.updated_at as student_updated_at,
+                    sub.id as subject_id, sub.name as subject_name, sub.code, sub.periodsPerWeek, sub.department, sub.description, sub.status, sub.created_at as subject_created_at, sub.updated_at as subject_updated_at
+                FROM assessments a
+                INNER JOIN students s ON a.student_id = s.id
+                INNER JOIN levels l ON s.level_id = l.id
+                INNER JOIN subjects sub ON a.subject_id = sub.id
+                WHERE l.id = ?
+            ", [$level_id]);
+
+
+            Log::info('Assessments found', ['count' => count($assessments)]);
+        
+            return response()->json([
+                'status' => 'success',
+                'data' => collect($assessments),
+                // 'total' => $assessments->count(),
+            ], 200);
+        
+        } catch (\Exception $e) {
+            Log::error('Error fetching assessments', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong'
+            ], 500);
+        }
+
+       
+    }
+
+    public function getAssessmentsByClass(Request $request): JsonResponse
+    {
+        try {
+
+            // Get the 'class' parameter from the URL (request)
+            $className = $request->input('className');
+
+            Log::info('Fetching assessments by class', ['class' => $request->input('className')]);
+
+            $level = Level::where('className', $className)->first();
+            $level_id = $level ? $level->id : null;
+
+            $assessments = Assessment::whereHas('student.level', function ($query) use ($level_id) {
+                $query->where('id', $level_id);
+            })
+                ->with(['student', 'subject'])
+                ->get();
+
+                
+            return response()->json([
+                'status' => 'success',
+                'data' => $assessments,
+                'total' => $assessments->count(),
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving assessments by class', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Error retrieving assessments by class',
+                'description' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $assessments,
+            'total' => $assessments->count(),
+        ], 200);
     }
 }

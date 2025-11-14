@@ -23,6 +23,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Psy\Util\Json;
 use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class UserService
 {
@@ -40,7 +41,7 @@ class UserService
             'district' => 'required|string',
             'role_name' => 'required|string',
             'departments' => 'array',
-            'departments.*' => 'exists:departments,id', 
+            'departments.*' => 'exists:departments,id',
         ];
 
         if ($isUpdate) {
@@ -54,8 +55,8 @@ class UserService
     public function getAll(): JsonResponse
     {
         try {
-            $users = User::with(['departments'])->paginate(10);
-
+            $users = User::with(['departments'])->get();
+            
             Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
 
             return response()->json([
@@ -76,6 +77,8 @@ class UserService
     public function store(Request $request): JsonResponse
     {
         try {
+            Log::info('Creating user with subjects');
+
             $validator = $this->validateUser($request);
 
             if ($validator->fails()) {
@@ -106,7 +109,6 @@ class UserService
             }
 
             return response()->json([
-                'status' => 'success',
                 'message' => 'User saved successfully',
                 'user' => $newUser,
             ], 201);
@@ -223,6 +225,7 @@ class UserService
         if ($request->has('password')) {
             $user->password = Hash::make($request->input('password'));
         }
+        $user->subjects = $request->subjects;
         $user->sex = $request->sex;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
@@ -230,6 +233,15 @@ class UserService
         $user->role_name = $request->role_name;
         $user->created_at = Carbon::now();
         $user->updated_at = Carbon::now();
+        Log::info('User details updated', [
+            'user_id' => $user->id,
+            'title' => $user->title,
+            'firstname' => $user->firstname,
+            'surname' => $user->surname,
+            'email' => $user->email,
+            'subjects' => $user->subjects,
+            'role_name' => $user->role_name
+        ]);
     }
 
     public function update(Request $request, int $id): JsonResponse
@@ -273,194 +285,433 @@ class UserService
         }
     }
 
+    //allocate subject to user
+    public function allocateSubjectToUser(Request $request, int $userId): JsonResponse
+    {
+        try {
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'subject_ids' => 'required|array',
+                'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
+            ]);
 
+            if ($validator->fails()) {
+                Log::warning('Subject allocation validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
 
-public function allocateSubjectToUser(Request $request, int $userId): JsonResponse
-{
-    try {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'subject_ids' => 'required|array',
-            'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
-        ]);
+            // Fetch the user and subjects
+            $user = User::findOrFail($userId);
+            $subjects = Subject::find($request->input('subject_ids'));
 
-        if ($validator->fails()) {
-            Log::warning('Subject allocation validation failed', ['errors' => $validator->errors()]);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+            // Attach subjects to the user (this will add them to the pivot table)
+            $user->subjects()->syncWithoutDetaching($subjects);
 
-        // Fetch the user and subjects
-        $user = User::findOrFail($userId);
-        $subjects = Subject::find($request->input('subject_ids'));
-
-        // Attach subjects to the user (this will add them to the pivot table)
-        $user->subjects()->syncWithoutDetaching($subjects);
-
-        Log::info('Subjects allocated to user', [
-            'user_id' => $user->id,
-            'subject_ids' => $subjects->pluck('id'),
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Subjects allocated successfully to the user',
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Failed to allocate subjects to user', [
-            'error' => $e->getMessage(),
-            'user_id' => $userId,
-        ]);
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to allocate subjects to user',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-}
-
-public function allocateDepartmentToUser(Request $request, int $userId): JsonResponse
-{
-    try {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'department_ids' => 'required|array',
-            'department_ids.*' => 'exists:departments,id', // Validate each department ID
-        ]);
-
-        if ($validator->fails()) {
-            Log::warning('Department allocation validation failed', ['errors' => $validator->errors()]);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Fetch the user and departments
-        $user = User::findOrFail($userId);
-        $departments = Department::find($request->input('department_ids'));
-
-        // Attach departments to the user (this will add them to the pivot table)
-        $user->departments()->syncWithoutDetaching($departments);
-
-        Log::info('Departments allocated to user', [
-            'user_id' => $user->id,
-            'department_ids' => $departments->pluck('id'),
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Departments allocated successfully to the user',
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Failed to allocate departments to user', [
-            'error' => $e->getMessage(),
-            'user_id' => $userId,
-        ]);
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to allocate departments to user',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-}
-
-public function getUserAllocations(int $userId): JsonResponse
-{
-    try {
-        // Fetch user along with their allocations (subjects and departments)
-        $user = User::with(['subjects', 'departments'])->findOrFail($userId);
-
-        Log::info('Fetched user allocations successfully', [
-            'user_id' => $user->id,
-            'subject_count' => $user->subjects->count(),
-            'department_count' => $user->departments->count(),
-        ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User allocations retrieved successfully',
-            'user_allocations' => [
-                'subjects' => $user->subjects,
-                'departments' => $user->departments,
-            ],
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Failed to fetch user allocations', [
-            'error' => $e->getMessage(),
-            'user_id' => $userId,
-        ]);
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to fetch user allocations',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
-}
-
-public function removeAllocationFromUser(Request $request, int $userId): JsonResponse
-{
-    try {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'subject_ids' => 'array',
-            'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
-            'department_ids' => 'array',
-            'department_ids.*' => 'exists:departments,id', // Validate each department ID
-        ]);
-
-        if ($validator->fails()) {
-            Log::warning('Allocation removal validation failed', ['errors' => $validator->errors()]);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validation error',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Fetch the user
-        $user = User::findOrFail($userId);
-
-        // Remove the specified allocations
-        if ($request->has('subject_ids')) {
-            $user->subjects()->detach($request->input('subject_ids'));
-            Log::info('Removed subjects from user', [
+            Log::info('Subjects allocated to user', [
                 'user_id' => $user->id,
-                'subject_ids' => $request->input('subject_ids'),
+                'subject_ids' => $subjects->pluck('id'),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Subjects allocated successfully to the user',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to allocate subjects to user', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to allocate subjects to user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    //allocate department to user
+    public function allocateDepartmentToUser(Request $request, int $userId): JsonResponse
+    {
+        try {
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'department_ids' => 'required|array',
+                'department_ids.*' => 'exists:departments,id', // Validate each department ID
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('Department allocation validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            // Fetch the user and departments
+            $user = User::findOrFail($userId);
+            $departments = Department::find($request->input('department_ids'));
+
+            // Attach departments to the user (this will add them to the pivot table)
+            $user->departments()->syncWithoutDetaching($departments);
+
+            Log::info('Departments allocated to user', [
+                'user_id' => $user->id,
+                'department_ids' => $departments->pluck('id'),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Departments allocated successfully to the user',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to allocate departments to user', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to allocate departments to user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getUserAllocations(int $userId): JsonResponse
+    {
+        try {
+            // Fetch user along with their allocations (subjects and departments)
+            $user = User::with(['subjects', 'departments'])->findOrFail($userId);
+
+            Log::info('Fetched user allocations successfully', [
+                'user_id' => $user->id,
+                'subject_count' => $user->subjects->count(),
+                'department_count' => $user->departments->count(),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User allocations retrieved successfully',
+                'user_allocations' => [
+                    'subjects' => $user->subjects,
+                    'departments' => $user->departments,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch user allocations', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch user allocations',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function removeAllocationFromUser(Request $request, int $userId): JsonResponse
+    {
+        try {
+            // Validate the request data
+            $validator = Validator::make($request->all(), [
+                'subject_ids' => 'array',
+                'subject_ids.*' => 'exists:subjects,id', // Validate each subject ID
+                'department_ids' => 'array',
+                'department_ids.*' => 'exists:departments,id', // Validate each department ID
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('Allocation removal validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            // Fetch the user
+            $user = User::findOrFail($userId);
+
+            // Remove the specified allocations
+            if ($request->has('subject_ids')) {
+                $user->subjects()->detach($request->input('subject_ids'));
+                Log::info('Removed subjects from user', [
+                    'user_id' => $user->id,
+                    'subject_ids' => $request->input('subject_ids'),
+                ]);
+            }
+
+            if ($request->has('department_ids')) {
+                $user->departments()->detach($request->input('department_ids'));
+                Log::info('Removed departments from user', [
+                    'user_id' => $user->id,
+                    'department_ids' => $request->input('department_ids'),
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocations removed successfully from the user',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to remove allocations from user', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to remove allocations from user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    //allocate subject and class to user
+    public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
+    {
+        try {
+
+            // { userId: '1', classLabel: 'Form 2', subjectIds: [ 1, 7, 2 ] }
+            
+            Log::info('Allocation request', ['request' => $request->all()]);
+
+            // Prefer route param $userId; allow body override only if provided (but validate)
+            $bodyUserId = $request->input('userId');
+            $effectiveUserId = is_numeric($bodyUserId) ? (int)$bodyUserId : $userId;
+            $classId = $request->input('classId');
+            $className = $request->input('className');
+            $subjectIds = $request->input('subjectIds');
+
+            // Validate inputs
+            $validator = Validator::make($request->all(), [
+                'subjectIds' => 'required|array|min:1',
+                'subjectIds.*' => 'integer|exists:subjects,id',
+                'classId' => 'nullable|integer|exists:levels,id',
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('Allocation validation failed', ['errors' => $validator->errors()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            // Find the user
+            $user = User::findOrFail($effectiveUserId);
+
+            Log::info('User', ['user' => $user]);
+            // Find the class
+            $class = null;
+            if ($classId) {
+                $class = Level::findOrFail((int)$classId);
+            } elseif ($className) {
+                $class = Level::where('className', $className)->firstOrFail();
+            }
+
+            // Find the subjects
+            $subjects = Subject::whereIn('id', $subjectIds)->get();
+            if ($subjects->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No valid subjects found for provided IDs',
+                ], 404);
+            }
+
+            // console log the user, class, and subjects
+            Log::info('User', ['user_id' => $user->id]);
+            Log::info('Class', ['class' => $class ? $class->only(['id', 'className']) : null]);
+            Log::info('Subjects', ['subject_ids' => $subjects->pluck('id')]);
+
+            // Attach subjects to the user
+            $user->subjects()->syncWithoutDetaching($subjects->pluck('id')->all());
+
+            if ($class) {
+                foreach ($subjects as $subject) {
+                    $subject->levels()->syncWithoutDetaching([$class->id]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Subjects allocated to user' . ($class ? ' and class linked to subjects' : ''),
+                'user_id' => $user->id,
+                'subject_ids' => $subjects->pluck('id'),
+                'class' => $class ? ['id' => $class->id, 'className' => $class->className] : null,
+            ]);
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error allocating subject and class: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getAllocationsForUser(int $userId): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+
+            $allocations = DB::table('allocationables')
+                ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
+                ->where('allocationables.allocationable_type', User::class)
+                ->where('allocationables.allocationable_id', $user->id)
+                ->select([
+                    'allocationables.allocationable_id as user_id',
+                    'allocationables.subject_id',
+                    'subjects.name as subject_name',
+                    'allocationables.allocationable_type',
+                    'allocationables.created_at',
+                    'allocationables.updated_at',
+                ])
+                ->get()
+                ->map(function ($allocation) use ($user) {
+                    $allocation->user_name = trim($user->firstname . ' ' . $user->surname);
+                    return $allocation;
+                });
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocations retrieved successfully',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => trim($user->firstname . ' ' . $user->surname),
+                    'email' => $user->email,
+                ],
+                'allocations' => $allocations,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations for user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function handleAllocationSuccess(User $user, Level $level, Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Subject and class allocated successfully',
+            'status' => 'success',
+            'Teacher' => $user->firstname . ' ' . $user->surname,
+            'Email' => $user->email,
+            'Class' => $level->className,
+            'Subject' => $subject->name,
+        ], 201);
+    }
+
+    private function handleAllocationError(string $errorMessage, ?User $user, ?Level $level, ?Subject $subject): JsonResponse
+    {
+        return response()->json([
+            'message' => $errorMessage,
+            'status' => 'fail',
+            'Teacher' => $user ? $user->firstname . ' ' . $user->surname : null,
+            'Email' => $user ? $user->email : null,
+            'Class' => $level ? $level->className : null,
+            'Subject' => $subject ? $subject->name : null,
+        ]);
+    }
+
+    //get allocations for teacher
+    public function getAllocationsForTeacher(int $userId): JsonResponse
+    {
+        try {
+            // Find the user (teacher) by ID
+            $teacher = User::findOrFail($userId);
+
+            // Load subjects and levels allocated to the teacher
+            $allocatedSubjects = $teacher->subjects()->with('levels')->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocated subjects and classes retrieved successfully for teacher ' . $teacher->firstname . ' ' . $teacher->surname,
+                'teacher' => $teacher,
+                'allocations' => $allocatedSubjects,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations for teacher',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    //get head of departments
+    public function getHeadOfDepartments(): JsonResponse
+    {
+        try {
+            $headOfDepartments = User::where('role_name', 'Head Of Department')->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Head of departments retrieved successfully',
+                'head_of_departments' => $headOfDepartments,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve head of departments',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    //get allocations in the database
+    public function getAllocationsInDatabase(): JsonResponse
+    {
+        try {
+            $allocations = DB::table('allocationables')
+                ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
+                ->join('users', 'users.id', '=', 'allocationables.allocationable_id')
+                ->select(
+                    'allocationables.*',
+                    'subjects.name as subject',
+                    DB::raw("CONCAT(users.firstname, ' ', users.surname) as teacher"),
+                    'users.email as email'
+                )
+                ->get();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Allocations retrieved successfully',
+                'allocations' => $allocations,
+            ]); 
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve allocations in database',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function getTeachers(): JsonResponse
+    {
+        try {
+            $teachers = User::where('role_name', 'Teacher')->get();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Teachers retrieved successfully',
+                'teachers' => $teachers,
             ]);
         }
-
-        if ($request->has('department_ids')) {
-            $user->departments()->detach($request->input('department_ids'));
-            Log::info('Removed departments from user', [
-                'user_id' => $user->id,
-                'department_ids' => $request->input('department_ids'),
-            ]);
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Allocations removed successfully from the user',
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Failed to remove allocations from user', [
-            'error' => $e->getMessage(),
-            'user_id' => $userId,
-        ]);
+    
+    catch (\Exception $e) {
         return response()->json([
             'status' => 'error',
-            'message' => 'Failed to remove allocations from user',
+            'message' => 'Failed to retrieve teachers',
             'error' => $e->getMessage(),
         ], 500);
     }
-}
-
-
-
-
-
+    }
 }

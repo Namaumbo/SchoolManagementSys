@@ -12,22 +12,13 @@ class Allocationable extends pivot
 {
     use HasFactory;
     protected $table = "allocationables";
-    protected $fillable=[
+    protected $fillable = [
 
-         'user_id',
-         'allocationable_id',
-         'allocatiobable_type',
-         'created_at',
-         'updated_at'
-       
-        ];
-      
- 
-  
+        'user_id',
+        'allocationable_id',
+        'allocationable_type',
+        'created_at',
+        'updated_at'
 
-
-   
-  
-    
- 
+    ];
 }

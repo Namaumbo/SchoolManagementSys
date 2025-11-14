@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->integer('firstAssessment')->nullable();
             $table->integer('secondAssessment')->nullable();
-            $table->Json('endOfTermAssessment')->nullable();
+            $table->double('endOfTermAssessment')->nullable();
             $table->integer('averageScore')->nullable();
 
                 $table->foreign('teacherEmail')

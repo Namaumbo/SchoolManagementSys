@@ -26,6 +26,7 @@ class StudentResource extends JsonResource
             'district' => $this->district,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            
            //'students' => StudentResource::collection($this->students)
            // 'st' => StudentAssessmentResource::collection($this->students_assessments),
 

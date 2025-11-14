@@ -28,7 +28,9 @@ class User extends Authenticatable
         'sex',
         'village',
         'traditional_authority',
-        'district'
+        'district',
+        'subjects',
+        'is_in_department'
     ];
 
     protected $hidden = [
@@ -37,15 +39,24 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
+        'subjects' => 'array',
         'email_verified_at' => 'datetime',
     ];
 
+    public function getSubjectsAttribute($value)
+    {
+        return $value ? json_decode($value, true) : [];
+    }
+
+    public function setSubjectsAttribute($value)
+    {
+        $this->attributes['subjects'] = is_array($value) ? json_encode($value) : $value;
+    }
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_name', 'role_name');
     }
 
-  
 
     public function subjects()
     {
@@ -61,5 +72,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(Department::class, 'head_of_department_id');
     }
-
 }

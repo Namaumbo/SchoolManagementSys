@@ -13,18 +13,40 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
 
 class StudentService
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getStudents(): JsonResponse
+    public function getStudents(Request $request): JsonResponse
     {
-        $students = Student::with('subjects')->paginate(10);
-        return response()->json($students, 200);
+        Log::info('Fetching students', [
+            'class_filter' => $request->input('class', null),
+            'page' => $request->input('page', 1)
+        ]);
+
+        $query = Student::with(['subjects', 'level']);
+
+        // Filter by class if provided
+        if ($request->has('class') && $request->input('class')) {
+            Log::info('Applying class filter', ['class' => $request->input('class')]);
+            $query->whereHas('level', function ($q) use ($request) {
+                $q->where('className', $request->input('class'));
+            });
+        }
+
+        $students = $query->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $students,
+            'total' => $students->count()
+        ], 200);
     }
 
     /**
@@ -53,25 +75,48 @@ class StudentService
     public function create(Request $request, Student $student): void
     {
         // Fetch the school information
+        Log::info('Fetching school information');
         $schoolInfo = SchoolInformation::first();
         if (!$schoolInfo) {
+            Log::error('School information not found');
             throw new Exception('School information not found');
         }
 
+
+
+        // console.log the school info and the requests
+        
+
+
+
+
         // Generate the school abbreviation
+        Log::info('Generating school abbreviation', ['school_name' => $schoolInfo->name]);
         $schoolAbbreviation = $this->generateSchoolAbbreviation($schoolInfo->name);
 
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
-        $student->className = $request->className;
+      
 
         // Extract the numeric part from the className (e.g., "Form 1" => "1")
-        $classNumber = preg_replace('/[^0-9]/', '', $student->className);
+        $classNumber = preg_replace('/[^0-9]/', '', $student->level_id);
         // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
         $classAbbreviation = 'F' . $classNumber;
+        $student->level_id = $request->level_id;
+
+        // Log student creation attempt
+        Log::info('Creating new student record', [
+            'firstname' => $request->firstname,
+            'surname' => $request->surname,
+            'level_id' => $request->level_id,
+            'school_abbreviation' => $schoolAbbreviation,
+            'class_abbreviation' => $classAbbreviation
+        ]);
 
         // Generate the student username in the format "SCHOOL_ABBR/F1/001", "SCHOOL_ABBR/F2/001", etc.
+        Log::info('Generating student username');
         $student->username = Helper::StudentIdGenerator(new Student, 'username', 3, $schoolAbbreviation . '/' . $classAbbreviation . '/');
+        Log::info('Generated username', ['username' => $student->username]);
 
         $student->sex = $request->sex;
         $student->village = $request->village;
@@ -80,15 +125,23 @@ class StudentService
         $student->role_name = $request->role_name;
         $student->created_at = Carbon::now();
         $student->updated_at = Carbon::now();
+
+        Log::info('Saving student record', ['student_data' => $student->toArray()]);
         $student->save();
 
         // Check if the student is in Form 1 or Form 2
-        if ($classNumber === '1' || $classNumber === '2') {
+        if ($student->level_id === 1 || $student->level_id === 2) {
+            Log::info('Registering subjects for Form 1/2 student', ['level_id' => $student->level_id]);
             // Register all subjects for Form 1 and Form 2
             $allSubjects = Subject::all();
             foreach ($allSubjects as $subject) {
+                Log::debug('Registering subject for student', [
+                    'student_id' => $student->id,
+                    'subject' => $subject->name
+                ]);
                 $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
             }
+            Log::info('Completed subject registration for student');
         }
     }
 
@@ -101,6 +154,8 @@ class StudentService
     public function store(Request $request): JsonResponse
     {
         try {
+            Log::info('Starting student registration process');
+
             $response = [
                 'message' => '',
                 'status' => '',
@@ -109,54 +164,91 @@ class StudentService
             ];
             $code = 200;
 
+            // console.log the school info and the requests
+           
+            Log::info('Request Data:', ['request' => $request->all()]);
+
+            Log::debug('Preparing validation rules');
             $validator = Validator::make($request->all(), [
                 'firstname' => 'required|string|max:255',
                 'surname' => 'required|string|max:255',
-                'className' => 'required|string',
-                'sex' => 'required|in:Male,Female',
+                'level_id' => 'required|integer',
+                'sex' => 'required|in:Male,Female,MALE,FEMALE,male,female',
                 'village' => 'required|string',
                 'traditional_authority' => 'required|string',
                 'district' => 'required|string',
                 'role_name' => 'required|string'
             ]);
 
+            Log::info('Validating student registration request', ['request' => $request->all()]);
+
             if ($validator->fails()) {
+                Log::warning('Validation failed', ['errors' => $validator->errors()]);
                 $response['message'] = 'Validation failed';
                 $response['status'] = 'error';
                 $response['description'] = $validator->errors();
                 return response()->json($response, 422);
             }
 
-            $student = Student::where('username', $request->input('username'))->first();
+            Log::info('Done validating and Processing student registration request', ['request' => $request->all()]);
+
+            Log::debug('Checking for existing student');
+            $student = Student::where('firstname', $request->input('firstname'))
+                ->where('surname', $request->input('surname'))
+                ->where('level_id', $request->input('level_id'))
+                ->first();
+
             if ($student) {
+                Log::warning('Student already exists', [
+                    'firstname' => $request->input('firstname'),
+                    'surname' => $request->input('surname'),
+                    'level_id' => $request->input('level_id')
+                ]);
                 $response['message'] = 'Student already exists';
                 $response['status'] = 'error';
                 $response['student'] = $student;
                 $response['description'] = 'A student with this username already exists in the system';
                 $code = 409;
             } else {
+                Log::info('Starting database transaction');
                 DB::beginTransaction();
                 try {
+                    Log::info('Creating a new student', ['request' => $request->all()]);
                     $student = new Student;
                     $this->create($request, $student);
+
+                    Log::info('Committing database transaction');
                     DB::commit();
 
+                    Log::info('Student created successfully', ['student' => $student]);
                     $response['message'] = 'Student saved successfully';
                     $response['status'] = 'success';
                     $response['student'] = $student;
                     $response['description'] = 'Student has been registered successfully';
                     $code = 201;
                 } catch (\Exception $e) {
+                    Log::error('Failed to create student', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+
+                    Log::info('Rolling back database transaction');
                     DB::rollBack();
                     throw $e;
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Unhandled exception occurred', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $response['message'] = 'An error occurred while processing your request';
             $response['status'] = 'error';
             $response['description'] = config('app.debug') ? $e->getMessage() : 'Please contact system administrator';
             $code = 500;
         }
+
+        Log::info('Sending response', ['response' => $response, 'code' => $code]);
         return response()->json($response, $code);
     }
     /**
@@ -274,10 +366,17 @@ class StudentService
      */
     public function destroy($id): JsonResponse
     {
+        Log::info('Student deletion initiated', ['student_id' => $id]);
+
         try {
             $student = Student::find($id);
 
             if (!$student) {
+                Log::warning('Student deletion failed - student not found', [
+                    'student_id' => $id,
+                    'timestamp' => now()
+                ]);
+
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No Student found with that information',
@@ -285,29 +384,86 @@ class StudentService
                 ], 404);
             }
 
+            Log::info('Student found for deletion', [
+                'student_id' => $student->id,
+                'student_name' => $student->firstname . ' ' . $student->surname,
+                'student_username' => $student->username,
+                'student_class' => $student->className
+            ]);
+
             DB::beginTransaction();
+            Log::info('Database transaction started for student deletion', ['student_id' => $student->id]);
+
             try {
                 // Delete associated assessments
+                $assessmentsCount = Assessment::where('student_id', $student->id)->count();
+                if ($assessmentsCount > 0) {
+                    Assessment::where('student_id', $student->id)->delete();
+                }
+                Log::info('Student assessments deleted', [
+                    'student_id' => $student->id,
+                    'assessments_deleted' => $assessmentsCount
+                ]);
+
+                // Detach subjects from the student the pivot table
+                $subjectsCount = $student->subjects()->count();
+                if ($subjectsCount > 0) {
+                    $student->subjects()->detach();
+                }
+
+                // Delete associated assessments
+                $assessmentsCount = Assessment::where('student_id', $student->id)->count();
                 Assessment::where('student_id', $student->id)->delete();
+                Log::info('Student assessments deleted', [
+                    'student_id' => $student->id,
+                    'assessments_deleted' => $assessmentsCount
+                ]);
 
                 // Detach subjects from the pivot table
+                $subjectsCount = $student->subjects()->count();
                 $student->subjects()->detach();
 
                 // Delete the student
                 $student->delete();
+                Log::info('Student record deleted successfully');
+
+
+                // Delete the student have a SOFT DELETE HERE
+                $student->delete();
+
+                Log::info('Student record deleted successfully', [
+                    'student_id' => $student->id,
+                    'student_name' => $student->firstname . ' ' . $student->surname
+                ]);
 
                 DB::commit();
+                Log::info('Database transaction committed for student deletion', [
+                    'student_id' => $student->id,
+                    'total_records_affected' => $assessmentsCount + $subjectsCount + 1
+                ]);
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Student and associated records deleted successfully',
+                    'message' => 'Student marked as deleted successfully',
                     'data' => null
                 ], 200);
             } catch (\Exception $e) {
                 DB::rollBack();
+                Log::error('Database transaction rolled back during student deletion', [
+                    'student_id' => $student->id,
+                    'error' => $e->getMessage(),
+                    'error_trace' => $e->getTraceAsString()
+                ]);
                 throw $e;
             }
         } catch (\Exception $e) {
+            Log::error('Student deletion failed with exception', [
+                'student_id' => $id,
+                'error' => $e->getMessage(),
+                'error_trace' => $e->getTraceAsString(),
+                'timestamp' => now()
+            ]);
+
             return response()->json([
                 'status' => 'error',
                 'message' => config('app.debug') ? $e->getMessage() : 'Error deleting student',
