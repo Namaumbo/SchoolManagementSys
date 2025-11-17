@@ -43,10 +43,12 @@ class DepartmentController extends Controller
 
         // Transform the request data
         $transformedData = [
-            'departmentName' => $request->input('name'),
-            'departmentCode' => $request->input('code'),
+            'departmentName' => $request->input('departmentName'),
+            'departmentCode' => $request->input('departmentCode'),
             'description' => $request->input('description')
         ];
+
+        Log::info('Transformed data', ['transformedData' => $transformedData]);
 
         $headOfDepartmentId = $request->input('headOfDepartment');
         if ($headOfDepartmentId) {
@@ -90,6 +92,9 @@ class DepartmentController extends Controller
             //     headOfDepartment: 'user@email.com',  // User email
             //     description: 'hey how are u'
             // }
+
+            Log::info('Creating department', ['department' => $validatedData]);
+    
 
             $department = Department::create([
                 'departmentName' => $validatedData['departmentName'],
