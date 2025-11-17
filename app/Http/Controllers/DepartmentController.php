@@ -41,6 +41,8 @@ class DepartmentController extends Controller
     public function store(Request $request): JsonResponse
     {
 
+
+        
         // Transform the request data
         $transformedData = [
             'departmentName' => $request->input('departmentName'),
