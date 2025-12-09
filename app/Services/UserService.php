@@ -56,7 +56,7 @@ class UserService
     {
         try {
             $users = User::with(['departments'])->get();
-            
+
             Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
 
             return response()->json([
@@ -478,12 +478,12 @@ class UserService
         try {
 
             // { userId: '1', classLabel: 'Form 2', subjectIds: [ 1, 7, 2 ] }
-            
+
             Log::info('Allocation request', ['request' => $request->all()]);
 
             // Prefer route param $userId; allow body override only if provided (but validate)
             $bodyUserId = $request->input('userId');
-            $effectiveUserId = is_numeric($bodyUserId) ? (int)$bodyUserId : $userId;
+            $effectiveUserId = is_numeric($bodyUserId) ? (int) $bodyUserId : $userId;
             $classId = $request->input('classId');
             $className = $request->input('className');
             $subjectIds = $request->input('subjectIds');
@@ -511,7 +511,7 @@ class UserService
             // Find the class
             $class = null;
             if ($classId) {
-                $class = Level::findOrFail((int)$classId);
+                $class = Level::findOrFail((int) $classId);
             } elseif ($className) {
                 $class = Level::where('className', $className)->firstOrFail();
             }
@@ -666,25 +666,31 @@ class UserService
         }
     }
 
-    //get allocations in the database
+    //get allocations in the database + departments
     public function getAllocationsInDatabase(): JsonResponse
     {
         try {
             $allocations = DB::table('allocationables')
                 ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
                 ->join('users', 'users.id', '=', 'allocationables.allocationable_id')
+                ->leftJoin('department_user', 'department_user.user_id', '=', 'users.id')
+                ->leftJoin('departments', 'departments.id', '=', 'department_user.department_id')
                 ->select(
                     'allocationables.*',
                     'subjects.name as subject',
                     DB::raw("CONCAT(users.firstname, ' ', users.surname) as teacher"),
-                    'users.email as email'
+                    'users.email as email',
+                    'departments.departmentName as department'
                 )
                 ->get();
+
+            // {"id":1,"subject_id":11,"allocationable_type":"Level","allocationable_id":1,"created_at":null,"updated_at":null,"subject":"Civics","teacher":"Madeline Wisoky","email":"admin@gmail.com"}
+            Log::info('Allocations in database', ['allocations' => $allocations]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Allocations retrieved successfully',
                 'allocations' => $allocations,
-            ]); 
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -704,14 +710,12 @@ class UserService
                 'message' => 'Teachers retrieved successfully',
                 'teachers' => $teachers,
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve teachers',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-    
-    catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to retrieve teachers',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
     }
 }
