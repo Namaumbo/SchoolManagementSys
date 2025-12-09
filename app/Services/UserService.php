@@ -667,6 +667,13 @@ class UserService
     }
 
     //get allocations in the database + departments
+    /**
+     * TODO:THis is working but not the way am want.
+     * I am looking for a way to return the class in which the user is allocated and also which subject is teaching
+     *and also the department in which the user is allocated.
+     * and if there is no department or class allocated, return status as 'not allocated' other wise return status as 'allocated'.
+     */
+
     public function getAllocationsInDatabase(): JsonResponse
     {
         try {
