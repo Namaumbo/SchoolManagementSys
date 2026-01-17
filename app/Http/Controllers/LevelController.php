@@ -13,7 +13,41 @@ class LevelController extends Controller
 {
     public function getClass()
     {
-        return Level::all();
+        $classes = Level::with(['students', 'subjects.users'])->get();
+        
+        return $classes->map(function($class) {
+            // Count students
+            $studentCount = $class->students->count();
+            
+            // Get unique teachers assigned to this class
+            $assignedTeachers = [];
+            $teacherIds = [];
+            
+            foreach ($class->subjects as $subject) {
+                foreach ($subject->users as $user) {
+                    if (!in_array($user->id, $teacherIds)) {
+                        $teacherIds[] = $user->id;
+                        $assignedTeachers[] = [
+                            'id' => $user->id,
+                            'firstname' => $user->firstname,
+                            'surname' => $user->surname,
+                            'email' => $user->email,
+                        ];
+                    }
+                }
+            }
+            
+            return [
+                'id' => $class->id,
+                'className' => $class->className,
+                'classTeacher' => $class->classTeacher,
+                'student_count' => $studentCount,
+                'has_assigned_teachers' => count($assignedTeachers) > 0,
+                'assigned_teachers' => $assignedTeachers,
+                'created_at' => $class->created_at,
+                'updated_at' => $class->updated_at,
+            ];
+        });
     }
 
     public function create(Request $request, $class)
