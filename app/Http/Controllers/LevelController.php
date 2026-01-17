@@ -14,15 +14,15 @@ class LevelController extends Controller
     public function getClass()
     {
         $classes = Level::with(['students', 'subjects.users'])->get();
-        
-        return $classes->map(function($class) {
+
+        return $classes->map(function ($class) {
             // Count students
             $studentCount = $class->students->count();
-            
+
             // Get unique teachers assigned to this class
             $assignedTeachers = [];
             $teacherIds = [];
-            
+
             foreach ($class->subjects as $subject) {
                 foreach ($subject->users as $user) {
                     if (!in_array($user->id, $teacherIds)) {
@@ -32,16 +32,21 @@ class LevelController extends Controller
                             'firstname' => $user->firstname,
                             'surname' => $user->surname,
                             'email' => $user->email,
+                            'title' => $user->title ?? '',
                         ];
                     }
                 }
             }
-            
+
+            // Format class teacher display
+            $classTeacherDisplay = $class->classTeacher ?: 'No class teacher';
+
             return [
                 'id' => $class->id,
                 'className' => $class->className,
-                'classTeacher' => $class->classTeacher,
+                'classTeacher' => $classTeacherDisplay,
                 'student_count' => $studentCount,
+                'assigned_teachers_count' => count($assignedTeachers),
                 'has_assigned_teachers' => count($assignedTeachers) > 0,
                 'assigned_teachers' => $assignedTeachers,
                 'created_at' => $class->created_at,
@@ -114,135 +119,139 @@ class LevelController extends Controller
     }
 
     public function getStudentsByClass($id)
-{
-    try {
-        // Find the level (class) by ID with its students
-        $level = Level::with('students')->findOrFail($id);
+    {
+        try {
+            // Find the level (class) by ID with its students
+            $level = Level::with('students')->findOrFail($id);
 
-        $students = $level->students;
-        $studentCount = $students->count(); // Count the number of students
+            $students = $level->students;
+            $studentCount = $students->count(); // Count the number of students
 
-        return response()->json([
-            'message' => 'Students fetched successfully for class ' . $level->className,
-            'student_count' => $studentCount,
-            'students' => $students,
-            'status' => 200,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Error fetching students',
-            'status' => 404,
-            'error' => $e->getMessage(),
-        ], 404);
+            return response()->json([
+                'message' => 'Students fetched successfully for class ' . $level->className,
+                'student_count' => $studentCount,
+                'students' => $students,
+                'status' => 200,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching students',
+                'status' => 404,
+                'error' => $e->getMessage(),
+            ], 404);
+        }
     }
-}
 
 
 
-/**
- * Get users along with allocated class and subject details by class.
- *
- * @param int $id Class (Level) ID
- * @return \Illuminate\Http\JsonResponse
- */
+    /**
+     * Get users along with allocated class and subject details by class.
+     *
+     * @param int $id Class (Level) ID
+     * @return \Illuminate\Http\JsonResponse
+     */
 
 
-public function getUsersWithAllocations($id)
-{
-    try {
-        // Find the level (class) by ID with its subjects and associated users
-        $level = Level::with(['subjects.users'])
-                      ->findOrFail($id);
+    public function getUsersWithAllocations($id)
+    {
+        try {
+            // Find the level (class) by ID with its subjects and associated users
+            $level = Level::with(['subjects.users'])
+                ->findOrFail($id);
 
-        // Initialize an empty array to store unique users
-        $uniqueUsers = [];
+            // Initialize an empty array to store unique users
+            $uniqueUsers = [];
 
-        // Loop through each subject to extract users and avoid duplication
-        foreach ($level->subjects as $subject) {
-            foreach ($subject->users as $user) {
-                // Check if the user has already been added to $uniqueUsers
-                $userId = $user->id;
-                if (!isset($uniqueUsers[$userId])) {
-                    // If not added, add the user with required details
-                    $uniqueUsers[$userId] = [
-                        'firstname' => $user->firstname,
-                        'surname' => $user->surname,
-                         'email'=>$user->email,
-                         'title'=>$user->title,
-                        'allocatedSubjects' => [],
+            // Loop through each subject to extract users and avoid duplication
+            foreach ($level->subjects as $subject) {
+                foreach ($subject->users as $user) {
+                    // Check if the user has already been added to $uniqueUsers
+                    $userId = $user->id;
+                    if (!isset($uniqueUsers[$userId])) {
+                        // If not added, add the user with required details
+                        $uniqueUsers[$userId] = [
+                            'firstname' => $user->firstname,
+                            'surname' => $user->surname,
+                            'email' => $user->email,
+                            'title' => $user->title,
+                            'allocatedSubjects' => [],
+                        ];
+                    }
+                    // Add the subject details to the user's allocatedSubjects array
+                    $uniqueUsers[$userId]['allocatedSubjects'][] = [
+                        'subjectName' => $subject->name,
+                        'code' => $subject->code,
+                        'periodsPerWeek' => $subject->periodsPerWeek,
+
                     ];
                 }
-                // Add the subject details to the user's allocatedSubjects array
-                $uniqueUsers[$userId]['allocatedSubjects'][] = [
-                    'subjectName' => $subject->name,
-                    'code'=>$subject->code,
-                    'periodsPerWeek'=>$subject->periodsPerWeek,
-
-                ];
             }
+
+            // Prepare the final response data with unique users
+            $formattedUsers = array_values($uniqueUsers); // Reindex the array to remove keys
+
+            return response()->json([
+                'message' => 'Users fetched successfully for class ' . $level->className,
+                'users' => $formattedUsers,
+                'status' => 200,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching users with allocations',
+                'status' => 404,
+                'error' => $e->getMessage(),
+            ], 404);
         }
-
-        // Prepare the final response data with unique users
-        $formattedUsers = array_values($uniqueUsers); // Reindex the array to remove keys
-
-        return response()->json([
-            'message' => 'Users fetched successfully for class ' . $level->className,
-            'users' => $formattedUsers,
-            'status' => 200,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Error fetching users with allocations',
-            'status' => 404,
-            'error' => $e->getMessage(),
-        ], 404);
     }
-}
 
 
-public function getClassPerformance($id)
-{
-    try {
-        // Fetch class details including students and subjects through levels
-        $class = Level::with(['students' => function($query) {
-            $query->with(['subjects' => function($query) {
-                $query->select('subjects.id', 'subjects.name')
-                    ->withPivot('averageScore');
-            }]);
-        }])->findOrFail($id);
+    public function getClassPerformance($id)
+    {
+        try {
+            // Fetch class details including students and subjects through levels
+            $class = Level::with([
+                'students' => function ($query) {
+                    $query->with([
+                        'subjects' => function ($query) {
+                            $query->select('subjects.id', 'subjects.name')
+                                ->withPivot('averageScore');
+                        }
+                    ]);
+                }
+            ])->findOrFail($id);
 
-        // Transform the data
-        $classDetails = [
-            'id' => $class->id,
-            'className' => $class->className,
-            'students' => $class->students->map(function($student) {
-                return [
-                    'id' => $student->id,
-                    'firstname' => $student->firstname,
-                    'surname' => $student->surname,
-                    'subjects' => $student->subjects->map(function($subject) {
-                        return [
-                            'id' => $subject->id,
-                            'name' => $subject->name,
-                            'averageScore' => $subject->pivot->averageScore
-                        ];
-                    })
-                ];
-            })
-        ];
+            // Transform the data
+            $classDetails = [
+                'id' => $class->id,
+                'className' => $class->className,
+                'students' => $class->students->map(function ($student) {
+                    return [
+                        'id' => $student->id,
+                        'firstname' => $student->firstname,
+                        'surname' => $student->surname,
+                        'subjects' => $student->subjects->map(function ($subject) {
+                            return [
+                                'id' => $subject->id,
+                                'name' => $subject->name,
+                                'averageScore' => $subject->pivot->averageScore
+                            ];
+                        })
+                    ];
+                })
+            ];
 
-        return response()->json([
-            'message' => 'Performance fetched successfully for class',
-            'class' => $classDetails,
-            'status' => 200,
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Error fetching performance data',
-            'status' => 404,
-            'error' => $e->getMessage(),
-        ], 404);
+            return response()->json([
+                'message' => 'Performance fetched successfully for class',
+                'class' => $classDetails,
+                'status' => 200,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching performance data',
+                'status' => 404,
+                'error' => $e->getMessage(),
+            ], 404);
+        }
     }
-}
 
 }
