@@ -1,5 +1,10 @@
 <?php
 
+$corsAllowedOrigins = array_filter(array_map(
+    'trim',
+    explode(',', env('CORS_ALLOWED_ORIGINS', 'https://school-ui-6kh8.onrender.com,http://localhost:3000,http://127.0.0.1:3000'))
+));
+
 return [
 
     /*
@@ -19,7 +24,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => $corsAllowedOrigins,
 
     'allowed_headers' => ['*'],
 
@@ -27,6 +32,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => env('CORS_SUPPORTS_CREDENTIALS', false),
 
 ];
