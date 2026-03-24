@@ -15,6 +15,6 @@ php artisan view:cache
 php artisan migrate --force
 
 # Run database seeds
-php artisan db:seed --force
+# php artisan db:seed --force
 
 echo "Deployment tasks complete!"
