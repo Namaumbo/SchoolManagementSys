@@ -14,4 +14,7 @@ php artisan view:cache
 # The --force flag is required in production
 php artisan migrate --force
 
+# Run database seeds
+php artisan db:seed --force
+
 echo "Deployment tasks complete!"
