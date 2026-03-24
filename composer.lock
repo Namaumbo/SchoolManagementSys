@@ -7056,7 +7056,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-timer/issues",
                 "source": "https://github.com/sebastianbergmann/php-timer/tree/5.0.3"
-            },>>>>>>> Developing
+            },
 
             "funding": [
                 {
@@ -7362,8 +7362,7 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.0-dev"
-                }>>>>>>> Developing
-
+                },
                 "classmap": [
                     "src/"
                 ]
