@@ -22,7 +22,7 @@ return new class extends Migration
         });
 
         // Backfill level_id from existing className by matching to levels.className
-        \Illuminate\Support\Facades\DB::statement('UPDATE students s JOIN levels l ON s.className = l.className SET s.level_id = l.id');
+        \Illuminate\Support\Facades\DB::statement('UPDATE students s SET level_id = l.id FROM levels l WHERE s."className" = l."className"');
 
         // Add foreign key (and keep nullable for now to avoid failures)
         Schema::table('students', function (Blueprint $table) {
