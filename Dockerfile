@@ -30,9 +30,13 @@ RUN chmod +x /var/www/html/scripts/deploy.sh
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+RUN sed -i 's|root /var/www/html;|root /var/www/html/public;|g' /etc/nginx/sites-available/default.conf
+
+
 # 8. Expose port 80 (Render's default)
 EXPOSE 80
 
 # 9. Define the start command
 # This runs your deploy.sh AND starts the Nginx/PHP service
 CMD ["/bin/sh", "-c", "/var/www/html/scripts/deploy.sh && /start.sh"]
+
