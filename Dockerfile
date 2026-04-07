@@ -13,7 +13,7 @@ ENV WEBROOT=/var/www/html/public
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV RUN_SCRIPTS=1
-ENV SKIP_COMPOSER=1
+# ENV SKIP_COMPOSER=1
 ENV PHP_ERRORS_STDERR=1
 
 # 5. Install production dependencies
@@ -30,6 +30,8 @@ RUN chmod +x /var/www/html/scripts/deploy.sh
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+
+RUN sed -i '/location \/ {/a \        try_files $uri $uri/ /index.php?$query_string;' /etc/nginx/sites-available/default.conf
 RUN sed -i 's|root /var/www/html;|root /var/www/html/public;|g' /etc/nginx/sites-available/default.conf
 
 
