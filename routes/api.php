@@ -50,12 +50,10 @@ Route::post('/login', [UserController::class, 'login']);
 
 
 // health check on the api
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'message' => 'API is running'
-    ]);
-});
+Route::get('/health', fn () => response()->json([
+    'status' => 'ok',
+    'message' => 'API is running'
+]));
 
 
 
