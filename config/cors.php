@@ -2,7 +2,7 @@
 
 $corsAllowedOrigins = array_filter(array_map(
     'trim',
-    explode(',', env('CORS_ALLOWED_ORIGINS', 'https://school-ui-6kh8.onrender.com,http://localhost:3000,http://127.0.0.1:3000'))
+    explode(',', env('CORS_ALLOWED_ORIGINS', 'https://school-ui-6kh8.onrender.com,http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173'))
 ));
 
 return [
