@@ -40,6 +40,8 @@ class UserService
             'traditional_authority' => 'required|string',
             'district' => 'required|string',
             'role_name' => 'required|string',
+            'subjects' => 'array',
+            'subjects.*' => 'exists:subjects,id',
             'departments' => 'array',
             'departments.*' => 'exists:departments,id',
         ];
@@ -106,6 +108,11 @@ class UserService
             if ($request->has('departments')) {
                 $newUser->departments()->syncWithoutDetaching($request->input('departments'));
                 Log::info('Departments assigned to user', ['user_id' => $newUser->id, 'departments' => $request->input('departments')]);
+            }
+
+            if ($request->has('subjects')) {
+                $newUser->subjects()->syncWithoutDetaching($request->input('subjects'));
+                Log::info('Subjects assigned to user', ['user_id' => $newUser->id, 'subjects' => $request->input('subjects')]);
             }
 
             return response()->json([
@@ -225,7 +232,6 @@ class UserService
         if ($request->has('password')) {
             $user->password = Hash::make($request->input('password'));
         }
-        $user->subjects = $request->subjects;
         $user->sex = $request->sex;
         $user->village = $request->village;
         $user->traditional_authority = $request->traditional_authority;
@@ -239,7 +245,6 @@ class UserService
             'firstname' => $user->firstname,
             'surname' => $user->surname,
             'email' => $user->email,
-            'subjects' => $user->subjects,
             'role_name' => $user->role_name
         ]);
     }
@@ -266,6 +271,11 @@ class UserService
             if ($request->has('departments')) {
                 $user->departments()->sync($request->input('departments'));
                 Log::info('Departments updated for user', ['user_id' => $user->id, 'departments' => $request->input('departments')]);
+            }
+
+            if ($request->has('subjects')) {
+                $user->subjects()->sync($request->input('subjects'));
+                Log::info('Subjects updated for user', ['user_id' => $user->id, 'subjects' => $request->input('subjects')]);
             }
 
             Log::info('User updated successfully', ['user_id' => $user->id]);
