@@ -48,7 +48,7 @@ class UserService
 
         if ($isUpdate) {
             $rules['email'] .= ',' . $id;
-            unset($rules['password']); // Remove password rule for update
+            unset($rules['password']); 
         }
 
         return Validator::make($request->all(), $rules);
@@ -721,7 +721,7 @@ class UserService
     public function getTeachers(): JsonResponse
     {
         try {
-            $teachers = User::where('role_name', 'Teacher')->get();
+            $teachers = User::whereRaw('LOWER(role_name) = ?', ['teacher'])->get();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Teachers retrieved successfully',

@@ -110,8 +110,10 @@ Route::controller(RoleController::class)->group(function () {
 
 Route::controller(LevelController::class)->group(function () {
     Route::get('/classes', 'getClass');
+    Route::get('/class/{id}', 'show');
     Route::post('/create-class', 'store');
-    Route::put('/update-class', 'classTeacher');
+    Route::put('/update-class/{id}', 'update');
+    Route::delete('/delete-class/{id}', 'destroy');
     Route::get('/class/{id}/students', 'getStudentsByClass');
     Route::get('/class/{id}/usersAllocations', 'getUsersWithAllocations');
     Route::get('/class/{id}/performance', 'getClassPerformance');
