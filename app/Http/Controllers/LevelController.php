@@ -45,6 +45,8 @@ class LevelController extends Controller
             'className' => $class->className,
             'classTeacher' => $classTeacherDisplay,
             'formTeacherId' => $class->user_id,
+            'capacity' => $class->capacity ?? 30,
+            'room_name' => $class->room_name,
             'student_count' => $studentCount,
             'assigned_teachers_count' => count($assignedTeachers),
             'has_assigned_teachers' => count($assignedTeachers) > 0,
@@ -88,11 +90,15 @@ class LevelController extends Controller
             $validated = $request->validate([
                 'className' => ['required', 'string', 'max:255', 'unique:levels,className'],
                 'user_id' => ['nullable', 'integer', 'exists:users,id'],
+                'capacity' => ['nullable', 'integer', 'min:1'],
+                'room_name' => ['nullable', 'string', 'max:255'],
             ]);
 
             $class = Level::create([
                 'className' => $validated['className'],
                 'user_id' => $validated['user_id'] ?? null,
+                'capacity' => $validated['capacity'] ?? 30,
+                'room_name' => $validated['room_name'] ?? null,
             ]);
             $class->load(['students', 'subjects.users', 'users']);
 
@@ -122,10 +128,14 @@ class LevelController extends Controller
                     Rule::unique('levels', 'className')->ignore($class->id),
                 ],
                 'user_id' => ['nullable', 'integer', 'exists:users,id'],
+                'capacity' => ['nullable', 'integer', 'min:1'],
+                'room_name' => ['nullable', 'string', 'max:255'],
             ]);
 
             $class->className = $validated['className'];
             $class->user_id = $validated['user_id'] ?? null;
+            $class->capacity = $validated['capacity'] ?? $class->capacity;
+            $class->room_name = array_key_exists('room_name', $validated) ? $validated['room_name'] : $class->room_name;
             $class->save();
             $class->load(['students', 'subjects.users', 'users']);
 
