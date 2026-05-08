@@ -16,7 +16,9 @@ class Level extends Model
 
     protected $fillable = [
         'className',
-        'classTeacher'
+        'classTeacher',
+        'capacity',
+        'room_name',
     ];
 
     public function subjects(): \Illuminate\Database\Eloquent\Relations\MorphToMany
