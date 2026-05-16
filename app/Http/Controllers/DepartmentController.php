@@ -146,17 +146,16 @@ class DepartmentController extends Controller
         try {
             \Illuminate\Support\Facades\Log::info('Fetching Head of Departments');
 
-            $headOfDepartments = User::whereHas('role', function ($query) {
-                $query->where('role_name', self::ROLE_HEAD_OF_DEPARTMENT);
-            })->get(['id', 'firstname', 'surname', 'email']);
+            $headOfDepartments = User::whereRaw('LOWER(role_name) = ?', ['head_of_department'])
+                ->get(['id', 'firstname', 'surname', 'email']);
 
-            // Check if the collection is empty or null
             if ($headOfDepartments->isEmpty()) {
                 \Illuminate\Support\Facades\Log::warning('No Head of Departments found');
                 return response()->json([
-                    'status' => 'error',
-                    'message' => 'No Head of Departments found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => 'success',
+                    'message' => 'No Head of Departments found',
+                    'data' => [],
+                ], ResponseAlias::HTTP_OK);
             }
 
             \Illuminate\Support\Facades\Log::info('Head of Departments retrieved successfully', ['count' => $headOfDepartments->count()]);
