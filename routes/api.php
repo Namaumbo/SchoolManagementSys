@@ -115,6 +115,7 @@ Route::controller(LevelController::class)->group(function () {
     Route::put('/update-class/{id}', 'update');
     Route::delete('/delete-class/{id}', 'destroy');
     Route::get('/class/{id}/students', 'getStudentsByClass');
+    Route::post('/class/{id}/students', 'assignStudentsToClass');
     Route::get('/class/{id}/usersAllocations', 'getUsersWithAllocations');
     Route::get('/class/{id}/performance', 'getClassPerformance');
 });

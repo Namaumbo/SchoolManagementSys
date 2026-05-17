@@ -204,7 +204,39 @@ class LevelController extends Controller
         }
     }
 
+    /**
+     * Bulk-assign students to a class (updates students.level_id).
+     */
+    public function assignStudentsToClass(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'studentIds' => 'required|array',
+                'studentIds.*' => 'integer|exists:students,id',
+            ]);
 
+            Level::findOrFail($id);
+
+            $levelId = (int) $id;
+            Student::whereIn('id', $validated['studentIds'])->update([
+                'level_id' => $levelId,
+                'updated_at' => now(),
+            ]);
+
+            return response()->json([
+                'message' => 'Students assigned to class successfully',
+                'status' => 200,
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error assigning students',
+                'status' => 404,
+                'error' => $e->getMessage(),
+            ], 404);
+        }
+    }
 
     /**
      * Get users along with allocated class and subject details by class.

@@ -16,9 +16,9 @@ class UserController extends Controller
     }
 
     // Getting users from the database
-    public function getUsers(): JsonResponse
+    public function getUsers(Request $request): JsonResponse
     {
-        return $this->userService->getAll();
+        return $this->userService->getAll($request);
     }
 
     public function getAllUsersFromEachDepartment(int $id): JsonResponse

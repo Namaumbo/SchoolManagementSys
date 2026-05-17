@@ -31,7 +31,7 @@ class StudentService
             'page' => $request->input('page', 1)
         ]);
 
-        $query = Student::with(['subjects', 'level']);
+        $query = Student::with(['subjects', 'level'])->orderBy('id');
 
         // Filter by class if provided
         if ($request->has('class') && $request->input('class')) {
@@ -41,11 +41,22 @@ class StudentService
             });
         }
 
-        $students = $query->get();
+        $perPage = $request->integer('per_page', 15);
+        $perPage = min(max($perPage, 1), 100);
+
+        $students = $query->paginate($perPage);
+
         return response()->json([
             'status' => 'success',
-            'data' => $students,
-            'total' => $students->count()
+            'data' => $students->items(),
+            'meta' => [
+                'current_page' => $students->currentPage(),
+                'last_page' => $students->lastPage(),
+                'per_page' => $students->perPage(),
+                'total' => $students->total(),
+                'from' => $students->firstItem(),
+                'to' => $students->lastItem(),
+            ],
         ], 200);
     }
 

@@ -54,18 +54,25 @@ class UserService
         return Validator::make($request->all(), $rules);
     }
 
-    public function getAll(): JsonResponse
+    public function getAll(Request $request): JsonResponse
     {
         try {
-            $users = User::with(['departments'])->get();
+            $perPage = $request->integer('per_page', 15);
+            $perPage = min(max($perPage, 1), 100);
 
-            Log::info('Fetched all users successfully.', ['users_count' => $users->count()]);
+            $paginator = User::with(['departments'])->orderBy('id')->paginate($perPage);
 
-            return response()->json([
-                'message' => 'User details retrieved successfully',
-                'status' => 'success',
-                'users' => UserResource::collection($users),
+            Log::info('Fetched paginated users', [
+                'current_page' => $paginator->currentPage(),
+                'total' => $paginator->total(),
             ]);
+
+            return UserResource::collection($paginator)
+                ->additional([
+                    'message' => 'User details retrieved successfully',
+                    'status' => 'success',
+                ])
+                ->response();
         } catch (\Exception $e) {
             Log::error('Failed to retrieve users', ['error' => $e->getMessage()]);
             return response()->json([
