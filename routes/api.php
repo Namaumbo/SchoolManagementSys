@@ -79,6 +79,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/get-all-allocations', 'getAllocationsForUser');
     Route::get('/get-allocations-in-database', 'getAllocationsInDatabase');
     Route::get('/get-teachers', 'getTeachers');
+    Route::get('/user-login-timeline', 'getLoginTimeline');
 });
 
 

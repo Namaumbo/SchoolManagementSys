@@ -10,6 +10,7 @@ use App\Models\Subject;
 use App\Models\Level;
 use App\Models\Allocationable;
 use App\Models\Department;
+use App\Models\UserLoginEvent;
 use Illuminate\Contracts\Queue\EntityNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -205,18 +206,99 @@ class UserService
             ], 401);
         }
 
-        $token = Auth::user()->createToken('Token')->plainTextToken;
+        $user = Auth::user();
+        $token = $user->createToken('Token')->plainTextToken;
         $cookie = cookie('jwt', $token, 30 * 1);
 
-        Log::info('User logged in successfully', ['user_id' => Auth::user()->id]);
+        try {
+            UserLoginEvent::create([
+                'user_id' => $user->id,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'logged_in_at' => now(),
+            ]);
+        } catch (\Throwable $eventError) {
+            Log::warning('Failed to save login event', [
+                'user_id' => $user->id,
+                'error' => $eventError->getMessage(),
+            ]);
+        }
+
+        try {
+            $user->last_login = now();
+            $user->login_count = (int) ($user->login_count ?? 0) + 1;
+            $user->save();
+        } catch (\Throwable $counterError) {
+            Log::warning('Failed to update login counters', [
+                'user_id' => $user->id,
+                'error' => $counterError->getMessage(),
+            ]);
+        }
+
+        Log::info('User logged in successfully', ['user_id' => $user->id]);
 
         return response()->json([
             "status" => "success",
-            "message" => "System successfully logged " . Auth::user()->first_name,
+            "message" => "System successfully logged " . $user->firstname,
             "access_token" => $token,
             "token_type" => "bearer",
-            "user" => Auth::user(),
+            "user" => $user,
         ])->withCookie($cookie);
+    }
+
+    public function getLoginTimeline(Request $request): JsonResponse
+    {
+        try {
+            $perPage = $request->integer('per_page', 20);
+            $perPage = min(max($perPage, 1), 100);
+            $userId = $request->integer('user_id');
+
+            $query = UserLoginEvent::with('user:id,firstname,surname,email,role_name')
+                ->orderByDesc('logged_in_at');
+
+            if ($userId) {
+                $query->where('user_id', $userId);
+            }
+
+            $paginator = $query->paginate($perPage);
+
+            $events = collect($paginator->items())->map(function (UserLoginEvent $event) {
+                return [
+                    'id' => $event->id,
+                    'logged_in_at' => optional($event->logged_in_at)->toISOString(),
+                    'ip_address' => $event->ip_address,
+                    'user_agent' => $event->user_agent,
+                    'user' => $event->user ? [
+                        'id' => $event->user->id,
+                        'firstname' => $event->user->firstname,
+                        'surname' => $event->user->surname,
+                        'email' => $event->user->email,
+                        'role_name' => $event->user->role_name,
+                    ] : null,
+                ];
+            })->values();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Login timeline fetched successfully',
+                'data' => $events,
+                'meta' => [
+                    'current_page' => $paginator->currentPage(),
+                    'last_page' => $paginator->lastPage(),
+                    'per_page' => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                    'from' => $paginator->firstItem(),
+                    'to' => $paginator->lastItem(),
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch login timeline', ['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch login timeline',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function logout(): JsonResponse

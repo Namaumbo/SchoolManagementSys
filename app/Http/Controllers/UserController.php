@@ -83,4 +83,9 @@ class UserController extends Controller
     {
         return $this->userService->getTeachers();
     }
+
+    public function getLoginTimeline(Request $request): JsonResponse
+    {
+        return $this->userService->getLoginTimeline($request);
+    }
 }
