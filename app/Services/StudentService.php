@@ -107,11 +107,10 @@ class StudentService
 
         $student->firstname = $request->firstname;
         $student->surname = $request->surname;
-      
 
-        // Extract the numeric part from the className (e.g., "Form 1" => "1")
-        $classNumber = preg_replace('/[^0-9]/', '', $student->level_id);
-        // Determine the prefix based on the class abbreviation (e.g., "Form 1" => "F1")
+        // Look up the level to get the className for username generation
+        $level = \App\Models\Level::find($request->level_id);
+        $classNumber = $level ? preg_replace('/[^0-9]/', '', $level->className) : '1';
         $classAbbreviation = 'F' . $classNumber;
         $student->level_id = $request->level_id;
 
@@ -140,17 +139,19 @@ class StudentService
         Log::info('Saving student record', ['student_data' => $student->toArray()]);
         $student->save();
 
-        // Check if the student is in Form 1 or Form 2
-        if ($student->level_id === 1 || $student->level_id === 2) {
-            Log::info('Registering subjects for Form 1/2 student', ['level_id' => $student->level_id]);
-            // Register all subjects for Form 1 and Form 2
+        // Assign all mandatory subjects to students in Form 1 or Form 2 (any variant: 1A, 1B, 2A, etc.)
+        if ($level && (
+            str_starts_with($level->className, 'Form 1') ||
+            str_starts_with($level->className, 'Form 2')
+        )) {
+            Log::info('Registering subjects for Form 1/2 student', ['className' => $level->className]);
             $allSubjects = Subject::all();
             foreach ($allSubjects as $subject) {
                 Log::debug('Registering subject for student', [
                     'student_id' => $student->id,
                     'subject' => $subject->name
                 ]);
-                $student->subjects()->syncWithoutDetaching($subject, ["name" => $subject->name]);
+                $student->subjects()->syncWithoutDetaching([$subject->id]);
             }
             Log::info('Completed subject registration for student');
         }
