@@ -85,6 +85,7 @@ Route::controller(UserController::class)->group(function () {
 
 Route::controller(DepartmentController::class)->group(function () {
     Route::get('/departments', 'getAll');
+    Route::get('/department/head/{userId}/overview', 'getOverviewForHead');
     Route::get('/department/{id}', 'show');
     Route::post('/register-department', 'store');
     Route::get('/headOfDepartments', 'getHeadOfDepartments');

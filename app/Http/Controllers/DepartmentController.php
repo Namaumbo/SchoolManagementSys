@@ -227,6 +227,117 @@ class DepartmentController extends Controller
     }
 
     /**
+     * Dashboard overview for the head of a department.
+     */
+    public function getOverviewForHead(int $userId): JsonResponse
+    {
+        try {
+            $department = Department::with([
+                'headOfDepartment',
+                'users.levels' => function ($query) {
+                    $query->withCount('students')->orderBy('levels.className');
+                },
+            ])
+                ->where('head_of_department_id', $userId)
+                ->first();
+
+            if (!$department) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'No department is assigned to this head of department',
+                    'data' => null,
+                ], ResponseAlias::HTTP_OK);
+            }
+
+            $staff = $department->users;
+
+            $subjects = \App\Models\Subject::query()
+                ->where(function ($q) use ($department) {
+                    $q->where('department', $department->departmentName)
+                        ->orWhere('department', $department->departmentCode);
+                })
+                ->orderBy('name')
+                ->get(['id', 'name', 'code', 'department', 'status', 'periodsPerWeek']);
+
+            $teacherAllocations = $staff
+                ->map(function ($user) {
+                    // Use subjects() — the JSON "subjects" column shadows the relationship accessor.
+                    $allocatedSubjects = $user->subjects()
+                        ->orderBy('subjects.name')
+                        ->get(['subjects.id', 'subjects.name']);
+
+                    if ($allocatedSubjects->isEmpty()) {
+                        return null;
+                    }
+
+                    $allocatedClasses = $user->levels;
+
+                    return [
+                        'user_id' => $user->id,
+                        'title' => $user->title,
+                        'firstname' => $user->firstname,
+                        'surname' => $user->surname,
+                        'fullName' => trim(
+                            ($user->title ? $user->title . ' ' : '') .
+                            $user->firstname . ' ' .
+                            $user->surname
+                        ),
+                        'sex' => $user->sex,
+                        'email' => $user->email,
+                        'role_name' => $user->role_name,
+                        'subjects' => $allocatedSubjects->map(fn ($subject) => [
+                            'id' => $subject->id,
+                            'name' => $subject->name,
+                        ])->values(),
+                        'classes' => $allocatedClasses->map(fn ($level) => [
+                            'id' => $level->id,
+                            'className' => $level->className,
+                            'studentCount' => $level->students_count,
+                        ])->values(),
+                        'subjectCount' => $allocatedSubjects->count(),
+                        'totalStudents' => $allocatedClasses->sum('students_count'),
+                    ];
+                })
+                ->filter()
+                ->sortBy('fullName')
+                ->values();
+
+            $allocationCount = $teacherAllocations->sum('subjectCount');
+
+            $teacherCount = $staff->filter(function ($user) {
+                return strcasecmp((string) $user->role_name, 'Teacher') === 0;
+            })->count();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Department overview retrieved successfully',
+                'data' => [
+                    'department' => new DepartmentResource($department),
+                    'staff' => UserResource::collection($staff)->resolve(),
+                    'subjects' => $subjects,
+                    'teacherAllocations' => $teacherAllocations,
+                    'stats' => [
+                        'staffCount' => $staff->count(),
+                        'subjectCount' => $subjects->count(),
+                        'teacherCount' => $teacherCount,
+                        'allocationCount' => $allocationCount,
+                    ],
+                ],
+            ], ResponseAlias::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Failed to fetch HOD dashboard overview', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve department overview',
+                'error' => $e->getMessage(),
+            ], ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Get users for a department.
      *
      * @param int $id

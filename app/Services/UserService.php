@@ -49,7 +49,7 @@ class UserService
 
         if ($isUpdate) {
             $rules['email'] .= ',' . $id;
-            unset($rules['password']); 
+            unset($rules['password']);
         }
 
         return Validator::make($request->all(), $rules);
@@ -217,17 +217,15 @@ class UserService
                 'user_agent' => $request->userAgent(),
                 'logged_in_at' => now(),
             ]);
+            $user->last_login = now();
+            $user->login_count = (int) ($user->login_count ?? 0) + 1;
+            $user->save();
+
         } catch (\Throwable $eventError) {
             Log::warning('Failed to save login event', [
                 'user_id' => $user->id,
                 'error' => $eventError->getMessage(),
             ]);
-        }
-
-        try {
-            $user->last_login = now();
-            $user->login_count = (int) ($user->login_count ?? 0) + 1;
-            $user->save();
         } catch (\Throwable $counterError) {
             Log::warning('Failed to update login counters', [
                 'user_id' => $user->id,
@@ -235,15 +233,25 @@ class UserService
             ]);
         }
 
-        Log::info('User logged in successfully', ['user_id' => $user->id]);
+        Log::info('Collecting user metadata successfully', ['user_id' => $user->id]);
 
-        return response()->json([
+        $response = [
             "status" => "success",
             "message" => "System successfully logged " . $user->firstname,
             "access_token" => $token,
             "token_type" => "bearer",
             "user" => $user,
-        ])->withCookie($cookie);
+        ];
+
+        if (strtolower($user->role_name) === 'teacher') {
+            $subjects = $user->subjects()->withCount('students')->get();
+            $response['teacher_data'] = [
+                'subjects' => $subjects,
+                'student_count' => $subjects->sum('students_count'),
+            ];
+        }
+
+        return response()->json($response)->withCookie($cookie);
     }
 
     public function getLoginTimeline(Request $request): JsonResponse
@@ -571,84 +579,86 @@ class UserService
     }
 
 
-    //allocate subject and class to user
+    //allocate subjects and classes to user (many-to-many)
     public function allocationSubjectAndClass(Request $request, int $userId): JsonResponse
     {
         try {
-
-            // { userId: '1', classLabel: 'Form 2', subjectIds: [ 1, 7, 2 ] }
-
             Log::info('Allocation request', ['request' => $request->all()]);
 
-            // Prefer route param $userId; allow body override only if provided (but validate)
             $bodyUserId = $request->input('userId');
             $effectiveUserId = is_numeric($bodyUserId) ? (int) $bodyUserId : $userId;
-            $classId = $request->input('classId');
-            $className = $request->input('className');
-            $subjectIds = $request->input('subjectIds');
 
-            // Validate inputs
+            // Accept either classIds (array) or legacy classId (single)
+            $classIds = $request->input('classIds');
+            if (empty($classIds) && $request->input('classId')) {
+                $classIds = [$request->input('classId')];
+            }
+            $classIds = array_filter((array) ($classIds ?? []), 'is_numeric');
+            $classIds = array_map('intval', array_values($classIds));
+
+            $subjectIds = $request->input('subjectIds', []);
+
             $validator = Validator::make($request->all(), [
-                'subjectIds' => 'required|array|min:1',
+                'subjectIds'   => 'required|array|min:1',
                 'subjectIds.*' => 'integer|exists:subjects,id',
-                'classId' => 'nullable|integer|exists:levels,id',
+                'classIds'     => 'nullable|array',
+                'classIds.*'   => 'integer|exists:levels,id',
+                'classId'      => 'nullable|integer|exists:levels,id',
             ]);
 
             if ($validator->fails()) {
                 Log::warning('Allocation validation failed', ['errors' => $validator->errors()]);
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'Validation error',
-                    'errors' => $validator->errors(),
+                    'errors'  => $validator->errors(),
                 ], 422);
             }
 
-            // Find the user
             $user = User::findOrFail($effectiveUserId);
 
-            Log::info('User', ['user' => $user]);
-            // Find the class
-            $class = null;
-            if ($classId) {
-                $class = Level::findOrFail((int) $classId);
-            } elseif ($className) {
-                $class = Level::where('className', $className)->firstOrFail();
-            }
-
-            // Find the subjects
             $subjects = Subject::whereIn('id', $subjectIds)->get();
             if ($subjects->isEmpty()) {
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'No valid subjects found for provided IDs',
                 ], 404);
             }
 
-            // console log the user, class, and subjects
-            Log::info('User', ['user_id' => $user->id]);
-            Log::info('Class', ['class' => $class ? $class->only(['id', 'className']) : null]);
-            Log::info('Subjects', ['subject_ids' => $subjects->pluck('id')]);
-
-            // Attach subjects to the user
+            // Attach subjects to the teacher
             $user->subjects()->syncWithoutDetaching($subjects->pluck('id')->all());
 
-            if ($class) {
+            // Attach classes directly to the teacher (many-to-many via level_user)
+            if (!empty($classIds)) {
+                $user->levels()->syncWithoutDetaching($classIds);
+
+                // Also link each subject to each selected class so the subject→class
+                // relationship used elsewhere in the app stays consistent.
                 foreach ($subjects as $subject) {
-                    $subject->levels()->syncWithoutDetaching([$class->id]);
+                    $subject->levels()->syncWithoutDetaching($classIds);
                 }
             }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Subjects allocated to user' . ($class ? ' and class linked to subjects' : ''),
-                'user_id' => $user->id,
+            $allocatedClasses = !empty($classIds)
+                ? Level::whereIn('id', $classIds)->get(['id', 'className'])
+                : collect();
+
+            Log::info('Allocation saved', [
+                'user_id'     => $user->id,
                 'subject_ids' => $subjects->pluck('id'),
-                'class' => $class ? ['id' => $class->id, 'className' => $class->className] : null,
+                'class_ids'   => $classIds,
+            ]);
+
+            return response()->json([
+                'status'      => 'success',
+                'message'     => 'Subjects and classes allocated to teacher',
+                'user_id'     => $user->id,
+                'subject_ids' => $subjects->pluck('id'),
+                'classes'     => $allocatedClasses,
             ]);
         } catch (\Exception $e) {
-            // Handle any exceptions
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Error allocating subject and class: ' . $e->getMessage(),
             ], 500);
         }
@@ -661,7 +671,7 @@ class UserService
 
             $allocations = DB::table('allocationables')
                 ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
-                ->where('allocationables.allocationable_type', User::class)
+                ->where('allocationables.allocationable_type', 'User')
                 ->where('allocationables.allocationable_id', $user->id)
                 ->select([
                     'allocationables.allocationable_id as user_id',
@@ -724,23 +734,28 @@ class UserService
     public function getAllocationsForTeacher(int $userId): JsonResponse
     {
         try {
-            // Find the user (teacher) by ID
             $teacher = User::findOrFail($userId);
 
-            // Load subjects and levels allocated to the teacher
-            $allocatedSubjects = $teacher->subjects()->with('levels')->get();
+            // Subjects allocated to this teacher
+            $allocatedSubjects = $teacher->subjects()->get(['subjects.id', 'subjects.name']);
+
+            // Classes (levels) directly assigned to this teacher via level_user pivot,
+            // with student counts included to avoid a separate bulk-student fetch on the frontend.
+            $allocatedClasses = $teacher->levels()
+                ->withCount('students')
+                ->get(['levels.id', 'levels.className']);
 
             return response()->json([
-                'status' => 'success',
-                'message' => 'Allocated subjects and classes retrieved successfully for teacher ' . $teacher->firstname . ' ' . $teacher->surname,
-                'teacher' => $teacher,
+                'status'      => 'success',
+                'message'     => 'Allocations retrieved for ' . $teacher->firstname . ' ' . $teacher->surname,
                 'allocations' => $allocatedSubjects,
+                'classes'     => $allocatedClasses,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Failed to retrieve allocations for teacher',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
@@ -776,32 +791,61 @@ class UserService
     public function getAllocationsInDatabase(): JsonResponse
     {
         try {
-            $allocations = DB::table('allocationables')
+            // User-subject rows only — no dept join here to avoid row multiplication
+            // when a teacher belongs to multiple departments.
+            $rows = DB::table('allocationables')
                 ->join('subjects', 'subjects.id', '=', 'allocationables.subject_id')
                 ->join('users', 'users.id', '=', 'allocationables.allocationable_id')
-                ->leftJoin('department_user', 'department_user.user_id', '=', 'users.id')
-                ->leftJoin('departments', 'departments.id', '=', 'department_user.department_id')
+                ->where('allocationables.allocationable_type', 'User')
                 ->select(
-                    'allocationables.*',
-                    'subjects.name as subject',
+                    'users.id as user_id',
                     DB::raw("CONCAT(users.firstname, ' ', users.surname) as teacher"),
                     'users.email as email',
-                    'departments.departmentName as department'
+                    'subjects.name as subject'
                 )
                 ->get();
 
-            // {"id":1,"subject_id":11,"allocationable_type":"Level","allocationable_id":1,"created_at":null,"updated_at":null,"subject":"Civics","teacher":"Madeline Wisoky","email":"admin@gmail.com"}
-            Log::info('Allocations in database', ['allocations' => $allocations]);
+            // One department per user (keyBy keeps the last, good enough for display)
+            $deptMap = DB::table('department_user')
+                ->join('departments', 'departments.id', '=', 'department_user.department_id')
+                ->select('department_user.user_id', 'departments.departmentName as department')
+                ->get()
+                ->keyBy('user_id');
+
+            // ALL classes per user
+            $classMap = DB::table('level_user')
+                ->join('levels', 'levels.id', '=', 'level_user.level_id')
+                ->select('level_user.user_id', 'levels.id as class_id', 'levels.className as class')
+                ->get()
+                ->groupBy('user_id');
+
+            $allocations = $rows->map(function ($row) use ($deptMap, $classMap) {
+                $deptRow = $deptMap->get($row->user_id);
+                $row->department = $deptRow ? $deptRow->department : null;
+
+                $classes = $classMap->get($row->user_id, collect());
+                // Keep legacy single-class fields for backward compat
+                $row->class    = $classes->isNotEmpty() ? $classes->first()->class : null;
+                $row->class_id = $classes->isNotEmpty() ? $classes->first()->class_id : null;
+                // All classes as an array for the frontend table
+                $row->all_classes = $classes->map(fn($c) => [
+                    'id'   => $c->class_id,
+                    'name' => $c->class,
+                ])->values()->toArray();
+
+                return $row;
+            });
+
             return response()->json([
-                'status' => 'success',
-                'message' => 'Allocations retrieved successfully',
+                'status'      => 'success',
+                'message'     => 'Allocations retrieved successfully',
                 'allocations' => $allocations,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'Failed to retrieve allocations in database',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
@@ -822,6 +866,34 @@ class UserService
                 'message' => 'Failed to retrieve teachers',
                 'error' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * Users attached to a department (department_user pivot).
+     */
+    public function getAllUsersFromEachDepartment(int $id): JsonResponse
+    {
+        try {
+            $department = Department::with('users')->findOrFail($id);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Users retrieved successfully for department ' . $department->departmentName,
+                'department' => [
+                    'id' => $department->id,
+                    'departmentName' => $department->departmentName,
+                    'departmentCode' => $department->departmentCode,
+                    'users' => $department->users,
+                ],
+                'users' => $department->users,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to retrieve users for department',
+                'error' => $e->getMessage(),
+            ], 404);
         }
     }
 }

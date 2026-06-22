@@ -41,4 +41,9 @@ class Level extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function teachers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'level_user');
+    }
 }

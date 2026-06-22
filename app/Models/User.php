@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->morphToMany(Subject::class, 'allocationable');
     }
 
+    public function levels()
+    {
+        return $this->belongsToMany(Level::class, 'level_user');
+    }
+
     public function departments()
     {
         return $this->belongsToMany(Department::class);
