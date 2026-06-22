@@ -78,7 +78,7 @@ class AssessmentService
                 $assessmentDataToUpdateOrCreate['endOfTermAssessment'] = $endOfTermAssessment;
             }
 
-            $assessmentDataToUpdateOrCreate['averageScore'] = $averageScore;
+            $assessmentDataToUpdateOrCreate['averageScore'] = (int) round($averageScore);
 
             $assessment = Assessment::updateOrCreate(
                 $assessmentSearchAttributes,
@@ -159,7 +159,7 @@ class AssessmentService
             return 0;
         }
 
-        return array_sum($components) / count($components);
+        return (int) round(array_sum($components) / count($components));
     }
 
 
@@ -170,93 +170,109 @@ class AssessmentService
             Log::info('Fetching assessments', [
                 'class_filter' => $request->input('class'),
                 'student_filter' => $request->input('student'),
-                'subject_filter' => $request->input('subject')
+                'subject_filter' => $request->input('subject'),
             ]);
-        
-            $className = $request->input('class');
-        
-            // Get level ID based on class name
-            $level = Level::where('className', $className)->first();
-            $level_id = $level ? $level->id : null;
-        
-            if (!$level_id) {
-                Log::warning('No level found for class', ['class' => $className]);
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Class not found'
-                ], 404);
+
+            $query = Assessment::query()->with(['student', 'subject']);
+
+            if ($request->filled('class')) {
+                $level = Level::where('className', $request->input('class'))->first();
+
+                if (!$level) {
+                    Log::warning('No level found for class', ['class' => $request->input('class')]);
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Class not found',
+                    ], 404);
+                }
+
+                $query->whereHas('student', function ($studentQuery) use ($level) {
+                    $studentQuery->where('level_id', $level->id);
+                });
             }
-        
-            // Fetch only assessments where the student's level matches the class
-            $assessments = DB::select("
-                SELECT 
-                    a.*,
-                    s.id as student_id, s.firstname, s.surname, s.username, s.sex, s.village, s.traditional_authority, s.district, s.level_id, s.created_at as student_created_at, s.updated_at as student_updated_at,
-                    sub.id as subject_id, sub.name as subject_name, sub.code, sub.periodsPerWeek, sub.department, sub.description, sub.status, sub.created_at as subject_created_at, sub.updated_at as subject_updated_at
-                FROM assessments a
-                INNER JOIN students s ON a.student_id = s.id
-                INNER JOIN levels l ON s.level_id = l.id
-                INNER JOIN subjects sub ON a.subject_id = sub.id
-                WHERE l.id = ?
-            ", [$level_id]);
 
+            if ($request->filled('student')) {
+                $query->where('student_id', $request->input('student'));
+            }
 
-            Log::info('Assessments found', ['count' => count($assessments)]);
-        
+            if ($request->filled('subject')) {
+                $subjectFilter = $request->input('subject');
+                $query->whereHas('subject', function ($subjectQuery) use ($subjectFilter) {
+                    if (is_numeric($subjectFilter)) {
+                        $subjectQuery->where('id', $subjectFilter);
+                    } else {
+                        $subjectQuery->where('name', $subjectFilter);
+                    }
+                });
+            }
+
+            $assessments = $query
+                ->get()
+                ->map(fn (Assessment $assessment) => $this->formatAssessmentRecord($assessment))
+                ->values();
+
+            Log::info('Assessments found', ['count' => $assessments->count()]);
+
             return response()->json([
                 'status' => 'success',
-                'data' => collect($assessments),
-                // 'total' => $assessments->count(),
+                'data' => $assessments,
             ], 200);
-        
         } catch (\Exception $e) {
-            Log::error('Error fetching assessments', ['error' => $e->getMessage()]);
+            Log::error('Error fetching assessments', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return response()->json([
                 'status' => 'error',
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
+    }
 
-       
+    private function formatAssessmentRecord(Assessment $assessment): array
+    {
+        $student = $assessment->student;
+        $subject = $assessment->subject;
+
+        return [
+            'id' => $assessment->id,
+            'schoolTerm' => $assessment->schoolTerm,
+            'teacherEmail' => $assessment->teacherEmail,
+            'subject_id' => $assessment->subject_id,
+            'student_id' => $assessment->student_id,
+            'firstAssessment' => $assessment->firstAssessment,
+            'secondAssessment' => $assessment->secondAssessment,
+            'endOfTermAssessment' => $assessment->endOfTermAssessment,
+            'averageScore' => $assessment->averageScore,
+            'created_at' => $assessment->created_at,
+            'updated_at' => $assessment->updated_at,
+            'firstname' => $student?->firstname,
+            'surname' => $student?->surname,
+            'username' => $student?->username,
+            'sex' => $student?->sex,
+            'village' => $student?->village,
+            'traditional_authority' => $student?->traditional_authority,
+            'district' => $student?->district,
+            'level_id' => $student?->level_id,
+            'student_created_at' => $student?->created_at,
+            'student_updated_at' => $student?->updated_at,
+            'subject_name' => $subject?->name,
+            'code' => $subject?->code,
+            'periodsPerWeek' => $subject?->periodsPerWeek,
+            'department' => $subject?->department,
+            'description' => $subject?->description,
+            'status' => $subject?->status,
+            'subject_created_at' => $subject?->created_at,
+            'subject_updated_at' => $subject?->updated_at,
+        ];
     }
 
     public function getAssessmentsByClass(Request $request): JsonResponse
     {
-        try {
-
-            // Get the 'class' parameter from the URL (request)
-            $className = $request->input('className');
-
-            Log::info('Fetching assessments by class', ['class' => $request->input('className')]);
-
-            $level = Level::where('className', $className)->first();
-            $level_id = $level ? $level->id : null;
-
-            $assessments = Assessment::whereHas('student.level', function ($query) use ($level_id) {
-                $query->where('id', $level_id);
-            })
-                ->with(['student', 'subject'])
-                ->get();
-
-                
-            return response()->json([
-                'status' => 'success',
-                'data' => $assessments,
-                'total' => $assessments->count(),
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Error retrieving assessments by class', ['error' => $e->getMessage()]);
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Error retrieving assessments by class',
-                'description' => $e->getMessage(),
-            ], 500);
+        if ($request->filled('className') && !$request->filled('class')) {
+            $request->merge(['class' => $request->input('className')]);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $assessments,
-            'total' => $assessments->count(),
-        ], 200);
+        return $this->getAllAssessments($request);
     }
 }

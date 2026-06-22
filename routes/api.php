@@ -124,7 +124,7 @@ Route::controller(LevelController::class)->group(function () {
 
 Route::controller(AssessmentController::class)->group(function () {
     Route::get('/assessments', 'getAllAssessments');
-    Route::put('/update-assessment', 'UpdateAssessment');
+    Route::put('/update-assessment', 'updateAssessment');
     Route::delete('/assessment', 'deleteAssessment');
 });
 
