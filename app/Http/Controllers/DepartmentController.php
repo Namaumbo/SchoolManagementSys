@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Department;
+use App\Models\Level;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -304,6 +305,30 @@ class DepartmentController extends Controller
 
             $allocationCount = $teacherAllocations->sum('subjectCount');
 
+            $classStudentStats = Level::query()
+                ->withCount([
+                    'students',
+                    'students as boys_count' => function ($query) {
+                        $query->whereRaw('LOWER(sex) IN (?, ?)', ['male', 'm']);
+                    },
+                    'students as girls_count' => function ($query) {
+                        $query->whereRaw('LOWER(sex) IN (?, ?)', ['female', 'f']);
+                    },
+                ])
+                ->orderBy('className')
+                ->get(['id', 'className'])
+                ->map(function ($level) {
+                    return [
+                        'className' => $level->className,
+                        'total' => $level->students_count,
+                        'boys' => $level->boys_count,
+                        'girls' => $level->girls_count,
+                    ];
+                })
+                ->values();
+
+            $totalSchoolStudents = $classStudentStats->sum('total');
+
             $teacherCount = $staff->filter(function ($user) {
                 return strcasecmp((string) $user->role_name, 'Teacher') === 0;
             })->count();
@@ -316,11 +341,13 @@ class DepartmentController extends Controller
                     'staff' => UserResource::collection($staff)->resolve(),
                     'subjects' => $subjects,
                     'teacherAllocations' => $teacherAllocations,
+                    'classStudentStats' => $classStudentStats,
                     'stats' => [
                         'staffCount' => $staff->count(),
                         'subjectCount' => $subjects->count(),
                         'teacherCount' => $teacherCount,
                         'allocationCount' => $allocationCount,
+                        'totalStudents' => $totalSchoolStudents,
                     ],
                 ],
             ], ResponseAlias::HTTP_OK);
