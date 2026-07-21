@@ -7,6 +7,7 @@ use App\Models\Subject;
 use App\Models\Assessment;
 use App\Models\Level;
 use App\Models\Student;
+use App\Models\ExaminationSetting;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -34,32 +35,47 @@ class AssessmentService
             $student = Student::where('username', $request->input('username'))->firstOrFail();
             Log::info('Student found', ['student_id' => $student->id, 'username' => $student->username]);
 
-            // Optional assessments
-            $firstAssessment = $request->has('firstAssessment')
-                ? $this->validateNumeric($request->input('firstAssessment'))
-                : null;
-
-            $secondAssessment = $request->has('secondAssessment')
-                ? $this->validateNumeric($request->input('secondAssessment'))
-                : null;
-
-            $endOfTermAssessment = $request->has('endOfTermAssessment')
-                ? $this->validateNumeric($request->input('endOfTermAssessment'))
-                : null;
-
-            Log::info('End of term assessment processed successfully');
-
-            $averageScore = $this->calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment);
-            Log::info('Average score calculated', ['averageScore' => $averageScore]);
-
-
-
             $assessmentSearchAttributes = [
                 'subject_id' => $subject->id,
                 'student_id' => $student->id,
             ];
 
-            // Only update fields that were provided
+            $existing = Assessment::where($assessmentSearchAttributes)->first();
+            $allowed = $this->getAllowedExamTypes();
+
+            $firstAssessment = $allowed['firstAssessment'] && $request->has('firstAssessment')
+                ? $this->validateNumeric($request->input('firstAssessment'))
+                : null;
+
+            $secondAssessment = $allowed['secondAssessment'] && $request->has('secondAssessment')
+                ? $this->validateNumeric($request->input('secondAssessment'))
+                : null;
+
+            $endOfTermAssessment = $allowed['endOfTerm'] && $request->has('endOfTermAssessment')
+                ? $this->validateNumeric($request->input('endOfTermAssessment'))
+                : null;
+
+            Log::info('Assessment scores processed', [
+                'allowed' => $allowed,
+                'firstAssessment' => $firstAssessment,
+                'secondAssessment' => $secondAssessment,
+                'endOfTermAssessment' => $endOfTermAssessment,
+            ]);
+
+            $firstValue = $allowed['firstAssessment']
+                ? ($firstAssessment ?? $existing?->firstAssessment)
+                : null;
+            $secondValue = $allowed['secondAssessment']
+                ? ($secondAssessment ?? $existing?->secondAssessment)
+                : null;
+            $endValue = $allowed['endOfTerm']
+                ? ($endOfTermAssessment ?? $existing?->endOfTermAssessment)
+                : null;
+
+            $averageScore = $this->calculateAverageScore($firstValue, $secondValue, $endValue, $allowed);
+            Log::info('Average score calculated', ['averageScore' => $averageScore]);
+
+            // Only update fields that were provided and allowed
             $assessmentDataToUpdateOrCreate = [
                 'schoolTerm' => $request->input('schoolTerm'),
                 'teacherEmail' => $request->input('teacherEmail'),
@@ -139,19 +155,24 @@ class AssessmentService
         ]);
     }
 
-    private function calculateAverageScore($firstAssessment, $secondAssessment, $endOfTermAssessment)
-    {
+    private function calculateAverageScore(
+        $firstAssessment,
+        $secondAssessment,
+        $endOfTermAssessment,
+        ?array $allowed = null
+    ) {
+        $allowed = $allowed ?? $this->getAllowedExamTypes();
         $components = [];
 
-        if (!is_null($firstAssessment)) {
+        if ($allowed['firstAssessment'] && !is_null($firstAssessment)) {
             $components[] = $firstAssessment;
         }
 
-        if (!is_null($secondAssessment)) {
+        if ($allowed['secondAssessment'] && !is_null($secondAssessment)) {
             $components[] = $secondAssessment;
         }
 
-        if (!is_null($endOfTermAssessment)) {
+        if ($allowed['endOfTerm'] && !is_null($endOfTermAssessment)) {
             $components[] = $endOfTermAssessment;
         }
 
@@ -160,6 +181,17 @@ class AssessmentService
         }
 
         return (int) round(array_sum($components) / count($components));
+    }
+
+    private function getAllowedExamTypes(): array
+    {
+        $settings = ExaminationSetting::first();
+
+        return [
+            'firstAssessment' => $settings?->first_assessment_enabled ?? true,
+            'secondAssessment' => $settings?->second_assessment_enabled ?? true,
+            'endOfTerm' => $settings?->end_of_term_enabled ?? true,
+        ];
     }
 
 

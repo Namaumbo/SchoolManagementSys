@@ -15,7 +15,8 @@ class SchoolReportController extends Controller
     public function store(Request $request)
     {
         try {
-            // Retrieve assessment data with related student and subject information
+            // Retrieve assessment data with related student, level, and subject information
+            // className lives on levels (students.className was dropped in favor of level_id)
             $reportData = Assessment::select(
                 'assessments.averageScore',
                 'assessments.subject_id',
@@ -23,9 +24,10 @@ class SchoolReportController extends Controller
                 'subjects.name',
                 'students.firstname',
                 'students.surname',
-                'students.className' // Include className column
+                'levels.className'
             )
                 ->join('students', 'students.id', '=', 'assessments.student_id')
+                ->leftJoin('levels', 'levels.id', '=', 'students.level_id')
                 ->join('subjects', 'subjects.id', '=', 'assessments.subject_id')
                 ->get();
 
