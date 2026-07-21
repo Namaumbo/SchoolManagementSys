@@ -17,6 +17,8 @@ class SchoolReportController extends Controller
         try {
             // Retrieve assessment data with related student, level, and subject information
             // className lives on levels (students.className was dropped in favor of level_id)
+
+            
             $reportData = Assessment::select(
                 'assessments.averageScore',
                 'assessments.subject_id',
