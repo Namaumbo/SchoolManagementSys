@@ -16,7 +16,7 @@ class Level extends Model
 
     protected $fillable = [
         'className',
-        'classTeacher',
+        'user_id',
         'capacity',
         'room_name',
     ];
@@ -40,5 +40,10 @@ class Level extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function teachers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'level_user');
     }
 }

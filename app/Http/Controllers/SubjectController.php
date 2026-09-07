@@ -19,7 +19,7 @@ use App\Http\Resources\RelationshipResource;
 
 use App\Http\Resources\AssessmentResource;
 use App\Http\Resources\StudentResource;
-use lluminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SubjectController extends Controller
 {
@@ -133,9 +133,10 @@ class SubjectController extends Controller
             $subject->save();
 
             // Register the new subject to all students in Form 1 and Form 2
-            $students = Student::where('className', 'like', 'Form 1%')
-                ->orWhere('className', 'like', 'Form 2%')
-                ->get();
+            $students = Student::whereHas('level', function ($query) {
+                $query->where('className', 'like', 'Form 1%')
+                      ->orWhere('className', 'like', 'Form 2%');
+            })->get();
 
             foreach ($students as $student) {
                 $subject->students()->syncWithoutDetaching($student->id);

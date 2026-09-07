@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Assessment extends Model
 {
@@ -13,8 +14,9 @@ class Assessment extends Model
       
     protected $fillable = [
         'schoolTerm',
+        'teacherEmail',
         'subject_id',
-       'firstAssessment',
+        'firstAssessment',
         'secondAssessment',
         'endOfTermAssessment', 
         'averageScore',
@@ -26,19 +28,13 @@ class Assessment extends Model
         'endOfTermAssessment' => 'double', 
     ];
 
-    public function student(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function student(): BelongsTo
     {
-        return $this->belongsToMany(
-            Student::class,
-            'assessments',
-            'id',
-            'student_id'
-        );
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function subject(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-        {
-            return $this->belongsTo(Subject::class);
-        }
-    
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
 }

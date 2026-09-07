@@ -35,6 +35,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SchoolInformationController;
+use App\Http\Controllers\ExaminationManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,6 +86,7 @@ Route::controller(UserController::class)->group(function () {
 
 Route::controller(DepartmentController::class)->group(function () {
     Route::get('/departments', 'getAll');
+    Route::get('/department/head/{userId}/overview', 'getOverviewForHead');
     Route::get('/department/{id}', 'show');
     Route::post('/register-department', 'store');
     Route::get('/headOfDepartments', 'getHeadOfDepartments');
@@ -123,7 +125,7 @@ Route::controller(LevelController::class)->group(function () {
 
 Route::controller(AssessmentController::class)->group(function () {
     Route::get('/assessments', 'getAllAssessments');
-    Route::put('/update-assessment', 'UpdateAssessment');
+    Route::put('/update-assessment', 'updateAssessment');
     Route::delete('/assessment', 'deleteAssessment');
 });
 
@@ -163,6 +165,14 @@ Route::get('/roles', function () {
 
 Route::controller(SchoolInformationController::class)->group(function () {
     Route::get('/schools', 'getSchoolInformation');
+});
+
+Route::controller(ExaminationManagementController::class)->group(function () {
+    Route::get('/examination-management', 'index');
+    Route::put('/examination-settings', 'updateSettings');
+    Route::post('/grading-scales', 'storeGradingScale');
+    Route::put('/grading-scales/{id}', 'updateGradingScale');
+    Route::delete('/grading-scales/{id}', 'destroyGradingScale');
 });
 
 //});
