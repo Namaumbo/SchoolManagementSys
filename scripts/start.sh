@@ -10,8 +10,15 @@ export PORT
 sed -i "s/^Listen .*/Listen ${PORT}/" /etc/apache2/ports.conf
 sed -i "s/\${PORT}/${PORT}/g" /etc/apache2/sites-available/000-default.conf
 
-if [ -f /var/www/html/scripts/deploy.sh ]; then
-    /var/www/html/scripts/deploy.sh
+# Ensure Render Postgres URL uses SSL when present
+if [ -n "${DATABASE_URL:-}" ] && [[ "${DATABASE_URL}" != *"sslmode="* ]]; then
+    if [[ "${DATABASE_URL}" == *"?"* ]]; then
+        export DATABASE_URL="${DATABASE_URL}&sslmode=require"
+    else
+        export DATABASE_URL="${DATABASE_URL}?sslmode=require"
+    fi
 fi
+
+/var/www/html/scripts/deploy.sh
 
 exec apache2-foreground
