@@ -49,12 +49,10 @@ use App\Http\Controllers\ExaminationManagementController;
 */
 Route::post('/login', [UserController::class, 'login']);
 
-
-// health check on the api
 Route::get('/health', fn () => response()->json([
     'status' => 'ok',
-    'message' => 'API is running'
-]));
+    'message' => 'API is healthy',
+]))->withoutMiddleware('throttle:api');
 
 
 
