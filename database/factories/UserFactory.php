@@ -26,6 +26,7 @@ class UserFactory extends Factory
             'district' => $this->faker->state,
             'remember_token' => Str::random(10),
             'role_name' => $this->faker->randomElement(['Teacher', 'Head Of Department', 'Admin', 'Class Teacher']),
+            'school_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ];

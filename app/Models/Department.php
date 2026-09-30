@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Department extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     // Define the fillable properties
     protected $fillable = [
@@ -17,6 +18,7 @@ class Department extends Model
         'departmentCode',
         'head_of_department_id',
         'description',
+        'school_id',
     ];
 
     // Model events

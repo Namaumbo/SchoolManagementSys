@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'traditional_authority' => $this->traditional_authority,
             'district' => $this->district,
             'role_name' => $this->role_name,
+            'school_id' => $this->school_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'subjects' => $this->subjects,

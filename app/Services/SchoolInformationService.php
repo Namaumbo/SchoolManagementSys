@@ -57,6 +57,8 @@ class SchoolInformationService
                 throw new \Exception('Failed to save school information');
             }
 
+            app(ExaminationManagementService::class)->seedDefaultsForSchool($school->id);
+
             return response()->json([
                 'message' => 'School information saved successfully',
                 'status' => 'success',
@@ -103,8 +105,10 @@ class SchoolInformationService
     public function getSchoolInformation(): JsonResponse
     {
         try {
-            // Retrieve all school information from the database
-            $schools = SchoolInformation::all();
+            $user = auth()->user();
+            $schools = ($user && $user->school_id)
+                ? SchoolInformation::where('id', $user->school_id)->get()
+                : SchoolInformation::all();
 
             // Generate abbreviation for each school
             foreach ($schools as $school) {

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class GradingScale extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     protected $fillable = [
         'level',
@@ -15,6 +16,7 @@ class GradingScale extends Model
         'max_score',
         'grade',
         'analysis',
+        'school_id',
     ];
 
     protected $casts = [

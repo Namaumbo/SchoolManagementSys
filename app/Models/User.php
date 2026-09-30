@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, BelongsToSchool;
 
     protected $table = "users";
 
@@ -30,7 +31,8 @@ class User extends Authenticatable
         'traditional_authority',
         'district',
         'subjects',
-        'is_in_department'
+        'is_in_department',
+        'school_id',
     ];
 
     protected $hidden = [

@@ -222,6 +222,49 @@ class ExaminationManagementService
         }
     }
 
+    public function seedDefaultsForSchool(int $schoolId): void
+    {
+        ExaminationSetting::withoutGlobalScope('school')->firstOrCreate(
+            ['school_id' => $schoolId],
+            [
+                'academic_year' => '2025/2026',
+                'current_term' => 'term2',
+                'first_assessment_enabled' => true,
+                'second_assessment_enabled' => true,
+                'end_of_term_enabled' => true,
+                'school_id' => $schoolId,
+            ]
+        );
+
+        $hasGrades = GradingScale::withoutGlobalScope('school')
+            ->where('school_id', $schoolId)
+            ->exists();
+
+        if ($hasGrades) {
+            return;
+        }
+
+        $grades = [
+            ['level' => 'junior', 'min_score' => 0, 'max_score' => 39, 'grade' => 'F', 'analysis' => 'Fail'],
+            ['level' => 'junior', 'min_score' => 40, 'max_score' => 54, 'grade' => 'D', 'analysis' => 'Pass'],
+            ['level' => 'junior', 'min_score' => 55, 'max_score' => 64, 'grade' => 'C', 'analysis' => 'Good'],
+            ['level' => 'junior', 'min_score' => 65, 'max_score' => 74, 'grade' => 'B', 'analysis' => 'Very Good'],
+            ['level' => 'junior', 'min_score' => 75, 'max_score' => 100, 'grade' => 'A', 'analysis' => 'Excellent'],
+            ['level' => 'senior', 'min_score' => 0, 'max_score' => 44, 'grade' => 'F', 'analysis' => 'Fail'],
+            ['level' => 'senior', 'min_score' => 45, 'max_score' => 54, 'grade' => 'E', 'analysis' => 'Pass'],
+            ['level' => 'senior', 'min_score' => 55, 'max_score' => 64, 'grade' => 'D', 'analysis' => 'Credit'],
+            ['level' => 'senior', 'min_score' => 65, 'max_score' => 74, 'grade' => 'C', 'analysis' => 'Good'],
+            ['level' => 'senior', 'min_score' => 75, 'max_score' => 84, 'grade' => 'B', 'analysis' => 'Very Good'],
+            ['level' => 'senior', 'min_score' => 85, 'max_score' => 100, 'grade' => 'A', 'analysis' => 'Excellent'],
+        ];
+
+        foreach ($grades as $grade) {
+            GradingScale::withoutGlobalScope('school')->create(array_merge($grade, [
+                'school_id' => $schoolId,
+            ]));
+        }
+    }
+
     private function gradeValidator(array $data, ?int $ignoreId = null)
     {
         return Validator::make($data, [

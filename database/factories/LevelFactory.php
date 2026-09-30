@@ -17,6 +17,7 @@ class LevelFactory extends Factory
         return [
             'className' => 'Form ' . $className++,
             'user_id' => null,
+            'school_id' => null,
         ];
     }
 }

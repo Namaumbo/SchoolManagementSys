@@ -490,8 +490,10 @@ class StudentSeeder extends Seeder
                     'village' => $villages[array_rand($villages)],
                     'traditional_authority' => $traditionalAuthorities[array_rand($traditionalAuthorities)],
                     'district' => $districts[array_rand($districts)],
-                    'className' => $className,
-                    'level_id' => \App\Models\Level::where('className', $className)->value('id'),
+                    'level_id' => \App\Models\Level::where('school_id', $schoolInfo->id)
+                        ->where('className', $className)
+                        ->value('id'),
+                    'school_id' => $schoolInfo->id,
                     'role_name' => 'Student',
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()

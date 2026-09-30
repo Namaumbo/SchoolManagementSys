@@ -10,6 +10,12 @@ class SubjectSeeder extends Seeder
 {
     public function run()
     {
+        $schools = \App\Models\SchoolInformation::all();
+        if ($schools->isEmpty()) {
+            $this->command?->error('School information not found. Please run SchoolInformationSeeder first.');
+            return;
+        }
+
         $subjects = [
 
             ['code' => 3, 'name' => 'Chichewa', 'periodsPerWeek' => 5],
@@ -23,16 +29,20 @@ class SubjectSeeder extends Seeder
             ['code' => 11, 'name' => 'Chemistry', 'periodsPerWeek' => 3],
 
         ];
-        foreach ($subjects as $subject) {
-            \App\Models\Subject::firstOrCreate(
-                ['name' => $subject['name']],
-                [
-                    'code' => $subject['code'],
-                    'periodsPerWeek' => $subject['periodsPerWeek'],
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]
-            );
+
+        foreach ($schools as $school) {
+            foreach ($subjects as $subject) {
+                \App\Models\Subject::firstOrCreate(
+                    ['school_id' => $school->id, 'name' => $subject['name']],
+                    [
+                        'code' => $subject['code'],
+                        'periodsPerWeek' => $subject['periodsPerWeek'],
+                        'school_id' => $school->id,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                );
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use App\Models\User;
 
 class Level extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     protected $table = "levels";
 
@@ -19,6 +20,7 @@ class Level extends Model
         'user_id',
         'capacity',
         'room_name',
+        'school_id',
     ];
 
     public function subjects(): \Illuminate\Database\Eloquent\Relations\MorphToMany

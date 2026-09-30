@@ -45,6 +45,7 @@ class UserService
             'subjects.*' => 'exists:subjects,id',
             'departments' => 'array',
             'departments.*' => 'exists:departments,id',
+            'school_id' => 'nullable|integer|exists:school_information,id',
         ];
 
         if ($isUpdate) {
@@ -97,6 +98,15 @@ class UserService
                     'status' => 'error',
                     'message' => 'Validation error',
                     'errors' => $validator->errors(),
+                ], 422);
+            }
+
+            $schoolId = $this->resolveSchoolId($request);
+            if (!$schoolId) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation error',
+                    'errors' => ['school_id' => ['The school id field is required.']],
                 ], 422);
             }
 
@@ -320,6 +330,19 @@ class UserService
         ]);
     }
 
+    private function resolveSchoolId(Request $request): ?int
+    {
+        if (auth()->check() && auth()->user()->school_id) {
+            return (int) auth()->user()->school_id;
+        }
+
+        if ($request->filled('school_id')) {
+            return (int) $request->input('school_id');
+        }
+
+        return null;
+    }
+
     private function fillUserDetails(Request $request, User $user): void
     {
         $user->title = $request->title;
@@ -334,6 +357,10 @@ class UserService
         $user->traditional_authority = $request->traditional_authority;
         $user->district = $request->district;
         $user->role_name = $request->role_name;
+        $schoolId = $this->resolveSchoolId($request);
+        if ($schoolId) {
+            $user->school_id = $schoolId;
+        }
         $user->created_at = Carbon::now();
         $user->updated_at = Carbon::now();
         Log::info('User details updated', [

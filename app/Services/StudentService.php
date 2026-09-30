@@ -87,7 +87,13 @@ class StudentService
     {
         // Fetch the school information
         Log::info('Fetching school information');
-        $schoolInfo = SchoolInformation::first();
+        $schoolInfo = null;
+        if (auth()->check() && auth()->user()->school_id) {
+            $schoolInfo = SchoolInformation::find(auth()->user()->school_id);
+        }
+        if (!$schoolInfo) {
+            $schoolInfo = SchoolInformation::first();
+        }
         if (!$schoolInfo) {
             Log::error('School information not found');
             throw new Exception('School information not found');
@@ -113,6 +119,7 @@ class StudentService
         $classNumber = $level ? preg_replace('/[^0-9]/', '', $level->className) : '1';
         $classAbbreviation = 'F' . $classNumber;
         $student->level_id = $request->level_id;
+        $student->school_id = $schoolInfo->id;
 
         // Log student creation attempt
         Log::info('Creating new student record', [

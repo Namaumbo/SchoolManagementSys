@@ -12,28 +12,44 @@ class StudentFactory extends Factory
 
     public function definition()
     {
-        // Pick a random existing level (assumes levels are seeded beforehand)
-        $level = Level::inRandomOrder()->first();
-        $className = $level ? $level->className : 'Form 1';
-
-        // Generate username based on class abbreviation
-        $classNumber = preg_replace('/[^0-9]/', '', $className);
-        $classAbbreviation = 'F' . ($classNumber ?: '1');
-        $usernamePrefix = 'SIMS/' . $classAbbreviation . '/';
-        $uniqueUsername = $this->faker->unique()->numerify($usernamePrefix . '###');
-
         return [
             'firstname' => $this->faker->firstName,
             'surname' => $this->faker->lastName,
-            'level_id' => $level ? $level->id : null,
+            'school_id' => null,
+            'level_id' => null,
             'sex' => $this->faker->randomElement(['male', 'female']),
             'village' => $this->faker->city,
             'traditional_authority' => $this->faker->state,
             'district' => $this->faker->state,
-            'username' => $uniqueUsername, // Assign generated unique username
-            'role_name' => $this->faker->randomElement(['Teacher', 'Head Of Department', 'Administrator']),
+            'username' => $this->faker->unique()->numerify('SIMS/F#/###'),
+            'role_name' => 'Student',
             'created_at' => now(),
             'updated_at' => now(),
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterMaking(function (Student $student) {
+            $levelQuery = Level::query();
+            if ($student->school_id) {
+                $levelQuery->where('school_id', $student->school_id);
+            }
+
+            $level = $student->level_id
+                ? Level::find($student->level_id)
+                : $levelQuery->inRandomOrder()->first();
+
+            if (!$level) {
+                return;
+            }
+
+            $student->level_id = $level->id;
+            $student->school_id = $student->school_id ?: $level->school_id;
+
+            $classNumber = preg_replace('/[^0-9]/', '', (string) $level->className);
+            $classAbbreviation = 'F' . ($classNumber ?: '1');
+            $student->username = $this->faker->unique()->numerify('SIMS/' . $classAbbreviation . '/###');
+        });
     }
 }

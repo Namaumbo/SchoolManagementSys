@@ -7,7 +7,9 @@ use App\Models\Subject;
 use App\Models\Student;
 use App\Models\Level;
 use App\Models\Assessment;
+use App\Models\SchoolInformation;
 use App\Services\AssessmentService;
+use Database\Seeders\SchoolInformationSeeder;
 use Faker\Generator as Faker;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +25,8 @@ class DatabaseSeeder extends Seeder
 
     public function run()
     {
+        $this->call(SchoolInformationSeeder::class);
+
         // Seed roles (fixed set) - ensure uniqueness by primary key role_name
         Role::upsert([
             ['role_name' => 'Admin', 'created_at' => now(), 'updated_at' => now()],
@@ -31,10 +35,11 @@ class DatabaseSeeder extends Seeder
             ['role_name' => 'Head Of Department', 'created_at' => now(), 'updated_at' => now()],
         ], ['role_name'], []);
 
-        // Seed users and associate roles
-        User::factory()->count(300)->create();
+        $schools = SchoolInformation::all();
+        if ($schools->isEmpty()) {
+            return;
+        }
 
-        // Seed subjects (fixed unique list)
         $subjectsData = [
             ['name' => 'Mathematics', 'code' => 101, 'periodsPerWeek' => 8],
             ['name' => 'Biology', 'code' => 102, 'periodsPerWeek' => 6],
@@ -49,25 +54,56 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Civics', 'code' => 111, 'periodsPerWeek' => 4],
             ['name' => 'PE', 'code' => 112, 'periodsPerWeek' => 3],
         ];
-        foreach ($subjectsData as &$s) { $s['created_at'] = now(); $s['updated_at'] = now(); }
-        Subject::upsert($subjectsData, ['name', 'code'], ['periodsPerWeek', 'updated_at']);
 
-        // Seed levels (classes) and attach subjects
-        $levels = Level::factory()->count(4)->create();
-        $subjects = Subject::all();
+        $usersPerSchool = (int) ceil(300 / $schools->count());
+        $studentsPerSchool = (int) ceil(50 / $schools->count());
+        $assessmentsPerSchool = (int) ceil(100 / $schools->count());
 
-        $levels->each(function ($level) use ($subjects) {
-            // Attach random subjects to each level
-            $level->subjects()->attach($subjects->random());
-        });
+        foreach ($schools as $school) {
+            User::factory()->count($usersPerSchool)->create([
+                'school_id' => $school->id,
+            ]);
 
-        // Seed students; factory assigns level_id
-        Student::factory()->count(50)->create();
+            foreach ($subjectsData as $subject) {
+                Subject::updateOrCreate(
+                    ['school_id' => $school->id, 'name' => $subject['name']],
+                    [
+                        'code' => $subject['code'],
+                        'periodsPerWeek' => $subject['periodsPerWeek'],
+                        'school_id' => $school->id,
+                    ]
+                );
+            }
 
-        // Seed assessments
-        Assessment::factory()->count(100)->create();
+            foreach (['Form 1', 'Form 2', 'Form 3', 'Form 4'] as $className) {
+                Level::updateOrCreate(
+                    ['school_id' => $school->id, 'className' => $className],
+                    [
+                        'user_id' => null,
+                        'school_id' => $school->id,
+                    ]
+                );
+            }
 
-        // Update assessments using AssessmentService
+            $levels = Level::where('school_id', $school->id)->get();
+            $subjects = Subject::where('school_id', $school->id)->get();
+
+            $levels->each(function ($level) use ($subjects) {
+                if ($subjects->isEmpty()) {
+                    return;
+                }
+                $level->subjects()->syncWithoutDetaching([$subjects->random()->id]);
+            });
+
+            Student::factory()->count($studentsPerSchool)->create([
+                'school_id' => $school->id,
+            ]);
+
+            Assessment::factory()->count($assessmentsPerSchool)->create([
+                'school_id' => $school->id,
+            ]);
+        }
+
         $this->updateAssessments();
     }
 

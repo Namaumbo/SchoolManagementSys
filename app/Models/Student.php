@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     protected $table = "students";
     protected $hidden = ['pivot'];
@@ -24,7 +25,8 @@ class Student extends Model
         'traditional_authority',
         'district',
         'class',
-        'level_id'
+        'level_id',
+        'school_id',
     ];
 
     public function roles(): BelongsToMany

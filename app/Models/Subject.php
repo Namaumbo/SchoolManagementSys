@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subject extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     protected $table = "subjects";
 
@@ -19,6 +20,7 @@ class Subject extends Model
         'department',
         'description',
         'status',
+        'school_id',
     ];
 
     public function students(): BelongsToMany

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToSchool;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Assessment extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToSchool;
 
     protected $table = "assessments";
       
@@ -22,6 +23,7 @@ class Assessment extends Model
         'averageScore',
         'user_id',
         'student_id',
+        'school_id',
     ];
 
     protected $casts = [

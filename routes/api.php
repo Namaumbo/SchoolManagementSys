@@ -57,8 +57,8 @@ Route::get('/health', fn () => response()->json([
 
 
 
-// Protected routes
-//Route::middleware('auth:sanctum')->group(function () {
+// Protected routes. School data is scoped from the authenticated user's school_id.
+Route::middleware('auth:sanctum')->group(function () {
 Route::post('/school-information', [SchoolInformationController::class, 'store']);
 
 
@@ -173,4 +173,4 @@ Route::controller(ExaminationManagementController::class)->group(function () {
     Route::delete('/grading-scales/{id}', 'destroyGradingScale');
 });
 
-//});
+});
